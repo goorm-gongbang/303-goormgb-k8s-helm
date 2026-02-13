@@ -10,5 +10,5 @@ schedule: "0 */10 * * *"
 secretName: ecr-pull-secret
 
 awsCredentialsSecret:
-  name: route53-credentials
+  name: route53-ddns-credentials
   namespace: kube-system
