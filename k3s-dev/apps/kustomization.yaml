@@ -5,7 +5,7 @@ resources:
   # 순서 중요: namespaces 먼저 (sync-wave: -10)
   - infra/namespaces.yaml
   - infra/ecr-creds.yaml
-  - infra/eso.yaml
+  # - infra/eso.yaml  # Bootstrap에서 설치, ArgoCD 관리 제외
   - infra/cert-manager.yaml
   - infra/ddns.yaml
   - infra/data.yaml
