@@ -33,16 +33,17 @@ rbac:
     # 관리자 (전체 권한)
     g, 212clab@gmail.com, role:admin
 
-    # 팀원 (읽기 + 동기화 권한)
-    g, rhuba23@gmail.com, role:developer
-    g, chamchi0129@gmail.com, role:developer
+    # DevOps (관리자급 권한)
+    g, 212clab@gmail.com, role:devops
+    g, rhuba23@gmail.com, role:devops
+    g, chamchi0129@gmail.com, role:devops
 
-    # developer role 정의
-    p, role:developer, applications, get, *, allow
-    p, role:developer, applications, sync, *, allow
-    p, role:developer, applications, action/*, *, allow
-    p, role:developer, logs, get, *, allow
-    p, role:developer, exec, create, *, allow
+    # devops role 정의 (거의 admin 수준)
+    p, role:devops, applications, *, */*, allow
+    p, role:devops, clusters, *, *, allow
+    p, role:devops, repositories, *, *, allow
+    p, role:devops, logs, *, *, allow
+    p, role:devops, exec, *, *, allow
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
 
