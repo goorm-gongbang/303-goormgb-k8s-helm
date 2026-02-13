@@ -1,0 +1,14 @@
+# ECR Credential Refresh - k3s-dev
+aws:
+  region: ap-northeast-2
+
+targetNamespaces:
+  - dev
+
+schedule: "0 */10 * * *"
+
+secretName: ecr-pull-secret
+
+awsCredentialsSecret:
+  name: route53-credentials
+  namespace: kube-system

@@ -1,0 +1,19 @@
+# ECR Credential Refresh Configuration
+
+aws:
+  region: ap-northeast-2
+
+# Namespaces where ECR pull secret will be created
+targetNamespaces:
+  - dev
+
+# CronJob schedule (every 10 hours)
+schedule: "0 */10 * * *"
+
+# Secret name for ECR credentials
+secretName: ecr-pull-secret
+
+# AWS credentials secret (created by bootstrap)
+awsCredentialsSecret:
+  name: route53-credentials
+  namespace: kube-system

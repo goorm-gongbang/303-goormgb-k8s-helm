@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   # 순서 중요: namespaces 먼저 (sync-wave: -10)
   - infra/namespaces.yaml
+  - infra/ecr-creds.yaml
   - infra/eso.yaml
   - infra/cert-manager.yaml
   - infra/ddns.yaml
