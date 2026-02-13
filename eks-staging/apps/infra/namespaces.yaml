@@ -9,7 +9,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/eks-staging
     path: common-charts/infra/namespaces
     helm:

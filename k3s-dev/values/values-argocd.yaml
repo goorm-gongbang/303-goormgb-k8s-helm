@@ -21,7 +21,7 @@ oidc:
   enabled: true
   name: Google
   issuer: https://accounts.google.com
-  clientID: ${GOOGLE_CLIENT_ID}  # Google Cloud Console에서 생성
+  clientID: ${GOOGLE_CLIENT_ID} # Google Cloud Console에서 생성
   clientSecretRef:
     name: argocd-google-oauth
     key: clientSecret
@@ -51,8 +51,8 @@ rbac:
 applications:
   - name: dev-sample
     namespace: dev
-    repoURL: "https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git"
+    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
     targetRevision: argocd-sync/k3s-dev
     path: common-charts/apps/java-service
     valuesFile: ../../../k3s-dev/values/values-sample.yaml
-    enabled: false  # 아직 비활성화
+    enabled: false # 아직 비활성화
