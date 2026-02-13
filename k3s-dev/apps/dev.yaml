@@ -1,0 +1,121 @@
+# Dev 환경 - Java 백엔드 서비스들
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-auth-guard
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/apps/java-service
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-auth-guard.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-order-core
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/apps/java-service
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-order-core.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-queue
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/apps/java-service
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-queue.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-recommendation
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/apps/java-service
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-recommendation.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-seat
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/apps/java-service
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-seat.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

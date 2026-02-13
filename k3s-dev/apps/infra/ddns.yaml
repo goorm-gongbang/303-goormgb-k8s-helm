@@ -1,0 +1,22 @@
+# DDNS Route53
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ddns-route53
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: k3s/charts/ddns
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-ddns.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

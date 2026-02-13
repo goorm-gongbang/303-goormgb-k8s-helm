@@ -1,0 +1,67 @@
+# Default values for Loki wrapper
+# These can be overridden by environment-specific values
+
+loki-stack:
+  # Loki - 로그 저장소
+  loki:
+    enabled: true
+    persistence:
+      enabled: true
+      size: 20Gi
+
+    config:
+      auth_enabled: false
+
+      limits_config:
+        retention_period: 168h  # 7일
+
+      compactor:
+        retention_enabled: true
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+
+  # Promtail - 로그 수집 에이전트 (DaemonSet)
+  promtail:
+    enabled: true
+
+    config:
+      # 모든 namespace의 로그 수집
+      snippets:
+        pipelineStages:
+          - cri: {}
+          - multiline:
+              firstline: '^\d{4}-\d{2}-\d{2}'
+              max_wait_time: 3s
+              max_lines: 128
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+    # 모든 노드에서 실행 (tolerations)
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+  # Grafana는 prometheus-stack에서 관리
+  grafana:
+    enabled: false
+
+  # Prometheus도 prometheus-stack에서 관리
+  prometheus:
+    enabled: false
+
+# Node placement for Loki server
+nodeSelector: {}
+tolerations: []

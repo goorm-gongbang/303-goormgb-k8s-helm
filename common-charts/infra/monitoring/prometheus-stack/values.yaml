@@ -1,0 +1,96 @@
+# Default values for prometheus-stack wrapper
+# These can be overridden by environment-specific values
+
+kube-prometheus-stack:
+  # Prometheus
+  prometheus:
+    prometheusSpec:
+      # 모든 namespace의 ServiceMonitor/PodMonitor 수집
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      ruleSelectorNilUsesHelmValues: false
+
+      retention: 15d
+      retentionSize: "10GB"
+
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 20Gi
+
+  # Grafana
+  grafana:
+    enabled: true
+    adminPassword: ""  # ESO에서 주입
+
+    persistence:
+      enabled: true
+      size: 5Gi
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+    # 추가 datasource (Loki, Jaeger)
+    additionalDataSources: []
+
+    # 대시보드 자동 로드
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: 'custom'
+            orgId: 1
+            folder: 'Custom'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/custom
+
+  # AlertManager
+  alertmanager:
+    alertmanagerSpec:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
+  # Node Exporter (모든 노드에서 실행)
+  nodeExporter:
+    enabled: true
+
+  # Kube State Metrics
+  kubeStateMetrics:
+    enabled: true
+
+# Istio Gateway 설정
+gateway:
+  grafana:
+    enabled: false
+    host: ""
+  prometheus:
+    enabled: false
+    host: ""
+
+# Node placement
+nodeSelector: {}
+tolerations: []

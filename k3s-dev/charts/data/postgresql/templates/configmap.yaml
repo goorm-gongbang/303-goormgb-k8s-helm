@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgresql-init
+data:
+  init-databases.sh: |
+    #!/bin/bash
+    set -e
+
+    {{- range .Values.databases }}
+    echo "Creating database: {{ . }}"
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
+      CREATE DATABASE {{ . }};
+      GRANT CONNECT, CREATE ON DATABASE {{ . }} TO $POSTGRES_USER;
+    EOSQL
+    {{- end }}
+
+    echo "All databases created successfully"

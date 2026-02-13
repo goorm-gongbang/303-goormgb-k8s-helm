@@ -1,0 +1,32 @@
+# Istio Ingress Gateway
+# Requires istiod to be installed first
+
+gateway:
+  name: istio-ingressgateway
+
+  replicaCount: 1
+
+  autoscaling:
+    enabled: false
+
+  service:
+    type: LoadBalancer
+    ports:
+      - name: http2
+        port: 80
+        targetPort: 80
+      - name: https
+        port: 443
+        targetPort: 443
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Node placement - Worker 노드에 배치
+nodeSelector: {}
+tolerations: []

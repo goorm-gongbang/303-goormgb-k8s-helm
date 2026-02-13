@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: argocd-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - {{ .Values.gateway.host | quote }}
+    {{- if .Values.gateway.tls.enabled }}
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - {{ .Values.gateway.host | quote }}
+      tls:
+        mode: SIMPLE
+        credentialName: {{ .Values.gateway.tls.credentialName }}
+    {{- end }}

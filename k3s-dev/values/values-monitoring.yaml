@@ -1,0 +1,173 @@
+# k3s - 모니터링 스택 설정
+# Domain: goormgb.space
+# Components: Prometheus, Grafana, Loki, Tempo
+
+# ===== Prometheus Stack =====
+kube-prometheus-stack:
+  prometheus:
+    prometheusSpec:
+      # 모든 namespace 메트릭 수집
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      ruleSelectorNilUsesHelmValues: false
+
+      retention: 7d
+      retentionSize: "5GB"
+
+      # CP 노드에 배치
+      nodeSelector:
+        kubernetes.io/hostname: mini-gmk
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 1Gi
+
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 10Gi
+
+  grafana:
+    adminPassword: "admin123"  # TODO: ESO로 교체
+
+    # CP 노드에 배치
+    nodeSelector:
+      kubernetes.io/hostname: mini-gmk
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+    persistence:
+      enabled: true
+      size: 2Gi
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+    # Loki + Tempo datasource 추가
+    additionalDataSources:
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki.monitoring.svc.cluster.local:3100
+        jsonData:
+          maxLines: 1000
+
+      - name: Tempo
+        type: tempo
+        access: proxy
+        url: http://tempo.monitoring.svc.cluster.local:3100
+        jsonData:
+          tracesToLogsV2:
+            datasourceUid: loki
+            spanStartTimeShift: '-1h'
+            spanEndTimeShift: '1h'
+            filterByTraceID: true
+            filterBySpanID: true
+
+  alertmanager:
+    alertmanagerSpec:
+      nodeSelector:
+        kubernetes.io/hostname: mini-gmk
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
+
+# Grafana Gateway
+gateway:
+  grafana:
+    enabled: true
+    host: "grafana.goormgb.space"
+    tls:
+      credentialName: goormgb-tls
+
+# ===== Loki =====
+loki-stack:
+  loki:
+    persistence:
+      enabled: true
+      size: 10Gi
+
+    # CP 노드에 배치
+    nodeSelector:
+      kubernetes.io/hostname: mini-gmk
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+    config:
+      limits_config:
+        retention_period: 72h  # 3일
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
+
+  promtail:
+    # 모든 노드에서 실행
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+    resources:
+      requests:
+        cpu: 20m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+
+# ===== Tempo =====
+tempo:
+  tempo:
+    # CP 노드에 배치
+    nodeSelector:
+      kubernetes.io/hostname: mini-gmk
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
+
+  persistence:
+    enabled: true
+    size: 10Gi

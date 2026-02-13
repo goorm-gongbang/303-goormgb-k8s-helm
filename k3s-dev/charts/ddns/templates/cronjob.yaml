@@ -1,0 +1,83 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ddns-route53-updater
+  labels:
+    app.kubernetes.io/name: ddns-route53
+    app.kubernetes.io/component: infra
+spec:
+  schedule: {{ .Values.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: ddns-updater
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.secret.name }}
+                      key: access-key-id
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.secret.name }}
+                      key: secret-access-key
+                - name: AWS_DEFAULT_REGION
+                  value: "ap-northeast-2"
+                - name: HOSTED_ZONE_ID
+                  value: {{ .Values.hostedZoneID | quote }}
+                - name: DOMAIN
+                  value: {{ .Values.domain | quote }}
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+
+                  # Primary: ipify, Fallback: AWS checkip
+                  CURRENT_IP=$(curl -sf --max-time 5 https://api.ipify.org) || \
+                  CURRENT_IP=$(curl -sf --max-time 5 https://checkip.amazonaws.com | tr -d '\n') || \
+                  CURRENT_IP=""
+
+                  if [ -z "$CURRENT_IP" ]; then
+                    echo "ERROR: Failed to get public IP from all sources"
+                    exit 1
+                  fi
+                  echo "Current public IP: $CURRENT_IP"
+
+                  # Build Route53 change batch using heredoc
+                  cat > /tmp/change-batch.json << EOF
+                  {
+                    "Changes": [
+                      {{- $records := .Values.records }}
+                      {{- range $i, $r := $records }}
+                      {{- if $i }},{{ end }}
+                      {
+                        "Action": "UPSERT",
+                        "ResourceRecordSet": {
+                          "Name": "{{ if eq $r "" }}${DOMAIN}{{ else }}{{ $r }}.${DOMAIN}{{ end }}",
+                          "Type": "A",
+                          "TTL": 300,
+                          "ResourceRecords": [{"Value": "${CURRENT_IP}"}]
+                        }
+                      }
+                      {{- end }}
+                    ]
+                  }
+                  EOF
+
+                  echo "Updating {{ len .Values.records }} records..."
+                  aws route53 change-resource-record-sets \
+                    --hosted-zone-id "$HOSTED_ZONE_ID" \
+                    --change-batch file:///tmp/change-batch.json
+
+                  echo "DDNS update complete"

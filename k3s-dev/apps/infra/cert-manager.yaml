@@ -1,0 +1,24 @@
+# Cert-Manager Config
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-config
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: k3s/charts/cert-manager
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-cert-manager.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

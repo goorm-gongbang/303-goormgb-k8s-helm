@@ -1,0 +1,50 @@
+# recommendation - Dev 환경
+# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/recommendation
+
+replicaCount: 1
+
+image:
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/recommendation
+  tag: "latest"
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: ecr-creds
+
+# Worker 노드에 배치
+nodeSelector:
+  kubernetes.io/hostname: mini-might
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Istio
+istio:
+  sidecar: true
+  gateway:
+    enabled: false
+
+# Service
+service:
+  type: ClusterIP
+  port: 8080
+
+# Health checks
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5

@@ -1,0 +1,29 @@
+apiVersion: extensions.istio.io/v1alpha1
+kind: WasmPlugin
+metadata:
+  name: coraza-waf
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+  url: {{ .Values.coraza.image }}
+  imagePullPolicy: IfNotPresent
+  phase: AUTHN
+  failStrategy: {{ .Values.coraza.failStrategy }}
+  pluginConfig:
+    directives_map:
+      default:
+        - "Include @recommended-conf"
+        - "SecRuleEngine {{ .Values.mode }}"
+        {{- if gt (int .Values.paranoiaLevel) 1 }}
+        - "SecAction \"id:900000,phase:1,pass,t:none,nolog,setvar:tx.blocking_paranoia_level={{ .Values.paranoiaLevel }}\""
+        {{- end }}
+        - "Include @crs-setup-conf"
+        - "Include @owasp_crs/*.conf"
+    default_directives: "default"
+    {{- if .Values.perHostRules }}
+    per_authority_directives:
+      {{- range $host, $ruleset := .Values.perHostRules }}
+      {{ $host }}: {{ $ruleset | quote }}
+      {{- end }}
+    {{- end }}

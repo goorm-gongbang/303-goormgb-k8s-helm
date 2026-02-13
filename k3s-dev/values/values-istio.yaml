@@ -1,0 +1,121 @@
+# k3s - Istio 설정 (Helm values)
+# Domain: goormgb.space
+# Components: istio-base, istiod, istio-gateway, kiali
+
+# ===== Istio Base =====
+base:
+  global:
+    istioNamespace: istio-system
+
+# ===== Istiod =====
+istiod:
+  global:
+    istioNamespace: istio-system
+
+    # Tempo 연동 (Zipkin 호환 프로토콜)
+    tracer:
+      zipkin:
+        address: "tempo.monitoring.svc.cluster.local:9411"
+
+  meshConfig:
+    enableTracing: true
+    defaultConfig:
+      tracing:
+        sampling: 100  # 100% 샘플링 (k3s 환경)
+
+    # Access logging
+    accessLogFile: /dev/stdout
+
+  pilot:
+    # CP 노드에 배치
+    nodeSelector:
+      kubernetes.io/hostname: mini-gmk
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
+
+    autoscaleEnabled: false
+    replicaCount: 1
+
+# ===== Istio Gateway =====
+gateway:
+  name: istio-ingressgateway
+
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+
+  # Worker 노드에 배치 (외부 트래픽 처리)
+  nodeSelector:
+    kubernetes.io/hostname: mini-might
+
+  service:
+    type: LoadBalancer
+    ports:
+      - name: http2
+        port: 80
+        targetPort: 80
+      - name: https
+        port: 443
+        targetPort: 443
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# ===== Kiali =====
+kiali-server:
+  auth:
+    strategy: anonymous  # k3s 환경용
+
+  deployment:
+    # CP 노드에 배치
+    nodeSelector:
+      kubernetes.io/hostname: mini-gmk
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+    resources:
+      requests:
+        cpu: 20m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi
+
+  external_services:
+    prometheus:
+      url: "http://prometheus-stack-kube-prom-prometheus.monitoring.svc.cluster.local:9090"
+
+    grafana:
+      enabled: true
+      in_cluster_url: "http://prometheus-stack-grafana.monitoring.svc.cluster.local:80"
+      url: "https://grafana.goormgb.space"
+
+    tracing:
+      enabled: true
+      provider: tempo
+      in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3100"
+      use_grpc: false
+
+# Kiali Gateway
+gateway:
+  enabled: true
+  host: "kiali.goormgb.space"
+  tls:
+    credentialName: goormgb-tls
