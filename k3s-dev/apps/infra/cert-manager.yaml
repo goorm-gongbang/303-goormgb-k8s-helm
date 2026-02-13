@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/k3s-dev
-    path: k3s/charts/cert-manager
+    path: k3s-dev/charts/cert-manager
     helm:
       valueFiles:
         - ../../../k3s-dev/values/values-cert-manager.yaml

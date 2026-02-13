@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/k3s-dev
-    path: k3s/charts/data/postgresql
+    path: k3s-dev/charts/data/postgresql
     helm:
       valueFiles:
         - ../../../k3s-dev/values/values-data.yaml
@@ -34,7 +34,7 @@ spec:
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/k3s-dev
-    path: k3s/charts/data/redis
+    path: k3s-dev/charts/data/redis
     helm:
       valueFiles:
         - ../../../k3s-dev/values/values-data.yaml
