@@ -43,7 +43,8 @@ rbac:
     p, role:developer, applications, action/*, *, allow
     p, role:developer, logs, get, *, allow
     p, role:developer, exec, create, *, allow
-  defaultPolicy: ""
+  # 등록되지 않은 사용자는 접근 불가
+  defaultPolicy: role:none
 
 applications:
   - name: dev-sample

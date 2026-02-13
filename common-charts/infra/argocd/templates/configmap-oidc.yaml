@@ -9,6 +9,8 @@ metadata:
     app.kubernetes.io/part-of: argocd
 data:
   url: https://{{ .Values.gateway.host }}
+  # Local admin 비활성화 (Google OAuth만 허용)
+  admin.enabled: "false"
   oidc.config: |
     name: {{ .Values.oidc.name }}
     issuer: {{ .Values.oidc.issuer }}
