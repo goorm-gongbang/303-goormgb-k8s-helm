@@ -1,0 +1,24 @@
+# cert-manager ClusterIssuer config
+# cert-manager 자체는 bootstrap repo의 scripts/cert-manager/install.sh 로 설치
+
+# 필수 - 환경별로 설정
+email: ""
+
+# Let's Encrypt
+letsencrypt:
+  staging:
+    enabled: true
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+  production:
+    enabled: true
+    server: https://acme-v02.api.letsencrypt.org/directory
+
+# Route53 DNS-01 solver - 환경별로 설정
+route53:
+  region: ""
+  hostedZoneID: ""
+  secret:
+    name: route53-credentials  # bootstrap-aws.sh 에서 생성됨
+
+# TLS Certificates - 환경별로 설정
+certificates: []

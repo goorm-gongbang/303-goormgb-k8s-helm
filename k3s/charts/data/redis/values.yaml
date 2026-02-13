@@ -1,0 +1,51 @@
+# Redis for MiniPC k3s
+
+image:
+  repository: redis
+  tag: "7-alpine"
+  pullPolicy: IfNotPresent
+
+externalSecret:
+  enabled: true
+  secretStore: aws-secretsmanager
+  remoteRef: goormgb/minipc/redis
+
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 2Gi
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+service:
+  port: 6379
+
+config:
+  maxmemory: 200mb
+  maxmemoryPolicy: allkeys-lru
+  appendonly: "yes"
+
+backup:
+  enabled: true
+  schedule: "0 4 * * *"
+  s3Bucket: goormgb-minipc-backup
+  s3Prefix: redis
+  externalSecret:
+    remoteRef: goormgb/minipc/backup/s3
+
+nodeSelector: {}
+tolerations: []
+
+probes:
+  liveness:
+    initialDelaySeconds: 15
+    periodSeconds: 5
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 5

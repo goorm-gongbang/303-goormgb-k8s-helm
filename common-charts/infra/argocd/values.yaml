@@ -1,0 +1,27 @@
+# ArgoCD configuration
+# ArgoCD 자체는 bootstrap repo의 scripts/argocd/install.sh 로 설치
+
+# Istio Gateway 설정 - 환경별로 설정
+gateway:
+  host: ""
+  tls:
+    enabled: true
+    credentialName: ""
+
+# ArgoCD Application 정의
+applications:
+  - name: dev-sample
+    namespace: dev
+    repoURL: ""  # Git repo URL (설정 필요)
+    targetRevision: HEAD
+    path: helm/charts/apps/web-app
+    valuesFile: ../../environments/apps/dev/values-sample.yaml
+    enabled: false
+
+  - name: staging-sample
+    namespace: staging
+    repoURL: ""
+    targetRevision: HEAD
+    path: helm/charts/apps/web-app
+    valuesFile: ../../environments/apps/staging/values-sample.yaml
+    enabled: false

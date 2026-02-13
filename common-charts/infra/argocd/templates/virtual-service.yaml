@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: argocd-vs
+spec:
+  hosts:
+    - {{ .Values.gateway.host | quote }}
+  gateways:
+    - argocd-gateway
+  http:
+    {{- if .Values.gateway.tls.enabled }}
+    - match:
+        - port: 80
+      redirect:
+        scheme: https
+        redirectCode: 301
+    {{- end }}
+    - route:
+        - destination:
+            host: argocd-server.argocd.svc.cluster.local
+            port:
+              number: 80

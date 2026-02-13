@@ -1,0 +1,11 @@
+# k3s 팀원 RBAC 설정
+
+clusterRoleName: team-viewer
+
+members:
+  - kind: User
+    name: grgb-wonny
+  - kind: User
+    name: grgb-chamchi
+  - kind: User
+    name: grgb-rhuba

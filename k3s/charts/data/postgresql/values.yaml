@@ -1,0 +1,50 @@
+# PostgreSQL for MiniPC k3s
+
+image:
+  repository: postgres
+  tag: "16-alpine"
+  pullPolicy: IfNotPresent
+
+databases:
+  - dev_db
+  - staging_db
+
+externalSecret:
+  enabled: true
+  secretStore: aws-secretsmanager
+  remoteRef: goormgb/minipc/postgresql
+
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 10Gi
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+service:
+  port: 5432
+
+backup:
+  enabled: true
+  schedule: "0 3 * * *"
+  s3Bucket: goormgb-minipc-backup
+  s3Prefix: postgresql
+  externalSecret:
+    remoteRef: goormgb/minipc/backup/s3
+
+nodeSelector: {}
+tolerations: []
+
+probes:
+  liveness:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 5

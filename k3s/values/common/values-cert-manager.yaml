@@ -1,0 +1,24 @@
+# k3s - cert-manager ClusterIssuer 설정
+# Domain: goormgb.space
+
+# CP 노드에 배치 (설정 관련)
+nodeSelector:
+  kubernetes.io/hostname: mini-gmk
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+email: "212clab@gmail.com"
+
+route53:
+  region: ap-northeast-2
+  hostedZoneID: "Z0444756O5UQIM83AJHO"
+
+certificates:
+  - name: goormgb-tls
+    dnsNames:
+      - "*.goormgb.space"
+      - "goormgb.space"
+    issuerRef: letsencrypt-prod

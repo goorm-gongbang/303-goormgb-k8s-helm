@@ -1,0 +1,14 @@
+# External Secrets Operator 설정
+# https://external-secrets.io/
+
+external-secrets:
+  installCRDs: true
+
+  serviceAccount:
+    create: true
+    name: external-secrets
+
+  # AWS Secrets Manager 사용 시 IRSA 설정
+  # serviceAccount:
+  #   annotations:
+  #     eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/external-secrets-role

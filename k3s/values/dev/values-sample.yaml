@@ -1,0 +1,52 @@
+# dev environment - sample nginx app
+# Domain: dev.goormgb.space
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  tag: "1.27-alpine"
+
+ingress:
+  enabled: false
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector:
+  kubernetes.io/hostname: mini-might
+
+istio:
+  sidecar: false
+  gateway:
+    enabled: true
+    hosts:
+      - "dev.goormgb.space"
+    tls:
+      enabled: true
+      mode: SIMPLE
+      credentialName: goormgb-tls
+
+autoscaling:
+  enabled: false
+
+customConfig:
+  enabled: true
+  content: |
+    <!DOCTYPE html>
+    <html>
+    <head><title>goormgb - DEV</title></head>
+    <body style="background:#1a1a2e;color:#e94560;font-family:monospace;display:flex;justify-content:center;align-items:center;height:100vh;margin:0">
+      <div style="text-align:center">
+        <h1>goormgb.space</h1>
+        <h2>DEV Environment</h2>
+        <p>mini-might (worker node)</p>
+        <p style="color:#0f3460">Namespace: dev</p>
+      </div>
+    </body>
+    </html>

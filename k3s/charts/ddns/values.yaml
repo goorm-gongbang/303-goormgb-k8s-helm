@@ -1,0 +1,26 @@
+# DDNS Route53 updater
+# Updates DNS A records via AWS Route53 API
+
+# 필수 - 환경별로 설정
+domain: ""
+hostedZoneID: ""
+records: []
+
+# CronJob schedule: every 5 minutes
+schedule: "*/5 * * * *"
+
+# AWS credentials - bootstrap-aws.sh 에서 생성됨
+secret:
+  name: route53-ddns-credentials
+
+image:
+  repository: amazon/aws-cli
+  tag: "2.22.35"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi

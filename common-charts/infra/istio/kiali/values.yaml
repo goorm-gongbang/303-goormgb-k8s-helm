@@ -1,0 +1,40 @@
+# Kiali - Service Mesh Observability
+# Requires Istio, Prometheus, Grafana, Jaeger
+
+kiali-server:
+  auth:
+    strategy: anonymous  # 개발 환경용, prod에서는 openid 사용
+
+  deployment:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 300m
+        memory: 512Mi
+
+  external_services:
+    prometheus:
+      url: "http://prometheus-stack-kube-prom-prometheus.monitoring.svc.cluster.local:9090"
+
+    grafana:
+      enabled: true
+      in_cluster_url: "http://prometheus-stack-grafana.monitoring.svc.cluster.local:80"
+      url: ""  # values에서 override
+
+    tracing:
+      enabled: true
+      in_cluster_url: "http://jaeger-query.monitoring.svc.cluster.local:16686"
+      url: ""  # values에서 override
+
+# Istio Gateway 설정
+gateway:
+  enabled: false
+  host: ""
+  tls:
+    credentialName: goormgb-tls
+
+# Node placement
+nodeSelector: {}
+tolerations: []
