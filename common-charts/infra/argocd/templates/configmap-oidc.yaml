@@ -12,7 +12,7 @@ data:
   oidc.config: |
     name: {{ .Values.oidc.name }}
     issuer: {{ .Values.oidc.issuer }}
-    clientID: {{ .Values.oidc.clientID }}
+    clientID: $argocd-google-oauth:clientId
     clientSecret: $argocd-google-oauth:clientSecret
     requestedScopes:
       {{- range .Values.oidc.requestedScopes }}

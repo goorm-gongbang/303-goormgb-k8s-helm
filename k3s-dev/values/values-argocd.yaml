@@ -21,10 +21,7 @@ oidc:
   enabled: true
   name: Google
   issuer: https://accounts.google.com
-  clientID: ${GOOGLE_CLIENT_ID} # Google Cloud Console에서 생성
-  clientSecretRef:
-    name: argocd-google-oauth
-    key: clientSecret
+  secretManagerKey: k3s/argocd/google-oauth
   requestedScopes:
     - openid
     - profile
