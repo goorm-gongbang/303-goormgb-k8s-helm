@@ -14,7 +14,7 @@ spec:
     path: common-charts/infra/monitoring/prometheus-stack
     helm:
       valueFiles:
-        - ../../../k3s-dev/values/values-monitoring.yaml
+        - ../../../../k3s-dev/values/values-monitoring.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
@@ -42,7 +42,7 @@ spec:
     path: common-charts/infra/monitoring/loki
     helm:
       valueFiles:
-        - ../../../k3s-dev/values/values-monitoring.yaml
+        - ../../../../k3s-dev/values/values-monitoring.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
@@ -69,7 +69,7 @@ spec:
     path: common-charts/infra/monitoring/tempo
     helm:
       valueFiles:
-        - ../../../k3s-dev/values/values-monitoring.yaml
+        - ../../../../k3s-dev/values/values-monitoring.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
