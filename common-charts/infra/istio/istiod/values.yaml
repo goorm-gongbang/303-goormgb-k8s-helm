@@ -5,10 +5,10 @@ istiod:
   global:
     istioNamespace: istio-system
 
-    # Jaeger 연동
+    # Tempo 연동 (Zipkin 호환 endpoint)
     tracer:
       zipkin:
-        address: "jaeger-collector.monitoring.svc.cluster.local:9411"
+        address: "tempo.monitoring.svc.cluster.local:9411"
 
     # Prometheus 연동
     meshConfig:

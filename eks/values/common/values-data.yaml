@@ -1,7 +1,0 @@
-# EKS 클러스터 데이터 서비스 설정
-# TODO: EKS 노드 그룹에 맞게 설정
-
-# nodeSelector:
-#   nodegroup: data
-
-# tolerations: []

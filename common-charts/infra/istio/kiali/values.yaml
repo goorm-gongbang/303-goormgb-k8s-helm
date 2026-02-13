@@ -1,5 +1,5 @@
 # Kiali - Service Mesh Observability
-# Requires Istio, Prometheus, Grafana, Jaeger
+# Requires Istio, Prometheus, Grafana, Tempo
 
 kiali-server:
   auth:
@@ -25,8 +25,11 @@ kiali-server:
 
     tracing:
       enabled: true
-      in_cluster_url: "http://jaeger-query.monitoring.svc.cluster.local:16686"
-      url: ""  # values에서 override
+      # Tempo 사용 - Grafana를 통해 트레이스 조회
+      provider: "tempo"
+      in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3200"
+      use_grpc: false
+      url: ""  # values에서 override (Grafana URL)
 
 # Istio Gateway 설정
 gateway:

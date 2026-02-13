@@ -1,0 +1,81 @@
+# Prometheus + Grafana
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-stack
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/infra/monitoring/prometheus-stack
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-monitoring.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+# Loki (로그 수집)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/infra/monitoring/loki
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-monitoring.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# Tempo (분산 추적)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tempo
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/infra/monitoring/tempo
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-monitoring.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

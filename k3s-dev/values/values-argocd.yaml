@@ -1,0 +1,58 @@
+# k3s - ArgoCD 설정
+# Domain: goormgb.space
+
+# CP 노드에 배치 (설정 관련)
+nodeSelector:
+  kubernetes.io/hostname: mini-gmk
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+gateway:
+  host: "argocd.goormgb.space"
+  tls:
+    enabled: true
+    credentialName: goormgb-tls
+
+# Google OAuth 설정
+oidc:
+  enabled: true
+  name: Google
+  issuer: https://accounts.google.com
+  clientID: ${GOOGLE_CLIENT_ID}  # Google Cloud Console에서 생성
+  clientSecretRef:
+    name: argocd-google-oauth
+    key: clientSecret
+  requestedScopes:
+    - openid
+    - profile
+    - email
+
+# RBAC 설정 - 허용된 사용자만
+rbac:
+  policy: |
+    # 관리자 (전체 권한)
+    g, 212clab@gmail.com, role:admin
+
+    # 팀원 (읽기 + 동기화 권한)
+    g, rhuba23@gmail.com, role:developer
+    g, chamchi0129@gmail.com, role:developer
+
+    # developer role 정의
+    p, role:developer, applications, get, *, allow
+    p, role:developer, applications, sync, *, allow
+    p, role:developer, applications, action/*, *, allow
+    p, role:developer, logs, get, *, allow
+    p, role:developer, exec, create, *, allow
+  defaultPolicy: ""
+
+applications:
+  - name: dev-sample
+    namespace: dev
+    repoURL: "https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git"
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/apps/java-service
+    valuesFile: ../../../k3s-dev/values/values-sample.yaml
+    enabled: false  # 아직 비활성화

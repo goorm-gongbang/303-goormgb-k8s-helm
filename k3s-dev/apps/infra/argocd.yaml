@@ -1,0 +1,22 @@
+# ArgoCD Config
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-config
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/infra/argocd
+    helm:
+      valueFiles:
+        - ../../../k3s-dev/values/values-argocd.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

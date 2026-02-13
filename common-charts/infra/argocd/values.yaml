@@ -8,20 +8,21 @@ gateway:
     enabled: true
     credentialName: ""
 
-# ArgoCD Application 정의
+# ArgoCD Application 정의 (예시)
+# 실제 앱 정의는 k3s-dev/apps/dev.yaml 또는 eks-*/apps/*.yaml 참조
 applications:
   - name: dev-sample
     namespace: dev
     repoURL: ""  # Git repo URL (설정 필요)
-    targetRevision: HEAD
-    path: helm/charts/apps/web-app
-    valuesFile: ../../environments/apps/dev/values-sample.yaml
+    targetRevision: argocd-sync/k3s-dev
+    path: common-charts/apps/java-service
+    valuesFile: ../../../k3s-dev/values/values-sample.yaml
     enabled: false
 
   - name: staging-sample
     namespace: staging
     repoURL: ""
-    targetRevision: HEAD
-    path: helm/charts/apps/web-app
-    valuesFile: ../../environments/apps/staging/values-sample.yaml
+    targetRevision: argocd-sync/eks-staging
+    path: common-charts/apps/java-service
+    valuesFile: ../../../eks-staging/values/values-sample.yaml
     enabled: false
