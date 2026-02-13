@@ -9,7 +9,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/k3s-dev
     path: common-charts/infra/monitoring/prometheus-stack
     helm:
@@ -37,7 +37,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/k3s-dev
     path: common-charts/infra/monitoring/loki
     helm:
@@ -64,7 +64,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/goorm-gongbang/303-goormgb-k8s-helm.git
+    repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/k3s-dev
     path: common-charts/infra/monitoring/tempo
     helm:
