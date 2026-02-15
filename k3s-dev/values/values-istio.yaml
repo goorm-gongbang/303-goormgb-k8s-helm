@@ -59,15 +59,6 @@ sharedGateway:
   hosts:
     - "*.goormgb.space"
 
-# 공용 Gateway (모든 *.goormgb.space 트래픽 처리)
-sharedGateway:
-  enabled: true
-  name: goormgb-gateway
-  tls:
-    credentialName: goormgb-tls
-  hosts:
-    - "*.goormgb.space"
-
 # ===== Kiali =====
 kiali-server:
   auth:
