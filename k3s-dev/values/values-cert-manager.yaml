@@ -21,4 +21,4 @@ certificates:
     dnsNames:
       - "*.goormgb.space"
       - "goormgb.space"
-    issuerRef: letsencrypt-prod
+    issuerRef: letsencrypt-staging  # rate limit 때문에 임시로 staging 사용
