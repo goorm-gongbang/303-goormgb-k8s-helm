@@ -6,7 +6,7 @@
 grafana:
   eso:
     enabled: true
-    secretManagerKey: k3s/monitoring/grafana
+    secretManagerKey: dev/monitoring/grafana
 
 # ===== Prometheus Stack =====
 kube-prometheus-stack:
