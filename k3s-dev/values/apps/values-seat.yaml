@@ -35,17 +35,19 @@ service:
   type: ClusterIP
   port: *port
 
-# Health checks
+# Health checks (Spring Boot Actuator)
 livenessProbe:
   httpGet:
-    path: /health
+    path: /actuator/health
     port: *port
-  initialDelaySeconds: 30
+  initialDelaySeconds: 60
   periodSeconds: 10
+  failureThreshold: 3
 
 readinessProbe:
   httpGet:
-    path: /ready
+    path: /actuator/health
     port: *port
-  initialDelaySeconds: 5
+  initialDelaySeconds: 30
   periodSeconds: 5
+  failureThreshold: 3
