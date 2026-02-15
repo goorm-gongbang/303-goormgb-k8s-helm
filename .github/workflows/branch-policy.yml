@@ -1,0 +1,30 @@
+# .github/workflows/branch-policy.yml
+name: Branch Policy
+
+on:
+    pull_request:
+        branches:
+            - main
+            - "argocd-sync/**"
+
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        steps:
+            # argocd-sync/* → main 차단
+            - name: Block argocd-sync to main
+              if: github.base_ref == 'main' && startsWith(github.head_ref, 'argocd-sync/')
+              run: |
+                  echo "❌ argocd-sync/* → main PR 불가"
+                  exit 1
+
+            # main 외 → argocd-sync/* 차단
+            - name: Only main to argocd-sync
+              if: startsWith(github.base_ref, 'argocd-sync/') && github.head_ref != 'main'
+              run: |
+                  echo "❌ argocd-sync/* 브랜치는 main에서만 PR 가능"
+                  echo "현재 소스: ${{ github.head_ref }}"
+                  exit 1
+
+            - name: Policy passed
+              run: echo "✅ Branch policy check passed"
