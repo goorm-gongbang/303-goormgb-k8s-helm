@@ -46,35 +46,18 @@ istiod:
     autoscaleEnabled: false
     replicaCount: 1
 
-# ===== Istio Gateway =====
-gateway:
-  name: istio-ingressgateway
+# ===== Shared Gateway =====
+# istio-ingressgateway는 istioctl로 설치됨 (scripts/istio/install.sh)
+# 여기서는 Gateway CRD만 생성
 
-  replicaCount: 1
-  autoscaling:
-    enabled: false
-
-  # Worker 노드에 배치 (외부 트래픽 처리)
-  nodeSelector:
-    kubernetes.io/hostname: mini-might
-
-  service:
-    type: LoadBalancer
-    ports:
-      - name: http2
-        port: 80
-        targetPort: 80
-      - name: https
-        port: 443
-        targetPort: 443
-
-  resources:
-    requests:
-      cpu: 50m
-      memory: 64Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
+# 공용 Gateway (모든 *.goormgb.space 트래픽 처리)
+sharedGateway:
+  enabled: true
+  name: goormgb-gateway
+  tls:
+    credentialName: goormgb-tls
+  hosts:
+    - "*.goormgb.space"
 
 # 공용 Gateway (모든 *.goormgb.space 트래픽 처리)
 sharedGateway:
