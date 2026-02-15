@@ -37,6 +37,7 @@ service:
 
 # Health checks (TCP - Spring Security blocks actuator)
 livenessProbe:
+  httpGet: ~  # 기본값 제거
   tcpSocket:
     port: *port
   initialDelaySeconds: 60
@@ -44,6 +45,7 @@ livenessProbe:
   failureThreshold: 3
 
 readinessProbe:
+  httpGet: ~  # 기본값 제거
   tcpSocket:
     port: *port
   initialDelaySeconds: 30
