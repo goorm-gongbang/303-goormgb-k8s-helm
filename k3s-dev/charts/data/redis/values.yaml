@@ -8,7 +8,7 @@ image:
 externalSecret:
   enabled: true
   secretStore: aws-secretsmanager
-  remoteRef: goormgb/minipc/redis
+  remoteRef: dev/services/redis
 
 persistence:
   enabled: true
@@ -32,12 +32,12 @@ config:
   appendonly: "yes"
 
 backup:
-  enabled: true
+  enabled: false  # TODO: S3 bucket 설정 후 활성화
   schedule: "0 4 * * *"
   s3Bucket: goormgb-minipc-backup
   s3Prefix: redis
   externalSecret:
-    remoteRef: goormgb/minipc/backup/s3
+    remoteRef: dev/backup/s3
 
 nodeSelector: {}
 tolerations: []

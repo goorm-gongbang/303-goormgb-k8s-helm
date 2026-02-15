@@ -12,7 +12,7 @@ spec:
     path: k3s-dev/charts/data/postgresql
     helm:
       valueFiles:
-        - ../../../k3s-dev/values/values-data.yaml
+        - ../../../values/values-data.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: data
@@ -37,7 +37,7 @@ spec:
     path: k3s-dev/charts/data/redis
     helm:
       valueFiles:
-        - ../../../k3s-dev/values/values-data.yaml
+        - ../../../values/values-data.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: data
