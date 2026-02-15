@@ -61,6 +61,11 @@ sharedGateway:
 
 # ===== Kiali =====
 kiali-server:
+  server:
+    web_fqdn: kiali.goormgb.space
+    web_port: 443
+    web_schema: https
+
   auth:
     strategy: openid
     openid:
