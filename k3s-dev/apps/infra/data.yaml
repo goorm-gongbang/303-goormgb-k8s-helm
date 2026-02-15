@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: postgresql
   namespace: argocd
+  labels:
+    ns: data
 spec:
   project: default
   source:
@@ -29,6 +31,8 @@ kind: Application
 metadata:
   name: redis
   namespace: argocd
+  labels:
+    ns: data
 spec:
   project: default
   source:

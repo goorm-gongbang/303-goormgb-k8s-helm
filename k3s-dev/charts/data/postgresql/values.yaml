@@ -7,7 +7,6 @@ image:
 
 databases:
   - dev_db
-  - staging_db
 
 externalSecret:
   enabled: true

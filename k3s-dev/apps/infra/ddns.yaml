@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: ddns-route53
   namespace: argocd
+  labels:
+    ns: kube-system
 spec:
   project: default
   source:

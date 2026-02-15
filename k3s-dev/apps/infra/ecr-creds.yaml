@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: ecr-creds
   namespace: argocd
+  labels:
+    ns: kube-system
   annotations:
     argocd.argoproj.io/sync-wave: "-5"  # namespaces 후, 앱 배포 전
 spec:

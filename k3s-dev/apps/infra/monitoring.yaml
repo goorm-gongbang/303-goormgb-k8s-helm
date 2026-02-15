@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: prometheus-stack
   namespace: argocd
+  labels:
+    ns: monitoring
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
@@ -32,6 +34,8 @@ kind: Application
 metadata:
   name: loki
   namespace: argocd
+  labels:
+    ns: monitoring
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
@@ -59,6 +63,8 @@ kind: Application
 metadata:
   name: tempo
   namespace: argocd
+  labels:
+    ns: monitoring
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:

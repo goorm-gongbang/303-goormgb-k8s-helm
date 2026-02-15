@@ -19,6 +19,8 @@ spec:
   template:
     metadata:
       name: 'dev-{{name}}'
+      labels:
+        ns: dev
     spec:
       project: default
       source:

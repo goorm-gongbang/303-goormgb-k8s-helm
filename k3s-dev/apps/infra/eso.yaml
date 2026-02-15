@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: eso-config
   namespace: argocd
+  labels:
+    ns: external-secrets
 spec:
   project: default
   source:
