@@ -4,8 +4,6 @@ kind: Application
 metadata:
   name: argocd-config
   namespace: argocd
-  labels:
-    ns: argocd
 spec:
   project: default
   source:
