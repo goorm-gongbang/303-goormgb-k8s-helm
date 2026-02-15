@@ -41,3 +41,8 @@ gateway:
 # Node placement
 nodeSelector: {}
 tolerations: []
+
+# OIDC (Google OAuth)
+oidc:
+  enabled: false
+  secretManagerKey: ""  # AWS Secrets Manager key for client_secret
