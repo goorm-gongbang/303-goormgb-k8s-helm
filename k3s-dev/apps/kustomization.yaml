@@ -14,5 +14,6 @@ resources:
   - infra/istio.yaml
   - infra/monitoring.yaml
   - infra/service-secrets.yaml
+  - infra/api-gateway.yaml
   # ApplicationSet으로 서비스 자동 생성
   - dev-applicationset.yaml
