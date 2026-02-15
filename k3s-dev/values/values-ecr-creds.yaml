@@ -3,7 +3,7 @@ aws:
   region: ap-northeast-2
 
 targetNamespaces:
-  - dev
+  - dev-app
 
 schedule: "0 */10 * * *"
 
