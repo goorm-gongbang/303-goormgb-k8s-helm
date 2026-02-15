@@ -1,7 +1,7 @@
 # 서비스 공용 시크릿 설정
 # AWS Secrets Manager에서 값을 가져옴
 
-namespace: dev
+namespace: dev-app
 secretName: service-config
 
 # Secrets Manager 키 prefix

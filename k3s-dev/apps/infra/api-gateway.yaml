@@ -4,7 +4,7 @@ metadata:
   name: api-gateway
   namespace: argocd
   labels:
-    ns: dev
+    ns: dev-app
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -15,7 +15,7 @@ spec:
     path: k3s-dev/charts/api-gateway
   destination:
     server: https://kubernetes.default.svc
-    namespace: dev
+    namespace: dev-app
   syncPolicy:
     automated:
       prune: true
