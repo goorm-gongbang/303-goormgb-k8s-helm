@@ -30,21 +30,22 @@ istio:
     enabled: false
 
 # Service
+servicePort: &port 8081
 service:
   type: ClusterIP
-  port: 8081
+  port: *port
 
 # Health checks
 livenessProbe:
   httpGet:
     path: /health
-    port: 8081
+    port: *port
   initialDelaySeconds: 30
   periodSeconds: 10
 
 readinessProbe:
   httpGet:
     path: /ready
-    port: 8081
+    port: *port
   initialDelaySeconds: 5
   periodSeconds: 5
