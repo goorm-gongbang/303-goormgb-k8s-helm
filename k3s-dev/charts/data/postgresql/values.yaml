@@ -11,7 +11,7 @@ databases:
 
 externalSecret:
   enabled: true
-  secretStore: aws-secretsmanager
+  secretStore: aws-secrets-manager
   remoteRef: dev/services/db
 
 persistence:
