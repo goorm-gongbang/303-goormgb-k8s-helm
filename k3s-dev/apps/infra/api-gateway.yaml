@@ -3,8 +3,6 @@ kind: Application
 metadata:
   name: api-gateway
   namespace: argocd
-  labels:
-    ns: dev-app
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:

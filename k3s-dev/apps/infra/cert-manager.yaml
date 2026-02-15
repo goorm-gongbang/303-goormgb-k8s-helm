@@ -4,8 +4,6 @@ kind: Application
 metadata:
   name: cert-manager-config
   namespace: argocd
-  labels:
-    ns: cert-manager
 spec:
   project: default
   source:
