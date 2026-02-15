@@ -79,7 +79,15 @@ gateway:
 # ===== Kiali =====
 kiali-server:
   auth:
-    strategy: anonymous  # k3s 환경용
+    strategy: openid
+    openid:
+      client_id: ""  # ESO에서 주입
+      issuer_uri: https://accounts.google.com
+      scopes:
+        - openid
+        - profile
+        - email
+      username_claim: email
 
   deployment:
     # CP 노드에 배치
@@ -119,3 +127,8 @@ gateway:
   host: "kiali.goormgb.space"
   tls:
     credentialName: goormgb-tls
+
+# Kiali OIDC (Google OAuth)
+oidc:
+  enabled: true
+  secretManagerKey: dev/infra/oauth/google  # 공용 OAuth

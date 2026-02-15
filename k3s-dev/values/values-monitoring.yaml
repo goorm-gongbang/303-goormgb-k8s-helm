@@ -7,6 +7,7 @@ grafana:
   eso:
     enabled: true
     secretManagerKey: dev/monitoring/grafana
+    oauthSecretManagerKey: dev/infra/oauth/google  # 공용 OAuth
 
 # ===== Prometheus Stack =====
 kube-prometheus-stack:
@@ -50,6 +51,31 @@ kube-prometheus-stack:
       existingSecret: grafana-admin-credentials
       userKey: admin-user
       passwordKey: admin-password
+
+    # Google OAuth 설정
+    envFromSecret: grafana-oauth-credentials
+
+    grafana.ini:
+      server:
+        root_url: https://grafana.goormgb.space
+      auth.google:
+        enabled: true
+        allow_sign_up: true
+        auto_login: false
+        scopes: openid email profile
+        auth_url: https://accounts.google.com/o/oauth2/auth
+        token_url: https://oauth2.googleapis.com/token
+        api_url: https://openidconnect.googleapis.com/v1/userinfo
+        # client_id, client_secret은 envFromSecret에서 주입
+      users:
+        auto_assign_org: true
+        auto_assign_org_role: Viewer  # 기본 역할
+      auth:
+        disable_login_form: false  # admin 로그인 유지
+
+    # Role mapping (이메일 기반)
+    # DevOps: Admin, Developer: Viewer
+    # 주의: Grafana Enterprise나 별도 플러그인 필요할 수 있음
 
     # CP 노드에 배치
     nodeSelector:

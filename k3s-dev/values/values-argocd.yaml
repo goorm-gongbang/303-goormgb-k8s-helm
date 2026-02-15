@@ -21,7 +21,7 @@ oidc:
   enabled: true
   name: Google
   issuer: https://accounts.google.com
-  secretManagerKey: dev/argocd/google-oauth
+  secretManagerKey: dev/infra/oauth/google  # 공용 OAuth
   requestedScopes:
     - openid
     - profile
