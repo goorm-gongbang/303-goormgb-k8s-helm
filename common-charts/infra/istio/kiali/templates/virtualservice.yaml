@@ -1,12 +1,12 @@
-{{- if .Values.gateway.grafana.enabled }}
+{{- if .Values.kialiVirtualService.enabled }}
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
-  name: grafana-vs
+  name: kiali-vs
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
-    - {{ .Values.gateway.grafana.host | quote }}
+    - {{ .Values.kialiVirtualService.host | quote }}
   gateways:
     - istio-system/goormgb-gateway
   http:
@@ -15,7 +15,7 @@ spec:
             prefix: /
       route:
         - destination:
-            host: {{ .Release.Name }}-grafana
+            host: kiali
             port:
-              number: 80
+              number: 20001
 {{- end }}

@@ -76,6 +76,15 @@ gateway:
       cpu: 200m
       memory: 256Mi
 
+# 공용 Gateway (모든 *.goormgb.space 트래픽 처리)
+sharedGateway:
+  enabled: true
+  name: goormgb-gateway
+  tls:
+    credentialName: goormgb-tls
+  hosts:
+    - "*.goormgb.space"
+
 # ===== Kiali =====
 kiali-server:
   auth:
@@ -121,12 +130,10 @@ kiali-server:
       in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3100"
       use_grpc: false
 
-# Kiali Gateway
-gateway:
+# Kiali VirtualService (공용 Gateway 사용)
+kialiVirtualService:
   enabled: true
   host: "kiali.goormgb.space"
-  tls:
-    credentialName: goormgb-tls
 
 # Kiali OIDC (Google OAuth)
 oidc:

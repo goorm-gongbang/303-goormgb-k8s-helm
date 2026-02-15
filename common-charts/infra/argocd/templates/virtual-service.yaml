@@ -6,15 +6,8 @@ spec:
   hosts:
     - {{ .Values.gateway.host | quote }}
   gateways:
-    - argocd-gateway
+    - istio-system/goormgb-gateway
   http:
-    {{- if .Values.gateway.tls.enabled }}
-    - match:
-        - port: 80
-      redirect:
-        scheme: https
-        redirectCode: 301
-    {{- end }}
     - route:
         - destination:
             host: argocd-server.argocd.svc.cluster.local
