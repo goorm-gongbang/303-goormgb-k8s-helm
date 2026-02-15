@@ -1,15 +1,15 @@
-# auth-guard - Dev 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/auth-guard
+# recommendation - Dev 환경
+# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/recommendation
 
 replicaCount: 1
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/auth-guard
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/recommendation
   tag: "latest"
   pullPolicy: Always
 
 imagePullSecrets:
-  - name: ecr-creds
+  - name: ecr-pull-secret
 
 # Worker 노드에 배치
 nodeSelector:
@@ -27,7 +27,7 @@ resources:
 istio:
   sidecar: true
   gateway:
-    enabled: false  # API Gateway 뒤에서 동작
+    enabled: false
 
 # Service
 service:

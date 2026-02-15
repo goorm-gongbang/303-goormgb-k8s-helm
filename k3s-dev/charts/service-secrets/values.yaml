@@ -1,0 +1,12 @@
+# 서비스 공용 시크릿 설정
+# AWS Secrets Manager에서 값을 가져옴
+
+namespace: dev
+secretName: service-config
+
+# Secrets Manager 키 prefix
+secretManagerPrefix: k3s/services
+
+# 환경별 설정
+spring:
+  profile: dev

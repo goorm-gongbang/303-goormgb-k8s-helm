@@ -13,4 +13,6 @@ resources:
   - infra/argocd.yaml
   - infra/istio.yaml
   - infra/monitoring.yaml
-  - dev.yaml
+  - infra/service-secrets.yaml
+  # ApplicationSet으로 서비스 자동 생성
+  - dev-applicationset.yaml

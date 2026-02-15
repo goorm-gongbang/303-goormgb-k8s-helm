@@ -32,7 +32,7 @@ kube-prometheus-stack:
   # Grafana
   grafana:
     enabled: true
-    adminPassword: ""  # ESO에서 주입
+    # adminPassword는 existingSecret 사용 시 무시됨
 
     persistence:
       enabled: true
@@ -81,6 +81,12 @@ kube-prometheus-stack:
   # Kube State Metrics
   kubeStateMetrics:
     enabled: true
+
+# Grafana ESO 설정
+grafana:
+  eso:
+    enabled: false
+    secretManagerKey: ""  # 예: k3s/monitoring/grafana
 
 # Istio Gateway 설정
 gateway:

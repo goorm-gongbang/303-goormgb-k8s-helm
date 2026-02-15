@@ -2,6 +2,12 @@
 # Domain: goormgb.space
 # Components: Prometheus, Grafana, Loki, Tempo
 
+# Grafana ESO 설정
+grafana:
+  eso:
+    enabled: true
+    secretManagerKey: k3s/monitoring/grafana
+
 # ===== Prometheus Stack =====
 kube-prometheus-stack:
   prometheus:
@@ -39,7 +45,11 @@ kube-prometheus-stack:
                 storage: 10Gi
 
   grafana:
-    adminPassword: "admin123"  # TODO: ESO로 교체
+    # ESO에서 생성한 secret 사용
+    admin:
+      existingSecret: grafana-admin-credentials
+      userKey: admin-user
+      passwordKey: admin-password
 
     # CP 노드에 배치
     nodeSelector:

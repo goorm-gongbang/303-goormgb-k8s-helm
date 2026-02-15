@@ -1,0 +1,39 @@
+# Dev 환경 - Java 백엔드 서비스 ApplicationSet
+# 새 서비스 추가 시 list에 서비스명만 추가하면 됨
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: dev-services
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: auth-guard
+          - name: order-core
+          - name: queue
+          - name: recommendation
+          - name: seat
+          # 새 서비스 추가 예시:
+          # - name: frontend
+  template:
+    metadata:
+      name: 'dev-{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
+        targetRevision: argocd-sync/k3s-dev
+        path: common-charts/apps/java-service
+        helm:
+          valueFiles:
+            - ../../../k3s-dev/values/apps/values-{{name}}.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: dev
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

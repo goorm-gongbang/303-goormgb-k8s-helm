@@ -1,0 +1,5 @@
+apiVersion: v2
+name: service-secrets
+description: 백엔드 서비스 공용 시크릿 (ESO)
+type: application
+version: 1.0.0

@@ -1,15 +1,15 @@
-# queue - Dev 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/queue
+# seat - Dev 환경
+# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/seat
 
 replicaCount: 1
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/queue
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/seat
   tag: "latest"
   pullPolicy: Always
 
 imagePullSecrets:
-  - name: ecr-creds
+  - name: ecr-pull-secret
 
 # Worker 노드에 배치
 nodeSelector:

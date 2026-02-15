@@ -9,7 +9,7 @@ image:
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
-  - name: ecr-creds
+  - name: ecr-pull-secret
 
 nameOverride: ""
 fullnameOverride: ""
@@ -77,12 +77,12 @@ env: []
 # - name: SPRING_PROFILES_ACTIVE
 #   value: "dev"
 
-# ConfigMap/Secret references
-envFrom: []
-# - configMapRef:
-#     name: app-config
-# - secretRef:
-#     name: app-secrets
+# ConfigMap/Secret references (ESO에서 생성)
+envFrom:
+  - configMapRef:
+      name: service-config
+  - secretRef:
+      name: service-config
 
 # JVM options
 javaOpts: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
