@@ -1,0 +1,7 @@
+# RBAC defaults
+clusterRoleName: team-developer
+
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps"]
+    verbs: ["get", "list", "watch"]
