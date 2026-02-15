@@ -1,0 +1,24 @@
+# CloudBeaver - Web DB Management Tool
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudbeaver
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/dev
+    path: common-charts/infra/cloudbeaver
+    helm:
+      valueFiles:
+        - ../../../dev/values/values-cloudbeaver.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: data
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

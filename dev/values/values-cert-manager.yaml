@@ -1,0 +1,24 @@
+# kubeadm-dev - cert-manager ClusterIssuer 설정
+# Domain: goormgb.help
+
+# CP 노드에 배치 (설정 관련)
+nodeSelector:
+  kubernetes.io/hostname: mini-gmk
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+email: "212clab@gmail.com"
+
+route53:
+  region: ap-northeast-2
+  hostedZoneID: "Z08735923FCA9QTFLOQSL"
+
+certificates:
+  - name: goormgb-tls
+    dnsNames:
+      - "*.goormgb.help"
+      - "goormgb.help"
+    issuerRef: letsencrypt-prod  # 새 도메인이라 prod 사용 가능

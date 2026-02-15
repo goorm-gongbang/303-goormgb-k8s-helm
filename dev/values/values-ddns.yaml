@@ -1,0 +1,15 @@
+# kubeadm-dev - DDNS Route53 설정
+# Domain: goormgb.help
+
+domain: "goormgb.help"
+hostedZoneID: "Z08735923FCA9QTFLOQSL"
+
+records:
+  - ""              # goormgb.help (root)
+  - "api"           # api.goormgb.help
+  - "dev"           # dev.goormgb.help
+  - "api.dev"       # api.dev.goormgb.help
+  - "argocd"        # argocd.goormgb.help
+  - "grafana"       # grafana.goormgb.help
+  - "kiali"         # kiali.goormgb.help
+  - "cloudbeaver"   # cloudbeaver.goormgb.help

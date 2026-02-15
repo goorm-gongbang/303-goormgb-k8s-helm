@@ -1,0 +1,112 @@
+# kubeadm-dev - Istio 설정 (Helm values)
+# Domain: goormgb.help
+# Components: istio-base, istiod, istio-gateway, kiali
+
+# ===== Istio Base =====
+base:
+  global:
+    istioNamespace: istio-system
+
+# ===== Istiod =====
+istiod:
+  global:
+    istioNamespace: istio-system
+
+    # Tempo 연동 (Zipkin 호환 프로토콜)
+    tracer:
+      zipkin:
+        address: "tempo.monitoring.svc.cluster.local:9411"
+
+  meshConfig:
+    enableTracing: true
+    defaultConfig:
+      tracing:
+        sampling: 100  # 100% 샘플링 (kubeadm-dev 환경)
+
+    # Access logging
+    accessLogFile: /dev/stdout
+
+  pilot:
+    # CP 노드에 배치
+    nodeSelector:
+      kubernetes.io/hostname: mini-gmk
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
+
+    autoscaleEnabled: false
+    replicaCount: 1
+
+# ===== Shared Gateway =====
+# istio-ingressgateway는 istioctl로 설치됨 (scripts/istio/install.sh)
+# 여기서는 Gateway CRD만 생성
+
+# 공용 Gateway (모든 *.goormgb.help 트래픽 처리)
+sharedGateway:
+  enabled: true
+  name: goormgb-gateway
+  tls:
+    credentialName: goormgb-tls
+  hosts:
+    - "*.goormgb.help"
+
+# ===== Kiali =====
+kiali-server:
+  server:
+    web_fqdn: kiali.goormgb.help
+    web_port: 443
+    web_schema: https
+
+  auth:
+    strategy: anonymous  # 개발환경 - OAuth 비활성화
+
+  deployment:
+    # CP 노드에 배치
+    nodeSelector:
+      kubernetes.io/hostname: mini-gmk
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+    resources:
+      requests:
+        cpu: 20m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi
+
+  external_services:
+    prometheus:
+      url: "http://prometheus-stack-kube-prom-prometheus.monitoring.svc.cluster.local:9090"
+
+    grafana:
+      enabled: true
+      in_cluster_url: "http://prometheus-stack-grafana.monitoring.svc.cluster.local:80"
+      url: "https://grafana.goormgb.help"
+
+    tracing:
+      enabled: true
+      provider: tempo
+      in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3100"
+      use_grpc: false
+
+# Kiali VirtualService (공용 Gateway 사용)
+kialiVirtualService:
+  enabled: true
+  host: "kiali.goormgb.help"
+
+# Kiali OIDC (Google OAuth)
+oidc:
+  enabled: true
+  secretManagerKey: dev/infra/oauth/google  # 공용 OAuth

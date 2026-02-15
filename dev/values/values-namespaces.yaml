@@ -1,0 +1,6 @@
+# kubeadm-dev - Namespace 설정
+# Istio sidecar injection 활성화
+
+namespaces:
+  - name: dev-app
+    istio: true

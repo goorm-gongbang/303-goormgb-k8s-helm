@@ -1,0 +1,57 @@
+# kubeadm-dev - ArgoCD 설정
+# Domain: goormgb.help
+
+# CP 노드에 배치 (설정 관련)
+nodeSelector:
+  kubernetes.io/hostname: mini-gmk
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+gateway:
+  host: "argocd.goormgb.help"
+  tls:
+    enabled: true
+    credentialName: goormgb-tls
+
+# Google OAuth 설정
+oidc:
+  enabled: true
+  name: Google
+  issuer: https://accounts.google.com
+  secretManagerKey: dev/infra/oauth/google  # 공용 OAuth
+  requestedScopes:
+    - openid
+    - profile
+    - email
+
+# RBAC 설정 - 허용된 사용자만
+rbac:
+  policy: |
+    # 관리자 (전체 권한)
+    g, 212clab@gmail.com, role:admin
+
+    # DevOps (관리자급 권한)
+    g, 212clab@gmail.com, role:devops
+    g, rhuba23@gmail.com, role:devops
+    g, chamchi0129@gmail.com, role:devops
+
+    # devops role 정의 (거의 admin 수준)
+    p, role:devops, applications, *, */*, allow
+    p, role:devops, clusters, *, *, allow
+    p, role:devops, repositories, *, *, allow
+    p, role:devops, logs, *, *, allow
+    p, role:devops, exec, *, *, allow
+  # 등록되지 않은 사용자는 접근 불가
+  defaultPolicy: role:none
+
+applications:
+  - name: dev-sample
+    namespace: dev-app
+    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
+    targetRevision: argocd-sync/dev
+    path: common-charts/apps/java-service
+    valuesFile: ../../../dev/values/values-sample.yaml
+    enabled: false # 아직 비활성화

@@ -1,0 +1,49 @@
+# PostgreSQL for MiniPC kubeadm
+
+image:
+  repository: postgres
+  tag: "16-alpine"
+  pullPolicy: IfNotPresent
+
+databases:
+  - dev_db
+
+externalSecret:
+  enabled: true
+  secretStore: aws-secrets-manager
+  remoteRef: dev/services/db
+
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 10Gi
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+service:
+  port: 5432
+
+backup:
+  enabled: false  # TODO: S3 bucket 설정 후 활성화
+  schedule: "0 3 * * *"
+  s3Bucket: goormgb-minipc-backup
+  s3Prefix: postgresql
+  externalSecret:
+    remoteRef: dev/backup/s3
+
+nodeSelector: {}
+tolerations: []
+
+probes:
+  liveness:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 5

@@ -2,7 +2,7 @@
 # Grafana에서 datasource로 연결해서 사용
 
 tempo:
-  # 단일 바이너리 모드 (k3s에 적합)
+  # 단일 바이너리 모드 (dev 환경)
   tempo:
     resources:
       requests:
@@ -29,7 +29,7 @@ tempo:
           grpc:
             endpoint: "0.0.0.0:14250"
 
-    # 로컬 스토리지 (k3s)
+    # 로컬 스토리지 (dev)
     storage:
       trace:
         backend: local

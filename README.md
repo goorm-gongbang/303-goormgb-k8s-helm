@@ -8,7 +8,7 @@ Helm 차트와 ArgoCD Application 정의를 관리하는 GitOps 레포.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  k3s-dev 클러스터 (MiniPC 2노드, 64GB RAM)         브랜치: argocd-sync/k3s-dev      │
+│  dev 클러스터 (MiniPC 2노드, 64GB RAM)         브랜치: argocd-sync/dev      │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │  dev namespace                                                       │   │
 │  │  • 개발 + 기능 테스트                                                │   │
@@ -20,7 +20,7 @@ Helm 차트와 ArgoCD Application 정의를 관리하는 GitOps 레포.
                                       │
                                       ▼ 이미지 태그 프로모션
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  EKS Staging 클러스터                      브랜치: argocd-sync/eks-staging  │
+│  EKS Staging 클러스터                      브랜치: argocd-sync/staging  │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │  staging namespace                                                   │   │
 │  │  • AWS 연동 검증 (RDS, ElastiCache)                                  │   │
@@ -30,7 +30,7 @@ Helm 차트와 ArgoCD Application 정의를 관리하는 GitOps 레포.
                                       │
                                       ▼ 검증 완료 후 프로모션
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  EKS Prod 클러스터 (별도)                     브랜치: argocd-sync/eks-prod  │
+│  EKS Prod 클러스터 (별도)                     브랜치: argocd-sync/prod  │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │  prod namespace                                                      │   │
 │  │  • 실서비스 운영                                                     │   │
@@ -55,7 +55,7 @@ Helm 차트와 ArgoCD Application 정의를 관리하는 GitOps 레포.
 │       ├── istio/              # base, istiod, gateway, kiali
 │       └── monitoring/         # prometheus-stack, loki, tempo
 │
-├── k3s-dev/                        # k3s-dev 클러스터 (MiniPC)
+├── dev/                        # dev 클러스터 (MiniPC)
 │   ├── apps/                   # ArgoCD Application 정의
 │   │   ├── infra/              # 인프라 앱
 │   │   │   ├── namespaces.yaml
@@ -75,13 +75,13 @@ Helm 차트와 ArgoCD Application 정의를 관리하는 GitOps 레포.
 │       ├── values-auth-guard.yaml
 │       └── ...
 │
-├── eks-staging/                # EKS Staging 클러스터
+├── staging/                # EKS Staging 클러스터
 │   ├── apps/                   # ArgoCD Application 정의
 │   │   ├── infra/
 │   │   └── kustomization.yaml
 │   └── values/                 # staging 설정
 │
-├── eks-prod/                   # EKS Prod 클러스터 (별도)
+├── prod/                   # EKS Prod 클러스터 (별도)
 │   ├── apps/                   # ArgoCD Application 정의
 │   │   ├── infra/
 │   │   └── kustomization.yaml
@@ -97,18 +97,18 @@ Helm 차트와 ArgoCD Application 정의를 관리하는 GitOps 레포.
 ```
 main ─────────────────────────────────────────►  개발/PR 머지
   │
-  ├── argocd-sync/k3s-dev ────────────────────────►  k3s (dev)
+  ├── argocd-sync/dev ────────────────────────►  kubeadm (dev)
   │
-  ├── argocd-sync/eks-staging ────────────────►  EKS Staging
+  ├── argocd-sync/staging ────────────────►  EKS Staging
   │
-  └── argocd-sync/eks-prod ───────────────────►  EKS Prod (별도 클러스터)
+  └── argocd-sync/prod ───────────────────►  EKS Prod (별도 클러스터)
 ```
 
 | 브랜치 | 클러스터 | 환경 | 용도 |
 |--------|----------|------|------|
-| `argocd-sync/k3s-dev` | k3s (MiniPC) | dev | 개발, HA 테스트, Istio 실험 |
-| `argocd-sync/eks-staging` | EKS Staging | staging | AWS 연동 검증 |
-| `argocd-sync/eks-prod` | EKS Prod | prod | 실서비스 운영 |
+| `argocd-sync/dev` | kubeadm (MiniPC) | dev | 개발, HA 테스트, Istio 실험 |
+| `argocd-sync/staging` | EKS Staging | staging | AWS 연동 검증 |
+| `argocd-sync/prod` | EKS Prod | prod | 실서비스 운영 |
 
 ## GitOps 워크플로우
 
@@ -119,22 +119,22 @@ main ─────────────────────────
 ┌────────────────────────────────────────────────────────────┐
 │  CI (GitHub Actions)                                        │
 │  1. 이미지 빌드 & ECR 푸시                                  │
-│  2. k3s-dev/values/values-*.yaml 업데이트 (이미지 태그)         │
-│  3. argocd-sync/k3s-dev 브랜치에 자동 커밋                      │
+│  2. dev/values/values-*.yaml 업데이트 (이미지 태그)         │
+│  3. argocd-sync/dev 브랜치에 자동 커밋                      │
 └────────────────────────────────────────────────────────────┘
                 │
                 ▼
 ┌────────────────────────────────────────────────────────────┐
 │  ArgoCD (k3s)                                               │
-│  • argocd-sync/k3s-dev 브랜치 watch                            │
+│  • argocd-sync/dev 브랜치 watch                            │
 │  • 변경 감지 → 자동 sync                                   │
 │  • dev namespace에 배포                                    │
 └────────────────────────────────────────────────────────────┘
 ```
 
-## k3s vs EKS 차이
+## kubeadm vs EKS 차이
 
-| 컴포넌트 | k3s (MiniPC) | EKS (AWS) |
+| 컴포넌트 | kubeadm (MiniPC) | EKS (AWS) |
 |---------|--------------|-----------|
 | TLS 인증서 | cert-manager + Let's Encrypt | ACM |
 | 데이터베이스 | PostgreSQL Pod | RDS |
@@ -178,10 +178,10 @@ metadata:
 │  ┌──────────────────────────────────────────────────────────────┐       │
 │  │                    k3s Cluster (MiniPC)                       │       │
 │  │                                                                │       │
-│  │   ArgoCD ◄────── watch ────── k3s-dev/apps/                       │       │
+│  │   ArgoCD ◄────── watch ────── dev/apps/                       │       │
 │  │      │                                                         │       │
-│  │      ├── k3s-dev/apps/infra/*  ──► Istio, Monitoring, ESO...     │       │
-│  │      └── k3s-dev/apps/dev.yaml ──► auth-guard, order-core...     │       │
+│  │      ├── dev/apps/infra/*  ──► Istio, Monitoring, ESO...     │       │
+│  │      └── dev/apps/dev.yaml ──► auth-guard, order-core...     │       │
 │  │                                                                │       │
 │  └──────────────────────────────────────────────────────────────┘       │
 │                                                                          │
@@ -193,8 +193,8 @@ metadata:
 | 도메인 | 용도 |
 |--------|------|
 | goormgb.space | 루트 도메인 |
-| dev.goormgb.space | k3s dev 환경 |
-| api.dev.goormgb.space | k3s dev API |
+| dev.goormgb.space | kubeadm dev 환경 |
+| api.dev.goormgb.space | kubeadm dev API |
 | argocd.goormgb.space | ArgoCD UI |
 | grafana.goormgb.space | Grafana |
 | kiali.goormgb.space | Kiali (서비스 메시) |

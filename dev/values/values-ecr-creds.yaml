@@ -1,0 +1,14 @@
+# ECR Credential Refresh - kubeadm-dev
+aws:
+  region: ap-northeast-2
+
+targetNamespaces:
+  - dev-app
+
+schedule: "0 */10 * * *"
+
+secretName: ecr-pull-secret
+
+awsCredentialsSecret:
+  name: route53-ddns-credentials
+  namespace: kube-system
