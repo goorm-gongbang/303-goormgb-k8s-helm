@@ -32,19 +32,19 @@ istio:
 # Service
 service:
   type: ClusterIP
-  port: 8080
+  port: 8082
 
 # Health checks
 livenessProbe:
   httpGet:
     path: /health
-    port: 8080
+    port: 8082
   initialDelaySeconds: 30
   periodSeconds: 10
 
 readinessProbe:
   httpGet:
     path: /ready
-    port: 8080
+    port: 8082
   initialDelaySeconds: 5
   periodSeconds: 5
