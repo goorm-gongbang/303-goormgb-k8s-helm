@@ -20,7 +20,7 @@ spec:
     metadata:
       name: 'dev-{{name}}'
       labels:
-        ns: dev
+        ns: dev-app
     spec:
       project: default
       source:
@@ -32,7 +32,7 @@ spec:
             - ../../../k3s-dev/values/apps/values-{{name}}.yaml
       destination:
         server: https://kubernetes.default.svc
-        namespace: dev
+        namespace: dev-app
       syncPolicy:
         automated:
           prune: true

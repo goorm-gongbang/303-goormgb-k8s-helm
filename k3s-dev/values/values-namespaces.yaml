@@ -2,5 +2,5 @@
 # Istio sidecar injection 활성화
 
 namespaces:
-  - name: dev
+  - name: dev-app
     istio: true
