@@ -17,11 +17,6 @@ spec:
             - name: backup
               image: redis:7-alpine
               env:
-                - name: REDIS_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: redis-credentials
-                      key: REDIS_PASSWORD
                 - name: AWS_ACCESS_KEY_ID
                   valueFrom:
                     secretKeyRef:
@@ -51,7 +46,7 @@ spec:
                   echo "=== Redis Backup ==="
 
                   # --rdb 옵션은 자체적으로 일관된 스냅샷 생성
-                  redis-cli -h redis -a $REDIS_PASSWORD --rdb /tmp/${BACKUP_FILE}
+                  redis-cli -h redis --rdb /tmp/${BACKUP_FILE}
                   aws s3 cp /tmp/${BACKUP_FILE} s3://${S3_BUCKET}/${S3_PREFIX}/${BACKUP_FILE}
 
                   echo "Backup complete: ${BACKUP_FILE}"
