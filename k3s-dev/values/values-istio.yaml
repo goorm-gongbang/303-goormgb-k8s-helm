@@ -67,15 +67,7 @@ kiali-server:
     web_schema: https
 
   auth:
-    strategy: openid
-    openid:
-      client_id: ""  # ESO에서 주입
-      issuer_uri: https://accounts.google.com
-      scopes:
-        - openid
-        - profile
-        - email
-      username_claim: email
+    strategy: anonymous  # 개발환경 - OAuth 비활성화
 
   deployment:
     # CP 노드에 배치
