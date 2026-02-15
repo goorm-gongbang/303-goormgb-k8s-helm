@@ -33,14 +33,6 @@ spec:
           command:
             - redis-server
             - /etc/redis/redis.conf
-            - --requirepass
-            - $(REDIS_PASSWORD)
-          env:
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis-credentials
-                  key: REDIS_PASSWORD
           volumeMounts:
             - name: data
               mountPath: /data
@@ -51,17 +43,15 @@ spec:
           livenessProbe:
             exec:
               command:
-                - /bin/sh
-                - -c
-                - REDISCLI_AUTH=$REDIS_PASSWORD redis-cli ping
+                - redis-cli
+                - ping
             initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
           readinessProbe:
             exec:
               command:
-                - /bin/sh
-                - -c
-                - REDISCLI_AUTH=$REDIS_PASSWORD redis-cli ping
+                - redis-cli
+                - ping
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
       volumes:

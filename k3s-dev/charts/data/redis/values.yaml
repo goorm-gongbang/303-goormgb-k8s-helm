@@ -6,7 +6,7 @@ image:
   pullPolicy: IfNotPresent
 
 externalSecret:
-  enabled: true
+  enabled: false  # 백엔드에서 비밀번호 미사용
   secretStore: aws-secrets-manager
   remoteRef: dev/services/redis
 
