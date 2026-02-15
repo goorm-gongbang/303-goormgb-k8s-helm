@@ -1,0 +1,45 @@
+# API Gateway 설정
+gateway:
+  name: api-gateway
+  host: api.dev.goormgb.space
+  tls:
+    enabled: true
+    credentialName: goormgb-tls
+
+# 백엔드 서비스 라우팅
+services:
+  - name: auth-guard
+    prefix: /auth
+    port: 8080
+  - name: queue
+    prefix: /queue
+    port: 8081
+  - name: seat
+    prefix: /seat
+    port: 8082
+  - name: order-core
+    prefix: /order
+    port: 8083
+  - name: recommendation
+    prefix: /recommendation
+    port: 8084
+
+# CORS 설정 (Vercel 프론트엔드 허용)
+cors:
+  enabled: true
+  allowOrigins:
+    - "https://goormgb.vercel.app"
+    - "https://*.vercel.app"
+    - "http://localhost:3000"
+  allowMethods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+    - PATCH
+    - OPTIONS
+  allowHeaders:
+    - Authorization
+    - Content-Type
+    - X-Requested-With
+  allowCredentials: true
