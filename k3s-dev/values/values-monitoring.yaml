@@ -11,6 +11,16 @@ grafana:
 
 # ===== Prometheus Stack =====
 kube-prometheus-stack:
+  # k3s에서 불필요한 컴포넌트 비활성화
+  kubeControllerManager:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeProxy:
+    enabled: false
+
   prometheus:
     prometheusSpec:
       # 모든 namespace 메트릭 수집

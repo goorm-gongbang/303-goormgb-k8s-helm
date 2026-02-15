@@ -30,3 +30,12 @@ gateway:
 # Node placement - Worker 노드에 배치
 nodeSelector: {}
 tolerations: []
+
+# 공용 Gateway 설정
+sharedGateway:
+  enabled: false
+  name: goormgb-gateway
+  tls:
+    credentialName: goormgb-tls
+  hosts:
+    - "*.goormgb.space"
