@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: rbac
   namespace: argocd
+  labels:
+    ns: default
 spec:
   project: default
   source:

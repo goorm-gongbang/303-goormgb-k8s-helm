@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: namespaces
   namespace: argocd
+  labels:
+    ns: default
   annotations:
     argocd.argoproj.io/sync-wave: "-10" # 가장 먼저 생성
 spec:
