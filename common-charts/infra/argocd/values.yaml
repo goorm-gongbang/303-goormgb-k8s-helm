@@ -13,7 +13,7 @@ oidc:
   enabled: false
   name: Google
   issuer: https://accounts.google.com
-  secretManagerKey: ""  # 환경별로 설정 (예: k3s/argocd/google-oauth)
+  secretManagerKey: ""  # 환경별로 설정 (예: dev/argocd/google-oauth)
   requestedScopes:
     - openid
     - profile

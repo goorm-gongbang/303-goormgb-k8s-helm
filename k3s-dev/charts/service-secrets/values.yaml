@@ -5,7 +5,7 @@ namespace: dev
 secretName: service-config
 
 # Secrets Manager 키 prefix
-secretManagerPrefix: k3s/services
+secretManagerPrefix: dev/services
 
 # 환경별 설정
 spring:

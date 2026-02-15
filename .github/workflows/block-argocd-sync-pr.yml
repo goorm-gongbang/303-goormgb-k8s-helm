@@ -1,0 +1,13 @@
+# .github/workflows/block-argocd-sync-pr.yml
+name: Block argocd-sync PR
+on:
+    pull_request:
+        branches: [main]
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        steps:
+            - if: startsWith(github.head_ref, 'argocd-sync/')
+              run: |
+                  echo "❌ argocd-sync/* → main PR 불가"
+                  exit 1
