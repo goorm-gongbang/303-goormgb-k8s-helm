@@ -1,7 +1,7 @@
 # API Gateway 설정
 gateway:
   name: api-gateway
-  host: api.dev.goormgb.space
+  host: api.dev.goormgb.help
   tls:
     enabled: true
     credentialName: goormgb-tls
@@ -28,6 +28,7 @@ services:
 cors:
   enabled: true
   allowOrigins:
+    - "https://dev.goormgb.help"
     - "https://goormgb.vercel.app"
     - "https://*.vercel.app"
     - "http://localhost:3000"
