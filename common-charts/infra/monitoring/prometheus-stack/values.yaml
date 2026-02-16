@@ -49,19 +49,10 @@ kube-prometheus-stack:
     # 추가 datasource (Loki, Jaeger)
     additionalDataSources: []
 
-    # 대시보드 자동 로드
-    dashboardProviders:
-      dashboardproviders.yaml:
-        apiVersion: 1
-        providers:
-          - name: 'custom'
-            orgId: 1
-            folder: 'Custom'
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/custom
+    # 대시보드 - kube-prometheus-stack 기본 대시보드 사용
+    # custom dashboards가 필요하면 configMap으로 마운트 후 아래 설정 추가
+    # dashboardProviders: {}
+    # dashboardsConfigMaps: {}
 
   # AlertManager
   alertmanager:
