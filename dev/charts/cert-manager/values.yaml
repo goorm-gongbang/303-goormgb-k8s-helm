@@ -19,6 +19,7 @@ route53:
   hostedZoneID: ""
   secret:
     name: route53-credentials  # bootstrap-aws.sh 에서 생성됨
+    namespace: cert-manager    # secret이 있는 namespace
 
 # TLS Certificates - 환경별로 설정
 certificates: []
