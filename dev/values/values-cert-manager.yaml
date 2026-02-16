@@ -20,5 +20,6 @@ certificates:
   - name: goormgb-tls
     dnsNames:
       - "*.goormgb.help"
+      - "*.dev.goormgb.help"
       - "goormgb.help"
     issuerRef: letsencrypt-prod  # 새 도메인이라 prod 사용 가능

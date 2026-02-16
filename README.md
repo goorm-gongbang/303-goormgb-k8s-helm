@@ -4,11 +4,11 @@ Helm 차트와 ArgoCD Application 정의를 관리하는 GitOps 레포.
 
 ## 환경 구조
 
-| 환경 | 클러스터 | 브랜치 | 용도 |
-|------|----------|--------|------|
-| dev | kubeadm (MiniPC) | `argocd-sync/dev` | 개발, HA 테스트, Istio 실험 |
-| staging | EKS | `argocd-sync/staging` | AWS 연동 검증 |
-| prod | EKS | `argocd-sync/prod` | 실서비스 운영 |
+| 환경    | 클러스터         | 브랜치                | 용도                        |
+| ------- | ---------------- | --------------------- | --------------------------- |
+| dev     | kubeadm (MiniPC) | `argocd-sync/dev`     | 개발, HA 테스트, Istio 실험 |
+| staging | EKS              | `argocd-sync/staging` | AWS 연동 검증               |
+| prod    | EKS              | `argocd-sync/prod`    | 실서비스 운영               |
 
 ## 디렉토리 구조
 
@@ -55,32 +55,33 @@ main                          # 개발/PR 머지
 
 ## kubeadm vs EKS 차이
 
-| 컴포넌트 | kubeadm (MiniPC) | EKS (AWS) |
-|---------|------------------|-----------|
-| TLS 인증서 | cert-manager + Let's Encrypt | ACM |
-| 데이터베이스 | PostgreSQL Pod | RDS |
-| 캐시 | Redis Pod | ElastiCache |
-| WAF | ModSecurity (in-cluster) | AWS WAF |
-| DDNS | Route53 CronJob | 불필요 (고정 IP) |
+| 컴포넌트     | kubeadm (MiniPC)             | EKS (AWS)        |
+| ------------ | ---------------------------- | ---------------- |
+| TLS 인증서   | cert-manager + Let's Encrypt | ACM              |
+| 데이터베이스 | PostgreSQL Pod               | RDS              |
+| 캐시         | Redis Pod                    | ElastiCache      |
+| WAF          | ModSecurity (in-cluster)     | AWS WAF          |
+| DDNS         | Route53 CronJob              | 불필요 (고정 IP) |
 
-## 도메인
+## 도메인 (임시 도메인!)
 
-| 도메인 | 용도 |
-|--------|------|
-| dev.goormgb.space | 프론트 vercel |
-| api.dev.goormgb.space | 백엔드 클러스터 |
-| argocd.goormgb.space | ArgoCD UI |
-| grafana.goormgb.space | Grafana |
-| kiali.goormgb.space | Kiali |
+| 도메인                   | 용도              |
+| ------------------------ | ----------------- |
+| dev.goormgb.help         | 프론트 (Vercel)   |
+| api.dev.goormgb.help     | 백엔드 API        |
+| argocd.goormgb.help      | ArgoCD UI         |
+| grafana.goormgb.help     | Grafana           |
+| kiali.goormgb.help       | Kiali             |
+| cloudbeaver.goormgb.help | CloudBeaver DB UI |
 
 ## 관련 레포
 
-| 레포 | 용도 |
-|------|------|
-| [302-goormgb-k8s-bootstrap](https://github.com/goorm-gongbang/302-goormgb-k8s-bootstrap) | 1회성 부트스트랩 |
-| **303-goormgb-k8s-helm** | GitOps (ArgoCD가 watch) |
-| [101-goormgb-frontend](https://github.com/goorm-gongbang/101-goormgb-frontend) | Next.js 프론트엔드 |
-| [102-goormgb-backend](https://github.com/goorm-gongbang/102-goormgb-backend) | Java Spring Boot 백엔드 |
+| 레포                                                                                     | 용도                    |
+| ---------------------------------------------------------------------------------------- | ----------------------- |
+| [302-goormgb-k8s-bootstrap](https://github.com/goorm-gongbang/302-goormgb-k8s-bootstrap) | 1회성 부트스트랩        |
+| **303-goormgb-k8s-helm**                                                                 | GitOps (ArgoCD가 watch) |
+| [101-goormgb-frontend](https://github.com/goorm-gongbang/101-goormgb-frontend)           | Next.js 프론트엔드      |
+| [102-goormgb-backend](https://github.com/goorm-gongbang/102-goormgb-backend)             | Java Spring Boot 백엔드 |
 
 ## 주의사항
 
