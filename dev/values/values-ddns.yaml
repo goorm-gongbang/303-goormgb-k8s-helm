@@ -6,10 +6,9 @@ hostedZoneID: "Z08735923FCA9QTFLOQSL"
 
 records:
   - ""              # goormgb.help (root)
-  - "api"           # api.goormgb.help
-  - "dev"           # dev.goormgb.help
-  - "api.dev"       # api.dev.goormgb.help
+  - "api.dev"       # api.dev.goormgb.help (백엔드 API)
   - "argocd"        # argocd.goormgb.help
   - "grafana"       # grafana.goormgb.help
   - "kiali"         # kiali.goormgb.help
   - "cloudbeaver"   # cloudbeaver.goormgb.help
+  # dev.goormgb.help는 Vercel CNAME이라 제외
