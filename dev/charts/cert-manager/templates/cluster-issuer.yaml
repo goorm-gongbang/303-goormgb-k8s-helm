@@ -16,9 +16,11 @@ spec:
             hostedZoneID: {{ .Values.route53.hostedZoneID }}
             accessKeyIDSecretRef:
               name: {{ .Values.route53.secret.name }}
+              namespace: {{ .Values.route53.secret.namespace }}
               key: access-key-id
             secretAccessKeySecretRef:
               name: {{ .Values.route53.secret.name }}
+              namespace: {{ .Values.route53.secret.namespace }}
               key: secret-access-key
 {{- end }}
 ---
@@ -40,8 +42,10 @@ spec:
             hostedZoneID: {{ .Values.route53.hostedZoneID }}
             accessKeyIDSecretRef:
               name: {{ .Values.route53.secret.name }}
+              namespace: {{ .Values.route53.secret.namespace }}
               key: access-key-id
             secretAccessKeySecretRef:
               name: {{ .Values.route53.secret.name }}
+              namespace: {{ .Values.route53.secret.namespace }}
               key: secret-access-key
 {{- end }}
