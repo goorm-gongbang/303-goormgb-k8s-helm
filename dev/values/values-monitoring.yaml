@@ -15,6 +15,8 @@ kube-prometheus-stack:
   prometheusOperator:
     admissionWebhooks:
       enabled: false
+    tls:
+      enabled: false
 
   # kubeadm: 컨트롤 플레인 컴포넌트 모니터링 활성화
   kubeControllerManager:
