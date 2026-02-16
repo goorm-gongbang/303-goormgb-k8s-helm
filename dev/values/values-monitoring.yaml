@@ -79,24 +79,6 @@ kube-prometheus-stack:
       userKey: admin-user
       passwordKey: admin-password
 
-    # Sidecar 인증 설정 (datasource reload 시 필요)
-    sidecar:
-      datasources:
-        enabled: true
-        skipReload: false
-        # sidecar가 Grafana API 호출 시 사용할 credentials
-        env:
-          REQ_USERNAME:
-            valueFrom:
-              secretKeyRef:
-                name: grafana-admin-credentials
-                key: admin-user
-          REQ_PASSWORD:
-            valueFrom:
-              secretKeyRef:
-                name: grafana-admin-credentials
-                key: admin-password
-
     # Google OAuth 설정
     envFromSecret: grafana-oauth-credentials
 
@@ -192,6 +174,11 @@ gateway:
 
 # ===== Loki =====
 loki-stack:
+  # Grafana datasource는 prometheus-stack의 additionalDataSources에서 관리
+  grafana:
+    sidecar:
+      datasources:
+        enabled: false
   loki:
     persistence:
       enabled: true
