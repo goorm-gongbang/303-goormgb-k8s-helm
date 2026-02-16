@@ -9,10 +9,10 @@ spec:
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/dev
-    path: common-charts/infra/cloudbeaver
+    path: dev/charts/cloudbeaver
     helm:
       valueFiles:
-        - ../../../dev/values/values-cloudbeaver.yaml
+        - ../../values/values-cloudbeaver.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: data
