@@ -31,9 +31,7 @@ spec:
         maxAge: "24h"
       {{- end }}
       rewrite:
-        uriRegexRewrite:
-          pattern: "^{{ .prefix }}(.*)$"
-          rewrite: "\\1"
+        uri: /
       route:
         - destination:
             host: dev-{{ .name }}-java-service.{{ $.Release.Namespace }}.svc.cluster.local
