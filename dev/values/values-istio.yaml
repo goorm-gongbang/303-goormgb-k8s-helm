@@ -70,8 +70,8 @@ kiali-server:
     strategy: anonymous  # 개발환경 - OAuth 비활성화
 
   deployment:
-    # CP 노드에 배치
-    nodeSelector:
+    # CP 노드에 배치 (kiali chart는 snake_case 사용)
+    node_selector:
       kubernetes.io/hostname: mini-gmk
     tolerations:
       - key: "node-role.kubernetes.io/control-plane"
