@@ -16,12 +16,12 @@ gateway:
     enabled: true
     credentialName: goormgb-tls
 
-# Google OAuth 설정
+# Google OAuth 설정 (일단 비활성화)
 oidc:
-  enabled: true
+  enabled: false
   name: Google
   issuer: https://accounts.google.com
-  secretManagerKey: dev/infra/oauth/google  # 공용 OAuth
+  secretManagerKey: dev/infra/oauth/google
   requestedScopes:
     - openid
     - profile
