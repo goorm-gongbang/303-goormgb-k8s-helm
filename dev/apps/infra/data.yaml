@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: postgresql
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
 spec:
   project: default
   source:
@@ -29,6 +31,8 @@ kind: Application
 metadata:
   name: redis-cache
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
 spec:
   project: default
   source:
@@ -77,6 +81,8 @@ kind: Application
 metadata:
   name: redis-queue
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
 spec:
   project: default
   source:
