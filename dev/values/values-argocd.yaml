@@ -49,7 +49,7 @@ rbac:
 
 applications:
   - name: dev-sample
-    namespace: dev-app
+    namespace: dev-webs
     repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
     targetRevision: argocd-sync/dev
     path: common-charts/apps/java-service

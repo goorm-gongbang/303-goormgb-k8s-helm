@@ -5,7 +5,8 @@ aws:
 
 # Namespaces where ECR pull secret will be created
 targetNamespaces:
-  - dev-app
+  - dev-webs
+  - dev-ai
 
 # CronJob schedule (every 10 hours)
 schedule: "0 */10 * * *"

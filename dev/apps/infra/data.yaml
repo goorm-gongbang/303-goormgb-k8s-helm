@@ -49,6 +49,28 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ---
+# MongoDB - AI Agent 로깅용 (아직 미배포)
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: mongodb
+#   namespace: argocd
+# spec:
+#   project: default
+#   source:
+#     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
+#     targetRevision: argocd-sync/dev
+#     path: dev/charts/data/mongodb
+#   destination:
+#     server: https://kubernetes.default.svc
+#     namespace: data
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
+---
 # Redis Queue - 대기열 전용
 apiVersion: argoproj.io/v1alpha1
 kind: Application

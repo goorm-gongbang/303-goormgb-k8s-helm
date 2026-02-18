@@ -13,7 +13,7 @@ spec:
     path: dev/charts/api-gateway
   destination:
     server: https://kubernetes.default.svc
-    namespace: dev-app
+    namespace: dev-webs
   syncPolicy:
     automated:
       prune: true

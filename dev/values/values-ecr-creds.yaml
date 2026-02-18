@@ -3,7 +3,8 @@ aws:
   region: ap-northeast-2
 
 targetNamespaces:
-  - dev-app
+  - dev-webs
+  - dev-ai
 
 schedule: "0 */12 * * *"  # 12시간마다
 
