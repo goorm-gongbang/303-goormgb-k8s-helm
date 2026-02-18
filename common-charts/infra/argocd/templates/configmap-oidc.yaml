@@ -14,8 +14,8 @@ data:
   oidc.config: |
     name: {{ .Values.oidc.name }}
     issuer: {{ .Values.oidc.issuer }}
-    clientID: $argocd-google-oauth:clientId
-    clientSecret: $argocd-google-oauth:clientSecret
+    clientID: $argocd-secret:oidc.google.clientId
+    clientSecret: $argocd-secret:oidc.google.clientSecret
     redirectURI: https://{{ .Values.gateway.host }}/auth/callback
     requestedScopes:
       {{- range .Values.oidc.requestedScopes }}
