@@ -11,6 +11,10 @@ grafana:
 
 # ===== Prometheus Stack =====
 kube-prometheus-stack:
+  # Pod 이름 단순화 (prometheus-stack-xxx → prom-xxx)
+  fullnameOverride: prom
+  cleanPrometheusOperatorObjectNames: true
+
   # Admission webhook 비활성화 (TLS 인증서 문제 방지)
   prometheusOperator:
     admissionWebhooks:
@@ -66,6 +70,8 @@ kube-prometheus-stack:
 
       storageSpec:
         volumeClaimTemplate:
+          metadata:
+            name: data
           spec:
             accessModes: ["ReadWriteOnce"]
             resources:
@@ -73,6 +79,8 @@ kube-prometheus-stack:
                 storage: 10Gi
 
   grafana:
+    fullnameOverride: grafana
+
     # ESO에서 생성한 secret 사용
     admin:
       existingSecret: grafana-admin-credentials
