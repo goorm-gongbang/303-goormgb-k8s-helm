@@ -6,7 +6,7 @@ metadata:
   name: dev-ai-services
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "3"  # 인프라 준비 후 서비스 배포
+    argocd.argoproj.io/sync-wave: "10"  # 인프라 준비 후 서비스 배포
 spec:
   generators:
     - list:
