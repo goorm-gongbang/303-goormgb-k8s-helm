@@ -6,7 +6,7 @@ image:
   pullPolicy: IfNotPresent
 
 databases:
-  - dev_db
+  - goormgb
 
 externalSecret:
   enabled: true
@@ -30,12 +30,12 @@ service:
   port: 5432
 
 backup:
-  enabled: false  # TODO: S3 bucket 설정 후 활성화
-  schedule: "0 3 * * *"
-  s3Bucket: goormgb-minipc-backup
-  s3Prefix: postgresql
+  enabled: true
+  schedule: "0 3 * * *"  # 매일 오전 3시 (KST 12시)
+  s3Bucket: goormgb-backup
+  s3Prefix: dev/postgres
   externalSecret:
-    remoteRef: dev/backup/s3
+    remoteRef: dev/infra/s3-backup
 
 nodeSelector: {}
 tolerations: []
