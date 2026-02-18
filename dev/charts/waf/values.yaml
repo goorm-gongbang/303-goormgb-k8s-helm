@@ -13,5 +13,12 @@ mode: "On"
 # Paranoia Level (1~4, 높을수록 엄격)
 paranoiaLevel: 1
 
+# 로깅 설정 (Loki로 수집됨)
+logging:
+  # JSON 포맷으로 로그 출력 (Loki 파싱 용이)
+  format: json
+  # 로그 레벨: debug, info, warn, error
+  level: info
+
 # 호스트별 규칙 분기 (선택)
 perHostRules: {}
