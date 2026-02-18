@@ -5,7 +5,7 @@ metadata:
   name: waf
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"  # Istio 이후 설치
+    argocd.argoproj.io/sync-wave: "2"  # Istio + Kiali 이후 설치
 spec:
   project: default
   source:

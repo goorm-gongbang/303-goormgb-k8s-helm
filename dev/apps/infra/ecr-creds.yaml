@@ -5,7 +5,7 @@ metadata:
   name: ecr-creds
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-5"  # namespaces 후, 앱 배포 전
+    argocd.argoproj.io/sync-wave: "-8"  # namespaces 후, 이미지 pull용
 spec:
   project: default
   source:
