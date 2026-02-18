@@ -1,18 +1,14 @@
-# Redis for MiniPC kubeadm
+# Redis Chart Default Values
+# 환경별 설정은 dev/values/values-redis-*.yaml에서 override
 
 image:
   repository: redis
   tag: "7-alpine"
   pullPolicy: IfNotPresent
 
-externalSecret:
-  enabled: false  # 백엔드에서 비밀번호 미사용
-  secretStore: aws-secrets-manager
-  remoteRef: dev/services/redis
-
 persistence:
   enabled: true
-  storageClass: local-path
+  storageClass: ""
   size: 2Gi
 
 resources:
@@ -32,12 +28,17 @@ config:
   appendonly: "yes"
 
 backup:
-  enabled: false  # TODO: S3 bucket 설정 후 활성화
+  enabled: false
   schedule: "0 4 * * *"
-  s3Bucket: goormgb-minipc-backup
-  s3Prefix: redis
+  s3Bucket: ""
+  s3Prefix: ""
   externalSecret:
-    remoteRef: dev/backup/s3
+    remoteRef: ""
+
+externalSecret:
+  enabled: false
+  secretStore: aws-secrets-manager
+  remoteRef: ""
 
 nodeSelector: {}
 tolerations: []

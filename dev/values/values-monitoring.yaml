@@ -243,6 +243,20 @@ tempo:
         cpu: 200m
         memory: 512Mi
 
+    # Trace retention: 3일
+    retention: 72h
+
+    # Compactor로 오래된 trace 정리
+    storage:
+      trace:
+        backend: local
+        local:
+          path: /var/tempo/traces
+        wal:
+          path: /var/tempo/wal
+        block:
+          bloom_filter_false_positive: 0.05
+
   persistence:
     enabled: true
     size: 10Gi

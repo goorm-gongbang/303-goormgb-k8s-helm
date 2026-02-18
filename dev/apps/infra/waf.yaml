@@ -1,23 +1,21 @@
-# 서비스 공용 시크릿 (ESO)
+# Coraza WAF - Istio WasmPlugin
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: service-secrets
+  name: waf
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-5"
+    argocd.argoproj.io/sync-wave: "1"  # Istio 이후 설치
 spec:
   project: default
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/dev
-    path: dev/charts/service-secrets
+    path: dev/charts/waf
   destination:
     server: https://kubernetes.default.svc
-    namespace: dev-webs
+    namespace: istio-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true

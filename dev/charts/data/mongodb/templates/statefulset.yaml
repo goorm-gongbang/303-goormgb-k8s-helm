@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Release.Name }}
+  name: mongodb
   labels:
-    app: {{ .Release.Name }}
+    app: mongodb
 spec:
-  serviceName: {{ .Release.Name }}
+  serviceName: mongodb
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      app: mongodb
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+        app: mongodb
     spec:
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -24,40 +24,44 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: redis
+        - name: mongodb
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 6379
-              name: redis
-          command:
-            - redis-server
-            - /etc/redis/redis.conf
+            - containerPort: 27017
+              name: mongodb
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-credentials
+                  key: MONGO_USER
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-credentials
+                  key: MONGO_PASSWORD
           volumeMounts:
             - name: data
-              mountPath: /data
-            - name: config
-              mountPath: /etc/redis
+              mountPath: /data/db
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
             exec:
               command:
-                - redis-cli
-                - ping
+                - mongosh
+                - --eval
+                - "db.adminCommand('ping')"
             initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
           readinessProbe:
             exec:
               command:
-                - redis-cli
-                - ping
+                - mongosh
+                - --eval
+                - "db.adminCommand('ping')"
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
-      volumes:
-        - name: config
-          configMap:
-            name: {{ .Release.Name }}-config
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

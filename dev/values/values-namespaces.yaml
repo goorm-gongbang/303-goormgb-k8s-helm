@@ -2,5 +2,9 @@
 # Istio sidecar injection 활성화
 
 namespaces:
-  - name: dev-app
-    istio: true
+  - name: dev-webs
+    istio: true   # Spring Boot + Next.js 웹 앱
+  - name: dev-ai
+    istio: true   # FastAPI AI Agent 서비스
+  - name: infra
+    istio: false  # 인프라 CronJobs - Istio 불필요

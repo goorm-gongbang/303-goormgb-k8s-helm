@@ -12,9 +12,11 @@ resources:
   - infra/rbac.yaml
   - infra/argocd.yaml
   - infra/istio.yaml
+  - infra/waf.yaml
   - infra/monitoring.yaml
   - infra/service-secrets.yaml
   - infra/api-gateway.yaml
   - infra/cloudbeaver.yaml
   # ApplicationSet으로 서비스 자동 생성
-  - dev-applicationset.yaml
+  - dev-webs-applicationset.yaml  # dev-webs: Spring Boot + Next.js
+  - dev-ai-applicationset.yaml    # dev-ai: FastAPI AI Agent

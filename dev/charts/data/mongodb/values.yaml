@@ -1,17 +1,14 @@
-# PostgreSQL for MiniPC kubeadm
+# MongoDB for AI Agent logging
 
 image:
-  repository: postgres
-  tag: "16-alpine"
+  repository: mongo
+  tag: "7.0"
   pullPolicy: IfNotPresent
-
-databases:
-  - goormgb
 
 externalSecret:
   enabled: true
   secretStore: aws-secrets-manager
-  remoteRef: dev/services/db
+  remoteRef: dev/services/mongodb
 
 persistence:
   enabled: true
@@ -27,15 +24,7 @@ resources:
     memory: 512Mi
 
 service:
-  port: 5432
-
-backup:
-  enabled: true
-  schedule: "0 3 * * *"  # 매일 오전 3시 (KST 12시)
-  s3Bucket: goormgb-backup
-  s3Prefix: dev/postgres
-  externalSecret:
-    remoteRef: dev/infra/s3-backup
+  port: 27017
 
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
