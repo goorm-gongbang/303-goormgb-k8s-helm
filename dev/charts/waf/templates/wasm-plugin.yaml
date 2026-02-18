@@ -19,8 +19,9 @@ spec:
         - "SecAction \"id:900000,phase:1,pass,t:none,nolog,setvar:tx.blocking_paranoia_level={{ .Values.paranoiaLevel }}\""
         {{- end }}
         # 로깅 설정 - JSON 포맷으로 Envoy stdout 출력
+        # RE2는 negative lookahead 미지원, 단순화된 패턴 사용
         - "SecAuditEngine RelevantOnly"
-        - "SecAuditLogRelevantStatus \"^(?:5|4(?!04))\""
+        - "SecAuditLogRelevantStatus \"^[45]\""
         - "SecAuditLogParts ABIJDEFHZ"
         - "SecAuditLogType Serial"
         - "SecAuditLog /dev/stdout"
