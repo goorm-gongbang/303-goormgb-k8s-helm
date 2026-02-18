@@ -11,8 +11,8 @@ schedule: "0 */12 * * *"  # 12시간마다
 secretName: ecr-pull-secret
 
 awsCredentialsSecret:
-  name: route53-ddns-credentials
-  namespace: infra  # kube-system → infra로 이동
+  name: ecr-aws-credentials
+  namespace: infra
 
 # CP 노드에 배치 (인프라 작업)
 nodeSelector:
