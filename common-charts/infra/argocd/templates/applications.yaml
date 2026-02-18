@@ -20,6 +20,10 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .namespace }}
+  {{- if .ignoreDifferences }}
+  ignoreDifferences:
+    {{- toYaml .ignoreDifferences | nindent 4 }}
+  {{- end }}
   syncPolicy:
     automated:
       prune: true
