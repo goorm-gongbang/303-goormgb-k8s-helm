@@ -67,7 +67,16 @@ kiali-server:
     web_schema: https
 
   auth:
-    strategy: anonymous  # 개발환경 - OAuth 비활성화
+    strategy: openid
+    openid:
+      client_id_from_secret: "kiali-oidc-secret"
+      client_secret_from_secret: "kiali-oidc-secret"
+      issuer_uri: "https://accounts.google.com"
+      scopes: ["openid", "profile", "email"]
+      username_claim: "email"
+      disable_rbac: true
+      # 사용자 제한은 Google Cloud Console > OAuth 동의 화면 > 테스트 사용자에서 설정
+      # 212clab@gmail.com, rhuba23@gmail.com, chamchi0129@gmail.com
 
   deployment:
     # CP 노드에 배치 (kiali chart는 snake_case 사용)
