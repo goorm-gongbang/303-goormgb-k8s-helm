@@ -16,9 +16,9 @@ gateway:
     enabled: true
     credentialName: goormgb-tls
 
-# Google OAuth 설정 (일단 비활성화)
+# Google OAuth 설정 (admin + OAuth 둘 다 가능)
 oidc:
-  enabled: false
+  enabled: true
   name: Google
   issuer: https://accounts.google.com
   secretManagerKey: dev/infra/oauth/google
