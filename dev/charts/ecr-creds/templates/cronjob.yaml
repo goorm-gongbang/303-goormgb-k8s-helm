@@ -1,8 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: ecr-creds-refresh
-  namespace: kube-system
+  name: ecr-creds-12h-refresher
 spec:
   schedule: {{ .Values.schedule | quote }}
   successfulJobsHistoryLimit: 1
@@ -13,6 +12,14 @@ spec:
         spec:
           serviceAccountName: ecr-creds-refresher
           restartPolicy: OnFailure
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           containers:
             - name: ecr-creds
               image: amazon/aws-cli:latest

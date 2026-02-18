@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: ddns-route53-updater
+  name: ddns-route53-5m-updater
   labels:
     app.kubernetes.io/name: ddns-route53
     app.kubernetes.io/component: infra
@@ -15,6 +15,14 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           containers:
             - name: ddns-updater
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

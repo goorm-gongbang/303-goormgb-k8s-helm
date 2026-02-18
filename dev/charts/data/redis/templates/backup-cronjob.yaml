@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: redis-backup
+  name: {{ .Release.Name }}-backup
 spec:
   schedule: {{ .Values.backup.schedule | quote }}
   concurrencyPolicy: Forbid
@@ -12,6 +12,14 @@ spec:
     spec:
       template:
         spec:
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           restartPolicy: OnFailure
           containers:
             - name: backup
@@ -20,12 +28,12 @@ spec:
                 - name: AWS_ACCESS_KEY_ID
                   valueFrom:
                     secretKeyRef:
-                      name: redis-backup-s3
+                      name: {{ .Release.Name }}-backup-s3
                       key: AWS_ACCESS_KEY_ID
                 - name: AWS_SECRET_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: redis-backup-s3
+                      name: {{ .Release.Name }}-backup-s3
                       key: AWS_SECRET_ACCESS_KEY
                 - name: AWS_DEFAULT_REGION
                   value: ap-northeast-2
@@ -46,7 +54,7 @@ spec:
                   echo "=== Redis Backup ==="
 
                   # --rdb 옵션은 자체적으로 일관된 스냅샷 생성
-                  redis-cli -h redis --rdb /tmp/${BACKUP_FILE}
+                  redis-cli -h {{ .Release.Name }} --rdb /tmp/${BACKUP_FILE}
                   aws s3 cp /tmp/${BACKUP_FILE} s3://${S3_BUCKET}/${S3_PREFIX}/${BACKUP_FILE}
 
                   echo "Backup complete: ${BACKUP_FILE}"

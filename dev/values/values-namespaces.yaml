@@ -4,3 +4,5 @@
 namespaces:
   - name: dev-app
     istio: true
+  - name: infra
+    istio: false  # 인프라 CronJobs - Istio 불필요

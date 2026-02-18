@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: postgresql-backup
+  name: postgresql-3am-s3-backup
 spec:
   schedule: {{ .Values.backup.schedule | quote }}
   concurrencyPolicy: Forbid
@@ -13,6 +13,14 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           containers:
             - name: backup
               image: postgres:16-alpine

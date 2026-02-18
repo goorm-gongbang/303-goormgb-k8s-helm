@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: redis
+  name: {{ .Release.Name }}
   labels:
-    app: redis
+    app: {{ .Release.Name }}
 spec:
-  serviceName: redis
+  serviceName: {{ .Release.Name }}
   replicas: 1
   selector:
     matchLabels:
-      app: redis
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: redis
+        app: {{ .Release.Name }}
     spec:
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -57,7 +57,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: redis-config
+            name: {{ .Release.Name }}-config
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

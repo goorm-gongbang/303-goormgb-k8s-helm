@@ -23,11 +23,11 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ---
-# Redis
+# Redis Cache - 세션/캐시용
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: redis
+  name: redis-cache
   namespace: argocd
 spec:
   project: default
@@ -36,8 +36,35 @@ spec:
     targetRevision: argocd-sync/dev
     path: dev/charts/data/redis
     helm:
+      releaseName: redis-cache
       valueFiles:
-        - ../../../values/values-data.yaml
+        - ../../../values/values-redis-cache.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: data
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# Redis Queue - 대기열 전용
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis-queue
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/dev
+    path: dev/charts/data/redis
+    helm:
+      releaseName: redis-queue
+      valueFiles:
+        - ../../../values/values-redis-queue.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: data
