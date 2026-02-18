@@ -11,14 +11,19 @@ data:
   url: https://{{ .Values.gateway.host }}
   # Local admin 비활성화 (Google OAuth만 허용)
   admin.enabled: "false"
-  oidc.config: |
-    name: {{ .Values.oidc.name }}
-    issuer: {{ .Values.oidc.issuer }}
-    clientID: $argocd-google-oauth:clientId
-    clientSecret: $argocd-google-oauth:clientSecret
-    redirectURI: https://{{ .Values.gateway.host }}/auth/callback
-    requestedScopes:
-      {{- range .Values.oidc.requestedScopes }}
-      - {{ . }}
-      {{- end }}
+  # Dex를 통한 Google OIDC
+  dex.config: |
+    connectors:
+      - type: oidc
+        id: google
+        name: {{ .Values.oidc.name }}
+        config:
+          issuer: {{ .Values.oidc.issuer }}
+          clientID: $argocd-google-oauth:clientId
+          clientSecret: $argocd-google-oauth:clientSecret
+          redirectURI: https://{{ .Values.gateway.host }}/api/dex/callback
+          scopes:
+            {{- range .Values.oidc.requestedScopes }}
+            - {{ . }}
+            {{- end }}
 {{- end }}
