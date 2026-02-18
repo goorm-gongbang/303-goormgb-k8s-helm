@@ -12,10 +12,16 @@ spec:
   http:
     - match:
         - uri:
-            prefix: /
+            prefix: /kiali
       route:
         - destination:
             host: kiali
             port:
               number: 20001
+    # Root redirect to /kiali
+    - match:
+        - uri:
+            exact: /
+      redirect:
+        uri: /kiali
 {{- end }}
