@@ -98,6 +98,8 @@ kube-prometheus-stack:
         allow_sign_up: true
         auto_login: false
         scopes: openid email profile
+        allow_assign_grafana_admin: true
+        skip_org_role_sync: false
         auth_url: https://accounts.google.com/o/oauth2/auth
         token_url: https://oauth2.googleapis.com/token
         api_url: https://openidconnect.googleapis.com/v1/userinfo
