@@ -15,8 +15,8 @@ data:
   oidc.config: |
     name: {{ .Values.oidc.name }}
     issuer: {{ .Values.oidc.issuer }}
-    clientID: $argocd-secret:oidc.google.clientId
-    clientSecret: $argocd-secret:oidc.google.clientSecret
+    clientID: $oidc.google.clientId
+    clientSecret: $oidc.google.clientSecret
     requestedScopes:
       {{- range .Values.oidc.requestedScopes }}
       - {{ . }}
