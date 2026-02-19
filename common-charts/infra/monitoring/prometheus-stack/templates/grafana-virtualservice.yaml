@@ -15,7 +15,7 @@ spec:
             prefix: /
       route:
         - destination:
-            host: {{ .Release.Name }}-grafana
+            host: {{ (index .Values "kube-prometheus-stack" "grafana" "fullnameOverride") | default (printf "%s-grafana" .Release.Name) }}
             port:
               number: 80
 {{- end }}
