@@ -12,6 +12,7 @@ resources:
   - infra/rbac.yaml
   - infra/argocd.yaml
   - infra/istio.yaml
+  - infra/kiali.yaml
   - infra/waf.yaml
   - infra/monitoring.yaml
   - infra/service-secrets.yaml
