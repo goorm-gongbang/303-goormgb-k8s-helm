@@ -16,11 +16,11 @@ kiali-server:
 
   external_services:
     prometheus:
-      url: "http://prometheus-stack-kube-prom-prometheus.monitoring.svc.cluster.local:9090"
+      url: "http://prom-prometheus.monitoring.svc.cluster.local:9090"
 
     grafana:
       enabled: true
-      in_cluster_url: "http://prometheus-stack-grafana.monitoring.svc.cluster.local:80"
+      in_cluster_url: "http://grafana.monitoring.svc.cluster.local:80"
       url: ""  # values에서 override
 
     tracing:
