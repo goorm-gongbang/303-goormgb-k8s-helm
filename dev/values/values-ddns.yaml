@@ -1,17 +1,17 @@
 # kubeadm-dev - DDNS Route53 설정
-# Domain: goormgb.help
+# Domain: goormgb.homes
 
-domain: "goormgb.help"
-hostedZoneID: "Z08735923FCA9QTFLOQSL"
+domain: "goormgb.homes"
+hostedZoneID: "Z04073612LBMT2Z1I30S4"
 
 records:
-  - ""              # goormgb.help (root)
-  - "api.dev"       # api.dev.goormgb.help (백엔드 API)
-  - "argocd"        # argocd.goormgb.help
-  - "grafana"       # grafana.goormgb.help
-  - "kiali"         # kiali.goormgb.help
-  - "cloudbeaver"   # cloudbeaver.goormgb.help
-  # dev.goormgb.help는 Vercel CNAME이라 제외
+  - "" # goormgb.homes (root)
+  - "api.dev" # api.dev.goormgb.homes (백엔드 API)
+  - "argocd" # argocd.goormgb.homes
+  - "grafana" # grafana.goormgb.homes
+  - "kiali" # kiali.goormgb.homes
+  - "cloudbeaver" # cloudbeaver.goormgb.homes
+  # dev.goormgb.homes는 Vercel CNAME이라 제외
 
 # CP 노드에 배치 (인프라 작업)
 nodeSelector:

@@ -1,5 +1,5 @@
 # kubeadm - 모니터링 스택 설정
-# Domain: goormgb.help
+# Domain: goormgb.homes
 # Components: Prometheus, Grafana, Loki, Tempo
 
 # Grafana ESO 설정
@@ -7,7 +7,7 @@ grafana:
   eso:
     enabled: true
     secretManagerKey: dev/monitoring/grafana
-    oauthSecretManagerKey: dev/infra/oauth/google  # 공용 OAuth
+    oauthSecretManagerKey: dev/infra/oauth/google # 공용 OAuth
 
 # ===== Prometheus Stack =====
 kube-prometheus-stack:
@@ -108,7 +108,7 @@ kube-prometheus-stack:
 
     grafana.ini:
       server:
-        root_url: https://grafana.goormgb.help
+        root_url: https://grafana.goormgb.homes
       auth.google:
         enabled: true
         allow_sign_up: true
@@ -127,9 +127,9 @@ kube-prometheus-stack:
           'Viewer'
       users:
         auto_assign_org: true
-        auto_assign_org_role: Viewer  # 기본 역할
+        auto_assign_org_role: Viewer # 기본 역할
       auth:
-        disable_login_form: false  # admin 로그인 유지
+        disable_login_form: false # admin 로그인 유지
 
     # Role mapping (이메일 기반)
     # DevOps: Admin, Developer: Viewer
@@ -173,8 +173,8 @@ kube-prometheus-stack:
         jsonData:
           tracesToLogsV2:
             datasourceUid: loki
-            spanStartTimeShift: '-1h'
-            spanEndTimeShift: '1h'
+            spanStartTimeShift: "-1h"
+            spanEndTimeShift: "1h"
             filterByTraceID: true
             filterBySpanID: true
 
@@ -199,7 +199,7 @@ kube-prometheus-stack:
 gateway:
   grafana:
     enabled: true
-    host: "grafana.goormgb.help"
+    host: "grafana.goormgb.homes"
     tls:
       credentialName: goormgb-tls
 
@@ -225,7 +225,7 @@ loki-stack:
 
     config:
       limits_config:
-        retention_period: 72h  # 3일
+        retention_period: 72h # 3일
 
     resources:
       requests:

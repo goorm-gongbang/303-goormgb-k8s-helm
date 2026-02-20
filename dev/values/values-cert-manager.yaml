@@ -1,5 +1,5 @@
 # kubeadm-dev - cert-manager ClusterIssuer 설정
-# Domain: goormgb.help
+# Domain: goormgb.homes
 
 # CP 노드에 배치 (설정 관련)
 nodeSelector:
@@ -14,12 +14,12 @@ email: "212clab@gmail.com"
 
 route53:
   region: ap-northeast-2
-  hostedZoneID: "Z08735923FCA9QTFLOQSL"
+  hostedZoneID: "Z04073612LBMT2Z1I30S4"
 
 certificates:
   - name: goormgb-tls
     dnsNames:
-      - "*.goormgb.help"
-      - "*.dev.goormgb.help"
-      - "goormgb.help"
-    issuerRef: letsencrypt-prod  # 새 도메인이라 prod 사용 가능
+      - "*.goormgb.homes"
+      - "*.dev.goormgb.homes"
+      - "goormgb.homes"
+    issuerRef: letsencrypt-prod # 새 도메인이라 prod 사용 가능
