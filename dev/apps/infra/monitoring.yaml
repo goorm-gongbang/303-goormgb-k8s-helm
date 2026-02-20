@@ -33,7 +33,7 @@ spec:
         - /spec/volumeName
         - /spec/storageClassName
 ---
-# Loki (로그 수집)
+# Loki (로그 수집) - 공식 grafana/loki 차트 + promtail
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -59,6 +59,14 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - Replace=true
+  # PVC는 생성 후 immutable이라 차이 무시
+  ignoreDifferences:
+    - group: ""
+      kind: PersistentVolumeClaim
+      jsonPointers:
+        - /spec/volumeName
+        - /spec/storageClassName
 ---
 # Tempo (분산 추적)
 apiVersion: argoproj.io/v1alpha1
