@@ -30,6 +30,9 @@ spec:
         {{- end }}
         - "Include @crs-setup-conf"
         - "Include @owasp_crs/*.conf"
+        # OAuth callback 예외 (scope 파라미터의 .profile 오탐 방지)
+        - "SecRule REQUEST_URI \"@beginsWith /auth/callback\" \"id:1001,phase:1,pass,nolog,ctl:ruleRemoveById=930120\""
+        - "SecRule REQUEST_URI \"@beginsWith /login/\" \"id:1002,phase:1,pass,nolog,ctl:ruleRemoveById=930120\""
     default_directives: "default"
     {{- if .Values.perHostRules }}
     per_authority_directives:
