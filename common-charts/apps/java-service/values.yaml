@@ -86,3 +86,9 @@ envFrom:
 
 # JVM options
 javaOpts: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
+
+# OpenTelemetry Java Agent
+otel:
+  enabled: false
+  agentVersion: "2.11.0"
+  collectorEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"
