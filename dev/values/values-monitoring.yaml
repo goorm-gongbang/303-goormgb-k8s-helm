@@ -56,10 +56,7 @@ kube-prometheus-stack:
       port: 2381
       targetPort: 2381
     serviceMonitor:
-      scheme: https
-      caFile: /etc/prometheus/secrets/etcd-client-cert/ca.crt
-      certFile: /etc/prometheus/secrets/etcd-client-cert/client.crt
-      keyFile: /etc/prometheus/secrets/etcd-client-cert/client.key
+      scheme: http
   kubeProxy:
     enabled: true
 
