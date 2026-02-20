@@ -1,7 +1,7 @@
 # queue - Dev 환경
 # ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/queue
 
-replicaCount: 1
+replicaCount: 2
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/queue
