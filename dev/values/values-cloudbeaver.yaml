@@ -1,5 +1,5 @@
 # kubeadm-dev-dev - CloudBeaver 설정
-# Domain: cloudbeaver.goormgb.homes
+# Domain: cloudbeaver.goormgb.space
 
 replicaCount: 1
 
@@ -32,7 +32,7 @@ persistence:
 # Istio VirtualService
 virtualService:
   enabled: true
-  host: "cloudbeaver.goormgb.homes"
+  host: "cloudbeaver.goormgb.space"
   gateway: "istio-system/goormgb-gateway"
 
 # PostgreSQL connection info (개발자가 CloudBeaver UI에서 직접 연결 설정)

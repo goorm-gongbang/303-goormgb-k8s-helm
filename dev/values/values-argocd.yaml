@@ -1,5 +1,5 @@
 # kubeadm-dev - ArgoCD 설정
-# Domain: goormgb.homes
+# Domain: goormgb.space
 
 # CP 노드에 배치 (설정 관련)
 nodeSelector:
@@ -11,7 +11,7 @@ tolerations:
     effect: "NoSchedule"
 
 gateway:
-  host: "argocd.goormgb.homes"
+  host: "argocd.goormgb.space"
   tls:
     enabled: true
     credentialName: goormgb-tls

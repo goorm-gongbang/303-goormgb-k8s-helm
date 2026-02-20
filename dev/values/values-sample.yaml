@@ -1,5 +1,5 @@
 # dev environment - sample nginx app
-# Domain: dev.goormgb.homes
+# Domain: dev.goormgb.space
 
 replicaCount: 1
 
@@ -26,7 +26,7 @@ istio:
   gateway:
     enabled: true
     hosts:
-      - "dev.goormgb.homes"
+      - "dev.goormgb.space"
     tls:
       enabled: true
       mode: SIMPLE
@@ -43,7 +43,7 @@ customConfig:
     <head><title>goormgb - DEV</title></head>
     <body style="background:#1a1a2e;color:#e94560;font-family:monospace;display:flex;justify-content:center;align-items:center;height:100vh;margin:0">
       <div style="text-align:center">
-        <h1>goormgb.homes</h1>
+        <h1>goormgb.space</h1>
         <h2>DEV Environment</h2>
         <p>mini-might (worker node)</p>
         <p style="color:#0f3460">Namespace: dev</p>
