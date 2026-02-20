@@ -55,6 +55,11 @@ kube-prometheus-stack:
       enabled: true
       port: 2381
       targetPort: 2381
+    serviceMonitor:
+      scheme: https
+      caFile: /etc/prometheus/secrets/etcd-client-cert/ca.crt
+      certFile: /etc/prometheus/secrets/etcd-client-cert/client.crt
+      keyFile: /etc/prometheus/secrets/etcd-client-cert/client.key
   kubeProxy:
     enabled: true
 
@@ -67,6 +72,10 @@ kube-prometheus-stack:
 
       # OTel Collector에서 메트릭 수신 (remote write)
       enableRemoteWriteReceiver: true
+
+      # etcd TLS 인증서 마운트
+      secrets:
+        - etcd-client-cert
 
       retention: 7d
       retentionSize: "5GB"
