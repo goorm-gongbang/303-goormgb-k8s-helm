@@ -65,6 +65,9 @@ kube-prometheus-stack:
       podMonitorSelectorNilUsesHelmValues: false
       ruleSelectorNilUsesHelmValues: false
 
+      # OTel Collector에서 메트릭 수신 (remote write)
+      enableRemoteWriteReceiver: true
+
       retention: 7d
       retentionSize: "5GB"
 
