@@ -1,5 +1,5 @@
 # kubeadm - 모니터링 스택 설정
-# Domain: goormgb.homes
+# Domain: goormgb.space
 # Components: Prometheus, Grafana, Loki, Tempo
 
 # Grafana ESO 설정
@@ -108,7 +108,7 @@ kube-prometheus-stack:
 
     grafana.ini:
       server:
-        root_url: https://grafana.goormgb.homes
+        root_url: https://grafana.goormgb.space
       auth.google:
         enabled: true
         allow_sign_up: true
@@ -199,7 +199,7 @@ kube-prometheus-stack:
 gateway:
   grafana:
     enabled: true
-    host: "grafana.goormgb.homes"
+    host: "grafana.goormgb.space"
     tls:
       credentialName: goormgb-tls
 

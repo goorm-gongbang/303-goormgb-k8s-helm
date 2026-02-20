@@ -1,5 +1,5 @@
 # kubeadm-dev - Istio 설정 (Helm values)
-# Domain: goormgb.homes
+# Domain: goormgb.space
 # Components: istio-base, istiod, istio-gateway, kiali
 
 # ===== Istio Base =====
@@ -50,19 +50,19 @@ istiod:
 # istio-ingressgateway는 istioctl로 설치됨 (scripts/istio/install.sh)
 # 여기서는 Gateway CRD만 생성
 
-# 공용 Gateway (모든 *.goormgb.homes 트래픽 처리)
+# 공용 Gateway (모든 *.goormgb.space 트래픽 처리)
 sharedGateway:
   enabled: true
   name: goormgb-gateway
   tls:
     credentialName: goormgb-tls
   hosts:
-    - "*.goormgb.homes"
+    - "*.goormgb.space"
 
 # ===== Kiali =====
 kiali-server:
   server:
-    web_fqdn: kiali.goormgb.homes
+    web_fqdn: kiali.goormgb.space
     web_port: 443
     web_schema: https
 
@@ -93,7 +93,7 @@ kiali-server:
     grafana:
       enabled: true
       in_cluster_url: "http://grafana.monitoring.svc.cluster.local:80"
-      url: "https://grafana.goormgb.homes"
+      url: "https://grafana.goormgb.space"
 
     tracing:
       enabled: true
@@ -104,7 +104,7 @@ kiali-server:
 # Kiali VirtualService (공용 Gateway 사용)
 kialiVirtualService:
   enabled: true
-  host: "kiali.goormgb.homes"
+  host: "kiali.goormgb.space"
 
 # Kiali OIDC (Google OAuth) - 비활성화
 oidc:
