@@ -264,7 +264,7 @@ loki:
       enabled: true
       size: 10Gi
 
-  # 불필요한 컴포넌트 비활성화
+  # 불필요한 컴포넌트 비활성화 (SingleBinary 모드)
   backend:
     replicas: 0
   read:
@@ -276,6 +276,14 @@ loki:
   test:
     enabled: false
   lokiCanary:
+    enabled: false
+  # 캐시 비활성화 (dev 환경)
+  chunksCache:
+    enabled: false
+  resultsCache:
+    enabled: false
+  # minio 비활성화
+  minio:
     enabled: false
 
 # ===== Promtail =====
