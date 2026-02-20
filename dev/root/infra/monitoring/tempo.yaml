@@ -1,24 +1,26 @@
-# ECR Credentials Auto-Refresh
+# Tempo (분산 추적)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ecr-creds
+  name: tempo
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-8"  # namespaces 후, 이미지 pull용
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/dev
-    path: dev/charts/ecr-creds
+    path: common-charts/infra/monitoring/tempo
     helm:
       valueFiles:
-        - ../../../dev/values/values-ecr-creds.yaml
+        - ../../../../dev/values/monitoring/values-monitoring.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: infra
+    namespace: monitoring
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

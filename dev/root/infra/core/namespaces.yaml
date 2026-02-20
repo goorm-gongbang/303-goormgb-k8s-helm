@@ -1,24 +1,24 @@
-# External Secrets Operator Config
+# Namespaces with Istio injection
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: eso-config
+  name: namespaces
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10" # 가장 먼저 생성
 spec:
   project: default
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/dev
-    path: common-charts/infra/eso
+    path: common-charts/infra/namespaces
     helm:
       valueFiles:
-        - ../../../dev/values/values-eso.yaml
+        - ../../../dev/values/core/values-namespaces.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: external-secrets
+    namespace: default
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
