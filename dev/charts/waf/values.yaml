@@ -22,3 +22,19 @@ logging:
 
 # 호스트별 규칙 분기 (선택)
 perHostRules: {}
+
+# OAuth 콜백 예외 (LFI 오탐 방지)
+# scope 파라미터의 .profile이 LFI로 오탐됨 (rule 930120)
+oauthExceptions:
+  - name: argocd
+    path: "/auth/callback"
+    disableRules: [930120]
+  - name: grafana
+    path: "/login/google"
+    disableRules: [930120]
+  - name: cloudbeaver
+    path: "/api/oauth2/callback"
+    disableRules: [930120]
+  - name: kiali
+    path: "/kiali/api/authenticate"
+    disableRules: [930120]
