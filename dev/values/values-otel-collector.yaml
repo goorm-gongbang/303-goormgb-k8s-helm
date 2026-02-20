@@ -2,6 +2,7 @@
 # Tail-based Sampling으로 스토리지 최적화
 
 opentelemetry-collector:
+  fullnameOverride: otel-collector  # 서비스명 단순화
   mode: deployment
   replicaCount: 1
 
