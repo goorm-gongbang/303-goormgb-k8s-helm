@@ -16,11 +16,11 @@ opentelemetry-collector:
 
   resources:
     requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 200m
+      cpu: 100m
       memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
   config:
     receivers:
@@ -59,10 +59,24 @@ opentelemetry-collector:
               sampling_percentage: 10
 
     exporters:
+      # Traces → Tempo
       otlp/tempo:
         endpoint: tempo.monitoring.svc.cluster.local:4317
         tls:
           insecure: true
+
+      # Metrics → Prometheus (remote write)
+      prometheusremotewrite:
+        endpoint: http://prom-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
+        tls:
+          insecure: true
+
+      # Logs → Loki (OTLP)
+      otlphttp/loki:
+        endpoint: http://loki.monitoring.svc.cluster.local:3100/otlp
+        tls:
+          insecure: true
+
       logging:
         verbosity: basic
 
@@ -77,3 +91,11 @@ opentelemetry-collector:
           receivers: [otlp]
           processors: [batch, tail_sampling]
           exporters: [otlp/tempo, logging]
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [prometheusremotewrite, logging]
+        logs:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlphttp/loki, logging]
