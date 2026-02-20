@@ -1,0 +1,25 @@
+{{- $etcd := index .Values "kube-prometheus-stack" "kubeEtcd" }}
+{{- if $etcd.enabled }}
+{{- if $etcd.endpoints }}
+# kube-prometheus-stack이 Endpoints를 생성 안 할 때를 위한 fallback
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: prom-kube-etcd
+  namespace: kube-system
+  labels:
+    app: kube-prometheus-stack-kube-etcd
+    app.kubernetes.io/managed-by: Helm
+    jobLabel: kube-etcd
+    release: prometheus-stack
+subsets:
+  - addresses:
+      {{- range $etcd.endpoints }}
+      - ip: {{ . }}
+      {{- end }}
+    ports:
+      - name: http-metrics
+        port: {{ $etcd.service.port | default 2381 }}
+        protocol: TCP
+{{- end }}
+{{- end }}
