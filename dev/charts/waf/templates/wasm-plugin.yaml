@@ -29,14 +29,14 @@ spec:
         - "SecAuditLogFormat JSON"
         {{- end }}
         - "Include @crs-setup-conf"
-        - "Include @owasp_crs/*.conf"
         {{- if .Values.oauthExceptions }}
-        # OAuth callback 예외 (scope 파라미터의 .profile 등 오탐 방지)
+        # OAuth callback 예외 - CRS 로드 전에 선언 필수
         {{- range $i, $ex := .Values.oauthExceptions }}
         {{- $ruleIds := join "," $ex.disableRules }}
         - "SecRule REQUEST_URI \"@beginsWith {{ $ex.path }}\" \"id:{{ add 1001 $i }},phase:1,pass,nolog,ctl:ruleRemoveById={{ $ruleIds }}\""
         {{- end }}
         {{- end }}
+        - "Include @owasp_crs/*.conf"
     default_directives: "default"
     {{- if .Values.perHostRules }}
     per_authority_directives:
