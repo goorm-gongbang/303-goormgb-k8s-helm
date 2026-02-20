@@ -65,14 +65,14 @@ main                          # 개발/PR 머지
 
 ## 도메인 (임시 도메인!)
 
-| 도메인                   | 용도              |
-| ------------------------ | ----------------- |
-| dev.goormgb.help         | 프론트 (Vercel)   |
-| api.dev.goormgb.help     | 백엔드 API        |
-| argocd.goormgb.help      | ArgoCD UI         |
-| grafana.goormgb.help     | Grafana           |
-| kiali.goormgb.help       | Kiali             |
-| cloudbeaver.goormgb.help | CloudBeaver DB UI |
+| 도메인                    | 용도              |
+| ------------------------- | ----------------- |
+| dev.goormgb.homes         | 프론트 (Vercel)   |
+| api.dev.goormgb.homes     | 백엔드 API        |
+| argocd.goormgb.homes      | ArgoCD UI         |
+| grafana.goormgb.homes     | Grafana           |
+| kiali.goormgb.homes       | Kiali             |
+| cloudbeaver.goormgb.homes | CloudBeaver DB UI |
 
 ## 관련 레포
 
