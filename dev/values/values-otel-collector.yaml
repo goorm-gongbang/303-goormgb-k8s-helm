@@ -73,7 +73,7 @@ opentelemetry-collector:
 
       # Logs → Loki (OTLP)
       otlphttp/loki:
-        endpoint: http://loki.monitoring.svc.cluster.local:3100/otlp
+        endpoint: http://loki-loki.monitoring.svc.cluster.local:3100/otlp
         tls:
           insecure: true
 
