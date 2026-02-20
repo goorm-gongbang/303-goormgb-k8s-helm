@@ -120,6 +120,19 @@ kube-prometheus-stack:
   grafana:
     fullnameOverride: grafana
 
+    # 대시보드 폴더 설정
+    sidecar:
+      dashboards:
+        enabled: true
+        folder: /tmp/dashboards
+        defaultFolderName: "Kubernetes"
+        searchNamespace: ALL
+        provider:
+          foldersFromFilesStructure: false
+
+    # 불필요한 대시보드 비활성화
+    defaultDashboardsEnabled: true
+
     # ESO에서 생성한 secret 사용
     admin:
       existingSecret: grafana-admin-credentials
@@ -202,6 +215,7 @@ kube-prometheus-stack:
             filterBySpanID: true
 
   alertmanager:
+    # 알람 설정은 values-alerting.yaml에서 관리
     alertmanagerSpec:
       nodeSelector:
         kubernetes.io/hostname: mini-gmk
