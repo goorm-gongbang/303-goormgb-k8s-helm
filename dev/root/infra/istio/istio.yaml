@@ -14,7 +14,7 @@ spec:
     path: common-charts/infra/istio/base
     helm:
       valueFiles:
-        - ../../../../dev/values/values-istio.yaml
+        - ../../../../dev/values/istio/values-istio.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system
@@ -47,7 +47,7 @@ spec:
     path: common-charts/infra/istio/istiod
     helm:
       valueFiles:
-        - ../../../../dev/values/values-istio.yaml
+        - ../../../../dev/values/istio/values-istio.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system
@@ -82,7 +82,7 @@ spec:
     path: common-charts/infra/istio/gateway
     helm:
       valueFiles:
-        - ../../../../dev/values/values-istio.yaml
+        - ../../../../dev/values/istio/values-istio.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system

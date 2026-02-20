@@ -1,0 +1,33 @@
+# Loki (로그 수집) - 공식 grafana/loki 차트 + promtail
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/dev
+    path: common-charts/infra/monitoring/loki
+    helm:
+      valueFiles:
+        - ../../../../dev/values/monitoring/values-monitoring.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+  ignoreDifferences:
+    - group: ""
+      kind: PersistentVolumeClaim
+      jsonPointers:
+        - /spec/volumeName
+        - /spec/storageClassName

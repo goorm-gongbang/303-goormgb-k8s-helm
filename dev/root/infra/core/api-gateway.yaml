@@ -1,22 +1,27 @@
-# ArgoCD Config
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-config
+  name: api-gateway
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/dev
-    path: common-charts/infra/argocd
-    helm:
-      valueFiles:
-        - ../../../dev/values/values-argocd.yaml
+    path: dev/charts/core/api-gateway
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: dev-webs
+  ignoreDifferences:
+    - group: networking.istio.io
+      kind: VirtualService
+      jsonPointers:
+        - /spec/hosts
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

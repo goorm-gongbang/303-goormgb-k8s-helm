@@ -1,20 +1,23 @@
-# 서비스 공용 시크릿 (ESO)
+# OTel Collector (트레이스/메트릭/로그 수집 및 샘플링)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: service-secrets
+  name: otel-collector
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-6"  # 앱 시크릿
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/dev
-    path: dev/charts/service-secrets
+    path: common-charts/infra/monitoring/otel-collector
+    helm:
+      valueFiles:
+        - ../../../../dev/values/monitoring/values-otel-collector.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: dev-webs
+    namespace: monitoring
   syncPolicy:
     automated:
       prune: true

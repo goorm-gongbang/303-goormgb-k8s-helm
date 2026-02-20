@@ -1,24 +1,22 @@
-# Kiali - Istio Service Mesh 시각화
+# RBAC
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kiali
+  name: rbac
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/dev
-    path: common-charts/infra/istio/kiali
+    path: common-charts/infra/rbac
     helm:
       valueFiles:
-        - ../../../../dev/values/values-istio.yaml
+        - ../../../dev/values/security/values-rbac.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: istio-system
+    namespace: default
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true

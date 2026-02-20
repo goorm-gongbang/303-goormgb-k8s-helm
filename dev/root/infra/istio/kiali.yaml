@@ -1,24 +1,21 @@
+# Kiali - Istio Service Mesh 시각화
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: api-gateway
+  name: kiali
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/dev
-    path: dev/charts/api-gateway
+    path: common-charts/infra/istio/kiali
+    helm:
+      valueFiles:
+        - ../../../../dev/values/istio/values-istio.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: dev-webs
-  ignoreDifferences:
-    - group: networking.istio.io
-      kind: VirtualService
-      jsonPointers:
-        - /spec/hosts
+    namespace: istio-system
   syncPolicy:
     automated:
       prune: true
