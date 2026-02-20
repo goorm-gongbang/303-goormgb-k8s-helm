@@ -56,4 +56,4 @@ readinessProbe:
 otel:
   enabled: true
   agentVersion: "2.11.0"
-  collectorEndpoint: "http://otel-collector-opentelemetry-collector.monitoring.svc.cluster.local:4317"
+  collectorEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"
