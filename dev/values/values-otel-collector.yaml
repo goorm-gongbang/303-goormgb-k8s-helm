@@ -1,0 +1,78 @@
+# OTel Collector - Dev 환경
+# Tail-based Sampling으로 스토리지 최적화
+
+opentelemetry-collector:
+  mode: deployment
+  replicaCount: 1
+
+  # CP 노드에 배치
+  nodeSelector:
+    kubernetes.io/hostname: mini-gmk
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+    processors:
+      batch:
+        timeout: 5s
+        send_batch_size: 512
+
+      # Tail-based Sampling
+      tail_sampling:
+        decision_wait: 10s
+        num_traces: 50000
+        expected_new_traces_per_sec: 50
+        policies:
+          # 에러 Trace: 100% 수집
+          - name: error-policy
+            type: status_code
+            status_code:
+              status_codes: [ERROR]
+          # 느린 요청 (>3초): 100% 수집
+          - name: latency-policy
+            type: latency
+            latency:
+              threshold_ms: 3000
+          # 정상 요청: 10% 샘플링
+          - name: probabilistic-policy
+            type: probabilistic
+            probabilistic:
+              sampling_percentage: 10
+
+    exporters:
+      otlp/tempo:
+        endpoint: tempo.monitoring.svc.cluster.local:4317
+        tls:
+          insecure: true
+      logging:
+        verbosity: basic
+
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+
+    service:
+      extensions: [health_check]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch, tail_sampling]
+          exporters: [otlp/tempo, logging]

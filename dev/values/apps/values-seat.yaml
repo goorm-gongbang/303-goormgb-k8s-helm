@@ -51,3 +51,9 @@ readinessProbe:
   initialDelaySeconds: 30
   periodSeconds: 5
   failureThreshold: 3
+
+# OpenTelemetry Java Agent
+otel:
+  enabled: true
+  agentVersion: "2.11.0"
+  collectorEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"

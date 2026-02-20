@@ -12,16 +12,13 @@ istiod:
   global:
     istioNamespace: istio-system
 
-    # Tempo 연동 (Zipkin 호환 프로토콜)
-    tracer:
-      zipkin:
-        address: "tempo.monitoring.svc.cluster.local:9411"
-
   meshConfig:
     enableTracing: true
     defaultConfig:
       tracing:
         sampling: 100 # 100% 샘플링 (kubeadm-dev 환경)
+        zipkin:
+          address: "tempo.monitoring.svc.cluster.local:9411"
 
     # Access logging
     accessLogFile: /dev/stdout
