@@ -146,23 +146,16 @@ kube-prometheus-stack:
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
-        # Kubernetes Cluster (Prometheus)
+        # Kubernetes Cluster Overview
         k8s-cluster:
-          gnetId: 6417
+          gnetId: 7249
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
         # Kubernetes Pods
         k8s-pods:
-          gnetId: 6336
-          revision: 1
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
-        # Kubernetes Deployments
-        k8s-deployments:
-          gnetId: 8588
+          gnetId: 17125
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
@@ -174,24 +167,17 @@ kube-prometheus-stack:
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
-        # Kubernetes All-in-one (Compute + Network + Overview 통합)
-        k8s-all-in-one:
-          gnetId: 15661
-          revision: 1
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
-        # Kubernetes Networking
+        # Kubernetes Networking (플러그인 불필요)
         k8s-networking:
-          gnetId: 12124
-          revision: 1
+          gnetId: 14314
+          revision: 2
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
         # Prometheus Overview
         prometheus-overview:
-          gnetId: 3662
-          revision: 2
+          gnetId: 19105
+          revision: 3
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
