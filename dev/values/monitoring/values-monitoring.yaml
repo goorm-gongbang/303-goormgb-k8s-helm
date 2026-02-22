@@ -43,10 +43,24 @@ kube-prometheus-stack:
     enabled: true
     endpoints:
       - 192.168.45.123
+    service:
+      enabled: true
+      port: 10257
+      targetPort: 10257
+    serviceMonitor:
+      https: true
+      insecureSkipVerify: true
   kubeScheduler:
     enabled: true
     endpoints:
       - 192.168.45.123
+    service:
+      enabled: true
+      port: 10259
+      targetPort: 10259
+    serviceMonitor:
+      https: true
+      insecureSkipVerify: true
   kubeEtcd:
     enabled: true
     endpoints:
@@ -55,6 +69,8 @@ kube-prometheus-stack:
       enabled: true
       port: 2381
       targetPort: 2381
+    serviceMonitor:
+      scheme: http
   kubeProxy:
     enabled: true
 
@@ -64,6 +80,13 @@ kube-prometheus-stack:
       serviceMonitorSelectorNilUsesHelmValues: false
       podMonitorSelectorNilUsesHelmValues: false
       ruleSelectorNilUsesHelmValues: false
+
+      # OTel Collector에서 메트릭 수신 (remote write)
+      enableRemoteWriteReceiver: true
+
+      # etcd TLS 인증서 마운트
+      secrets:
+        - etcd-client-cert
 
       retention: 7d
       retentionSize: "5GB"
@@ -96,6 +119,151 @@ kube-prometheus-stack:
 
   grafana:
     fullnameOverride: grafana
+
+    # 대시보드 폴더 설정
+    sidecar:
+      dashboards:
+        enabled: true
+        folder: /tmp/dashboards
+        defaultFolderName: "_Kubernetes"   # annotation 없는 대시보드 → _Kubernetes 폴더
+        folderAnnotation: grafana_folder   # ConfigMap annotation으로 폴더 지정
+        searchNamespace: ALL
+        provider:
+          foldersFromFilesStructure: false
+          allowUiUpdates: true             # UI에서 대시보드 수정 허용
+
+    # kube-prometheus-stack Angular 기본 대시보드 모두 비활성화 (React 버전 사용)
+    defaultDashboardsEnabled: false
+    forceDeployDashboards: false
+
+    # 대시보드 프로바이더 설정
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: 'kubernetes'
+            orgId: 1
+            folder: '_Kubernetes'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/kubernetes
+          - name: 'istio'
+            orgId: 1
+            folder: '_Istio'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/istio
+          - name: 'loki'
+            orgId: 1
+            folder: '_Loki'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/loki
+          - name: 'tempo'
+            orgId: 1
+            folder: '_Tempo'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/tempo
+
+    # Grafana.com에서 React 기반 대시보드 로드
+    dashboards:
+      kubernetes:
+        # Node Exporter Full
+        node-exporter:
+          gnetId: 1860
+          revision: 37
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        # Kubernetes Cluster Overview
+        k8s-cluster:
+          gnetId: 7249
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        # Kubernetes Pods
+        k8s-pods:
+          gnetId: 17125
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        # etcd
+        etcd:
+          gnetId: 3070
+          revision: 3
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        # Kubernetes Networking (플러그인 불필요)
+        k8s-networking:
+          gnetId: 14314
+          revision: 2
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        # Prometheus Overview
+        prometheus-overview:
+          gnetId: 19105
+          revision: 3
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+      istio:
+        istio-mesh:
+          gnetId: 7639
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        istio-service:
+          gnetId: 7636
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        istio-workload:
+          gnetId: 7630
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        istio-control-plane:
+          gnetId: 7645
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+      loki:
+        loki-dashboard:
+          gnetId: 13639
+          revision: 2
+          datasource:
+            - name: DS_LOKI
+              value: Loki
+        loki-logs:
+          gnetId: 15141
+          revision: 1
+          datasource:
+            - name: DS_LOKI
+              value: Loki
+      tempo:
+        tempo-operational:
+          gnetId: 16110
+          revision: 1
+          datasource:
+            - name: DS_TEMPO
+              value: Tempo
 
     # ESO에서 생성한 secret 사용
     admin:
@@ -179,6 +347,7 @@ kube-prometheus-stack:
             filterBySpanID: true
 
   alertmanager:
+    # 알람 설정은 values-alerting.yaml에서 관리
     alertmanagerSpec:
       nodeSelector:
         kubernetes.io/hostname: mini-gmk
@@ -203,18 +372,37 @@ gateway:
     tls:
       credentialName: goormgb-tls
 
-# ===== Loki =====
-loki-stack:
-  # Grafana datasource는 prometheus-stack의 additionalDataSources에서 관리
-  grafana:
-    sidecar:
-      datasources:
-        enabled: false
-  loki:
-    persistence:
-      enabled: true
-      size: 10Gi
+# ===== Loki (공식 grafana/loki 차트) =====
+loki:
+  # 단일 바이너리 모드 (dev 환경)
+  deploymentMode: SingleBinary
 
+  loki:
+    auth_enabled: false
+
+    # OTLP 수신 지원 (Loki 3.0+)
+    limits_config:
+      retention_period: 72h # 3일
+      allow_structured_metadata: true  # OTLP 메타데이터
+
+    storage:
+      type: filesystem
+
+    commonConfig:
+      replication_factor: 1
+
+    schemaConfig:
+      configs:
+        - from: "2024-01-01"
+          store: tsdb
+          object_store: filesystem
+          schema: v13
+          index:
+            prefix: index_
+            period: 24h
+
+  singleBinary:
+    replicas: 1
     # CP 노드에 배치
     nodeSelector:
       kubernetes.io/hostname: mini-gmk
@@ -222,11 +410,6 @@ loki-stack:
       - key: "node-role.kubernetes.io/control-plane"
         operator: "Exists"
         effect: "NoSchedule"
-
-    config:
-      limits_config:
-        retention_period: 72h # 3일
-
     resources:
       requests:
         cpu: 50m
@@ -234,21 +417,54 @@ loki-stack:
       limits:
         cpu: 200m
         memory: 512Mi
+    persistence:
+      enabled: true
+      size: 10Gi
 
-  promtail:
-    # 모든 노드에서 실행
-    tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: "Exists"
-        effect: "NoSchedule"
+  # 불필요한 컴포넌트 비활성화 (SingleBinary 모드)
+  backend:
+    replicas: 0
+  read:
+    replicas: 0
+  write:
+    replicas: 0
+  gateway:
+    enabled: false
+  test:
+    enabled: false
+  lokiCanary:
+    enabled: false
+  # 캐시 비활성화 (dev 환경)
+  chunksCache:
+    enabled: false
+  resultsCache:
+    enabled: false
+  # minio 비활성화
+  minio:
+    enabled: false
 
-    resources:
-      requests:
-        cpu: 20m
-        memory: 32Mi
-      limits:
-        cpu: 100m
-        memory: 128Mi
+# ===== Promtail =====
+promtail:
+  config:
+    clients:
+      - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+    snippets:
+      pipelineStages:
+        - cri: {}
+
+  # 모든 노드에서 실행
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+  resources:
+    requests:
+      cpu: 20m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
 
 # ===== Tempo =====
 tempo:

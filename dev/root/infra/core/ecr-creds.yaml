@@ -1,21 +1,23 @@
-# RBAC
+# ECR Credentials Auto-Refresh
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: rbac
+  name: ecr-creds
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-8"  # namespaces 후, 이미지 pull용
 spec:
   project: default
   source:
     repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
     targetRevision: argocd-sync/dev
-    path: common-charts/infra/rbac
+    path: dev/charts/core/ecr-creds
     helm:
       valueFiles:
-        - ../../../dev/values/values-rbac.yaml
+        - ../../../values/core/values-ecr-creds.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: infra
   syncPolicy:
     automated:
       prune: true

@@ -1,23 +1,41 @@
 # Default values for Loki wrapper
-# These can be overridden by environment-specific values
+# Official grafana/loki chart + promtail
 
-loki-stack:
-  # Loki - 로그 저장소
+# ===== Loki =====
+loki:
+  # 단일 바이너리 모드 (dev 환경에 적합)
+  deploymentMode: SingleBinary
+
   loki:
-    enabled: true
-    persistence:
-      enabled: true
-      size: 20Gi
+    # 인증 비활성화
+    auth_enabled: false
 
-    config:
-      auth_enabled: false
+    # OTLP 수신 활성화 (Loki 3.0+)
+    # OTel Collector에서 로그를 OTLP로 전송받음
+    limits_config:
+      retention_period: 168h  # 7일
+      allow_structured_metadata: true  # OTLP 메타데이터 지원
 
-      limits_config:
-        retention_period: 168h  # 7일
+    # 스토리지 설정 (filesystem)
+    storage:
+      type: filesystem
 
-      compactor:
-        retention_enabled: true
+    commonConfig:
+      replication_factor: 1
 
+    schemaConfig:
+      configs:
+        - from: "2024-01-01"
+          store: tsdb
+          object_store: filesystem
+          schema: v13
+          index:
+            prefix: index_
+            period: 24h
+
+  # Single Binary 설정
+  singleBinary:
+    replicas: 1
     resources:
       requests:
         cpu: 100m
@@ -25,43 +43,57 @@ loki-stack:
       limits:
         cpu: 500m
         memory: 1Gi
+    persistence:
+      enabled: true
+      size: 20Gi
 
-  # Promtail - 로그 수집 에이전트 (DaemonSet)
-  promtail:
-    enabled: true
+  # 불필요한 컴포넌트 비활성화
+  backend:
+    replicas: 0
+  read:
+    replicas: 0
+  write:
+    replicas: 0
 
-    config:
-      # 모든 namespace의 로그 수집
-      snippets:
-        pipelineStages:
-          - cri: {}
-          - multiline:
-              firstline: '^\d{4}-\d{2}-\d{2}'
-              max_wait_time: 3s
-              max_lines: 128
-
-    resources:
-      requests:
-        cpu: 50m
-        memory: 64Mi
-      limits:
-        cpu: 200m
-        memory: 256Mi
-
-    # 모든 노드에서 실행 (tolerations)
-    tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: "Exists"
-        effect: "NoSchedule"
-
-  # Grafana는 prometheus-stack에서 관리
-  grafana:
+  # Gateway 비활성화 (SingleBinary 모드에서는 불필요)
+  gateway:
     enabled: false
 
-  # Prometheus도 prometheus-stack에서 관리
-  prometheus:
+  # 테스트 비활성화
+  test:
     enabled: false
 
-# Node placement for Loki server
-nodeSelector: {}
-tolerations: []
+  # Grafana Enterprise 기능 비활성화
+  lokiCanary:
+    enabled: false
+
+# ===== Promtail =====
+promtail:
+  enabled: true
+
+  config:
+    # Loki 엔드포인트
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+
+    snippets:
+      pipelineStages:
+        - cri: {}
+        - multiline:
+            firstline: '^\d{4}-\d{2}-\d{2}'
+            max_wait_time: 3s
+            max_lines: 128
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  # 모든 노드에서 실행
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"

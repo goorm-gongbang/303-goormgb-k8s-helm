@@ -14,7 +14,7 @@ spec:
     path: dev/charts/data/postgresql
     helm:
       valueFiles:
-        - ../../../values/values-data.yaml
+        - ../../../values/data/values-data.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: data
@@ -48,7 +48,7 @@ spec:
     helm:
       releaseName: redis-cache
       valueFiles:
-        - ../../../values/values-redis-cache.yaml
+        - ../../../values/data/values-redis-cache.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: data
@@ -104,7 +104,7 @@ spec:
     helm:
       releaseName: redis-queue
       valueFiles:
-        - ../../../values/values-redis-queue.yaml
+        - ../../../values/data/values-redis-queue.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: data
