@@ -125,7 +125,8 @@ kube-prometheus-stack:
       dashboards:
         enabled: true
         folder: /tmp/dashboards
-        folderAnnotation: grafana_folder  # ConfigMap annotation으로 폴더 지정
+        defaultFolderName: "Kubernetes"    # annotation 없는 대시보드 → Kubernetes 폴더
+        folderAnnotation: grafana_folder   # ConfigMap annotation으로 폴더 지정
         searchNamespace: ALL
         provider:
           foldersFromFilesStructure: false
