@@ -212,6 +212,27 @@ kube-prometheus-stack:
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
+        # Kubernetes All-in-one (Compute + Network + Overview 통합)
+        k8s-all-in-one:
+          gnetId: 15661
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        # Kubernetes Networking
+        k8s-networking:
+          gnetId: 12124
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        # Prometheus Overview
+        prometheus-overview:
+          gnetId: 3662
+          revision: 2
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
       istio:
         istio-mesh:
           gnetId: 7639
