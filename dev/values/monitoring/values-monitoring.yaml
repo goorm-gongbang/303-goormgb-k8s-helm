@@ -272,7 +272,7 @@ kube-prometheus-stack:
       passwordKey: admin-password
 
     # Google OAuth 설정
-    envFromSecret: grafana-oauth-credentials
+    envFromSecret: google-oauth-credentials
 
     grafana.ini:
       server:
