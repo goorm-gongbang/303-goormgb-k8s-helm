@@ -74,7 +74,7 @@ promtail:
   config:
     # Loki 엔드포인트
     clients:
-      - url: http://loki-loki:3100/loki/api/v1/push
+      - url: http://loki:3100/loki/api/v1/push
 
     snippets:
       pipelineStages:
