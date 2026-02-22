@@ -125,13 +125,86 @@ kube-prometheus-stack:
       dashboards:
         enabled: true
         folder: /tmp/dashboards
-        defaultFolderName: "Kubernetes"
+        defaultFolderName: "Kubernetes"    # annotation 없는 대시보드 → Kubernetes 폴더
+        folderAnnotation: grafana_folder   # ConfigMap annotation으로 폴더 지정
         searchNamespace: ALL
         provider:
           foldersFromFilesStructure: false
 
-    # 불필요한 대시보드 비활성화
+    # kube-prometheus-stack 기본 대시보드 → "Kubernetes" 폴더
     defaultDashboardsEnabled: true
+
+    # 대시보드 폴더별 정리
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: 'default'
+            orgId: 1
+            folder: 'Kubernetes'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+          - name: 'istio'
+            orgId: 1
+            folder: 'Istio'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/istio
+          - name: 'loki'
+            orgId: 1
+            folder: 'Loki'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/loki
+          - name: 'tempo'
+            orgId: 1
+            folder: 'Tempo'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/tempo
+
+    # Grafana.com에서 대시보드 로드
+    dashboards:
+      istio:
+        istio-mesh:
+          gnetId: 7639
+          revision: 1
+          datasource: Prometheus
+        istio-service:
+          gnetId: 7636
+          revision: 1
+          datasource: Prometheus
+        istio-workload:
+          gnetId: 7630
+          revision: 1
+          datasource: Prometheus
+        istio-control-plane:
+          gnetId: 7645
+          revision: 1
+          datasource: Prometheus
+      loki:
+        loki-dashboard:
+          gnetId: 13639
+          revision: 2
+          datasource: Loki
+        loki-promtail:
+          gnetId: 12611
+          revision: 1
+          datasource: Loki
+      tempo:
+        tempo-operational:
+          gnetId: 16110
+          revision: 1
+          datasource: Tempo
 
     # ESO에서 생성한 secret 사용
     admin:
