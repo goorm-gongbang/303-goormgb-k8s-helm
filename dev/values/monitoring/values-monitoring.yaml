@@ -130,26 +130,28 @@ kube-prometheus-stack:
         searchNamespace: ALL
         provider:
           foldersFromFilesStructure: false
+          allowUiUpdates: true             # UI에서 대시보드 수정 허용
 
-    # kube-prometheus-stack 기본 대시보드 → "Kubernetes" 폴더
-    defaultDashboardsEnabled: true
+    # kube-prometheus-stack Angular 기본 대시보드 모두 비활성화 (React 버전 사용)
+    defaultDashboardsEnabled: false
+    forceDeployDashboards: false
 
-    # 대시보드 폴더별 정리
+    # 대시보드 폴더별 정리 (기본 폴더는 _ prefix로 구분)
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
         providers:
-          - name: 'default'
+          - name: 'kubernetes'
             orgId: 1
-            folder: 'Kubernetes'
+            folder: '_Kubernetes'
             type: file
             disableDeletion: false
             editable: true
             options:
-              path: /var/lib/grafana/dashboards/default
+              path: /var/lib/grafana/dashboards/kubernetes
           - name: 'istio'
             orgId: 1
-            folder: 'Istio'
+            folder: '_Istio'
             type: file
             disableDeletion: false
             editable: true
@@ -157,7 +159,7 @@ kube-prometheus-stack:
               path: /var/lib/grafana/dashboards/istio
           - name: 'loki'
             orgId: 1
-            folder: 'Loki'
+            folder: '_Loki'
             type: file
             disableDeletion: false
             editable: true
@@ -165,15 +167,56 @@ kube-prometheus-stack:
               path: /var/lib/grafana/dashboards/loki
           - name: 'tempo'
             orgId: 1
-            folder: 'Tempo'
+            folder: '_Tempo'
             type: file
             disableDeletion: false
             editable: true
             options:
               path: /var/lib/grafana/dashboards/tempo
 
-    # Grafana.com에서 대시보드 로드
+    # Grafana.com에서 React 기반 대시보드 로드
     dashboards:
+      kubernetes:
+        # Kubernetes 클러스터 개요
+        k8s-cluster:
+          gnetId: 13332
+          revision: 12
+          datasource: Prometheus
+        # Node Exporter Full (React)
+        node-exporter:
+          gnetId: 1860
+          revision: 37
+          datasource: Prometheus
+        # Kubernetes / Views / Global
+        k8s-global:
+          gnetId: 15760
+          revision: 30
+          datasource: Prometheus
+        # Kubernetes / Views / Namespaces
+        k8s-namespaces:
+          gnetId: 15758
+          revision: 35
+          datasource: Prometheus
+        # Kubernetes / Views / Nodes
+        k8s-nodes:
+          gnetId: 15759
+          revision: 29
+          datasource: Prometheus
+        # Kubernetes / Views / Pods
+        k8s-pods:
+          gnetId: 15760
+          revision: 30
+          datasource: Prometheus
+        # CoreDNS
+        coredns:
+          gnetId: 15762
+          revision: 18
+          datasource: Prometheus
+        # etcd
+        etcd:
+          gnetId: 3070
+          revision: 3
+          datasource: Prometheus
       istio:
         istio-mesh:
           gnetId: 7639
@@ -196,8 +239,8 @@ kube-prometheus-stack:
           gnetId: 13639
           revision: 2
           datasource: Loki
-        loki-promtail:
-          gnetId: 12611
+        loki-logs:
+          gnetId: 15141
           revision: 1
           datasource: Loki
       tempo:
