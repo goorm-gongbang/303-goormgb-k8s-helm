@@ -125,7 +125,7 @@ kube-prometheus-stack:
       dashboards:
         enabled: true
         folder: /tmp/dashboards
-        defaultFolderName: "Kubernetes"    # annotation 없는 대시보드 → Kubernetes 폴더
+        defaultFolderName: "_Kubernetes"   # annotation 없는 대시보드 → _Kubernetes 폴더
         folderAnnotation: grafana_folder   # ConfigMap annotation으로 폴더 지정
         searchNamespace: ALL
         provider:
@@ -177,76 +177,86 @@ kube-prometheus-stack:
     # Grafana.com에서 React 기반 대시보드 로드
     dashboards:
       kubernetes:
-        # Kubernetes 클러스터 개요
-        k8s-cluster:
-          gnetId: 13332
-          revision: 12
-          datasource: Prometheus
-        # Node Exporter Full (React)
+        # Node Exporter Full
         node-exporter:
           gnetId: 1860
           revision: 37
-          datasource: Prometheus
-        # Kubernetes / Views / Global
-        k8s-global:
-          gnetId: 15760
-          revision: 30
-          datasource: Prometheus
-        # Kubernetes / Views / Namespaces
-        k8s-namespaces:
-          gnetId: 15758
-          revision: 35
-          datasource: Prometheus
-        # Kubernetes / Views / Nodes
-        k8s-nodes:
-          gnetId: 15759
-          revision: 29
-          datasource: Prometheus
-        # Kubernetes / Views / Pods
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        # Kubernetes Cluster (Prometheus)
+        k8s-cluster:
+          gnetId: 6417
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        # Kubernetes Pods
         k8s-pods:
-          gnetId: 15760
-          revision: 30
-          datasource: Prometheus
-        # CoreDNS
-        coredns:
-          gnetId: 15762
-          revision: 18
-          datasource: Prometheus
+          gnetId: 6336
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+        # Kubernetes Deployments
+        k8s-deployments:
+          gnetId: 8588
+          revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
         # etcd
         etcd:
           gnetId: 3070
           revision: 3
-          datasource: Prometheus
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
       istio:
         istio-mesh:
           gnetId: 7639
           revision: 1
-          datasource: Prometheus
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
         istio-service:
           gnetId: 7636
           revision: 1
-          datasource: Prometheus
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
         istio-workload:
           gnetId: 7630
           revision: 1
-          datasource: Prometheus
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
         istio-control-plane:
           gnetId: 7645
           revision: 1
-          datasource: Prometheus
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
       loki:
         loki-dashboard:
           gnetId: 13639
           revision: 2
-          datasource: Loki
+          datasource:
+            - name: DS_LOKI
+              value: Loki
         loki-logs:
           gnetId: 15141
           revision: 1
-          datasource: Loki
+          datasource:
+            - name: DS_LOKI
+              value: Loki
       tempo:
         tempo-operational:
           gnetId: 16110
           revision: 1
+          datasource:
+            - name: DS_TEMPO
+              value: Tempo
           datasource: Tempo
 
     # ESO에서 생성한 secret 사용
