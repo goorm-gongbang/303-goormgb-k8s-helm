@@ -136,47 +136,9 @@ kube-prometheus-stack:
     defaultDashboardsEnabled: false
     forceDeployDashboards: false
 
-    # 대시보드 폴더별 정리 (기본 폴더는 _ prefix로 구분)
-    dashboardProviders:
-      dashboardproviders.yaml:
-        apiVersion: 1
-        providers:
-          - name: 'kubernetes'
-            orgId: 1
-            folder: '_Kubernetes'
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/kubernetes
-          - name: 'istio'
-            orgId: 1
-            folder: '_Istio'
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/istio
-          - name: 'loki'
-            orgId: 1
-            folder: '_Loki'
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/loki
-          - name: 'tempo'
-            orgId: 1
-            folder: '_Tempo'
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/tempo
-
-    # Grafana.com에서 React 기반 대시보드 로드
+    # Grafana.com에서 React 기반 대시보드 로드 (sidecar가 폴더 자동 처리)
     dashboards:
-      kubernetes:
+      _Kubernetes:
         # Node Exporter Full
         node-exporter:
           gnetId: 1860
@@ -233,7 +195,7 @@ kube-prometheus-stack:
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
-      istio:
+      _Istio:
         istio-mesh:
           gnetId: 7639
           revision: 1
@@ -258,7 +220,7 @@ kube-prometheus-stack:
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
-      loki:
+      _Loki:
         loki-dashboard:
           gnetId: 13639
           revision: 2
@@ -271,14 +233,13 @@ kube-prometheus-stack:
           datasource:
             - name: DS_LOKI
               value: Loki
-      tempo:
+      _Tempo:
         tempo-operational:
           gnetId: 16110
           revision: 1
           datasource:
             - name: DS_TEMPO
               value: Tempo
-          datasource: Tempo
 
     # ESO에서 생성한 secret 사용
     admin:
