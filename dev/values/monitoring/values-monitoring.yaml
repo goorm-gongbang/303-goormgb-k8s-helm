@@ -162,28 +162,28 @@ kube-prometheus-stack:
     # Grafana.com 대시보드 매핑
     dashboards:
       dev-team-observability:
-        k8s-pods:
+        service-pod-health:
           gnetId: 17125
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        istio-service:
+        service-traffic-istio:
           gnetId: 7636
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        istio-workload:
+        service-workload-istio:
           gnetId: 7630
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        loki-logs:
+        service-logs-loki:
           gnetId: 15141
           revision: 1
           datasource:
@@ -191,63 +191,63 @@ kube-prometheus-stack:
               value: Loki
 
       infra-team-observability:
-        node-exporter:
+        platform-node-capacity:
           gnetId: 1860
           revision: 37
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        k8s-cluster:
+        platform-cluster-overview:
           gnetId: 7249
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        etcd:
+        platform-etcd-health:
           gnetId: 3070
           revision: 3
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        k8s-networking:
+        platform-network-overview:
           gnetId: 14314
           revision: 2
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        prometheus-overview:
+        platform-prometheus-overview:
           gnetId: 19105
           revision: 3
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        istio-mesh:
+        platform-istio-mesh:
           gnetId: 7639
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        istio-control-plane:
+        platform-istio-control-plane:
           gnetId: 7645
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        loki-dashboard:
+        platform-logs-overview:
           gnetId: 13639
           revision: 2
           datasource:
             - name: DS_LOKI
               value: Loki
 
-        tempo-operational:
+        platform-traces-overview:
           gnetId: 16110
           revision: 1
           datasource:
