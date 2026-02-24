@@ -125,9 +125,9 @@ kube-prometheus-stack:
       dashboards:
         enabled: true
         folder: /tmp/dashboards
-        defaultFolderName: "Infra-Core"   # annotation 없는 대시보드 → _Kubernetes 폴더
+        defaultFolderName: "플랫폼 관측 (인프라팀)" # annotation 없는 대시보드 기본 폴더
         folderAnnotation: grafana_folder   # ConfigMap annotation으로 폴더 지정
-        searchNamespace: ALL
+        searchNamespace: monitoring        # 다른 namespace의 불필요한 대시보드 수집 방지
         provider:
           foldersFromFilesStructure: false
           allowUiUpdates: true             # UI에서 대시보드 수정 허용
@@ -136,118 +136,118 @@ kube-prometheus-stack:
     defaultDashboardsEnabled: false
     forceDeployDashboards: false
 
-    # 대시보드 프로바이더 설정 (2개 폴더로 단순화)
+    # 대시보드 프로바이더 설정 (팀 기준 2개 폴더)
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
         providers:
-          - name: 'app-debug'
+          - name: 'dev-team-observability'
             orgId: 1
-            folder: 'App-Debug'
+            folder: '서비스 관측 (개발팀)'
             type: file
             disableDeletion: false
             editable: true
             options:
-              path: /var/lib/grafana/dashboards/app-debug
+              path: /var/lib/grafana/dashboards/dev-team-observability
 
-          - name: 'infra-core'
+          - name: 'infra-team-observability'
             orgId: 1
-            folder: 'Infra-Core'
+            folder: '플랫폼 관측 (인프라팀)'
             type: file
             disableDeletion: false
             editable: true
             options:
-              path: /var/lib/grafana/dashboards/infra-core
+              path: /var/lib/grafana/dashboards/infra-team-observability
 
     # Grafana.com 대시보드 매핑
     dashboards:
-      app-debug:
-        k8s-pods:
+      dev-team-observability:
+        service-pod-health:
           gnetId: 17125
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        istio-service:
+        service-traffic-istio:
           gnetId: 7636
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        istio-workload:
+        service-workload-istio:
           gnetId: 7630
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        loki-logs:
+        service-logs-loki:
           gnetId: 15141
           revision: 1
           datasource:
             - name: DS_LOKI
               value: Loki
 
-      infra-core:
-        node-exporter:
+      infra-team-observability:
+        platform-node-capacity:
           gnetId: 1860
           revision: 37
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        k8s-cluster:
+        platform-cluster-overview:
           gnetId: 7249
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        etcd:
+        platform-etcd-health:
           gnetId: 3070
           revision: 3
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        k8s-networking:
+        platform-network-overview:
           gnetId: 14314
           revision: 2
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        prometheus-overview:
+        platform-prometheus-overview:
           gnetId: 19105
           revision: 3
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        istio-mesh:
+        platform-istio-mesh:
           gnetId: 7639
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        istio-control-plane:
+        platform-istio-control-plane:
           gnetId: 7645
           revision: 1
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
 
-        loki-dashboard:
+        platform-logs-overview:
           gnetId: 13639
           revision: 2
           datasource:
             - name: DS_LOKI
               value: Loki
 
-        tempo-operational:
+        platform-traces-overview:
           gnetId: 16110
           revision: 1
           datasource:
