@@ -27,23 +27,11 @@ oidc:
     - profile
     - email
 
-# RBAC 설정 - 허용된 사용자만
+# RBAC 설정 - ESO에서 허용된 사용자 목록 가져옴
 rbac:
-  policy: |
-    # 관리자 (전체 권한)
-    g, 212clab@gmail.com, role:admin
-
-    # DevOps (관리자급 권한)
-    g, 212clab@gmail.com, role:devops
-    g, rhuba23@gmail.com, role:devops
-    g, chamchi0129@gmail.com, role:devops
-
-    # devops role 정의 (거의 admin 수준)
-    p, role:devops, applications, *, */*, allow
-    p, role:devops, clusters, *, *, allow
-    p, role:devops, repositories, *, *, allow
-    p, role:devops, logs, *, *, allow
-    p, role:devops, exec, *, *, allow
+  eso:
+    enabled: true
+    secretManagerKey: common/google-login/argocd
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
 
