@@ -18,11 +18,11 @@ jobs:
                   echo "❌ argocd-sync/* → main PR 불가"
                   exit 1
 
-            # main 외 → argocd-sync/* 차단
-            - name: Only main to argocd-sync
-              if: startsWith(github.base_ref, 'argocd-sync/') && github.head_ref != 'main'
+            # main, dev 외 → argocd-sync/* 차단
+            - name: Only main or dev to argocd-sync
+              if: startsWith(github.base_ref, 'argocd-sync/') && github.head_ref != 'main' && github.head_ref != 'dev'
               run: |
-                  echo "❌ argocd-sync/* 브랜치는 main에서만 PR 가능"
+                  echo "❌ argocd-sync/* 브랜치는 main 또는 dev에서만 PR 가능"
                   echo "현재 소스: ${{ github.head_ref }}"
                   exit 1
 
