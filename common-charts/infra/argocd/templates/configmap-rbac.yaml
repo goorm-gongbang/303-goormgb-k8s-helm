@@ -1,4 +1,4 @@
-{{- if .Values.rbac }}
+{{- if or .Values.rbac.policy .Values.rbac.eso.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,8 +8,18 @@ metadata:
     app.kubernetes.io/name: argocd-rbac-cm
     app.kubernetes.io/part-of: argocd
 data:
-  policy.default: {{ .Values.rbac.defaultPolicy | default "" | quote }}
+  policy.default: {{ .Values.rbac.defaultPolicy | default "role:none" | quote }}
+  {{- if .Values.rbac.eso.enabled }}
+  {{- $secret := lookup "v1" "Secret" "argocd" "argocd-rbac-eso" }}
+  {{- if $secret }}
+  policy.csv: {{ index $secret.data "policy_csv" | b64dec | quote }}
+  {{- else }}
+  # ESO Secret이 아직 생성되지 않음 - 재배포 필요
+  policy.csv: ""
+  {{- end }}
+  {{- else }}
   policy.csv: |
 {{ .Values.rbac.policy | indent 4 }}
+  {{- end }}
   scopes: '[email]'
 {{- end }}
