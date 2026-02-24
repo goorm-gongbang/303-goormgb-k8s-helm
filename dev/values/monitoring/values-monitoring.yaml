@@ -125,9 +125,9 @@ kube-prometheus-stack:
       dashboards:
         enabled: true
         folder: /tmp/dashboards
-        defaultFolderName: "Infra-Core"   # annotation 없는 대시보드 → _Kubernetes 폴더
+        defaultFolderName: "플랫폼 관측 (인프라팀)" # annotation 없는 대시보드 기본 폴더
         folderAnnotation: grafana_folder   # ConfigMap annotation으로 폴더 지정
-        searchNamespace: ALL
+        searchNamespace: monitoring        # 다른 namespace의 불필요한 대시보드 수집 방지
         provider:
           foldersFromFilesStructure: false
           allowUiUpdates: true             # UI에서 대시보드 수정 허용
@@ -136,32 +136,32 @@ kube-prometheus-stack:
     defaultDashboardsEnabled: false
     forceDeployDashboards: false
 
-    # 대시보드 프로바이더 설정 (2개 폴더로 단순화)
+    # 대시보드 프로바이더 설정 (팀 기준 2개 폴더)
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
         providers:
-          - name: 'app-debug'
+          - name: 'dev-team-observability'
             orgId: 1
-            folder: 'App-Debug'
+            folder: '서비스 관측 (개발팀)'
             type: file
             disableDeletion: false
             editable: true
             options:
-              path: /var/lib/grafana/dashboards/app-debug
+              path: /var/lib/grafana/dashboards/dev-team-observability
 
-          - name: 'infra-core'
+          - name: 'infra-team-observability'
             orgId: 1
-            folder: 'Infra-Core'
+            folder: '플랫폼 관측 (인프라팀)'
             type: file
             disableDeletion: false
             editable: true
             options:
-              path: /var/lib/grafana/dashboards/infra-core
+              path: /var/lib/grafana/dashboards/infra-team-observability
 
     # Grafana.com 대시보드 매핑
     dashboards:
-      app-debug:
+      dev-team-observability:
         k8s-pods:
           gnetId: 17125
           revision: 1
@@ -190,7 +190,7 @@ kube-prometheus-stack:
             - name: DS_LOKI
               value: Loki
 
-      infra-core:
+      infra-team-observability:
         node-exporter:
           gnetId: 1860
           revision: 37
