@@ -6,6 +6,8 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "-5"
+    notifications.argoproj.io/subscribe.on-infra-deploy-failed.discord-infra: ""
+    notifications.argoproj.io/subscribe.on-infra-health-degraded.discord-infra: ""
 spec:
   project: default
   source:
@@ -39,6 +41,8 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "-5"
+    notifications.argoproj.io/subscribe.on-infra-deploy-failed.discord-infra: ""
+    notifications.argoproj.io/subscribe.on-infra-health-degraded.discord-infra: ""
 spec:
   project: default
   source:
@@ -95,6 +99,8 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "-5"
+    notifications.argoproj.io/subscribe.on-infra-deploy-failed.discord-infra: ""
+    notifications.argoproj.io/subscribe.on-infra-health-degraded.discord-infra: ""
 spec:
   project: default
   source:
