@@ -35,18 +35,18 @@ service:
   type: ClusterIP
   port: *port
 
-# Health checks (TCP - Spring Security blocks actuator)
+# Health checks (HTTP - context-path 반영)
 livenessProbe:
-  httpGet: ~  # 기본값 제거
-  tcpSocket:
+  httpGet:
+    path: /seat/actuator/health/liveness
     port: *port
   initialDelaySeconds: 60
   periodSeconds: 10
   failureThreshold: 3
 
 readinessProbe:
-  httpGet: ~  # 기본값 제거
-  tcpSocket:
+  httpGet:
+    path: /seat/actuator/health/readiness
     port: *port
   initialDelaySeconds: 30
   periodSeconds: 5
