@@ -1,5 +1,8 @@
 # PostgreSQL for MiniPC kubeadm
 
+config:
+  maxConnections: 200
+
 image:
   repository: postgres
   tag: "16-alpine"
