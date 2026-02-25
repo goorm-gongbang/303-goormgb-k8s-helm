@@ -719,6 +719,13 @@ promtail:
       cpu: 100m
       memory: 128Mi
 
+# ===== Logs Backup to S3 =====
+backup:
+  enabled: true
+  schedule: "0 4 * * *"  # 매일 오전 4시 (UTC) - DB 백업 1시간 후
+  s3Bucket: goormgb-backup
+  s3Prefix: dev/logs
+
 # ===== Tempo =====
 tempo:
   # CP 노드에 배치

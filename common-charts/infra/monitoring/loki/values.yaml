@@ -97,3 +97,18 @@ promtail:
     - key: "node-role.kubernetes.io/control-plane"
       operator: "Exists"
       effect: "NoSchedule"
+
+# ===== Logs Backup to S3 =====
+backup:
+  enabled: false
+  schedule: "0 4 * * *"  # 매일 오전 4시 (UTC) - DB 백업 1시간 후
+  s3Bucket: goormgb-backup
+  s3Prefix: dev/logs
+  externalSecret:
+    remoteRef: dev/infra/s3-backup  # PostgreSQL과 동일한 credentials 사용
+  nodeSelector:
+    kubernetes.io/hostname: mini-gmk
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
