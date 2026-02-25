@@ -1,0 +1,79 @@
+{{- if .Values.initSchema.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-init-schema
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    # ArgoCD hook: 수동으로 실행 필요 시 사용
+    # argocd.argoproj.io/hook: PostSync
+    # argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: init-schema
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          env:
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-credentials
+                  key: POSTGRES_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-credentials
+                  key: POSTGRES_PASSWORD
+            - name: PGHOST
+              value: postgresql
+            - name: PGDATABASE
+              value: {{ .Values.initSchema.database | default "goormgb" }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+
+              echo "=== PostgreSQL Schema Initialization ==="
+              echo "Database: ${PGDATABASE}"
+              echo ""
+
+              echo "[1/2] Waiting for PostgreSQL to be ready..."
+              until pg_isready -h ${PGHOST} -U ${PGUSER}; do
+                echo "Waiting..."
+                sleep 2
+              done
+              echo "PostgreSQL is ready."
+              echo ""
+
+              echo "[2/2] Running init-schema.sql..."
+              psql -h ${PGHOST} -U ${PGUSER} -d ${PGDATABASE} -f /scripts/init-schema.sql
+
+              echo ""
+              echo "=== Schema Initialization Complete ==="
+          volumeMounts:
+            - name: init-scripts
+              mountPath: /scripts
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: postgresql-init-schema
+{{- end }}
