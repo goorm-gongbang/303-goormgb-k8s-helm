@@ -19,11 +19,11 @@ tolerations:
 
 resources:
   requests:
-    cpu: 50m
-    memory: 256Mi
-  limits:
-    cpu: 300m
+    cpu: 100m
     memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1536Mi
 
 persistence:
   enabled: true
