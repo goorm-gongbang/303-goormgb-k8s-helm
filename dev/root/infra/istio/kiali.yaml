@@ -16,9 +16,22 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system
+  # Kiali chart의 ConfigMap이 매 렌더링마다 미세하게 달라지는 문제 해결
+  ignoreDifferences:
+    - group: ""
+      kind: ConfigMap
+      name: kiali
+      jsonPointers:
+        - /data
+    - group: apps
+      kind: Deployment
+      name: kiali
+      jsonPointers:
+        - /spec/template/metadata/annotations
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
