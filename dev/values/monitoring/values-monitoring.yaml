@@ -136,7 +136,9 @@ kube-prometheus-stack:
     defaultDashboardsEnabled: false
     forceDeployDashboards: false
 
-    # 대시보드 프로바이더 설정 (팀 기준 2개 폴더)
+    # 대시보드 프로바이더 설정
+    # - 팀 메인 폴더: 커스텀 대시보드용
+    # - 팀 템플릿 폴더: provisioned 기본 대시보드 보관용
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
@@ -150,6 +152,15 @@ kube-prometheus-stack:
             options:
               path: /var/lib/grafana/dashboards/dev-team-observability
 
+          - name: 'dev-team-observability-templates'
+            orgId: 1
+            folder: '서비스 관측 템플릿 (개발팀)'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/dev-team-observability-templates
+
           - name: 'infra-team-observability'
             orgId: 1
             folder: '플랫폼 관측 (인프라팀)'
@@ -159,9 +170,20 @@ kube-prometheus-stack:
             options:
               path: /var/lib/grafana/dashboards/infra-team-observability
 
+          - name: 'infra-team-observability-templates'
+            orgId: 1
+            folder: '플랫폼 관측 템플릿 (인프라팀)'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/infra-team-observability-templates
+
     # Grafana.com 대시보드 매핑
     dashboards:
-      dev-team-observability:
+      dev-team-observability: {}
+
+      dev-team-observability-templates:
         service-pod-health:
           gnetId: 17125
           revision: 1
@@ -452,7 +474,9 @@ kube-prometheus-stack:
               "weekStart": ""
             }
 
-      infra-team-observability:
+      infra-team-observability: {}
+
+      infra-team-observability-templates:
         platform-node-capacity:
           gnetId: 1860
           revision: 37
