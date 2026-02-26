@@ -5,7 +5,7 @@ replicaCount: 2
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/seat
-  tag: "116993b"
+  tag: "a053862"
   pullPolicy: Always
 
 imagePullSecrets:
