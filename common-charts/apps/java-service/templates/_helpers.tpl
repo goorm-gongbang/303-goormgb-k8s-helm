@@ -32,6 +32,7 @@ Selector labels
 {{- define "java-service.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "java-service.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: {{ .Values.component | default "backend" }}
 app: {{ .Release.Name }}
 version: {{ .Values.image.tag | default "latest" | quote }}
 {{- end }}
