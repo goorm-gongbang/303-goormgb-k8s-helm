@@ -11,6 +11,9 @@ metadata:
 spec:
   ttlSecondsAfterFinished: 3600
   template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"  # Job은 sidecar 제외 (안 끝남)
     spec:
       restartPolicy: Never
       {{- with .Values.nodeSelector }}
