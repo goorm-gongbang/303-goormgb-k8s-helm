@@ -14,8 +14,10 @@ spec:
     metadata:
       labels:
         app: postgresql
+        version: "{{ .Values.image.tag }}"
       annotations:
         sidecar.istio.io/inject: "true"
+        kiali.io/icon: database
     spec:
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -62,17 +64,17 @@ spec:
           livenessProbe:
             exec:
               command:
-                - pg_isready
-                - -U
-                - $(POSTGRES_USER)
+                - /bin/sh
+                - -c
+                - pg_isready -U $POSTGRES_USER
             initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
           readinessProbe:
             exec:
               command:
-                - pg_isready
-                - -U
-                - $(POSTGRES_USER)
+                - /bin/sh
+                - -c
+                - pg_isready -U $POSTGRES_USER
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
         {{- if .Values.exporter.enabled }}

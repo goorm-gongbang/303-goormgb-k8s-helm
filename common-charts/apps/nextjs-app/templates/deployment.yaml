@@ -16,6 +16,8 @@ spec:
       labels:
         {{- include "nextjs-app.selectorLabels" . | nindent 8 }}
         sidecar.istio.io/inject: "{{ .Values.istio.sidecar }}"
+      annotations:
+        kiali.io/icon: app
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
