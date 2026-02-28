@@ -63,6 +63,10 @@ spec:
         - /webhooks/0/failurePolicy
         - /webhooks/1/clientConfig/caBundle
         - /webhooks/1/failurePolicy
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /metadata/annotations/deployment.kubernetes.io~1revision
   syncPolicy:
     automated:
       prune: true
