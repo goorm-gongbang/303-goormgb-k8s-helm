@@ -88,7 +88,7 @@ kube-prometheus-stack:
       secrets:
         - etcd-client-cert
 
-      retention: 7d
+      retention: 3d
       retentionSize: "5GB"
 
       # CP 노드에 배치
@@ -659,7 +659,7 @@ loki:
 
     # OTLP 수신 지원 (Loki 3.0+)
     limits_config:
-      retention_period: 72h # 3일
+      retention_period: 48h # 2일
       allow_structured_metadata: true  # OTLP 메타데이터
 
     storage:
@@ -693,7 +693,7 @@ loki:
         memory: 128Mi
       limits:
         cpu: 200m
-        memory: 512Mi
+        memory: 768Mi
     persistence:
       enabled: true
       size: 10Gi
@@ -769,8 +769,8 @@ tempo:
         cpu: 200m
         memory: 768Mi
 
-    # Trace retention: 3일
-    retention: 72h
+    # Trace retention: 2일
+    retention: 48h
 
     # Compactor로 오래된 trace 정리
     storage:
