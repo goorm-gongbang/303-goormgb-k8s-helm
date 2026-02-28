@@ -41,3 +41,9 @@ spec:
         - /status
         - /spec/conversion
         - /metadata/annotations
+    # 컨트롤 플레인 Endpoints (ArgoCD 기본 exclusion 우회)
+    - group: ""
+      kind: Endpoints
+      jsonPointers:
+        - /metadata
+        - /subsets
