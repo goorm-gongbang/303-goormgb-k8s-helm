@@ -10,9 +10,10 @@ spec:
     matchLabels:
       app: postgresql
   endpoints:
-    - port: metrics
+    - port: http-metrics
       interval: 30s
       scrapeTimeout: 10s
+      path: /metrics
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
