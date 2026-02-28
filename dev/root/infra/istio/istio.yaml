@@ -63,6 +63,11 @@ spec:
         - /webhooks/0/failurePolicy
         - /webhooks/1/clientConfig/caBundle
         - /webhooks/1/failurePolicy
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+      jsonPointers:
+        - /webhooks
+        - /metadata/resourceVersion
     - group: apps
       kind: Deployment
       jsonPointers:
@@ -73,6 +78,8 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
 ---
 # Istio Gateway - istiod 이후 설치
 apiVersion: argoproj.io/v1alpha1
