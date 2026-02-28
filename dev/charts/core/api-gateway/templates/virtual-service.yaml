@@ -32,7 +32,7 @@ spec:
       {{- end }}
       route:
         - destination:
-            host: dev-{{ .name }}-java-service.{{ $.Release.Namespace }}.svc.cluster.local
+            host: dev-{{ .name }}.{{ $.Release.Namespace }}.svc.cluster.local
             port:
               number: {{ .port }}
     {{- end }}
@@ -42,6 +42,6 @@ spec:
             exact: /health
       route:
         - destination:
-            host: dev-auth-guard-java-service.{{ .Release.Namespace }}.svc.cluster.local
+            host: dev-auth-guard.{{ .Release.Namespace }}.svc.cluster.local
             port:
               number: 8080
