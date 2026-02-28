@@ -12,6 +12,11 @@ istiod:
   global:
     istioNamespace: istio-system
 
+  # Sidecar Injector Webhook 활성화
+  sidecarInjectorWebhook:
+    enableNamespacesByDefault: false  # namespace에 istio-injection=enabled 라벨 필요
+    rewriteAppHTTPProbe: true
+
   meshConfig:
     enableTracing: true
     defaultConfig:
