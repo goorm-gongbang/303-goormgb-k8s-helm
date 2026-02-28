@@ -36,4 +36,6 @@ Selector labels
 {{- define "nextjs-app.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "nextjs-app.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app: {{ .Release.Name }}
+version: {{ .Values.image.tag | default "latest" | quote }}
 {{- end }}
