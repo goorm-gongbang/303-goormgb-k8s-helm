@@ -72,6 +72,11 @@ spec:
       kind: Deployment
       jsonPointers:
         - /metadata/annotations/deployment.kubernetes.io~1revision
+        - /spec
+    - group: monitoring.coreos.com
+      kind: PodMonitor
+      jsonPointers:
+        - /spec/podMetricsEndpoints
   syncPolicy:
     automated:
       prune: true
