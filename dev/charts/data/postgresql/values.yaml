@@ -2,6 +2,24 @@
 
 config:
   maxConnections: 200
+  # pg_stat_statements 활성화 (쿼리 분석용)
+  sharedPreloadLibraries: "pg_stat_statements"
+  pgStatStatements:
+    track: all
+
+# postgres_exporter (Prometheus 메트릭)
+exporter:
+  enabled: true
+  image:
+    repository: prometheuscommunity/postgres-exporter
+    tag: v0.15.0
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
 
 image:
   repository: postgres

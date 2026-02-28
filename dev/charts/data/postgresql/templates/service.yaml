@@ -11,5 +11,11 @@ spec:
       targetPort: postgresql
       protocol: TCP
       name: postgresql
+    {{- if .Values.exporter.enabled }}
+    - port: 9187
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     app: postgresql
