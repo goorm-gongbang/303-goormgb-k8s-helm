@@ -2,6 +2,10 @@
 # These can be overridden by environment-specific values
 
 kube-prometheus-stack:
+  # CRD는 302-goormgb-k8s-bootstrap에서 별도 설치 (annotation 크기 제한 문제 회피)
+  crds:
+    enabled: false
+
   # Prometheus
   prometheus:
     prometheusSpec:
