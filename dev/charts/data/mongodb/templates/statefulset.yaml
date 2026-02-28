@@ -14,10 +14,10 @@ spec:
     metadata:
       labels:
         app: mongodb
+        app.kubernetes.io/component: database
         version: "{{ .Values.image.tag }}"
       annotations:
         sidecar.istio.io/inject: "true"
-        kiali.io/icon: database
     spec:
       {{- with .Values.nodeSelector }}
       nodeSelector:
