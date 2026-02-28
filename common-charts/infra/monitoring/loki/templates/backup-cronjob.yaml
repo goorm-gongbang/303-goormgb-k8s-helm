@@ -25,7 +25,7 @@ spec:
           serviceAccountName: logs-backup-sa
           containers:
             - name: backup
-              image: bitnami/kubectl:latest
+              image: alpine/k8s:1.31.4
               env:
                 - name: AWS_ACCESS_KEY_ID
                   valueFrom:
@@ -48,9 +48,6 @@ spec:
                 - -c
                 - |
                   set -e
-
-                  # AWS CLI 설치
-                  apt-get update && apt-get install -y awscli gzip
 
                   TIMESTAMP=$(date +%Y%m%d-%H%M%S)
                   BACKUP_DIR="/tmp/logs-backup-${TIMESTAMP}"
