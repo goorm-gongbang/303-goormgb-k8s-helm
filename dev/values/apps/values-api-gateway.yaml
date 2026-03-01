@@ -35,6 +35,23 @@ istio:
     host: "api.dev.goormgb.space"
     tls:
       credentialName: goormgb-tls
+  # CORS 설정 - Istio VirtualService 레벨
+  cors:
+    enabled: true
+    allowOrigins:
+      - "https://dev.goormgb.space"
+      - "http://localhost:3000"
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+      - OPTIONS
+    allowHeaders:
+      - "*"
+    allowCredentials: true
+    maxAge: "24h"
 
 # Service
 servicePort: &port 8085

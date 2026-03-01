@@ -43,6 +43,25 @@ spec:
     - match:
         - uri:
             prefix: /
+      {{- if .Values.istio.cors }}
+      {{- if .Values.istio.cors.enabled }}
+      corsPolicy:
+        allowOrigins:
+          {{- range .Values.istio.cors.allowOrigins }}
+          - exact: {{ . | quote }}
+          {{- end }}
+        allowMethods:
+          {{- range .Values.istio.cors.allowMethods | default (list "GET" "POST" "PUT" "DELETE" "PATCH" "OPTIONS") }}
+          - {{ . }}
+          {{- end }}
+        allowHeaders:
+          {{- range .Values.istio.cors.allowHeaders | default (list "*") }}
+          - {{ . | quote }}
+          {{- end }}
+        allowCredentials: {{ .Values.istio.cors.allowCredentials | default true }}
+        maxAge: {{ .Values.istio.cors.maxAge | default "24h" | quote }}
+      {{- end }}
+      {{- end }}
       route:
         - destination:
             host: {{ include "java-service.fullname" . }}
