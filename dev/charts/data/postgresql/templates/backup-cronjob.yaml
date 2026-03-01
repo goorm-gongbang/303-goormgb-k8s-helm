@@ -11,6 +11,9 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"  # CronJob은 sidecar 제외 (안 끝남)
         spec:
           restartPolicy: OnFailure
           {{- with .Values.nodeSelector }}
