@@ -6,7 +6,6 @@ resources:
   - infra/core/namespaces.yaml      # sync-wave: -10 (가장 먼저)
   - infra/core/ecr-creds.yaml       # sync-wave: -8
   - infra/core/argocd.yaml
-  - infra/core/api-gateway.yaml
   - infra/core/ddns.yaml
 
   # === Security ===
