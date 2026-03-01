@@ -245,678 +245,436 @@ VALUES (9, 'kt 위즈', 'kt wiz', 'kt-wiz.png', '#231F20', 7, NULL, NOW(), NOW()
 INSERT INTO clubs (id, ko_name, en_name, logo_img, club_color, stadium_id, homepage_redirect_url, created_at, updated_at)
 VALUES (10, 'KIA 타이거즈', 'KIA Tigers', 'kia-tigers.png', '#A32425', 8, NULL, NOW(), NOW());
 
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-28T14:00:00', 6, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-28T14:00:00', 8, 10, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-28T14:00:00', 2, 5, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-28T14:00:00', 7, 1, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-28T14:00:00', 4, 3, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-29T14:00:00', 6, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-29T14:00:00', 8, 10, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-29T14:00:00', 2, 5, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-29T14:00:00', 7, 1, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-29T14:00:00', 4, 3, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-31T18:30:00', 6, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-31T18:30:00', 8, 3, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-31T18:30:00', 2, 1, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-31T18:30:00', 7, 5, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-03-31T18:30:00', 4, 9, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-01T18:30:00', 6, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-01T18:30:00', 8, 3, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-01T18:30:00', 2, 1, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-01T18:30:00', 7, 5, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-01T18:30:00', 4, 9, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-02T18:30:00', 6, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-02T18:30:00', 8, 3, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-02T18:30:00', 2, 1, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-02T18:30:00', 7, 5, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-02T18:30:00', 4, 9, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-03T18:30:00', 1, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-03T18:30:00', 5, 8, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-03T18:30:00', 9, 2, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-03T18:30:00', 10, 7, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-03T18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-04T17:00:00', 1, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-04T17:00:00', 5, 8, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-04T17:00:00', 9, 2, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-04T17:00:00', 10, 7, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-04T17:00:00', 3, 6, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-05T14:00:00', 1, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-05T14:00:00', 5, 8, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-05T14:00:00', 9, 2, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-05T14:00:00', 10, 7, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-05T14:00:00', 3, 6, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-07T18:30:00', 1, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-07T18:30:00', 8, 4, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-07T18:30:00', 5, 9, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-07T18:30:00', 7, 6, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-07T18:30:00', 10, 2, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-08T18:30:00', 1, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-08T18:30:00', 8, 4, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-08T18:30:00', 5, 9, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-08T18:30:00', 7, 6, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-08T18:30:00', 10, 2, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-09T18:30:00', 1, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-09T18:30:00', 8, 4, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-09T18:30:00', 5, 9, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-09T18:30:00', 7, 6, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-09T18:30:00', 10, 2, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-10T18:30:00', 6, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-10T18:30:00', 2, 7, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-10T18:30:00', 9, 1, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-10T18:30:00', 3, 5, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-10T18:30:00', 4, 10, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-11T17:00:00', 6, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-11T17:00:00', 2, 7, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-11T17:00:00', 9, 1, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-11T17:00:00', 3, 5, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-11T17:00:00', 4, 10, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-12T14:00:00', 6, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-12T14:00:00', 2, 7, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-12T14:00:00', 9, 1, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-12T14:00:00', 3, 5, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-12T14:00:00', 4, 10, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-14T18:30:00', 6, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-14T18:30:00', 8, 1, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-14T18:30:00', 7, 9, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-14T18:30:00', 10, 3, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-14T18:30:00', 4, 2, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-15T18:30:00', 6, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-15T18:30:00', 8, 1, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-15T18:30:00', 7, 9, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-15T18:30:00', 10, 3, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-15T18:30:00', 4, 2, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-16T18:30:00', 6, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-16T18:30:00', 8, 1, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-16T18:30:00', 7, 9, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-16T18:30:00', 10, 3, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-16T18:30:00', 4, 2, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-17T18:30:00', 1, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-17T18:30:00', 5, 4, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-17T18:30:00', 2, 6, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-17T18:30:00', 7, 8, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-17T18:30:00', 9, 3, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-18T17:00:00', 1, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-18T17:00:00', 5, 4, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-18T17:00:00', 2, 6, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-18T17:00:00', 7, 8, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-18T17:00:00', 9, 3, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-19T14:00:00', 1, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-19T14:00:00', 5, 4, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-19T14:00:00', 2, 6, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-19T14:00:00', 7, 8, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-19T14:00:00', 9, 3, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-21T18:30:00', 6, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-21T18:30:00', 5, 1, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-21T18:30:00', 2, 8, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-21T18:30:00', 9, 10, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-21T18:30:00', 3, 7, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-22T18:30:00', 6, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-22T18:30:00', 5, 1, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-22T18:30:00', 2, 8, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-22T18:30:00', 9, 10, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-22T18:30:00', 3, 7, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-23T18:30:00', 6, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-23T18:30:00', 5, 1, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-23T18:30:00', 2, 8, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-23T18:30:00', 9, 10, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-23T18:30:00', 3, 7, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-24T18:30:00', 1, 6, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-24T18:30:00', 8, 9, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-24T18:30:00', 10, 5, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-24T18:30:00', 3, 2, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-24T18:30:00', 4, 7, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-25T17:00:00', 1, 6, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-25T17:00:00', 8, 9, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-25T17:00:00', 10, 5, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-25T17:00:00', 3, 2, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-25T17:00:00', 4, 7, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-26T14:00:00', 1, 6, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-26T14:00:00', 8, 9, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-26T14:00:00', 10, 5, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-26T14:00:00', 3, 2, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-26T14:00:00', 4, 7, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-28T18:30:00', 1, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-28T18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-28T18:30:00', 7, 10, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-28T18:30:00', 9, 6, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-28T18:30:00', 4, 8, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-29T18:30:00', 1, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-29T18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-29T18:30:00', 7, 10, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-29T18:30:00', 9, 6, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-29T18:30:00', 4, 8, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-30T18:30:00', 1, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-30T18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-30T18:30:00', 7, 10, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-30T18:30:00', 9, 6, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-04-30T18:30:00', 4, 8, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-01T18:30:00', 6, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-01T18:30:00', 8, 5, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-01T18:30:00', 2, 4, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-01T18:30:00', 10, 9, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-01T18:30:00', 3, 1, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-02T17:00:00', 6, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-02T17:00:00', 8, 5, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-02T17:00:00', 2, 4, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-02T17:00:00', 10, 9, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-02T17:00:00', 3, 1, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-03T14:00:00', 6, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-03T14:00:00', 8, 5, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-03T14:00:00', 2, 4, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-03T14:00:00', 10, 9, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-03T14:00:00', 3, 1, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-05T14:00:00', 6, 1, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-05T14:00:00', 8, 7, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-05T14:00:00', 2, 3, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-05T14:00:00', 9, 5, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-05T14:00:00', 10, 4, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-06T18:30:00', 6, 1, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-06T18:30:00', 8, 7, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-06T18:30:00', 2, 3, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-06T18:30:00', 9, 5, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-06T18:30:00', 10, 4, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-07T18:30:00', 6, 1, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-07T18:30:00', 8, 7, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-07T18:30:00', 2, 3, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-07T18:30:00', 9, 5, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-07T18:30:00', 10, 4, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-08T18:30:00', 1, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-08T18:30:00', 5, 10, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-08T18:30:00', 7, 2, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-08T18:30:00', 3, 9, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-08T18:30:00', 4, 6, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-09T17:00:00', 1, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-09T17:00:00', 5, 10, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-09T17:00:00', 7, 2, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-09T17:00:00', 3, 9, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-09T17:00:00', 4, 6, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-10T14:00:00', 1, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-10T14:00:00', 5, 10, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-10T14:00:00', 7, 2, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-10T14:00:00', 3, 9, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-10T14:00:00', 4, 6, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-12T18:30:00', 6, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-12T18:30:00', 5, 7, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-12T18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-12T18:30:00', 10, 1, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-12T18:30:00', 3, 4, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-13T18:30:00', 6, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-13T18:30:00', 5, 7, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-13T18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-13T18:30:00', 10, 1, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-13T18:30:00', 3, 4, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-14T18:30:00', 6, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-14T18:30:00', 5, 7, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-14T18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-14T18:30:00', 10, 1, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-14T18:30:00', 3, 4, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-15T18:30:00', 1, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-15T18:30:00', 8, 6, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-15T18:30:00', 2, 10, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-15T18:30:00', 7, 3, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-15T18:30:00', 9, 4, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-16T17:00:00', 1, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-16T17:00:00', 8, 6, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-16T17:00:00', 2, 10, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-16T17:00:00', 7, 3, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-16T17:00:00', 9, 4, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-17T14:00:00', 1, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-17T14:00:00', 8, 6, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-17T14:00:00', 2, 10, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-17T14:00:00', 7, 3, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-17T14:00:00', 9, 4, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-19T18:30:00', 1, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-19T18:30:00', 2, 9, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-19T18:30:00', 10, 6, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-19T18:30:00', 3, 8, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-19T18:30:00', 4, 5, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-20T18:30:00', 1, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-20T18:30:00', 2, 9, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-20T18:30:00', 10, 6, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-20T18:30:00', 3, 8, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-20T18:30:00', 4, 5, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-21T18:30:00', 1, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-21T18:30:00', 2, 9, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-21T18:30:00', 10, 6, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-21T18:30:00', 3, 8, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-21T18:30:00', 4, 5, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-22T18:30:00', 6, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-22T18:30:00', 5, 2, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-22T18:30:00', 9, 7, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-22T18:30:00', 10, 8, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-22T18:30:00', 4, 1, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-23T17:00:00', 6, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-23T17:00:00', 5, 2, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-23T17:00:00', 9, 7, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-23T17:00:00', 10, 8, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-23T17:00:00', 4, 1, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-24T14:00:00', 6, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-24T14:00:00', 5, 2, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-24T14:00:00', 9, 7, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-24T14:00:00', 10, 8, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-24T14:00:00', 4, 1, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-26T18:30:00', 1, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-26T18:30:00', 8, 2, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-26T18:30:00', 5, 6, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-26T18:30:00', 7, 4, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-26T18:30:00', 3, 10, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-27T18:30:00', 1, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-27T18:30:00', 8, 2, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-27T18:30:00', 5, 6, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-27T18:30:00', 7, 4, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-27T18:30:00', 3, 10, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-28T18:30:00', 1, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-28T18:30:00', 8, 2, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-28T18:30:00', 5, 6, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-28T18:30:00', 7, 4, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-28T18:30:00', 3, 10, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-29T18:30:00', 6, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-29T18:30:00', 2, 1, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-29T18:30:00', 7, 5, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-29T18:30:00', 3, 9, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-29T18:30:00', 4, 8, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-30T17:00:00', 6, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-30T17:00:00', 2, 1, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-30T17:00:00', 7, 5, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-30T17:00:00', 3, 9, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-30T17:00:00', 4, 8, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-31T14:00:00', 6, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-31T14:00:00', 2, 1, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-31T14:00:00', 7, 5, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-31T14:00:00', 3, 9, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-05-31T14:00:00', 4, 8, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-02T18:30:00', 1, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-02T18:30:00', 8, 3, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-02T18:30:00', 2, 7, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-02T18:30:00', 9, 6, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-02T18:30:00', 10, 5, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-03T17:00:00', 1, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-03T17:00:00', 8, 3, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-03T17:00:00', 2, 7, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-03T17:00:00', 9, 6, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-03T17:00:00', 10, 5, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-04T18:30:00', 1, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-04T18:30:00', 8, 3, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-04T18:30:00', 2, 7, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-04T18:30:00', 9, 6, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-04T18:30:00', 10, 5, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-05T18:30:00', 1, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-05T18:30:00', 8, 9, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-05T18:30:00', 5, 4, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-05T18:30:00', 7, 6, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-05T18:30:00', 10, 2, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-06T17:00:00', 1, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-06T17:00:00', 8, 9, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-06T17:00:00', 5, 4, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-06T17:00:00', 7, 6, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-06T17:00:00', 10, 2, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-07T17:00:00', 1, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-07T17:00:00', 8, 9, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-07T17:00:00', 5, 4, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-07T17:00:00', 7, 6, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-07T17:00:00', 10, 2, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-09T18:30:00', 6, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-09T18:30:00', 5, 1, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-09T18:30:00', 9, 2, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-09T18:30:00', 3, 7, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-09T18:30:00', 4, 10, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-10T18:30:00', 6, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-10T18:30:00', 5, 1, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-10T18:30:00', 9, 2, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-10T18:30:00', 3, 7, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-10T18:30:00', 4, 10, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-11T18:30:00', 6, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-11T18:30:00', 5, 1, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-11T18:30:00', 9, 2, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-11T18:30:00', 3, 7, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-11T18:30:00', 4, 10, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-12T18:30:00', 6, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-12T18:30:00', 2, 8, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-12T18:30:00', 9, 7, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-12T18:30:00', 10, 1, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-12T18:30:00', 3, 4, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-13T17:00:00', 6, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-13T17:00:00', 2, 8, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-13T17:00:00', 9, 7, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-13T17:00:00', 10, 1, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-13T17:00:00', 3, 4, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-14T14:00:00', 3, 4, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-14T17:00:00', 6, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-14T17:00:00', 2, 8, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-14T17:00:00', 9, 7, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-14T17:00:00', 10, 1, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-16T18:30:00', 1, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-16T18:30:00', 8, 5, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-16T18:30:00', 2, 3, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-16T18:30:00', 7, 4, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-16T18:30:00', 10, 6, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-17T18:30:00', 1, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-17T18:30:00', 8, 5, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-17T18:30:00', 2, 3, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-17T18:30:00', 7, 4, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-17T18:30:00', 10, 6, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-18T18:30:00', 1, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-18T18:30:00', 8, 5, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-18T18:30:00', 2, 3, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-18T18:30:00', 7, 4, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-18T18:30:00', 10, 6, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-19T18:30:00', 6, 1, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-19T18:30:00', 7, 8, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-19T18:30:00', 9, 10, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-19T18:30:00', 3, 5, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-19T18:30:00', 4, 2, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-20T17:00:00', 6, 1, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-20T17:00:00', 7, 8, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-20T17:00:00', 9, 10, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-20T17:00:00', 3, 5, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-20T17:00:00', 4, 2, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-21T14:00:00', 3, 5, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-21T17:00:00', 6, 1, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-21T17:00:00', 7, 8, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-21T17:00:00', 9, 10, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-21T17:00:00', 4, 2, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-23T18:30:00', 6, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-23T18:30:00', 5, 7, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-23T18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-23T18:30:00', 3, 10, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-23T18:30:00', 4, 1, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-24T18:30:00', 6, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-24T18:30:00', 5, 7, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-24T18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-24T18:30:00', 3, 10, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-24T18:30:00', 4, 1, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-25T18:30:00', 6, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-25T18:30:00', 5, 7, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-25T18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-25T18:30:00', 3, 10, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-25T18:30:00', 4, 1, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-26T18:30:00', 1, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-26T18:30:00', 8, 4, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-26T18:30:00', 5, 6, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-26T18:30:00', 2, 9, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-26T18:30:00', 7, 3, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-27T17:00:00', 1, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-27T17:00:00', 8, 4, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-27T17:00:00', 5, 6, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-27T17:00:00', 2, 9, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-27T17:00:00', 7, 3, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-28T17:00:00', 1, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-28T17:00:00', 8, 4, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-28T17:00:00', 5, 6, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-28T17:00:00', 2, 9, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-28T17:00:00', 7, 3, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-30T18:30:00', 1, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-30T18:30:00', 7, 2, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-30T18:30:00', 10, 8, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-30T18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-06-30T18:30:00', 4, 9, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-01T18:30:00', 1, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-01T18:30:00', 7, 2, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-01T18:30:00', 10, 8, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-01T18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-01T18:30:00', 4, 9, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-02T18:30:00', 1, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-02T18:30:00', 7, 2, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-02T18:30:00', 10, 8, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-02T18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-02T18:30:00', 4, 9, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-03T18:30:00', 6, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-03T18:30:00', 8, 2, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-03T18:30:00', 9, 5, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-03T18:30:00', 10, 7, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-03T18:30:00', 3, 1, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-04T18:00:00', 6, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-04T18:00:00', 8, 2, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-04T18:00:00', 9, 5, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-04T18:00:00', 10, 7, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-04T18:00:00', 3, 1, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-05T14:00:00', 3, 1, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-05T18:00:00', 6, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-05T18:00:00', 8, 2, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-05T18:00:00', 9, 5, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-05T18:00:00', 10, 7, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-07T18:30:00', 1, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-07T18:30:00', 5, 10, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-07T18:30:00', 2, 6, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-07T18:30:00', 9, 3, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-07T18:30:00', 4, 7, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-08T18:30:00', 1, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-08T18:30:00', 5, 10, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-08T18:30:00', 2, 6, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-08T18:30:00', 9, 3, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-08T18:30:00', 4, 7, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-09T18:30:00', 1, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-09T18:30:00', 5, 10, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-09T18:30:00', 2, 6, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-09T18:30:00', 9, 3, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-09T18:30:00', 4, 7, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-16T18:30:00', 6, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-16T18:30:00', 8, 10, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-16T18:30:00', 2, 5, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-16T18:30:00', 7, 1, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-16T18:30:00', 4, 3, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-17T18:30:00', 6, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-17T18:30:00', 8, 10, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-17T18:30:00', 2, 5, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-17T18:30:00', 7, 1, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-17T18:30:00', 4, 3, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-18T18:00:00', 6, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-18T18:00:00', 8, 10, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-18T18:00:00', 2, 5, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-18T18:00:00', 7, 1, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-18T18:00:00', 4, 3, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-19T18:00:00', 6, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-19T18:00:00', 8, 10, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-19T18:00:00', 2, 5, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-19T18:00:00', 7, 1, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-19T18:00:00', 4, 3, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-21T18:30:00', 6, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-21T18:30:00', 5, 8, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-21T18:30:00', 9, 1, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-21T18:30:00', 10, 4, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-21T18:30:00', 3, 2, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-22T18:30:00', 6, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-22T18:30:00', 5, 8, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-22T18:30:00', 9, 1, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-22T18:30:00', 10, 4, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-22T18:30:00', 3, 2, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-23T18:30:00', 6, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-23T18:30:00', 5, 8, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-23T18:30:00', 9, 1, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-23T18:30:00', 10, 4, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-23T18:30:00', 3, 2, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-24T18:30:00', 1, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-24T18:30:00', 8, 7, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-24T18:30:00', 5, 9, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-24T18:30:00', 10, 3, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-24T18:30:00', 4, 6, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-25T18:00:00', 1, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-25T18:00:00', 8, 7, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-25T18:00:00', 5, 9, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-25T18:00:00', 10, 3, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-25T18:00:00', 4, 6, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-26T18:00:00', 1, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-26T18:00:00', 8, 7, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-26T18:00:00', 5, 9, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-26T18:00:00', 10, 3, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-26T18:00:00', 4, 6, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-28T18:30:00', 6, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-28T18:30:00', 8, 1, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-28T18:30:00', 2, 10, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-28T18:30:00', 7, 9, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-28T18:30:00', 4, 5, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-29T18:30:00', 6, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-29T18:30:00', 8, 1, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-29T18:30:00', 2, 10, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-29T18:30:00', 7, 9, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-29T18:30:00', 4, 5, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-30T18:30:00', 6, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-30T18:30:00', 8, 1, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-30T18:30:00', 2, 10, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-30T18:30:00', 7, 9, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-30T18:30:00', 4, 5, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-31T18:30:00', 1, 6, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-31T18:30:00', 5, 2, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-31T18:30:00', 7, 10, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-31T18:30:00', 9, 4, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-07-31T18:30:00', 3, 8, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-01T18:00:00', 1, 6, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-01T18:00:00', 5, 2, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-01T18:00:00', 7, 10, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-01T18:00:00', 9, 4, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-01T18:00:00', 3, 8, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-02T14:00:00', 3, 8, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-02T18:00:00', 1, 6, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-02T18:00:00', 5, 2, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-02T18:00:00', 7, 10, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-02T18:00:00', 9, 4, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-04T18:30:00', 1, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-04T18:30:00', 8, 6, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-04T18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-04T18:30:00', 2, 4, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-04T18:30:00', 10, 9, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-05T18:30:00', 1, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-05T18:30:00', 8, 6, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-05T18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-05T18:30:00', 2, 4, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-05T18:30:00', 10, 9, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-06T18:30:00', 1, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-06T18:30:00', 8, 6, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-06T18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-06T18:30:00', 2, 4, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-06T18:30:00', 10, 9, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-07T18:30:00', 6, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-07T18:30:00', 2, 1, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-07T18:30:00', 7, 8, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-07T18:30:00', 9, 5, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-07T18:30:00', 4, 3, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-08T18:00:00', 6, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-08T18:00:00', 2, 1, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-08T18:00:00', 7, 8, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-08T18:00:00', 9, 5, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-08T18:00:00', 4, 3, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-09T18:00:00', 6, 10, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-09T18:00:00', 2, 1, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-09T18:00:00', 7, 8, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-09T18:00:00', 9, 5, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-09T18:00:00', 4, 3, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-11T18:30:00', 1, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-11T18:30:00', 8, 5, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-11T18:30:00', 7, 9, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-11T18:30:00', 10, 2, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-11T18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-12T18:30:00', 1, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-12T18:30:00', 8, 5, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-12T18:30:00', 7, 9, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-12T18:30:00', 10, 2, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-12T18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-13T18:30:00', 1, 4, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-13T18:30:00', 8, 5, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-13T18:30:00', 7, 9, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-13T18:30:00', 10, 2, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-13T18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-14T18:30:00', 6, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-14T18:30:00', 5, 7, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-14T18:30:00', 2, 4, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-14T18:30:00', 9, 3, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-14T18:30:00', 10, 1, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-15T18:00:00', 6, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-15T18:00:00', 5, 7, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-15T18:00:00', 2, 4, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-15T18:00:00', 9, 3, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-15T18:00:00', 10, 1, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-16T18:00:00', 6, 8, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-16T18:00:00', 5, 7, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-16T18:00:00', 2, 4, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-16T18:00:00', 9, 3, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-16T18:00:00', 10, 1, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-18T18:30:00', 6, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-18T18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-18T18:30:00', 2, 8, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-18T18:30:00', 7, 1, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-18T18:30:00', 4, 10, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-19T18:30:00', 6, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-19T18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-19T18:30:00', 2, 8, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-19T18:30:00', 7, 1, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-19T18:30:00', 4, 10, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-20T18:30:00', 6, 9, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-20T18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-20T18:30:00', 2, 8, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-20T18:30:00', 7, 1, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-20T18:30:00', 4, 10, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-21T18:30:00', 1, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-21T18:30:00', 8, 9, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-21T18:30:00', 7, 2, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-21T18:30:00', 3, 10, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-21T18:30:00', 4, 6, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-22T18:00:00', 1, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-22T18:00:00', 8, 9, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-22T18:00:00', 7, 2, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-22T18:00:00', 3, 10, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-22T18:00:00', 4, 6, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-23T14:00:00', 3, 10, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-23T18:00:00', 1, 5, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-23T18:00:00', 8, 9, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-23T18:00:00', 7, 2, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-23T18:00:00', 4, 6, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-25T18:30:00', 6, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-25T18:30:00', 8, 4, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-25T18:30:00', 9, 1, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-25T18:30:00', 10, 5, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-25T18:30:00', 3, 2, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-26T18:30:00', 6, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-26T18:30:00', 8, 4, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-26T18:30:00', 9, 1, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-26T18:30:00', 10, 5, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-26T18:30:00', 3, 2, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-27T18:30:00', 6, 7, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-27T18:30:00', 8, 4, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-27T18:30:00', 9, 1, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-27T18:30:00', 10, 5, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-27T18:30:00', 3, 2, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-28T18:30:00', 1, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-28T18:30:00', 5, 6, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-28T18:30:00', 2, 9, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-28T18:30:00', 10, 8, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-28T18:30:00', 4, 7, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-29T18:00:00', 1, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-29T18:00:00', 5, 6, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-29T18:00:00', 2, 9, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-29T18:00:00', 10, 8, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-29T18:00:00', 4, 7, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-30T18:00:00', 1, 3, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-30T18:00:00', 5, 6, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-30T18:00:00', 2, 9, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-30T18:00:00', 10, 8, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-08-30T18:00:00', 4, 7, 5, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-01T18:30:00', 1, 6, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-01T18:30:00', 2, 5, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-01T18:30:00', 10, 7, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-01T18:30:00', 4, 9, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-01T18:30:00', 3, 8, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-02T18:30:00', 1, 6, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-02T18:30:00', 2, 5, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-02T18:30:00', 10, 7, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-02T18:30:00', 4, 9, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-02T18:30:00', 3, 8, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-03T18:30:00', 1, 6, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-03T18:30:00', 2, 5, 3, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-03T18:30:00', 10, 7, 4, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-03T18:30:00', 4, 9, 7, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-03T18:30:00', 3, 8, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-04T18:30:00', 6, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-04T18:30:00', 8, 1, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-04T18:30:00', 5, 4, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-04T18:30:00', 10, 9, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-04T18:30:00', 3, 7, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-05T17:00:00', 6, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-05T17:00:00', 8, 1, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-05T17:00:00', 5, 4, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-05T17:00:00', 10, 9, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-05T17:00:00', 3, 7, 9, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-06T14:00:00', 6, 2, 1, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-06T14:00:00', 8, 1, 2, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-06T14:00:00', 5, 4, 6, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-06T14:00:00', 10, 9, 8, 'UPCOMING', NOW(), NOW());
-INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES ('2026-09-06T14:00:00', 3, 7, 9, 'UPCOMING', NOW(), NOW());
+-- ========================================
+-- USERS 테이블 INSERT (10명)
+-- ========================================
+INSERT INTO users (id, status, email, nickname, onboarding_completed, created_at, updated_at) VALUES
+  (1, 'ACTIVATE', 'test1@test.com', '테스트유저1', false, NOW(), NOW()),
+  (2, 'ACTIVATE', 'test2@test.com', '테스트유저2', false, NOW(), NOW()),
+  (3, 'ACTIVATE', 'test3@test.com', '테스트유저3', false, NOW(), NOW()),
+  (4, 'ACTIVATE', 'test4@test.com', '테스트유저4', false, NOW(), NOW()),
+  (5, 'ACTIVATE', 'test5@test.com', '테스트유저5', false, NOW(), NOW()),
+  (6, 'ACTIVATE', 'admin@test.com', '관리자', false, NOW(), NOW()),
+  (7, 'ACTIVATE', 'dev@test.com', '개발자', false, NOW(), NOW()),
+  (8, 'ACTIVATE', 'tester@test.com', '테스터', false, NOW(), NOW()),
+  (9, 'ACTIVATE', 'demo@test.com', '데모유저', false, NOW(), NOW()),
+  (10, 'ACTIVATE', 'guest@test.com', '게스트', false, NOW(), NOW());
+
+-- ========================================
+-- DEV_USERS 테이블 INSERT (비밀번호: 1234)
+-- bcrypt hash: $2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e
+-- ========================================
+INSERT INTO dev_users (id, login_id, password_hash, user_id, created_at, updated_at) VALUES
+  (1, 'test1', '$2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e', 1, NOW(), NOW()),
+  (2, 'test2', '$2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e', 2, NOW(), NOW()),
+  (3, 'test3', '$2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e', 3, NOW(), NOW()),
+  (4, 'test4', '$2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e', 4, NOW(), NOW()),
+  (5, 'test5', '$2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e', 5, NOW(), NOW()),
+  (6, 'admin', '$2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e', 6, NOW(), NOW()),
+  (7, 'dev', '$2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e', 7, NOW(), NOW()),
+  (8, 'tester', '$2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e', 8, NOW(), NOW()),
+  (9, 'demo', '$2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e', 9, NOW(), NOW()),
+  (10, 'guest', '$2a$12$3e9.mC5v.Ho.fRz5O.ppPe3ND3CMLjzQcaiPPHfjM4OvS6t/JAu9e', 10, NOW(), NOW());
+
+-- Sequence 업데이트
+SELECT setval('users_id_seq', 10);
+SELECT setval('dev_users_id_seq', 10);
+
+-- ========================================
+-- MATCHES 테이블 INSERT (2월 15일 ~ 4월 15일, 매일 5경기)
+-- ENDED: 과거 경기, ON_SALE: 현재 판매중, UPCOMING: 예정
+-- ========================================
+-- MATCHES 테이블 INSERT (3월 1일 ~ 5월 4일, 매일 5경기)
+-- ON_SALE: 3/1~3/7, UPCOMING: 3/8~5/4
+-- ========================================
+INSERT INTO matches (match_at, home_club_id, away_club_id, stadium_id, sale_status, created_at, updated_at) VALUES
+  -- 3월 1일 (토) - ON_SALE
+  ('2026-03-01 14:00:00', 1, 2, 1, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-01 14:00:00', 3, 4, 9, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-01 14:00:00', 5, 6, 6, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-01 14:00:00', 7, 8, 4, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-01 14:00:00', 9, 10, 7, 'ON_SALE', NOW(), NOW()),
+  -- 3월 2일 (일) - ON_SALE
+  ('2026-03-02 14:00:00', 2, 1, 3, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-02 14:00:00', 4, 3, 5, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-02 14:00:00', 6, 5, 1, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-02 14:00:00', 8, 7, 2, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-02 14:00:00', 10, 9, 8, 'ON_SALE', NOW(), NOW()),
+  -- 3월 3일 (월) - ON_SALE
+  ('2026-03-03 18:30:00', 1, 3, 1, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-03 18:30:00', 2, 4, 3, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-03 18:30:00', 5, 7, 6, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-03 18:30:00', 6, 8, 1, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-03 18:30:00', 9, 10, 7, 'ON_SALE', NOW(), NOW()),
+  -- 3월 4일 (화) - ON_SALE
+  ('2026-03-04 18:30:00', 3, 1, 9, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-04 18:30:00', 4, 2, 5, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-04 18:30:00', 7, 5, 4, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-04 18:30:00', 8, 6, 2, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-04 18:30:00', 10, 9, 8, 'ON_SALE', NOW(), NOW()),
+  -- 3월 5일 (수) - ON_SALE
+  ('2026-03-05 18:30:00', 1, 4, 1, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-05 18:30:00', 2, 5, 3, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-05 18:30:00', 3, 6, 9, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-05 18:30:00', 7, 10, 4, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-05 18:30:00', 8, 9, 2, 'ON_SALE', NOW(), NOW()),
+  -- 3월 6일 (목) - ON_SALE
+  ('2026-03-06 18:30:00', 4, 1, 5, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-06 18:30:00', 5, 2, 6, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-06 18:30:00', 6, 3, 1, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-06 18:30:00', 10, 7, 8, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-06 18:30:00', 9, 8, 7, 'ON_SALE', NOW(), NOW()),
+  -- 3월 7일 (금) - ON_SALE
+  ('2026-03-07 18:30:00', 1, 5, 1, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-07 18:30:00', 2, 6, 3, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-07 18:30:00', 3, 7, 9, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-07 18:30:00', 4, 8, 5, 'ON_SALE', NOW(), NOW()),
+  ('2026-03-07 18:30:00', 9, 10, 7, 'ON_SALE', NOW(), NOW()),
+  -- 3월 8일 (토) - UPCOMING
+  ('2026-03-08 14:00:00', 5, 1, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-08 14:00:00', 6, 2, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-08 14:00:00', 7, 3, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-08 14:00:00', 8, 4, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-08 14:00:00', 10, 9, 8, 'UPCOMING', NOW(), NOW()),
+  -- 3월 9일 (일) - UPCOMING
+  ('2026-03-09 14:00:00', 1, 6, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-09 14:00:00', 2, 7, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-09 14:00:00', 3, 8, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-09 14:00:00', 4, 9, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-09 14:00:00', 5, 10, 6, 'UPCOMING', NOW(), NOW()),
+  -- 3월 10일 (월) - UPCOMING
+  ('2026-03-10 18:30:00', 6, 1, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-10 18:30:00', 7, 2, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-10 18:30:00', 8, 3, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-10 18:30:00', 9, 4, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-10 18:30:00', 10, 5, 8, 'UPCOMING', NOW(), NOW()),
+  -- 3월 11일 (화) - UPCOMING
+  ('2026-03-11 18:30:00', 1, 7, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-11 18:30:00', 2, 8, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-11 18:30:00', 3, 9, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-11 18:30:00', 4, 10, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-11 18:30:00', 5, 6, 6, 'UPCOMING', NOW(), NOW()),
+  -- 3월 12일 (수) - UPCOMING
+  ('2026-03-12 18:30:00', 7, 1, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-12 18:30:00', 8, 2, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-12 18:30:00', 9, 3, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-12 18:30:00', 10, 4, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-12 18:30:00', 6, 5, 1, 'UPCOMING', NOW(), NOW()),
+  -- 3월 13일 (목) - UPCOMING
+  ('2026-03-13 18:30:00', 1, 8, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-13 18:30:00', 2, 9, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-13 18:30:00', 3, 10, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-13 18:30:00', 4, 5, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-13 18:30:00', 6, 7, 1, 'UPCOMING', NOW(), NOW()),
+  -- 3월 14일 (금) - UPCOMING
+  ('2026-03-14 18:30:00', 8, 1, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-14 18:30:00', 9, 2, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-14 18:30:00', 10, 3, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-14 18:30:00', 5, 4, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-14 18:30:00', 7, 6, 4, 'UPCOMING', NOW(), NOW()),
+  -- 3월 15일 (토) - UPCOMING
+  ('2026-03-15 14:00:00', 1, 9, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-15 14:00:00', 2, 10, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-15 14:00:00', 3, 5, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-15 14:00:00', 4, 6, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-15 14:00:00', 7, 8, 4, 'UPCOMING', NOW(), NOW()),
+  -- 3월 16일 (일) - UPCOMING
+  ('2026-03-16 14:00:00', 9, 1, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-16 14:00:00', 10, 2, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-16 14:00:00', 5, 3, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-16 14:00:00', 6, 4, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-16 14:00:00', 8, 7, 2, 'UPCOMING', NOW(), NOW()),
+  -- 3월 17일 (월) - UPCOMING
+  ('2026-03-17 18:30:00', 1, 10, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-17 18:30:00', 2, 5, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-17 18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-17 18:30:00', 4, 7, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-17 18:30:00', 8, 9, 2, 'UPCOMING', NOW(), NOW()),
+  -- 3월 18일 (화) - UPCOMING
+  ('2026-03-18 18:30:00', 10, 1, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-18 18:30:00', 5, 2, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-18 18:30:00', 6, 3, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-18 18:30:00', 7, 4, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-18 18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW()),
+  -- 3월 19일 (수) - UPCOMING
+  ('2026-03-19 18:30:00', 1, 2, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-19 18:30:00', 3, 4, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-19 18:30:00', 5, 6, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-19 18:30:00', 7, 8, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-19 18:30:00', 9, 10, 7, 'UPCOMING', NOW(), NOW()),
+  -- 3월 20일 (목) - UPCOMING
+  ('2026-03-20 18:30:00', 2, 1, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-20 18:30:00', 4, 3, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-20 18:30:00', 6, 5, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-20 18:30:00', 8, 7, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-20 18:30:00', 10, 9, 8, 'UPCOMING', NOW(), NOW()),
+  -- 3월 21일 (금) - UPCOMING
+  ('2026-03-21 18:30:00', 1, 3, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-21 18:30:00', 2, 4, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-21 18:30:00', 5, 7, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-21 18:30:00', 6, 8, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-21 18:30:00', 9, 10, 7, 'UPCOMING', NOW(), NOW()),
+  -- 3월 22일 (토) - UPCOMING
+  ('2026-03-22 14:00:00', 3, 1, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-22 14:00:00', 4, 2, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-22 14:00:00', 7, 5, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-22 14:00:00', 8, 6, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-22 14:00:00', 10, 9, 8, 'UPCOMING', NOW(), NOW()),
+  -- 3월 23일 (일) - UPCOMING
+  ('2026-03-23 14:00:00', 1, 4, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-23 14:00:00', 2, 5, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-23 14:00:00', 3, 6, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-23 14:00:00', 7, 10, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-23 14:00:00', 8, 9, 2, 'UPCOMING', NOW(), NOW()),
+  -- 3월 24일 (월) - UPCOMING
+  ('2026-03-24 18:30:00', 4, 1, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-24 18:30:00', 5, 2, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-24 18:30:00', 6, 3, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-24 18:30:00', 10, 7, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-24 18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW()),
+  -- 3월 25일 (화) - UPCOMING
+  ('2026-03-25 18:30:00', 1, 5, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-25 18:30:00', 2, 6, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-25 18:30:00', 3, 7, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-25 18:30:00', 4, 8, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-25 18:30:00', 9, 10, 7, 'UPCOMING', NOW(), NOW()),
+  -- 3월 26일 (수) - UPCOMING
+  ('2026-03-26 18:30:00', 5, 1, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-26 18:30:00', 6, 2, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-26 18:30:00', 7, 3, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-26 18:30:00', 8, 4, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-26 18:30:00', 10, 9, 8, 'UPCOMING', NOW(), NOW()),
+  -- 3월 27일 (목) - UPCOMING
+  ('2026-03-27 18:30:00', 1, 6, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-27 18:30:00', 2, 7, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-27 18:30:00', 3, 8, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-27 18:30:00', 4, 9, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-27 18:30:00', 5, 10, 6, 'UPCOMING', NOW(), NOW()),
+  -- 3월 28일 (금) - UPCOMING
+  ('2026-03-28 18:30:00', 6, 1, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-28 18:30:00', 7, 2, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-28 18:30:00', 8, 3, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-28 18:30:00', 9, 4, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-28 18:30:00', 10, 5, 8, 'UPCOMING', NOW(), NOW()),
+  -- 3월 29일 (토) - UPCOMING
+  ('2026-03-29 14:00:00', 1, 7, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-29 14:00:00', 2, 8, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-29 14:00:00', 3, 9, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-29 14:00:00', 4, 10, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-29 14:00:00', 5, 6, 6, 'UPCOMING', NOW(), NOW()),
+  -- 3월 30일 (일) - UPCOMING
+  ('2026-03-30 14:00:00', 7, 1, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-30 14:00:00', 8, 2, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-30 14:00:00', 9, 3, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-30 14:00:00', 10, 4, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-30 14:00:00', 6, 5, 1, 'UPCOMING', NOW(), NOW()),
+  -- 3월 31일 (월) - UPCOMING
+  ('2026-03-31 18:30:00', 1, 8, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-31 18:30:00', 2, 9, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-31 18:30:00', 3, 10, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-31 18:30:00', 4, 5, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-03-31 18:30:00', 6, 7, 1, 'UPCOMING', NOW(), NOW()),
+  -- 4월 1일 (화) - UPCOMING
+  ('2026-04-01 18:30:00', 8, 1, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-01 18:30:00', 9, 2, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-01 18:30:00', 10, 3, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-01 18:30:00', 5, 4, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-01 18:30:00', 7, 6, 4, 'UPCOMING', NOW(), NOW()),
+  -- 4월 2일 (수) - UPCOMING
+  ('2026-04-02 18:30:00', 1, 9, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-02 18:30:00', 2, 10, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-02 18:30:00', 3, 5, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-02 18:30:00', 4, 6, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-02 18:30:00', 7, 8, 4, 'UPCOMING', NOW(), NOW()),
+  -- 4월 3일 (목) - UPCOMING
+  ('2026-04-03 18:30:00', 9, 1, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-03 18:30:00', 10, 2, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-03 18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-03 18:30:00', 6, 4, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-03 18:30:00', 8, 7, 2, 'UPCOMING', NOW(), NOW()),
+  -- 4월 4일 (금) - UPCOMING
+  ('2026-04-04 18:30:00', 1, 10, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-04 18:30:00', 2, 5, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-04 18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-04 18:30:00', 4, 7, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-04 18:30:00', 8, 9, 2, 'UPCOMING', NOW(), NOW()),
+  -- 4월 5일 (토) - UPCOMING
+  ('2026-04-05 14:00:00', 10, 1, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-05 14:00:00', 5, 2, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-05 14:00:00', 6, 3, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-05 14:00:00', 7, 4, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-05 14:00:00', 9, 8, 7, 'UPCOMING', NOW(), NOW()),
+  -- 4월 6일 (일) - UPCOMING
+  ('2026-04-06 14:00:00', 1, 2, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-06 14:00:00', 3, 4, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-06 14:00:00', 5, 6, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-06 14:00:00', 7, 8, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-06 14:00:00', 9, 10, 7, 'UPCOMING', NOW(), NOW()),
+  -- 4월 7일 (월) - UPCOMING
+  ('2026-04-07 18:30:00', 2, 1, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-07 18:30:00', 4, 3, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-07 18:30:00', 6, 5, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-07 18:30:00', 8, 7, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-07 18:30:00', 10, 9, 8, 'UPCOMING', NOW(), NOW()),
+  -- 4월 8일 (화) - UPCOMING
+  ('2026-04-08 18:30:00', 1, 3, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-08 18:30:00', 2, 4, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-08 18:30:00', 5, 7, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-08 18:30:00', 6, 8, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-08 18:30:00', 9, 10, 7, 'UPCOMING', NOW(), NOW()),
+  -- 4월 9일 (수) - UPCOMING
+  ('2026-04-09 18:30:00', 3, 1, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-09 18:30:00', 4, 2, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-09 18:30:00', 7, 5, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-09 18:30:00', 8, 6, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-09 18:30:00', 10, 9, 8, 'UPCOMING', NOW(), NOW()),
+  -- 4월 10일 (목) - UPCOMING
+  ('2026-04-10 18:30:00', 1, 4, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-10 18:30:00', 2, 5, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-10 18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-10 18:30:00', 7, 10, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-10 18:30:00', 8, 9, 2, 'UPCOMING', NOW(), NOW()),
+  -- 4월 11일 (금) - UPCOMING
+  ('2026-04-11 18:30:00', 4, 1, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-11 18:30:00', 5, 2, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-11 18:30:00', 6, 3, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-11 18:30:00', 10, 7, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-11 18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW()),
+  -- 4월 12일 (토) - UPCOMING
+  ('2026-04-12 14:00:00', 1, 5, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-12 14:00:00', 2, 6, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-12 14:00:00', 3, 7, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-12 14:00:00', 4, 8, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-12 14:00:00', 9, 10, 7, 'UPCOMING', NOW(), NOW()),
+  -- 4월 13일 (일) - UPCOMING
+  ('2026-04-13 14:00:00', 5, 1, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-13 14:00:00', 6, 2, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-13 14:00:00', 7, 3, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-13 14:00:00', 8, 4, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-13 14:00:00', 10, 9, 8, 'UPCOMING', NOW(), NOW()),
+  -- 4월 14일 (월) - UPCOMING
+  ('2026-04-14 18:30:00', 1, 6, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-14 18:30:00', 2, 7, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-14 18:30:00', 3, 8, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-14 18:30:00', 4, 9, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-14 18:30:00', 5, 10, 6, 'UPCOMING', NOW(), NOW()),
+  -- 4월 15일 (화) - UPCOMING
+  ('2026-04-15 18:30:00', 6, 1, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-15 18:30:00', 7, 2, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-15 18:30:00', 8, 3, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-15 18:30:00', 9, 4, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-15 18:30:00', 10, 5, 8, 'UPCOMING', NOW(), NOW()),
+  -- 4월 16일 (수) - UPCOMING
+  ('2026-04-16 18:30:00', 1, 7, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-16 18:30:00', 2, 8, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-16 18:30:00', 3, 9, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-16 18:30:00', 4, 10, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-16 18:30:00', 5, 6, 6, 'UPCOMING', NOW(), NOW()),
+  -- 4월 17일 (목) - UPCOMING
+  ('2026-04-17 18:30:00', 7, 1, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-17 18:30:00', 8, 2, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-17 18:30:00', 9, 3, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-17 18:30:00', 10, 4, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-17 18:30:00', 6, 5, 1, 'UPCOMING', NOW(), NOW()),
+  -- 4월 18일 (금) - UPCOMING
+  ('2026-04-18 18:30:00', 1, 8, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-18 18:30:00', 2, 9, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-18 18:30:00', 3, 10, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-18 18:30:00', 4, 5, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-18 18:30:00', 6, 7, 1, 'UPCOMING', NOW(), NOW()),
+  -- 4월 19일 (토) - UPCOMING
+  ('2026-04-19 14:00:00', 8, 1, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-19 14:00:00', 9, 2, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-19 14:00:00', 10, 3, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-19 14:00:00', 5, 4, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-19 14:00:00', 7, 6, 4, 'UPCOMING', NOW(), NOW()),
+  -- 4월 20일 (일) - UPCOMING
+  ('2026-04-20 14:00:00', 1, 9, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-20 14:00:00', 2, 10, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-20 14:00:00', 3, 5, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-20 14:00:00', 4, 6, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-20 14:00:00', 7, 8, 4, 'UPCOMING', NOW(), NOW()),
+  -- 4월 21일 (월) - UPCOMING
+  ('2026-04-21 18:30:00', 9, 1, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-21 18:30:00', 10, 2, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-21 18:30:00', 5, 3, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-21 18:30:00', 6, 4, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-21 18:30:00', 8, 7, 2, 'UPCOMING', NOW(), NOW()),
+  -- 4월 22일 (화) - UPCOMING
+  ('2026-04-22 18:30:00', 1, 10, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-22 18:30:00', 2, 5, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-22 18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-22 18:30:00', 4, 7, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-22 18:30:00', 8, 9, 2, 'UPCOMING', NOW(), NOW()),
+  -- 4월 23일 (수) - UPCOMING
+  ('2026-04-23 18:30:00', 10, 1, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-23 18:30:00', 5, 2, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-23 18:30:00', 6, 3, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-23 18:30:00', 7, 4, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-23 18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW()),
+  -- 4월 24일 (목) - UPCOMING
+  ('2026-04-24 18:30:00', 1, 2, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-24 18:30:00', 3, 4, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-24 18:30:00', 5, 6, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-24 18:30:00', 7, 8, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-24 18:30:00', 9, 10, 7, 'UPCOMING', NOW(), NOW()),
+  -- 4월 25일 (금) - UPCOMING
+  ('2026-04-25 18:30:00', 2, 1, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-25 18:30:00', 4, 3, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-25 18:30:00', 6, 5, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-25 18:30:00', 8, 7, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-25 18:30:00', 10, 9, 8, 'UPCOMING', NOW(), NOW()),
+  -- 4월 26일 (토) - UPCOMING
+  ('2026-04-26 14:00:00', 1, 3, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-26 14:00:00', 2, 4, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-26 14:00:00', 5, 7, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-26 14:00:00', 6, 8, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-26 14:00:00', 9, 10, 7, 'UPCOMING', NOW(), NOW()),
+  -- 4월 27일 (일) - UPCOMING
+  ('2026-04-27 14:00:00', 3, 1, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-27 14:00:00', 4, 2, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-27 14:00:00', 7, 5, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-27 14:00:00', 8, 6, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-27 14:00:00', 10, 9, 8, 'UPCOMING', NOW(), NOW()),
+  -- 4월 28일 (월) - UPCOMING
+  ('2026-04-28 18:30:00', 1, 4, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-28 18:30:00', 2, 5, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-28 18:30:00', 3, 6, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-28 18:30:00', 7, 10, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-28 18:30:00', 8, 9, 2, 'UPCOMING', NOW(), NOW()),
+  -- 4월 29일 (화) - UPCOMING
+  ('2026-04-29 18:30:00', 4, 1, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-29 18:30:00', 5, 2, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-29 18:30:00', 6, 3, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-29 18:30:00', 10, 7, 8, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-29 18:30:00', 9, 8, 7, 'UPCOMING', NOW(), NOW()),
+  -- 4월 30일 (수) - UPCOMING
+  ('2026-04-30 18:30:00', 1, 5, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-30 18:30:00', 2, 6, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-30 18:30:00', 3, 7, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-30 18:30:00', 4, 8, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-04-30 18:30:00', 9, 10, 7, 'UPCOMING', NOW(), NOW()),
+  -- 5월 1일 (목) - UPCOMING
+  ('2026-05-01 14:00:00', 5, 1, 6, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-01 14:00:00', 6, 2, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-01 14:00:00', 7, 3, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-01 14:00:00', 8, 4, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-01 14:00:00', 10, 9, 8, 'UPCOMING', NOW(), NOW()),
+  -- 5월 2일 (금) - UPCOMING
+  ('2026-05-02 18:30:00', 1, 6, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-02 18:30:00', 2, 7, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-02 18:30:00', 3, 8, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-02 18:30:00', 4, 9, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-02 18:30:00', 5, 10, 6, 'UPCOMING', NOW(), NOW()),
+  -- 5월 3일 (토) - UPCOMING
+  ('2026-05-03 14:00:00', 6, 1, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-03 14:00:00', 7, 2, 4, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-03 14:00:00', 8, 3, 2, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-03 14:00:00', 9, 4, 7, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-03 14:00:00', 10, 5, 8, 'UPCOMING', NOW(), NOW()),
+  -- 5월 4일 (일) - UPCOMING
+  ('2026-05-04 14:00:00', 1, 7, 1, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-04 14:00:00', 2, 8, 3, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-04 14:00:00', 3, 9, 9, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-04 14:00:00', 4, 10, 5, 'UPCOMING', NOW(), NOW()),
+  ('2026-05-04 14:00:00', 5, 6, 6, 'UPCOMING', NOW(), NOW());
