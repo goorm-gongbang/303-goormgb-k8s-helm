@@ -11,13 +11,12 @@ spec:
   generators:
     - list:
         elements:
+          - name: api-gateway
           - name: auth-guard
           - name: order-core
           - name: queue
           - name: recommendation
           - name: seat
-          # 새 서비스 추가 예시:
-          # - name: frontend
   template:
     metadata:
       name: 'dev-{{name}}'
