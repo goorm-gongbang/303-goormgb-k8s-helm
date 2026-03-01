@@ -36,6 +36,13 @@ opentelemetry-collector:
         timeout: 5s
         send_batch_size: 512
 
+      # service.name → service_name 라벨 변환 (OTel 대시보드 호환)
+      transform:
+        metric_statements:
+          - context: datapoint
+            statements:
+              - set(attributes["service_name"], resource.attributes["service.name"])
+
       # Tail-based Sampling
       tail_sampling:
         decision_wait: 10s
@@ -93,7 +100,7 @@ opentelemetry-collector:
           exporters: [otlp/tempo, logging]
         metrics:
           receivers: [otlp]
-          processors: [batch]
+          processors: [transform, batch]
           exporters: [prometheusremotewrite, logging]
         logs:
           receivers: [otlp]
