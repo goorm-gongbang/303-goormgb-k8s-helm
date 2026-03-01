@@ -1,11 +1,7 @@
 # kubeadm - 모니터링 스택 설정
 # Domain: goormgb.space
 # Components: Prometheus, Grafana, Loki, Tempo
-
-# kubeadm 컨트롤 플레인 Endpoints 설정
-kubeadm:
-  enabled: true
-  controlPlaneIP: "192.168.45.123"
+# Note: kubeadm Endpoints는 302-bootstrap에서 관리 (ArgoCD가 Endpoints exclude함)
 
 # Grafana ESO 설정
 grafana:
