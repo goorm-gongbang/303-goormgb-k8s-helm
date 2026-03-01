@@ -1,8 +1,9 @@
 {{- if .Values.istio.gateway.enabled }}
+{{- $gatewayName := .Values.istio.gateway.name | default (printf "%s-gw" (include "java-service.fullname" .)) }}
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
-  name: {{ include "java-service.fullname" . }}-gateway
+  name: {{ $gatewayName }}
   labels:
     {{- include "java-service.labels" . | nindent 4 }}
 spec:
@@ -37,7 +38,7 @@ spec:
   hosts:
     - {{ .Values.istio.gateway.host | quote }}
   gateways:
-    - {{ include "java-service.fullname" . }}-gateway
+    - {{ $gatewayName }}
   http:
     - match:
         - uri:
