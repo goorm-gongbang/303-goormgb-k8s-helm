@@ -42,21 +42,6 @@ spec:
               value: postgresql
             - name: PGDATABASE
               value: {{ .Values.initSchema.database | default "goormgb" }}
-            - name: BACKEND_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgresql-credentials
-                  key: BACKEND_PASSWORD
-            - name: FRONTEND_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgresql-credentials
-                  key: FRONTEND_PASSWORD
-            - name: CLOUD_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgresql-credentials
-                  key: CLOUD_PASSWORD
           command:
             - /bin/sh
             - -c
@@ -67,7 +52,7 @@ spec:
               echo "Database: ${PGDATABASE}"
               echo ""
 
-              echo "[1/3] Waiting for PostgreSQL to be ready..."
+              echo "[1/2] Waiting for PostgreSQL to be ready..."
               until pg_isready -h ${PGHOST} -U ${PGUSER}; do
                 echo "Waiting..."
                 sleep 2
@@ -75,49 +60,9 @@ spec:
               echo "PostgreSQL is ready."
               echo ""
 
-              echo "[2/3] Running init-schema.sql..."
+              echo "[2/2] Running init-schema.sql..."
               psql -h ${PGHOST} -U ${PGUSER} -d ${PGDATABASE} -f /scripts/init-schema.sql
 
-              echo ""
-              echo "[3/3] Creating team users..."
-              psql -h ${PGHOST} -U ${PGUSER} -d ${PGDATABASE} <<EOF
-              -- Backend team user
-              DO \$\$
-              BEGIN
-                IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'backend') THEN
-                  CREATE USER backend WITH PASSWORD '${BACKEND_PASSWORD}';
-                END IF;
-              END \$\$;
-              GRANT ALL PRIVILEGES ON DATABASE ${PGDATABASE} TO backend;
-              GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO backend;
-              GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO backend;
-              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO backend;
-
-              -- Frontend team user (read-only)
-              DO \$\$
-              BEGIN
-                IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'frontend') THEN
-                  CREATE USER frontend WITH PASSWORD '${FRONTEND_PASSWORD}';
-                END IF;
-              END \$\$;
-              GRANT CONNECT ON DATABASE ${PGDATABASE} TO frontend;
-              GRANT SELECT ON ALL TABLES IN SCHEMA public TO frontend;
-              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO frontend;
-
-              -- Cloud team user (admin)
-              DO \$\$
-              BEGIN
-                IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'cloud') THEN
-                  CREATE USER cloud WITH PASSWORD '${CLOUD_PASSWORD}';
-                END IF;
-              END \$\$;
-              GRANT ALL PRIVILEGES ON DATABASE ${PGDATABASE} TO cloud;
-              GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO cloud;
-              GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO cloud;
-              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO cloud;
-              EOF
-
-              echo "Team users created: backend, frontend (read-only), cloud"
               echo ""
               echo "=== Schema Initialization Complete ==="
           volumeMounts:
