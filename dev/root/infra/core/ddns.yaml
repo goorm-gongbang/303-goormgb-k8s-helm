@@ -1,8 +1,8 @@
-# DDNS Route53
+# DDNS Cloudflare
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ddns-route53
+  name: ddns-cloudflare
   namespace: argocd
 spec:
   project: default

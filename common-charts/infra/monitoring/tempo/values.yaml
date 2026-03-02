@@ -7,10 +7,10 @@ tempo:
     resources:
       requests:
         cpu: 50m
-        memory: 128Mi
+        memory: 256Mi
       limits:
-        cpu: 200m
-        memory: 512Mi
+        cpu: 500m
+        memory: 1Gi
 
     # 트레이스 수신 설정
     receivers:

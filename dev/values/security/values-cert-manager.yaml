@@ -12,9 +12,9 @@ tolerations:
 
 email: "212clab@gmail.com"
 
-route53:
-  region: ap-northeast-2
-  hostedZoneID: "Z0444756O5UQIM83AJHO"
+cloudflare:
+  secret:
+    awsSecretKey: dev/infra/cloudflare  # DDNS와 동일한 시크릿 사용
 
 certificates:
   - name: goormgb-tls

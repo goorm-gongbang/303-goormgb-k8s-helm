@@ -49,6 +49,11 @@ istio:
     tls:
       enabled: true
       credentialName: goormgb-tls
+  # Retry policy for connection stability
+  retries:
+    attempts: 3
+    perTryTimeout: "2s"
+    retryOn: "connect-failure,refused-stream,503,reset"
 
 # Spring Boot Actuator health checks
 livenessProbe:
