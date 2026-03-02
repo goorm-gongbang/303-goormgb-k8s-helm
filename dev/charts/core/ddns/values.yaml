@@ -1,29 +1,30 @@
-# DDNS Route53 updater
-# Updates DNS A records via AWS Route53 API
+# DDNS Cloudflare updater
+# Updates DNS A records via Cloudflare API
 
 # 필수 - 환경별로 설정
 domain: ""
-hostedZoneID: ""
+zoneID: ""
 records: []
+
+# DNS record TTL (seconds)
+ttl: 60
 
 # CronJob schedule: every 5 minutes
 schedule: "*/5 * * * *"
 
-# DNS record TTL (seconds) - 낮을수록 IP 변경 시 빠른 반영
-ttl: 60
-
-# AWS credentials - bootstrap-aws.sh 에서 생성됨
+# Cloudflare API credentials
 secret:
-  name: route53-ddns-credentials
+  name: cloudflare-ddns-credentials
 
+# Use lightweight image with curl
 image:
-  repository: amazon/aws-cli
-  tag: "2.22.35"
+  repository: curlimages/curl
+  tag: "8.5.0"
 
 resources:
   requests:
     cpu: 50m
-    memory: 128Mi
+    memory: 64Mi
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 128Mi

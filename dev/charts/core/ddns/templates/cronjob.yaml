@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: ddns-route53-5m-updater
+  name: ddns-cloudflare-updater
   labels:
-    app.kubernetes.io/name: ddns-route53
+    app.kubernetes.io/name: ddns-cloudflare
     app.kubernetes.io/component: infra
 spec:
   schedule: {{ .Values.schedule | quote }}
@@ -29,20 +29,13 @@ spec:
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
               env:
-                - name: AWS_ACCESS_KEY_ID
+                - name: CF_API_TOKEN
                   valueFrom:
                     secretKeyRef:
                       name: {{ .Values.secret.name }}
-                      key: access-key-id
-                - name: AWS_SECRET_ACCESS_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ .Values.secret.name }}
-                      key: secret-access-key
-                - name: AWS_DEFAULT_REGION
-                  value: "ap-northeast-2"
-                - name: HOSTED_ZONE_ID
-                  value: {{ .Values.hostedZoneID | quote }}
+                      key: api-token
+                - name: CF_ZONE_ID
+                  value: {{ .Values.zoneID | quote }}
                 - name: DOMAIN
                   value: {{ .Values.domain | quote }}
               command:
@@ -51,41 +44,60 @@ spec:
                 - |
                   set -e
 
-                  # Primary: ipify, Fallback: AWS checkip
+                  # Get current public IP
                   CURRENT_IP=$(curl -sf --max-time 5 https://api.ipify.org) || \
                   CURRENT_IP=$(curl -sf --max-time 5 https://checkip.amazonaws.com | tr -d '\n') || \
                   CURRENT_IP=""
 
                   if [ -z "$CURRENT_IP" ]; then
-                    echo "ERROR: Failed to get public IP from all sources"
+                    echo "ERROR: Failed to get public IP"
                     exit 1
                   fi
                   echo "Current public IP: $CURRENT_IP"
 
-                  # Build Route53 change batch using heredoc
-                  cat > /tmp/change-batch.json << EOF
-                  {
-                    "Changes": [
-                      {{- $records := .Values.records }}
-                      {{- range $i, $r := $records }}
-                      {{- if $i }},{{ end }}
-                      {
-                        "Action": "UPSERT",
-                        "ResourceRecordSet": {
-                          "Name": "{{ if eq $r "" }}${DOMAIN}{{ else }}{{ $r }}.${DOMAIN}{{ end }}",
-                          "Type": "A",
-                          "TTL": {{ $.Values.ttl | default 300 }},
-                          "ResourceRecords": [{"Value": "${CURRENT_IP}"}]
-                        }
-                      }
-                      {{- end }}
-                    ]
-                  }
-                  EOF
+                  # Records to update
+                  RECORDS="{{ range $i, $r := .Values.records }}{{ if $i }} {{ end }}{{ if eq $r "" }}@{{ else }}{{ $r }}{{ end }}{{ end }}"
 
-                  echo "Updating {{ len .Values.records }} records..."
-                  aws route53 change-resource-record-sets \
-                    --hosted-zone-id "$HOSTED_ZONE_ID" \
-                    --change-batch file:///tmp/change-batch.json
+                  for RECORD in $RECORDS; do
+                    if [ "$RECORD" = "@" ]; then
+                      RECORD_NAME="${DOMAIN}"
+                    else
+                      RECORD_NAME="${RECORD}.${DOMAIN}"
+                    fi
+
+                    echo "Processing: $RECORD_NAME"
+
+                    # Get record ID
+                    RESPONSE=$(curl -sf -X GET \
+                      "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/dns_records?type=A&name=${RECORD_NAME}" \
+                      -H "Authorization: Bearer ${CF_API_TOKEN}" \
+                      -H "Content-Type: application/json")
+
+                    RECORD_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+
+                    if [ -z "$RECORD_ID" ]; then
+                      echo "WARNING: Record not found for $RECORD_NAME, skipping"
+                      continue
+                    fi
+
+                    # Get current IP in Cloudflare
+                    CF_IP=$(echo "$RESPONSE" | grep -o '"content":"[^"]*"' | head -1 | cut -d'"' -f4)
+
+                    if [ "$CF_IP" = "$CURRENT_IP" ]; then
+                      echo "  $RECORD_NAME: IP unchanged ($CURRENT_IP)"
+                      continue
+                    fi
+
+                    echo "  $RECORD_NAME: Updating $CF_IP -> $CURRENT_IP"
+
+                    # Update record
+                    curl -sf -X PATCH \
+                      "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/dns_records/${RECORD_ID}" \
+                      -H "Authorization: Bearer ${CF_API_TOKEN}" \
+                      -H "Content-Type: application/json" \
+                      --data "{\"content\":\"${CURRENT_IP}\",\"ttl\":{{ $.Values.ttl | default 60 }}}" > /dev/null
+
+                    echo "  $RECORD_NAME: Updated!"
+                  done
 
                   echo "DDNS update complete"
