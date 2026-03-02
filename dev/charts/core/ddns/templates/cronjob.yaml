@@ -74,7 +74,7 @@ spec:
                         "ResourceRecordSet": {
                           "Name": "{{ if eq $r "" }}${DOMAIN}{{ else }}{{ $r }}.${DOMAIN}{{ end }}",
                           "Type": "A",
-                          "TTL": 300,
+                          "TTL": {{ .Values.ttl | default 300 }},
                           "ResourceRecords": [{"Value": "${CURRENT_IP}"}]
                         }
                       }
