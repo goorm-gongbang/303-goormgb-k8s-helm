@@ -8,7 +8,11 @@ spec:
   gateways:
     - istio-system/goormgb-gateway
   http:
-    - route:
+    - retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: connect-failure,refused-stream,503,reset
+      route:
         - destination:
             host: argocd-server.argocd.svc.cluster.local
             port:

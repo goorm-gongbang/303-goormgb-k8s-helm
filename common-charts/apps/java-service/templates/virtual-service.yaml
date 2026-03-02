@@ -62,6 +62,10 @@ spec:
         maxAge: {{ .Values.istio.cors.maxAge | default "24h" | quote }}
       {{- end }}
       {{- end }}
+      retries:
+        attempts: {{ .Values.istio.retries.attempts | default 3 }}
+        perTryTimeout: {{ .Values.istio.retries.perTryTimeout | default "2s" }}
+        retryOn: {{ .Values.istio.retries.retryOn | default "connect-failure,refused-stream,503,reset" }}
       route:
         - destination:
             host: {{ include "java-service.fullname" . }}
