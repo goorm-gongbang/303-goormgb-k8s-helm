@@ -8,7 +8,7 @@ replicaCount: 1
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/api-gateway
-  tag: "799248e"
+  tag: "c041ae1"
   pullPolicy: Always
 
 imagePullSecrets:
