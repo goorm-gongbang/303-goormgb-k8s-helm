@@ -61,7 +61,7 @@ main                          # 개발/PR 머지
 | 데이터베이스 | PostgreSQL Pod               | RDS              |
 | 캐시         | Redis Pod                    | ElastiCache      |
 | WAF          | ModSecurity (in-cluster)     | AWS WAF          |
-| DDNS         | Route53 CronJob              | 불필요 (고정 IP) |
+| DDNS         | Cloudflare CronJob           | 불필요 (고정 IP) |
 
 ## 도메인 (임시 도메인!)
 
