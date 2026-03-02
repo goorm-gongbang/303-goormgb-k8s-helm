@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         {{- include "java-service.selectorLabels" . | nindent 8 }}
+        {{- include "java-service.versionLabel" . | nindent 8 }}
         sidecar.istio.io/inject: "{{ .Values.istio.sidecar }}"
     spec:
       {{- with .Values.imagePullSecrets }}
