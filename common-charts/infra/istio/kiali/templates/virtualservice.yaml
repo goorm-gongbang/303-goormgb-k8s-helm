@@ -13,6 +13,10 @@ spec:
     - match:
         - uri:
             prefix: /kiali
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: connect-failure,refused-stream,503,reset
       route:
         - destination:
             host: kiali
