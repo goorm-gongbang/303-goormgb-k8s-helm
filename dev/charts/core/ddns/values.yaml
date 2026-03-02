@@ -9,6 +9,9 @@ records: []
 # CronJob schedule: every 5 minutes
 schedule: "*/5 * * * *"
 
+# DNS record TTL (seconds) - 낮을수록 IP 변경 시 빠른 반영
+ttl: 60
+
 # AWS credentials - bootstrap-aws.sh 에서 생성됨
 secret:
   name: route53-ddns-credentials
