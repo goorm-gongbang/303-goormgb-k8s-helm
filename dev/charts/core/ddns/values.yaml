@@ -12,9 +12,10 @@ ttl: 60
 # CronJob schedule: every 5 minutes
 schedule: "*/5 * * * *"
 
-# Cloudflare API credentials
+# Cloudflare API credentials (from AWS Secrets Manager via ESO)
 secret:
   name: cloudflare-ddns-credentials
+  awsSecretKey: dev/infra/cloudflare
 
 # Use lightweight image with curl
 image:
