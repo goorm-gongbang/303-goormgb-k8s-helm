@@ -110,4 +110,4 @@ kialiVirtualService:
 # Kiali OIDC (Google OAuth) - 비활성화
 oidc:
   enabled: false
-  secretManagerKey: dev/infra/oauth/google
+  secretManagerKey: common/infra/oauth/google
