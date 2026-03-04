@@ -17,6 +17,6 @@ tolerations:
 # SQL 파일: dev/charts/data/postgresql/files/init-schema.sql
 # 실행: kubectl create job manual-init --from=job/postgresql-init-schema -n data
 initSchema:
-  enabled: true
+  enabled: false  # 자동 실행 비활성화 - 수동 실행만 허용
   database: goormgb
     
