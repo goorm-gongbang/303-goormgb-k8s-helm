@@ -5,7 +5,7 @@ replicaCount: 2
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/auth-guard
-  tag: "07ec866"
+  tag: "53c39c3"
   pullPolicy: Always
 
 imagePullSecrets:
