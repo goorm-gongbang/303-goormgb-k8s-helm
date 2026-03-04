@@ -17,6 +17,7 @@ resources:
   # === Data ===
   - infra/data/data.yaml
   - infra/data/cloudbeaver.yaml
+  - infra/data/redisinsight.yaml
 
   # === Istio ===
   - infra/istio/istio.yaml
