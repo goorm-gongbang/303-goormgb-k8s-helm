@@ -11,5 +11,11 @@ spec:
       targetPort: redis
       protocol: TCP
       name: redis
+    {{- if .Values.exporter.enabled }}
+    - port: 9121
+      targetPort: http-metrics
+      protocol: TCP
+      name: http-metrics
+    {{- end }}
   selector:
     app: {{ .Release.Name }}
