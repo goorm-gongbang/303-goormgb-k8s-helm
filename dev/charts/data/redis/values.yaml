@@ -43,24 +43,6 @@ externalSecret:
 nodeSelector: {}
 tolerations: []
 
-# Redis Exporter for Prometheus metrics
-exporter:
-  enabled: true
-  image:
-    repository: oliver006/redis_exporter
-    tag: v1.66.0
-    pullPolicy: IfNotPresent
-  resources:
-    requests:
-      cpu: 10m
-      memory: 32Mi
-    limits:
-      cpu: 100m
-      memory: 64Mi
-  serviceMonitor:
-    enabled: true
-    interval: 30s
-
 probes:
   liveness:
     initialDelaySeconds: 15
