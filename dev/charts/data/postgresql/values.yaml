@@ -76,9 +76,3 @@ probes:
     initialDelaySeconds: 5
     periodSeconds: 5
 
-# ===== Schema & Seed Data Initialization =====
-# SQL 파일: files/init-schema.sql
-# 수동 실행: kubectl create job manual-init --from=job/postgresql-init-schema -n data
-initSchema:
-  enabled: false
-  database: goormgb
