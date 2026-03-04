@@ -8,7 +8,7 @@ grafana:
   eso:
     enabled: true
     secretManagerKey: dev/monitoring/grafana
-    oauthSecretManagerKey: common/infra/oauth/google # 공용 OAuth
+    oauthSecretManagerKey: dev/infra/oauth/google
 
 # ===== Prometheus Stack =====
 kube-prometheus-stack:
@@ -748,7 +748,7 @@ promtail:
 backup:
   enabled: true
   schedule: "0 4 * * *"  # 매일 오전 4시 (UTC) - DB 백업 1시간 후
-  s3Bucket: goormgb-backup
+  s3Bucket: goormgb-backup-dev
   s3Prefix: dev/logs
 
 # ===== Tempo =====
