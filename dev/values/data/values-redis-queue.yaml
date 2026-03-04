@@ -22,6 +22,9 @@ resources:
 service:
   port: 6379
 
+exporter:
+  enabled: true
+
 config:
   maxmemory: 400mb
   maxmemoryPolicy: noeviction  # 메모리 부족 시 에러 (데이터 보존)

@@ -22,6 +22,9 @@ resources:
 service:
   port: 6379
 
+exporter:
+  enabled: true
+
 config:
   maxmemory: 200mb
   maxmemoryPolicy: allkeys-lru  # 메모리 부족 시 오래된 키 삭제
