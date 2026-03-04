@@ -59,6 +59,7 @@ sharedGateway:
     - "cloudbeaver.goormgb.space"
     - "grafana.goormgb.space"
     - "kiali.goormgb.space"
+    - "redisinsight.goormgb.space"
 
 # ===== Kiali =====
 kiali-server:
