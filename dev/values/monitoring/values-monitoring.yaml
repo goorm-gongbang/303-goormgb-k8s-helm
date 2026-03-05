@@ -180,6 +180,11 @@ kube-prometheus-stack:
             options:
               path: /var/lib/grafana/dashboards/infra-team-observability-templates
 
+    # ConfigMap 기반 커스텀 대시보드 매핑 (파일 분리)
+    dashboardsConfigMaps:
+      dev-team-observability: grafana-dashboards-dev-team-observability
+      infra-team-observability: grafana-dashboards-infra-team-observability
+
     # Grafana.com 대시보드 매핑
     dashboards:
       dev-team-observability: {}
@@ -488,13 +493,6 @@ kube-prometheus-stack:
         platform-cluster-overview:
           gnetId: 7249
           revision: 1
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
-
-        platform-etcd-health:
-          gnetId: 3070
-          revision: 3
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
