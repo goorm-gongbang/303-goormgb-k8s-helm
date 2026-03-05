@@ -187,8 +187,6 @@ kube-prometheus-stack:
 
     # Grafana.com 대시보드 매핑
     dashboards:
-      dev-team-observability: {}
-
       dev-team-observability-templates:
         service-pod-health:
           gnetId: 17125
@@ -479,8 +477,6 @@ kube-prometheus-stack:
               "version": 1,
               "weekStart": ""
             }
-
-      infra-team-observability: {}
 
       infra-team-observability-templates:
         platform-node-capacity:
