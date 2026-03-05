@@ -750,6 +750,8 @@ backup:
   schedule: "0 4 * * *"  # 매일 오전 4시 (UTC) - DB 백업 1시간 후
   s3Bucket: goormgb-backup-dev
   s3Prefix: dev/logs
+  externalSecret:
+    remoteRef: dev/infra/s3-backup  # PostgreSQL 백업과 동일한 credentials
 
 # ===== Tempo =====
 tempo:
