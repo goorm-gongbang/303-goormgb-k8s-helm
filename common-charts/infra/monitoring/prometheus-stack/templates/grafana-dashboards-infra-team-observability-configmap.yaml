@@ -1,4 +1,4 @@
-{{- if .Values.kube-prometheus-stack.grafana.enabled }}
+{{- if index .Values "kube-prometheus-stack" "grafana" "enabled" }}
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/infra-team-observability/*.json" -}}
 apiVersion: v1
 kind: ConfigMap
