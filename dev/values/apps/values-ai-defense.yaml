@@ -4,6 +4,20 @@
 
 replicaCount: 1
 
+# Uvicorn 실행 명령어 (root-path 설정 for /ai prefix)
+command:
+  - "python"
+args:
+  - "-m"
+  - "uvicorn"
+  - "traffic_master_ai.defense.api.main:app"
+  - "--host"
+  - "0.0.0.0"
+  - "--port"
+  - "8000"
+  - "--root-path"
+  - "/ai"
+
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/ai
   tag: "latest"
