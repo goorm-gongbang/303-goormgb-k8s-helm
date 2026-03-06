@@ -227,22 +227,24 @@
         "type": "query"
       },
       {
+        "allValue": ".+",
         "current": {
-          "text": "java-service",
-          "value": "java-service"
+          "text": "All",
+          "value": "$__all"
         },
-        "hide": 2,
+        "datasource": "Loki",
+        "definition": "label_values(container)",
+        "hide": 0,
+        "includeAll": true,
         "label": "Container",
+        "multi": true,
         "name": "container",
-        "options": [
-          {
-            "selected": true,
-            "text": "java-service",
-            "value": "java-service"
-          }
-        ],
-        "query": "java-service",
-        "type": "custom"
+        "options": [],
+        "query": "label_values(container)",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
       },
       {
         "allValue": "ERROR|WARN|INFO",
