@@ -10,10 +10,8 @@ metadata:
 spec:
   generators:
     - list:
-        elements: []
-          # AI 서비스 추가 예시:
-          # - name: ai-agent
-          # - name: ai-defense
+        elements:
+          - name: ai-defense
   template:
     metadata:
       name: 'dev-ai-{{name}}'
