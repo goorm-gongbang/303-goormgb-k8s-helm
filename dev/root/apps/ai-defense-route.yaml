@@ -9,13 +9,13 @@ spec:
   hosts:
     - "api.dev.goormgb.space"
   gateways:
-    - dev-webs/istio-api-gateway  # API Gateway의 Istio Gateway 참조
+    - istio-system/api-gateway  # 공통 Gateway 참조
   http:
     - match:
         - uri:
-            prefix: /ai
+            prefix: /ai/
       rewrite:
-        uri: /  # /ai/docs → /docs 로 rewrite
+        uri: /
       route:
         - destination:
             host: dev-ai-defense.dev-ai.svc.cluster.local
