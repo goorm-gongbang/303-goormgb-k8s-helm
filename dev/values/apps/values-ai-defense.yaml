@@ -28,7 +28,7 @@ resources:
 istio:
   sidecar: true
   gateway:
-    enabled: false
+    enabled: false  # api.dev.goormgb.space/ai/* 경로로 접근
 
 # Service
 service:

@@ -1,0 +1,23 @@
+# AI Defense 서비스 라우팅
+# api.dev.goormgb.space/ai/* → ai-defense 서비스
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: ai-defense-route
+  namespace: dev-ai
+spec:
+  hosts:
+    - "api.dev.goormgb.space"
+  gateways:
+    - dev-webs/istio-api-gateway  # API Gateway의 Istio Gateway 참조
+  http:
+    - match:
+        - uri:
+            prefix: /ai
+      rewrite:
+        uri: /  # /ai/docs → /docs 로 rewrite
+      route:
+        - destination:
+            host: dev-ai-defense.dev-ai.svc.cluster.local
+            port:
+              number: 8000
