@@ -140,7 +140,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(\n  increase(\n    http_server_request_duration_seconds_count{\n      job=~\"${app_name:regex}\",\n      http_response_status_code=~\"${status_class:regex}[0-9][0-9]\"\n    }[$__range]\n  )\n  )",
+          "expr": "sum(\n  increase(\n    http_server_request_duration_seconds_count{\n      service_name=~\"${app_name}\",\n      http_response_status_code=~\"${status_class:regex}[0-9][0-9]\"\n    }[$__range]\n  )\n  )",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -227,7 +227,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "topk(10, sum by (http_route) (increase(http_server_request_duration_seconds_count{job=~\"${app_name:regex}\", http_response_status_code=~\"4..\"}[$__range])))\n",
+          "expr": "topk(10, sum by (http_route) (increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"4..\"}[$__range])))\n",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -314,7 +314,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "topk(10, sum by (http_route) (increase(http_server_request_duration_seconds_count{job=~\"${app_name:regex}\", http_response_status_code=~\"5..\"}[$__range])))\n",
+          "expr": "topk(10, sum by (http_route) (increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"5..\"}[$__range])))\n",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -374,9 +374,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -389,7 +387,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "round(sum(increase(http_server_request_duration_seconds_count{job=~\"${app_name:regex}\", http_response_status_code=~\"4..\"}[$__range])))",
+          "expr": "round(sum(increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"4..\"}[$__range])))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -436,9 +434,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -450,7 +446,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "round(sum(increase(http_server_request_duration_seconds_count{job=~\"${app_name:regex}\", http_response_status_code=~\"5..\"}[$__range])))\n",
+          "expr": "round(sum(increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"5..\"}[$__range])))\n",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -497,9 +493,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -511,7 +505,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "round(sum(increase(http_server_request_duration_seconds_count{job=~\"${app_name:regex}\", http_response_status_code=~\"2..\"}[$__range])))",
+          "expr": "round(sum(increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"2..\"}[$__range])))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -558,9 +552,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -572,7 +564,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "round(sum(increase(http_server_request_duration_seconds_count{job=~\"${app_name:regex}\", http_response_status_code=~\"3..\"}[$__range])))\n",
+          "expr": "round(sum(increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"3..\"}[$__range])))\n",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -585,22 +577,14 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": [
-    "app",
-    "http",
-    "status-code"
-  ],
+  "tags": ["app", "http", "status-code"],
   "templating": {
     "list": [
       {
         "allValue": ".*",
         "current": {
-          "text": [
-            "$__all"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["$__all"],
+          "value": ["$__all"]
         },
         "includeAll": true,
         "label": "Application Name",
@@ -610,46 +594,42 @@
           {
             "selected": false,
             "text": "api-gateway",
-            "value": "(java-cloud-gateway|.*api-gateway.*)"
+            "value": "java-cloud-gateway"
           },
           {
             "selected": false,
             "text": "auth-guard",
-            "value": ".*auth-guard.*"
+            "value": "dev-auth-guard"
           },
           {
             "selected": false,
             "text": "order-core",
-            "value": ".*order-core.*"
+            "value": "dev-order-core"
           },
           {
             "selected": false,
             "text": "queue",
-            "value": ".*queue.*"
+            "value": "dev-queue"
           },
           {
             "selected": false,
             "text": "recommendation",
-            "value": ".*recommendation.*"
+            "value": "dev-recommendation"
           },
           {
             "selected": false,
             "text": "seat",
-            "value": ".*seat.*"
+            "value": "dev-seat"
           }
         ],
-        "query": "api-gateway : (java-cloud-gateway|.*api-gateway.*),auth-guard : .*auth-guard.*,order-core : .*order-core.*,queue : .*queue.*,recommendation : .*recommendation.*,seat : .*seat.*",
+        "query": "api-gateway : java-cloud-gateway,auth-guard : dev-auth-guard,order-core : dev-order-core,queue : dev-queue,recommendation : dev-recommendation,seat : dev-seat",
         "type": "custom"
       },
       {
         "allValue": ".*",
         "current": {
-          "text": [
-            "$__all"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["$__all"],
+          "value": ["$__all"]
         },
         "description": "",
         "includeAll": true,

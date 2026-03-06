@@ -2990,23 +2990,19 @@
       },
       {
         "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": "goormgb",
+          "value": "goormgb"
         },
         "datasource": "Prometheus",
         "definition": "",
-        "includeAll": true,
+        "includeAll": false,
         "label": "Database",
-        "multi": true,
+        "multi": false,
         "name": "datname",
         "options": [],
         "query": "label_values(datname)",
         "refresh": 1,
-        "regex": "",
+        "regex": "/goormgb/",
         "sort": 1,
         "type": "query"
       },
