@@ -521,6 +521,13 @@ kube-prometheus-stack:
             - name: DS_PROMETHEUS
               value: Prometheus
 
+        platform-etcd-health:
+          gnetId: 3070
+          revision: 9
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+
         platform-logs-overview:
           gnetId: 13639
           revision: 2
