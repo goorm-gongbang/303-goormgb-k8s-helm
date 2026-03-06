@@ -12,6 +12,16 @@ istiod:
   global:
     istioNamespace: istio-system
 
+    # Sidecar Proxy 기본 리소스 설정
+    proxy:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 500m
+          memory: 256Mi
+
   meshConfig:
     enableTracing: true
     defaultConfig:
