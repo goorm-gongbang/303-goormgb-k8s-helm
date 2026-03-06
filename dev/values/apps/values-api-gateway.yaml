@@ -26,15 +26,13 @@ resources:
     cpu: 500m
     memory: 512Mi
 
-# Istio - Gateway는 진입점이므로 VirtualService 노출
+# Istio - 공통 Gateway(istio-system/api-gateway) 사용
 istio:
   sidecar: true
   gateway:
     enabled: true
-    name: "istio-api-gateway"  # Istio Gateway 리소스 이름
+    externalRef: "istio-system/api-gateway"  # 외부 Gateway 참조 (Gateway CRD 생성 안 함)
     host: "api.dev.goormgb.space"
-    tls:
-      credentialName: goormgb-tls
   # CORS 설정 - Istio VirtualService 레벨
   cors:
     enabled: true

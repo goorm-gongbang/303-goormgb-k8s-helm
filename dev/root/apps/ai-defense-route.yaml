@@ -9,7 +9,7 @@ spec:
   hosts:
     - "api.dev.goormgb.space"
   gateways:
-    - dev-webs/istio-api-gateway  # API Gateway의 Istio Gateway 참조
+    - istio-system/api-gateway  # 공통 Gateway 참조
   http:
     - match:
         - uri:
