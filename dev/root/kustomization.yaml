@@ -32,3 +32,6 @@ resources:
   # === Applications (ApplicationSet) ===
   - dev-webs-applicationset.yaml    # dev-webs: Spring Boot + Next.js
   - dev-ai-applicationset.yaml      # dev-ai: FastAPI AI Agent
+
+  # === App Routes ===
+  - apps/ai-defense-route.yaml      # api.dev.goormgb.space/ai/* → ai-defense
