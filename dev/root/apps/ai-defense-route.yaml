@@ -13,9 +13,9 @@ spec:
   http:
     - match:
         - uri:
-            prefix: /ai
+            prefix: /ai/
       rewrite:
-        uri: /  # /ai/docs → /docs 로 rewrite
+        uri: /
       route:
         - destination:
             host: dev-ai-defense.dev-ai.svc.cluster.local
