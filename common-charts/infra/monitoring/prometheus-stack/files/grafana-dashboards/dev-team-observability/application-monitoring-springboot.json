@@ -546,9 +546,7 @@
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -612,9 +610,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -672,9 +668,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -750,9 +744,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -795,9 +787,7 @@
         {
           "id": "partitionByValues",
           "options": {
-            "fields": [
-              "Metric"
-            ]
+            "fields": ["Metric"]
           }
         }
       ],
@@ -902,22 +892,14 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
-  "tags": [
-    "app",
-    "springboot",
-    "metrics"
-  ],
+  "tags": ["app", "springboot", "metrics"],
   "templating": {
     "list": [
       {
         "allValue": ".*",
         "current": {
-          "text": [
-            "$__all"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["$__all"],
+          "value": ["$__all"]
         },
         "includeAll": true,
         "label": "Application Name",
@@ -955,17 +937,13 @@
             "value": ".*seat.*"
           }
         ],
-        "query": "api-gateway : (java-cloud-gateway|.*api-gateway.*),auth-guard : .*auth-guard.*,order-core : .*order-core.*,queue : .*queue.*,recommendation : .*recommendation.*,seat : .*seat.*",
+        "query": "api-gateway : java-cloud-gateway,auth-guard : dev-auth-guard,order-core : dev-order-core,queue : dev-queue,recommendation : dev-recommendation,seat : dev-seat",
         "type": "custom"
       },
       {
         "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["All"],
+          "value": ["$__all"]
         },
         "definition": "label_values(namespace)",
         "hide": 2,
