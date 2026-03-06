@@ -16,7 +16,7 @@ spec:
     path: common-charts/infra/istio-security
     helm:
       valueFiles:
-        - ../../../../dev/values/istio/values-istio-security.yaml
+        - ../../../dev/values/istio/values-istio-security.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system
