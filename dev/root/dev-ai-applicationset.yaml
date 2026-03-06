@@ -14,7 +14,7 @@ spec:
           - name: ai-defense
   template:
     metadata:
-      name: 'dev-ai-{{name}}'
+      name: 'dev-{{name}}'
       labels:
         ns: dev-ai
       annotations:
