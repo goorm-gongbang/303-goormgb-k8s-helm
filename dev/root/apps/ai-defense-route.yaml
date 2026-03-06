@@ -11,6 +11,7 @@ spec:
   gateways:
     - istio-system/api-gateway  # 공통 Gateway 참조
   http:
+    # /ai/* 경로 라우팅 (Swagger UI 포함)
     - match:
         - uri:
             prefix: /ai/
@@ -21,3 +22,9 @@ spec:
             host: dev-ai-defense.dev-ai.svc.cluster.local
             port:
               number: 8000
+    # /ai (trailing slash 없이) → /ai/로 리다이렉트
+    - match:
+        - uri:
+            exact: /ai
+      redirect:
+        uri: /ai/
