@@ -57,9 +57,9 @@ backup:
   s3Prefix: dev/postgres
   externalSecret:
     remoteRef: dev/infra/s3-backup
-  # ArgoCD sync 전 자동 백업 (bash 문법 수정 필요 - 임시 비활성화)
+  # ArgoCD sync 전 자동 백업
   presync:
-    enabled: false
+    enabled: true
 
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
