@@ -17,10 +17,12 @@ resources:
   # === Data ===
   - infra/data/data.yaml
   - infra/data/cloudbeaver.yaml
+  - infra/data/redisinsight.yaml
 
   # === Istio ===
   - infra/istio/istio.yaml
   - infra/istio/kiali.yaml
+  - infra/istio/api-gateway.yaml  # 공통 API Gateway (istio-system)
 
   # === Monitoring ===
   - infra/monitoring/prometheus-stack.yaml
@@ -30,4 +32,7 @@ resources:
 
   # === Applications (ApplicationSet) ===
   - dev-webs-applicationset.yaml    # dev-webs: Spring Boot + Next.js
-  - dev-ai-applicationset.yaml      # dev-ai: FastAPI AI Agent
+  # - dev-ai-applicationset.yaml    # dev-ai: FastAPI AI Agent (dev 브랜치 머지 후 활성화)
+
+  # === App Routes ===
+  # - apps/ai-defense-route.yaml    # api.dev.goormgb.space/ai/* → ai-defense (dev 브랜치 머지 후 활성화)

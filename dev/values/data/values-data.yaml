@@ -13,10 +13,3 @@ tolerations:
     operator: "Exists"
     effect: "NoSchedule"
 
-# ===== PostgreSQL Schema Initialization =====
-# SQL 파일: dev/charts/data/postgresql/files/init-schema.sql
-# 실행: kubectl create job manual-init --from=job/postgresql-init-schema -n data
-initSchema:
-  enabled: true
-  database: goormgb
-    

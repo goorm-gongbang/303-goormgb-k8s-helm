@@ -21,7 +21,7 @@ oidc:
   enabled: true
   name: Google
   issuer: https://accounts.google.com
-  secretManagerKey: common/infra/oauth/google
+  secretManagerKey: dev/infra/oauth/google
   requestedScopes:
     - openid
     - profile
@@ -31,7 +31,7 @@ oidc:
 rbac:
   eso:
     enabled: true
-    secretManagerKey: common/oauth/rbac/argocd
+    secretManagerKey: dev/oauth/rbac/argocd
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
 

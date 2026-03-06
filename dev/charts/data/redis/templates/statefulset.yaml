@@ -58,6 +58,19 @@ spec:
                 - ping
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+        {{- if .Values.exporter.enabled }}
+        - name: redis-exporter
+          image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
+          imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.exporter.port }}
+              name: metrics
+          env:
+            - name: REDIS_ADDR
+              value: redis://127.0.0.1:6379
+          resources:
+            {{- toYaml .Values.exporter.resources | nindent 12 }}
+        {{- end }}
       volumes:
         - name: config
           configMap:

@@ -8,7 +8,7 @@ grafana:
   eso:
     enabled: true
     secretManagerKey: dev/monitoring/grafana
-    oauthSecretManagerKey: common/infra/oauth/google # 공용 OAuth
+    oauthSecretManagerKey: dev/infra/oauth/google
 
 # ===== Prometheus Stack =====
 kube-prometheus-stack:
@@ -127,11 +127,11 @@ kube-prometheus-stack:
         enabled: true
         folder: /tmp/dashboards
         defaultFolderName: "플랫폼 관측 (인프라팀)" # annotation 없는 대시보드 기본 폴더
-        folderAnnotation: grafana_folder   # ConfigMap annotation으로 폴더 지정
-        searchNamespace: monitoring        # 다른 namespace의 불필요한 대시보드 수집 방지
+        folderAnnotation: grafana_folder # ConfigMap annotation으로 폴더 지정
+        searchNamespace: monitoring # 다른 namespace의 불필요한 대시보드 수집 방지
         provider:
           foldersFromFilesStructure: false
-          allowUiUpdates: true             # UI에서 대시보드 수정 허용
+          allowUiUpdates: true # UI에서 대시보드 수정 허용
 
     # kube-prometheus-stack Angular 기본 대시보드 모두 비활성화 (React 버전 사용)
     defaultDashboardsEnabled: false
@@ -144,46 +144,49 @@ kube-prometheus-stack:
       dashboardproviders.yaml:
         apiVersion: 1
         providers:
-          - name: 'dev-team-observability'
+          - name: "dev-team-observability"
             orgId: 1
-            folder: '서비스 관측 (개발팀)'
+            folder: "서비스 관측 (개발팀)"
             type: file
             disableDeletion: false
             editable: true
             options:
               path: /var/lib/grafana/dashboards/dev-team-observability
 
-          - name: 'dev-team-observability-templates'
+          - name: "dev-team-observability-templates"
             orgId: 1
-            folder: '서비스 관측 템플릿 (개발팀)'
+            folder: "서비스 관측 템플릿 (개발팀)"
             type: file
             disableDeletion: false
             editable: true
             options:
               path: /var/lib/grafana/dashboards/dev-team-observability-templates
 
-          - name: 'infra-team-observability'
+          - name: "infra-team-observability"
             orgId: 1
-            folder: '플랫폼 관측 (인프라팀)'
+            folder: "플랫폼 관측 (인프라팀)"
             type: file
             disableDeletion: false
             editable: true
             options:
               path: /var/lib/grafana/dashboards/infra-team-observability
 
-          - name: 'infra-team-observability-templates'
+          - name: "infra-team-observability-templates"
             orgId: 1
-            folder: '플랫폼 관측 템플릿 (인프라팀)'
+            folder: "플랫폼 관측 템플릿 (인프라팀)"
             type: file
             disableDeletion: false
             editable: true
             options:
               path: /var/lib/grafana/dashboards/infra-team-observability-templates
 
+    # ConfigMap 기반 커스텀 대시보드 매핑 (파일 분리)
+    dashboardsConfigMaps:
+      dev-team-observability: grafana-dashboards-dev-team-observability
+      infra-team-observability: grafana-dashboards-infra-team-observability
+
     # Grafana.com 대시보드 매핑
     dashboards:
-      dev-team-observability: {}
-
       dev-team-observability-templates:
         service-pod-health:
           gnetId: 17125
@@ -475,8 +478,6 @@ kube-prometheus-stack:
               "weekStart": ""
             }
 
-      infra-team-observability: {}
-
       infra-team-observability-templates:
         platform-node-capacity:
           gnetId: 1860
@@ -488,13 +489,6 @@ kube-prometheus-stack:
         platform-cluster-overview:
           gnetId: 7249
           revision: 1
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
-
-        platform-etcd-health:
-          gnetId: 3070
-          revision: 3
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
@@ -523,6 +517,13 @@ kube-prometheus-stack:
         platform-istio-control-plane:
           gnetId: 7645
           revision: 1
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+
+        platform-etcd-health:
+          gnetId: 3070
+          revision: 9
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
@@ -661,7 +662,7 @@ loki:
     # OTLP 수신 지원 (Loki 3.0+)
     limits_config:
       retention_period: 48h # 2일
-      allow_structured_metadata: true  # OTLP 메타데이터
+      allow_structured_metadata: true # OTLP 메타데이터
 
     storage:
       type: filesystem
@@ -747,9 +748,11 @@ promtail:
 # ===== Logs Backup to S3 =====
 backup:
   enabled: true
-  schedule: "0 4 * * *"  # 매일 오전 4시 (UTC) - DB 백업 1시간 후
+  schedule: "0 4 * * *" # 매일 오전 4시 (UTC) - DB 백업 1시간 후
   s3Bucket: goormgb-backup
   s3Prefix: dev/logs
+  externalSecret:
+    remoteRef: dev/infra/s3-backup # PostgreSQL 백업과 동일한 credentials
 
 # ===== Tempo =====
 tempo:

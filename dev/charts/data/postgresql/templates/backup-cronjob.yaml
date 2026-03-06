@@ -54,6 +54,9 @@ spec:
                   value: {{ .Values.backup.s3Bucket }}
                 - name: S3_PREFIX
                   value: {{ .Values.backup.s3Prefix }}
+                # Database names passed as environment variable to prevent shell injection
+                - name: DATABASES
+                  value: {{ .Values.databases | join "," | quote }}
               command:
                 - /bin/sh
                 - -c
@@ -66,11 +69,18 @@ spec:
 
                   echo "=== PostgreSQL Backup ==="
 
-                  {{- range .Values.databases }}
-                  echo "Backing up {{ . }}..."
-                  pg_dump -h postgresql -U $POSTGRES_USER -d {{ . }} | gzip > /tmp/{{ . }}-${TIMESTAMP}.sql.gz
-                  aws s3 cp /tmp/{{ . }}-${TIMESTAMP}.sql.gz s3://${S3_BUCKET}/${S3_PREFIX}/{{ . }}/${BACKUP_FILE}
-                  {{- end }}
+                  # Validate and iterate over databases safely
+                  IFS=',' read -ra DB_ARRAY <<< "$DATABASES"
+                  for db in "${DB_ARRAY[@]}"; do
+                    # Validate database name (alphanumeric, underscore, hyphen only)
+                    if ! echo "$db" | grep -qE '^[a-zA-Z0-9_-]+$'; then
+                      echo "ERROR: Invalid database name: $db"
+                      exit 1
+                    fi
+                    echo "Backing up $db..."
+                    pg_dump -h postgresql -U "$POSTGRES_USER" -d "$db" | gzip > "/tmp/${db}-${TIMESTAMP}.sql.gz"
+                    aws s3 cp "/tmp/${db}-${TIMESTAMP}.sql.gz" "s3://${S3_BUCKET}/${S3_PREFIX}/${db}/${BACKUP_FILE}"
+                  done
 
                   echo "Backup complete!"
               resources:

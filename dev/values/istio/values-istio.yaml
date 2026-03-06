@@ -59,6 +59,7 @@ sharedGateway:
     - "cloudbeaver.goormgb.space"
     - "grafana.goormgb.space"
     - "kiali.goormgb.space"
+    - "redisinsight.goormgb.space"
 
 # ===== Kiali =====
 kiali-server:
@@ -110,4 +111,4 @@ kialiVirtualService:
 # Kiali OIDC (Google OAuth) - 비활성화
 oidc:
   enabled: false
-  secretManagerKey: common/infra/oauth/google
+  secretManagerKey: dev/infra/oauth/google

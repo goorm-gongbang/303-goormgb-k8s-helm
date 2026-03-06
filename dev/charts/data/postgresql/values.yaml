@@ -52,11 +52,14 @@ service:
 
 backup:
   enabled: true
-  schedule: "0 3 * * *"  # 매일 오전 3시 (KST 12시)
+  schedule: "0 */3 * * *"  # 매 3시간마다 (00:00, 03:00, 06:00, ...)
   s3Bucket: goormgb-backup
   s3Prefix: dev/postgres
   externalSecret:
     remoteRef: dev/infra/s3-backup
+  # ArgoCD sync 전 자동 백업
+  presync:
+    enabled: true
 
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
@@ -73,9 +76,3 @@ probes:
     initialDelaySeconds: 5
     periodSeconds: 5
 
-# ===== Schema & Seed Data Initialization =====
-# SQL 파일: files/init-schema.sql
-# 수동 실행: kubectl create job manual-init --from=job/postgresql-init-schema -n data
-initSchema:
-  enabled: false
-  database: goormgb
