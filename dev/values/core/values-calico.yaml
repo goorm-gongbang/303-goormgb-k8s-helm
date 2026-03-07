@@ -28,6 +28,7 @@ tigera-operator:
           natOutgoing: Enabled
           nodeSelector: all()
       nodeAddressAutodetectionV4:
+        firstFound: false
         cidrs:
           - 192.168.45.0/24
     # Felix 메트릭 활성화 (Prometheus 스크래핑용)
