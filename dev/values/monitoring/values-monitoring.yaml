@@ -133,9 +133,11 @@ kube-prometheus-stack:
           foldersFromFilesStructure: false
           allowUiUpdates: true # UI에서 대시보드 수정 허용
 
-    # kube-prometheus-stack Angular 기본 대시보드 모두 비활성화 (React 버전 사용)
+    # kube-prometheus-stack 기본 대시보드 완전 비활성화
+    # (우리가 test 폴더에 직접 구성한 대시보드 사용)
     defaultDashboardsEnabled: false
     forceDeployDashboards: false
+    defaultDashboardsTimezone: utc
 
     # 대시보드 프로바이더 설정
     # - 팀 메인 폴더: 커스텀 대시보드용
