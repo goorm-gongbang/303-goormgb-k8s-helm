@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   # === Core ===
   - infra/core/namespaces.yaml      # sync-wave: -10 (가장 먼저)
+  - infra/core/calico.yaml          # sync-wave: -10 (CNI, ArgoCD 관리)
   - infra/core/ecr-creds.yaml       # sync-wave: -8
   - infra/core/argocd.yaml
   - infra/core/ddns.yaml

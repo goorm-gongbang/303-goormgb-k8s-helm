@@ -133,9 +133,11 @@ kube-prometheus-stack:
           foldersFromFilesStructure: false
           allowUiUpdates: true # UI에서 대시보드 수정 허용
 
-    # kube-prometheus-stack Angular 기본 대시보드 모두 비활성화 (React 버전 사용)
+    # kube-prometheus-stack 기본 대시보드 완전 비활성화
+    # (우리가 test 폴더에 직접 구성한 대시보드 사용)
     defaultDashboardsEnabled: false
     forceDeployDashboards: false
+    defaultDashboardsTimezone: utc
 
     # 대시보드 프로바이더 설정
     # - 팀 메인 폴더: 커스텀 대시보드용
@@ -180,10 +182,31 @@ kube-prometheus-stack:
             options:
               path: /var/lib/grafana/dashboards/infra-team-observability-templates
 
+          - name: "platform-observability-kr"
+            orgId: 1
+            folder: "플랫폼 관측 템플릿 (인프라팀)"
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/platform-observability-kr
+
+          - name: "test"
+            orgId: 1
+            folder: "test"
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/test
+
     # ConfigMap 기반 커스텀 대시보드 매핑 (파일 분리)
+    # 한글 설명이 포함된 학습용 대시보드
+    # ConfigMap에 grafana_dashboard: "1" 라벨이 있으면 sidecar가 자동 감지
     dashboardsConfigMaps:
       dev-team-observability: grafana-dashboards-dev-team-observability
       infra-team-observability: grafana-dashboards-infra-team-observability
+      platform-observability-kr: grafana-dashboards-platform-observability-kr
 
     # Grafana.com 대시보드 매핑
     dashboards:
@@ -541,6 +564,9 @@ kube-prometheus-stack:
           datasource:
             - name: DS_TEMPO
               value: Tempo
+
+      # test 폴더 대시보드는 grafana-dashboards-test-configmap.yaml에서 관리
+      # (files/grafana-dashboards/test/*.json - 한글 대시보드)
 
     # ESO에서 생성한 secret 사용
     admin:
