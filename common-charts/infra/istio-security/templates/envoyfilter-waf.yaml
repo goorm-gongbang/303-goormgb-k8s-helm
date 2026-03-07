@@ -45,7 +45,7 @@ spec:
                 local SQL_PATTERNS = {
                   {{- if .Values.patterns.sqlInjection.enabled }}
                   {{- range .Values.patterns.sqlInjection.rules }}
-                  { name = "{{ .name }}", pattern = "{{ .pattern }}", desc = "{{ .description }}" },
+                  { name = [=[{{ .name }}]=], pattern = [=[{{ .pattern }}]=], desc = [=[{{ .description }}]=] },
                   {{- end }}
                   {{- end }}
                 }
@@ -54,7 +54,7 @@ spec:
                 local XSS_PATTERNS = {
                   {{- if .Values.patterns.xss.enabled }}
                   {{- range .Values.patterns.xss.rules }}
-                  { name = "{{ .name }}", pattern = "{{ .pattern }}", desc = "{{ .description }}" },
+                  { name = [=[{{ .name }}]=], pattern = [=[{{ .pattern }}]=], desc = [=[{{ .description }}]=] },
                   {{- end }}
                   {{- end }}
                 }
@@ -63,7 +63,7 @@ spec:
                 local PATH_PATTERNS = {
                   {{- if .Values.patterns.pathTraversal.enabled }}
                   {{- range .Values.patterns.pathTraversal.rules }}
-                  { name = "{{ .name }}", pattern = "{{ .pattern }}", desc = "{{ .description }}" },
+                  { name = [=[{{ .name }}]=], pattern = [=[{{ .pattern }}]=], desc = [=[{{ .description }}]=] },
                   {{- end }}
                   {{- end }}
                 }
@@ -72,7 +72,7 @@ spec:
                 local CMD_PATTERNS = {
                   {{- if .Values.patterns.commandInjection.enabled }}
                   {{- range .Values.patterns.commandInjection.rules }}
-                  { name = "{{ .name }}", pattern = "{{ .pattern }}", desc = "{{ .description }}" },
+                  { name = [=[{{ .name }}]=], pattern = [=[{{ .pattern }}]=], desc = [=[{{ .description }}]=] },
                   {{- end }}
                   {{- end }}
                 }
@@ -81,7 +81,7 @@ spec:
                 local LDAP_PATTERNS = {
                   {{- if .Values.patterns.ldapInjection.enabled }}
                   {{- range .Values.patterns.ldapInjection.rules }}
-                  { name = "{{ .name }}", pattern = "{{ .pattern }}", desc = "{{ .description }}" },
+                  { name = [=[{{ .name }}]=], pattern = [=[{{ .pattern }}]=], desc = [=[{{ .description }}]=] },
                   {{- end }}
                   {{- end }}
                 }
@@ -90,7 +90,7 @@ spec:
                 local XXE_PATTERNS = {
                   {{- if .Values.patterns.xxeInjection.enabled }}
                   {{- range .Values.patterns.xxeInjection.rules }}
-                  { name = "{{ .name }}", pattern = "{{ .pattern }}", desc = "{{ .description }}" },
+                  { name = [=[{{ .name }}]=], pattern = [=[{{ .pattern }}]=], desc = [=[{{ .description }}]=] },
                   {{- end }}
                   {{- end }}
                 }
@@ -99,7 +99,7 @@ spec:
                 local SSRF_PATTERNS = {
                   {{- if .Values.patterns.ssrf.enabled }}
                   {{- range .Values.patterns.ssrf.rules }}
-                  { name = "{{ .name }}", pattern = "{{ .pattern }}", desc = "{{ .description }}" },
+                  { name = [=[{{ .name }}]=], pattern = [=[{{ .pattern }}]=], desc = [=[{{ .description }}]=] },
                   {{- end }}
                   {{- end }}
                 }
@@ -108,7 +108,7 @@ spec:
                 local LOG4J_PATTERNS = {
                   {{- if .Values.patterns.log4shell.enabled }}
                   {{- range .Values.patterns.log4shell.rules }}
-                  { name = "{{ .name }}", pattern = "{{ .pattern }}", desc = "{{ .description }}" },
+                  { name = [=[{{ .name }}]=], pattern = [=[{{ .pattern }}]=], desc = [=[{{ .description }}]=] },
                   {{- end }}
                   {{- end }}
                 }
@@ -117,7 +117,7 @@ spec:
                 local HEADER_PATTERNS = {
                   {{- if .Values.patterns.headerInjection.enabled }}
                   {{- range .Values.patterns.headerInjection.rules }}
-                  { name = "{{ .name }}", pattern = "{{ .pattern }}", desc = "{{ .description }}" },
+                  { name = [=[{{ .name }}]=], pattern = [=[{{ .pattern }}]=], desc = [=[{{ .description }}]=] },
                   {{- end }}
                   {{- end }}
                 }
@@ -126,7 +126,7 @@ spec:
                 local BOT_PATTERNS = {
                   {{- if .Values.patterns.botScanner.enabled }}
                   {{- range .Values.patterns.botScanner.rules }}
-                  { name = "{{ .name }}", pattern = "{{ .pattern }}", desc = "{{ .description }}" },
+                  { name = [=[{{ .name }}]=], pattern = [=[{{ .pattern }}]=], desc = [=[{{ .description }}]=] },
                   {{- end }}
                   {{- end }}
                 }
