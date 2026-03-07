@@ -16,7 +16,7 @@ spec:
     path: common-charts/infra/calico
     helm:
       valueFiles:
-        - ../../../../dev/values/core/values-calico.yaml
+        - ../../../dev/values/core/values-calico.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: tigera-operator
