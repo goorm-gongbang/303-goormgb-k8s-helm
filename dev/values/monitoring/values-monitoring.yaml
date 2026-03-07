@@ -193,10 +193,11 @@ kube-prometheus-stack:
 
     # ConfigMap 기반 커스텀 대시보드 매핑 (파일 분리)
     # 한글 설명이 포함된 학습용 대시보드
+    # ConfigMap에 grafana_dashboard: "1" 라벨이 있으면 sidecar가 자동 감지
     dashboardsConfigMaps:
       dev-team-observability: grafana-dashboards-dev-team-observability
       infra-team-observability: grafana-dashboards-infra-team-observability
-      korean: grafana-dashboards-test
+      # korean은 sidecar가 자동 감지 (grafana_dashboard: "1" 라벨)
 
     # Grafana.com 대시보드 매핑
     dashboards:
