@@ -13,6 +13,7 @@ spec:
     targetRevision: argocd-sync/dev
     path: common-charts/infra/calico
     helm:
+      skipCrds: true
       valueFiles:
         - ../../../dev/values/core/values-calico.yaml
   destination:
