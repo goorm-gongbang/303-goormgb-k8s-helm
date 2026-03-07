@@ -684,7 +684,7 @@
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["istio", "waf", "security"],
+  "tags": ["istio", "waf", "security", "lua"],
   "templating": {
     "list": [
       {

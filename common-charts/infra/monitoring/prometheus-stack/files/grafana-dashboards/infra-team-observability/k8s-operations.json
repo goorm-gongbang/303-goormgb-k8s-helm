@@ -14,7 +14,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 5 }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 3, "w": 4, "x": 0, "y": 1 }, "id": 1,
       "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "value_and_name" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_status_phase{phase=\"Pending\"}) or vector(0)", "legendFormat": "Pending", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_status_phase{phase=\"Pending\"}) or vector(0)", "legendFormat": "대기 중", "refId": "A" }],
       "title": "", "type": "stat"
     },
     {
@@ -23,7 +23,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 3, "w": 4, "x": 4, "y": 1 }, "id": 2,
       "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "value_and_name" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_status_phase{phase=\"Failed\"}) or vector(0)", "legendFormat": "Failed", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_status_phase{phase=\"Failed\"}) or vector(0)", "legendFormat": "실패", "refId": "A" }],
       "title": "", "type": "stat"
     },
     {
@@ -32,7 +32,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 3, "w": 4, "x": 8, "y": 1 }, "id": 3,
       "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "value_and_name" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_container_status_waiting_reason{reason=\"CrashLoopBackOff\"}) or vector(0)", "legendFormat": "CrashLoop", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_container_status_waiting_reason{reason=\"CrashLoopBackOff\"}) or vector(0)", "legendFormat": "크래시루프", "refId": "A" }],
       "title": "", "type": "stat"
     },
     {
@@ -41,7 +41,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 3, "w": 4, "x": 12, "y": 1 }, "id": 4,
       "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "value_and_name" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_node_status_condition{condition=\"Ready\",status=\"false\"}) or vector(0)", "legendFormat": "NotReady", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_node_status_condition{condition=\"Ready\",status=\"false\"}) or vector(0)", "legendFormat": "노드 장애", "refId": "A" }],
       "title": "", "type": "stat"
     },
     {
@@ -97,7 +97,7 @@
       "gridPos": { "h": 3, "w": 3, "x": 9, "y": 5 }, "id": 13,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "value" },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_deployment_created)", "legendFormat": "", "refId": "A" }],
-      "title": "Deployments", "type": "stat"
+      "title": "디플로이먼트", "type": "stat"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },

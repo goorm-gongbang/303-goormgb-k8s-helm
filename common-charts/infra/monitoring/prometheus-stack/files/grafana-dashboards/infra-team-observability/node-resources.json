@@ -14,7 +14,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "yellow", "value": null }, { "color": "green", "value": 86400 }] }, "unit": "s" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 }, "id": 1,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "time() - node_boot_time_seconds{instance=~\"$node\"}", "legendFormat": "Uptime", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "time() - node_boot_time_seconds{instance=~\"$node\"}", "legendFormat": "가동시간", "refId": "A" }],
       "title": "가동 시간", "type": "stat"
     },
     {
@@ -23,7 +23,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 }, "id": 2,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(node_cpu_seconds_total{instance=~\"$node\", mode=\"idle\"})", "legendFormat": "Cores", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(node_cpu_seconds_total{instance=~\"$node\", mode=\"idle\"})", "legendFormat": "코어", "refId": "A" }],
       "title": "CPU 코어", "type": "stat"
     },
     {
@@ -32,7 +32,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "bytes" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 }, "id": 3,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_memory_MemTotal_bytes{instance=~\"$node\"}", "legendFormat": "Total", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_memory_MemTotal_bytes{instance=~\"$node\"}", "legendFormat": "전체", "refId": "A" }],
       "title": "전체 메모리", "type": "stat"
     },
     {
@@ -41,7 +41,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "bytes" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 }, "id": 4,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_filesystem_size_bytes{instance=~\"$node\", mountpoint=\"/\", fstype!=\"rootfs\"}", "legendFormat": "Size", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_filesystem_size_bytes{instance=~\"$node\", mountpoint=\"/\", fstype!=\"rootfs\"}", "legendFormat": "크기", "refId": "A" }],
       "title": "디스크 용량", "type": "stat"
     },
     {
@@ -50,7 +50,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 2 }, { "color": "red", "value": 4 }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 }, "id": 5,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_load1{instance=~\"$node\"}", "legendFormat": "Load 1m", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_load1{instance=~\"$node\"}", "legendFormat": "로드 1분", "refId": "A" }],
       "title": "Load Average (1m)", "type": "stat"
     },
     {
@@ -97,10 +97,10 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 }, "id": 20,
       "options": { "legend": { "calcs": ["mean", "last"], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_memory_MemTotal_bytes{instance=~\"$node\"} - node_memory_MemFree_bytes{instance=~\"$node\"} - node_memory_Buffers_bytes{instance=~\"$node\"} - node_memory_Cached_bytes{instance=~\"$node\"}", "legendFormat": "Used", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_memory_Buffers_bytes{instance=~\"$node\"}", "legendFormat": "Buffers", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_memory_Cached_bytes{instance=~\"$node\"}", "legendFormat": "Cached", "refId": "C" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_memory_MemFree_bytes{instance=~\"$node\"}", "legendFormat": "Free", "refId": "D" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_memory_MemTotal_bytes{instance=~\"$node\"} - node_memory_MemFree_bytes{instance=~\"$node\"} - node_memory_Buffers_bytes{instance=~\"$node\"} - node_memory_Cached_bytes{instance=~\"$node\"}", "legendFormat": "사용중", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_memory_Buffers_bytes{instance=~\"$node\"}", "legendFormat": "버퍼", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_memory_Cached_bytes{instance=~\"$node\"}", "legendFormat": "캐시", "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "node_memory_MemFree_bytes{instance=~\"$node\"}", "legendFormat": "여유", "refId": "D" }
       ],
       "title": "메모리 구성", "type": "timeseries"
     },
@@ -130,8 +130,8 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 }, "id": 31,
       "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"$node\"}[5m]))", "legendFormat": "Read", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_disk_written_bytes_total{instance=~\"$node\"}[5m]))", "legendFormat": "Write", "refId": "B" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"$node\"}[5m]))", "legendFormat": "읽기", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_disk_written_bytes_total{instance=~\"$node\"}[5m]))", "legendFormat": "쓰기", "refId": "B" }
       ],
       "title": "디스크 I/O", "type": "timeseries"
     },
@@ -155,10 +155,10 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 33 }, "id": 41,
       "options": { "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_network_receive_errs_total{instance=~\"$node\"}[5m]))", "legendFormat": "RX Errors", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_network_transmit_errs_total{instance=~\"$node\"}[5m]))", "legendFormat": "TX Errors", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_network_receive_drop_total{instance=~\"$node\"}[5m]))", "legendFormat": "RX Drop", "refId": "C" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_network_transmit_drop_total{instance=~\"$node\"}[5m]))", "legendFormat": "TX Drop", "refId": "D" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_network_receive_errs_total{instance=~\"$node\"}[5m]))", "legendFormat": "수신 오류", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_network_transmit_errs_total{instance=~\"$node\"}[5m]))", "legendFormat": "송신 오류", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_network_receive_drop_total{instance=~\"$node\"}[5m]))", "legendFormat": "수신 드랍", "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_network_transmit_drop_total{instance=~\"$node\"}[5m]))", "legendFormat": "송신 드랍", "refId": "D" }
       ],
       "title": "네트워크 오류/드랍", "type": "timeseries"
     }
