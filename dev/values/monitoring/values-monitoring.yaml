@@ -192,9 +192,12 @@ kube-prometheus-stack:
               path: /var/lib/grafana/dashboards/test
 
     # ConfigMap 기반 커스텀 대시보드 매핑 (파일 분리)
+    # 한글 설명이 포함된 학습용 대시보드
+    # ConfigMap에 grafana_dashboard: "1" 라벨이 있으면 sidecar가 자동 감지
     dashboardsConfigMaps:
       dev-team-observability: grafana-dashboards-dev-team-observability
       infra-team-observability: grafana-dashboards-infra-team-observability
+      # korean은 sidecar가 자동 감지 (grafana_dashboard: "1" 라벨)
 
     # Grafana.com 대시보드 매핑
     dashboards:
@@ -787,6 +790,34 @@ kube-prometheus-stack:
         alertmanager:
           gnetId: 9578
           revision: 4
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+
+        # -------------------------------------------
+        # [k9s 스타일 - 전체 현황 대시보드]
+        # -------------------------------------------
+
+        # Kubernetes Views / Global
+        # 용도: k9s처럼 클러스터 전체 현황 한눈에 보기
+        # - 모든 네임스페이스 파드 상태
+        # - 노드별 리소스 사용량
+        # - 워크로드 전체 현황
+        k8s-views-global:
+          gnetId: 15760
+          revision: 37
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
+
+        # Kubernetes Views / Pods
+        # 용도: 파드 목록 및 상태 (k9s 메인 화면과 유사)
+        # - 파드 목록 테이블
+        # - 상태별 필터링
+        # - 리소스 사용량
+        k8s-views-pods:
+          gnetId: 15759
+          revision: 31
           datasource:
             - name: DS_PROMETHEUS
               value: Prometheus
