@@ -196,7 +196,7 @@ kube-prometheus-stack:
     dashboardsConfigMaps:
       dev-team-observability: grafana-dashboards-dev-team-observability
       infra-team-observability: grafana-dashboards-infra-team-observability
-      test: grafana-dashboards-test
+      korean: grafana-dashboards-test
 
     # Grafana.com 대시보드 매핑
     dashboards:
