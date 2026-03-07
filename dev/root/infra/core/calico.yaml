@@ -37,9 +37,13 @@ spec:
         - /metadata
     - group: operator.tigera.io
       kind: Installation
-      jsonPointers:
-        - /status
+      jqPathExpressions:
+        - .
     - group: operator.tigera.io
       kind: APIServer
       jsonPointers:
         - /status
+    - group: monitoring.coreos.com
+      kind: PodMonitor
+      jsonPointers:
+        - /spec
