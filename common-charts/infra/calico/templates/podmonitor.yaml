@@ -16,7 +16,7 @@ spec:
     matchLabels:
       k8s-app: calico-node
   podMetricsEndpoints:
-    - port: "{{ .Values.metrics.port }}"
+    - targetPort: {{ .Values.metrics.port }}
       interval: {{ .Values.metrics.interval | default "30s" }}
       {{- if .Values.metrics.relabeling }}
       relabelings:
