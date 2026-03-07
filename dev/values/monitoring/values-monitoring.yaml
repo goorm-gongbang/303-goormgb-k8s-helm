@@ -197,7 +197,7 @@ kube-prometheus-stack:
     dashboardsConfigMaps:
       dev-team-observability: grafana-dashboards-dev-team-observability
       infra-team-observability: grafana-dashboards-infra-team-observability
-      # korean은 sidecar가 자동 감지 (grafana_dashboard: "1" 라벨)
+      infra-team-observability-templates: grafana-dashboards-platform-observability-kr
 
     # Grafana.com 대시보드 매핑
     dashboards:
