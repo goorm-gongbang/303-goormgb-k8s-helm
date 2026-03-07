@@ -1,0 +1,711 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "description": "Kubernetes 클러스터 전체 상태를 한눈에 파악하는 대시보드입니다. 노드, 파드, 리소스 사용량 등 클러스터 운영에 필수적인 지표를 모니터링합니다.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "panels": [],
+      "title": "클러스터 요약 (Cluster Summary)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 노드 수 (Node Count)\n\n**무엇을 보여주나요?**\n현재 클러스터에 등록된 전체 노드(서버) 수입니다.\n\n**왜 중요한가요?**\n- 노드가 갑자기 줄어들면 서버 장애 의심\n- 스케일 아웃/인 작업 확인 가능\n\n**정상 범위:**\n예상 노드 수와 일치해야 함 (예: 2노드 클러스터면 2)\n\n**이상 징후:**\n- 예상보다 적음 → 노드 다운, NotReady 상태 확인\n- 갑자기 증가 → 의도치 않은 노드 추가 확인",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "count(kube_node_info)",
+          "legendFormat": "Nodes",
+          "refId": "A"
+        }
+      ],
+      "title": "노드 수",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## Ready 노드 수\n\n**무엇을 보여주나요?**\nkubelet이 정상 작동하고 파드를 받을 준비가 된 노드 수입니다.\n\n**왜 중요한가요?**\n- Ready가 아닌 노드에는 새 파드가 스케줄링되지 않음\n- 워크로드 배포 가능 여부 판단\n\n**정상 범위:**\n전체 노드 수와 동일해야 함\n\n**이상 징후:**\n- 전체 노드보다 적음 → `kubectl get nodes`로 NotReady 노드 확인\n- 원인: 네트워크 문제, kubelet 크래시, 리소스 부족",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(kube_node_status_condition{condition=\"Ready\",status=\"true\"})",
+          "legendFormat": "Ready",
+          "refId": "A"
+        }
+      ],
+      "title": "Ready 노드",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 전체 파드 수\n\n**무엇을 보여주나요?**\n클러스터에서 실행 중인(Running) 파드의 총 개수입니다.\n\n**왜 중요한가요?**\n- 클러스터 워크로드 규모 파악\n- 리소스 계획 및 용량 산정에 활용\n\n**학습 포인트:**\n- 파드 = K8s에서 배포 가능한 최소 단위\n- 하나의 파드에 여러 컨테이너가 있을 수 있음\n- `kubectl get pods -A`로 전체 목록 확인 가능\n\n**정상 범위:**\n워크로드에 따라 다름. 급격한 변화 주시",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(kube_pod_status_phase{phase=\"Running\"})",
+          "legendFormat": "Running Pods",
+          "refId": "A"
+        }
+      ],
+      "title": "Running 파드",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## Pending 파드 수\n\n**무엇을 보여주나요?**\n스케줄링 대기 중인 파드 수입니다. 아직 노드에 배치되지 않았습니다.\n\n**왜 중요한가요?**\n- 0이 아니면 리소스 부족 또는 스케줄링 문제 의심\n- 오래 Pending 상태면 즉시 조치 필요\n\n**학습 포인트:**\nPending 원인:\n1. **리소스 부족** - CPU/메모리 request를 만족하는 노드 없음\n2. **nodeSelector 불일치** - 조건에 맞는 노드 없음\n3. **PVC 바인딩 실패** - 스토리지 문제\n4. **Taints/Tolerations** - 노드에 접근 불가\n\n**디버깅:**\n`kubectl describe pod <name>` Events 섹션 확인",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(kube_pod_status_phase{phase=\"Pending\"}) or vector(0)",
+          "legendFormat": "Pending",
+          "refId": "A"
+        }
+      ],
+      "title": "Pending 파드",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## Failed 파드 수\n\n**무엇을 보여주나요?**\n실패 상태인 파드 수입니다.\n\n**왜 중요한가요?**\n- 0이 정상. 1 이상이면 즉시 조치 필요\n- 애플리케이션 오류, 설정 문제 등 의심\n\n**학습 포인트:**\nFailed 원인:\n1. **OOMKilled** - 메모리 초과로 강제 종료\n2. **CrashLoopBackOff** - 반복 크래시\n3. **ImagePullBackOff** - 이미지 다운로드 실패\n4. **Error** - 컨테이너 내부 오류\n\n**디버깅:**\n```bash\nkubectl logs <pod-name>\nkubectl describe pod <pod-name>\n```",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(kube_pod_status_phase{phase=\"Failed\"}) or vector(0)",
+          "legendFormat": "Failed",
+          "refId": "A"
+        }
+      ],
+      "title": "Failed 파드",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 네임스페이스 수\n\n**무엇을 보여주나요?**\n클러스터의 네임스페이스 총 개수입니다.\n\n**학습 포인트:**\n네임스페이스 = K8s 리소스를 논리적으로 분리하는 단위\n\n**기본 네임스페이스:**\n- `default` - 기본 작업 공간\n- `kube-system` - K8s 시스템 컴포넌트\n- `kube-public` - 공개 리소스\n- `kube-node-lease` - 노드 heartbeat\n\n**우리 클러스터:**\n- `argocd` - GitOps 배포\n- `monitoring` - Prometheus, Grafana\n- `istio-system` - 서비스 메시\n- `dev-webs` - 개발 애플리케이션",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "purple", "value": null }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "count(kube_namespace_created)",
+          "legendFormat": "Namespaces",
+          "refId": "A"
+        }
+      ],
+      "title": "네임스페이스 수",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "id": 101,
+      "panels": [],
+      "title": "클러스터 리소스 (Cluster Resources)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 클러스터 CPU 사용률\n\n**무엇을 보여주나요?**\n전체 클러스터의 CPU 사용량을 시간대별로 보여줍니다.\n\n**계산 방식:**\n(실제 사용 CPU / 전체 할당 가능 CPU) × 100%\n\n**학습 포인트:**\n- **Request** - 파드가 보장받는 최소 CPU\n- **Limit** - 파드가 사용할 수 있는 최대 CPU\n- **Allocatable** - 노드에서 파드에 할당 가능한 CPU\n\n**정상 범위:**\n- 평상시: 30-60%\n- 70% 이상: 주의 (스케일 아웃 고려)\n- 90% 이상: 위험 (즉시 대응)\n\n**PromQL 학습:**\n```\nsum(rate(container_cpu_usage_seconds_total{...}[5m]))\n/ sum(kube_node_status_allocatable{resource=\"cpu\"})\n```",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "line" }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "id": 10,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "100 * sum(rate(container_cpu_usage_seconds_total{container!=\"\", container!=\"POD\"}[5m])) / sum(kube_node_status_allocatable{resource=\"cpu\"})",
+          "legendFormat": "CPU 사용률",
+          "refId": "A"
+        }
+      ],
+      "title": "클러스터 CPU 사용률",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 클러스터 메모리 사용률\n\n**무엇을 보여주나요?**\n전체 클러스터의 메모리 사용량을 시간대별로 보여줍니다.\n\n**계산 방식:**\n(실제 사용 메모리 / 전체 할당 가능 메모리) × 100%\n\n**학습 포인트:**\n메모리는 CPU와 달리 **비압축성 리소스**입니다.\n- CPU: 부족하면 throttling (느려짐)\n- 메모리: 부족하면 OOMKill (강제 종료)\n\n**중요한 메트릭:**\n- `container_memory_working_set_bytes` - 실제 사용 중인 메모리\n- `container_memory_rss` - RSS 메모리\n- `container_memory_cache` - 캐시 (회수 가능)\n\n**정상 범위:**\n- 평상시: 40-70%\n- 80% 이상: 주의\n- 90% 이상: OOMKill 위험",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "line" }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 80 },
+              { "color": "red", "value": 90 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "id": 11,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "100 * sum(container_memory_working_set_bytes{container!=\"\", container!=\"POD\"}) / sum(kube_node_status_allocatable{resource=\"memory\"})",
+          "legendFormat": "메모리 사용률",
+          "refId": "A"
+        }
+      ],
+      "title": "클러스터 메모리 사용률",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "id": 102,
+      "panels": [],
+      "title": "노드별 상태 (Per Node Status)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 노드별 CPU 사용률\n\n**무엇을 보여주나요?**\n각 노드(서버)의 개별 CPU 사용률입니다.\n\n**왜 중요한가요?**\n- 특정 노드에 부하가 집중되는지 확인\n- 노드간 불균형 발견 가능\n\n**학습 포인트:**\n노드 역할별 기대치:\n- **Control Plane (CP)**: etcd, API server 등 → 보통 낮음\n- **Worker**: 워크로드 실행 → 더 높을 수 있음\n\n**불균형 원인:**\n1. nodeSelector/affinity로 특정 노드 지정\n2. DaemonSet이 모든 노드에서 실행\n3. 리소스 request가 불균형하게 설정됨\n\n**해결:**\n`kubectl top nodes`로 실시간 확인",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+      "id": 20,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "100 * (1 - avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])))",
+          "legendFormat": "{{ instance }}",
+          "refId": "A"
+        }
+      ],
+      "title": "노드별 CPU 사용률",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 노드별 메모리 사용률\n\n**무엇을 보여주나요?**\n각 노드의 실제 메모리 사용률입니다.\n\n**계산 방식:**\n(전체 - 사용가능) / 전체 × 100%\n\n**학습 포인트:**\n리눅스 메모리 구성:\n- **Used**: 프로세스가 사용 중\n- **Buffers**: 블록 디바이스 I/O 버퍼\n- **Cached**: 파일 시스템 캐시\n- **Available**: 실제 사용 가능한 메모리\n\n**주의:**\n- `free` 명령어의 'used'와 다를 수 있음\n- 캐시는 필요시 자동 회수됨\n- `node_memory_MemAvailable_bytes` 기준이 더 정확\n\n**디버깅:**\n`kubectl describe node <name>` → Allocated resources 확인",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+      "id": 21,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)",
+          "legendFormat": "{{ instance }}",
+          "refId": "A"
+        }
+      ],
+      "title": "노드별 메모리 사용률",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
+      "id": 103,
+      "panels": [],
+      "title": "워크로드 상태 (Workload Status)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## Deployment 상태\n\n**무엇을 보여주나요?**\n각 Deployment의 Ready 레플리카 수 / 원하는 레플리카 수 입니다.\n\n**왜 중요한가요?**\n- Ready ≠ Desired → 배포 문제 또는 스케일링 진행 중\n- 0/N → 심각한 문제, 즉시 확인 필요\n\n**학습 포인트:**\nDeployment 상태:\n- **Available**: 트래픽 받을 준비 완료\n- **Progressing**: 롤아웃 진행 중\n- **ReplicaFailure**: 레플리카 생성 실패\n\n**확인 방법:**\n```bash\nkubectl get deploy -A\nkubectl rollout status deploy/<name>\n```\n\n**롤백:**\n```bash\nkubectl rollout undo deploy/<name>\n```",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Ready" },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "gauge"
+                }
+              },
+              { "id": "max", "value": 1 },
+              { "id": "min", "value": 0 }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "id": 30,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "kube_deployment_status_replicas_ready / kube_deployment_spec_replicas",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Deployment 상태",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": { "Time": true, "__name__": true, "job": true, "instance": true },
+            "indexByName": {},
+            "renameByName": {
+              "deployment": "Deployment",
+              "namespace": "Namespace",
+              "Value": "Ready"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 파드 재시작 횟수 (Top 10)\n\n**무엇을 보여주나요?**\n최근 가장 많이 재시작된 파드 Top 10입니다.\n\n**왜 중요한가요?**\n잦은 재시작 = 불안정한 워크로드\n- 메모리 누수로 OOMKill\n- 애플리케이션 버그로 크래시\n- 헬스체크 실패\n\n**학습 포인트:**\n재시작 원인 분석:\n```bash\n# 이전 컨테이너 로그 확인\nkubectl logs <pod> --previous\n\n# 이벤트 확인\nkubectl describe pod <pod>\n```\n\n**CrashLoopBackOff:**\n- 계속 재시작되면 대기 시간 증가 (10s → 20s → 40s → ...)\n- 최대 5분까지 대기 후 재시도\n\n**주의:**\n재시작 카운터는 파드 삭제 전까지 누적됨",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 3 },
+              { "color": "red", "value": 10 }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Restarts" },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": { "type": "color-background" }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "id": 31,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "Restarts" }]
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "topk(10, sum by(namespace, pod) (kube_pod_container_status_restarts_total))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "파드 재시작 횟수 (Top 10)",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": { "Time": true },
+            "indexByName": {},
+            "renameByName": {
+              "namespace": "Namespace",
+              "pod": "Pod",
+              "Value": "Restarts"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["kubernetes", "cluster", "overview", "학습용"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": false, "text": "Prometheus", "value": "Prometheus" },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Datasource",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "K8s 클러스터 개요 (학습용)",
+  "uid": "k8s-cluster-overview-kr",
+  "version": 1
+}
