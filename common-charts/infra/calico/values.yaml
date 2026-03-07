@@ -27,6 +27,7 @@ tigera-operator:
           natOutgoing: Enabled
           nodeSelector: all()
       nodeAddressAutodetectionV4:
+        firstFound: false
         cidrs:
           - 192.168.45.0/24
     nodeMetricsPort: 9091
