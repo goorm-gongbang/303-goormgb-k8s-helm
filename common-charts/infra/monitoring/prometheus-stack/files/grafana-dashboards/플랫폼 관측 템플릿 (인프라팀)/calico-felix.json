@@ -19,7 +19,7 @@
       },
       "id": 100,
       "panels": [],
-      "title": "Felix",
+      "title": "Felix 개요",
       "type": "row"
     },
     {
@@ -83,7 +83,7 @@
           "refId": "A"
         }
       ],
-      "title": "Felix",
+      "title": "Felix 노드 수",
       "type": "stat"
     },
     {
@@ -91,7 +91,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "##   \n\n** ?**\n  Felix   () .\n\n**?**\nCalico     .\n-   \n-   1 \n\n** :**\n```bash\n# Calico  \ncalicoctl get workloadendpoints -A\n\n#   \ncalicoctl get workloadendpoint -n <namespace> --workload <pod>\n```\n\n** :**",
+      "description": "## 활성 엔드포인트 수\n\n**이게 뭐야?**\n  Felix   () .\n\n**?**\nCalico     .\n-   \n-   1 \n\n** :**\n```bash\n# Calico  \ncalicoctl get workloadendpoints -A\n\n#   \ncalicoctl get workloadendpoint -n <namespace> --workload <pod>\n```\n\n** :**",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -143,7 +143,7 @@
           "refId": "A"
         }
       ],
-      "title": "",
+      "title": "활성 엔드포인트",
       "type": "stat"
     },
     {
@@ -151,7 +151,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "##    \n\n** ?**\n   Calico/K8s   .\n\n** ?**\n    .\n\n** :**\n- **K8s NetworkPolicy** -  K8s \n- **Calico NetworkPolicy** -   \n- **Calico GlobalNetworkPolicy** -   \n\n** :**\n```bash\n# K8s   \nkubectl get networkpolicy -A\n\n# Calico  \ncalicoctl get networkpolicy -A\ncalicoctl get globalnetworkpolicy\n```\n\n** :**\n-   =   \n-   =",
+      "description": "## 네트워크 정책 수\n\n**이게 뭐야?**\n   Calico/K8s   .\n\n** ?**\n    .\n\n** :**\n- **K8s NetworkPolicy** -  K8s \n- **Calico NetworkPolicy** -   \n- **Calico GlobalNetworkPolicy** -   \n\n** :**\n```bash\n# K8s   \nkubectl get networkpolicy -A\n\n# Calico  \ncalicoctl get networkpolicy -A\ncalicoctl get globalnetworkpolicy\n```\n\n** :**\n-   =   \n-   =",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -203,7 +203,7 @@
           "refId": "A"
         }
       ],
-      "title": "",
+      "title": "네트워크 정책",
       "type": "stat"
     },
     {
@@ -211,7 +211,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "## iptables  \n\n** ?**\nFelix  iptables   .\n\n**iptables?**\n    .\nCalico   iptables  .\n\n** :**\n```bash\n#  Calico iptables  \nsudo iptables -L -n | grep cali\nsudo iptables -L -n -t nat | grep cali\n\n#   \nsudo iptables -L -n | wc -l\n```\n\n** ?**\n-   =  \n-    (  )\n- eBPF",
+      "description": "## iptables 규칙 수\n\n**이게 뭐야?**\nFelix가 관리하는 iptables   .\n\n**iptables?**\n    .\nCalico   iptables  .\n\n** :**\n```bash\n#  Calico iptables  \nsudo iptables -L -n | grep cali\nsudo iptables -L -n -t nat | grep cali\n\n#   \nsudo iptables -L -n | wc -l\n```\n\n** ?**\n-   =  \n-    (  )\n- eBPF",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -263,7 +263,7 @@
           "refId": "A"
         }
       ],
-      "title": "iptables",
+      "title": "iptables 규칙",
       "type": "stat"
     },
     {
@@ -271,7 +271,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "## iptables  \n\n** ?**\niptables  (save)    .\n\n** ?**\n         .\n\n** :**\n- iptables   (  )\n-  \n-  \n\n**:**\n```bash\n# Felix  \nkubectl logs -n calico-system -l k8s-app=calico-node -c calico-node | grep -i error\n\n# iptables  \nsudo iptables -L -n\n```\n\n** :**\n0 .",
+      "description": "## iptables 저장 오류\n\n**이게 뭐야?**\niptables 규칙 저장(save)    .\n\n** ?**\n         .\n\n** :**\n- iptables   (  )\n-  \n-  \n\n**:**\n```bash\n# Felix  \nkubectl logs -n calico-system -l k8s-app=calico-node -c calico-node | grep -i error\n\n# iptables  \nsudo iptables -L -n\n```\n\n** :**\n0 .",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -327,7 +327,7 @@
           "refId": "A"
         }
       ],
-      "title": "iptables",
+      "title": "iptables 저장 오류",
       "type": "stat"
     },
     {
@@ -335,7 +335,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "## iptables  \n\n** ?**\niptables  (restore)    .\n\n**restore?**\nFelix      .\n    .\n\n** :**\n-   \n-   \n- iptables  \n\n** :**\n```bash\n# iptables-restore  \nsudo iptables-save > /tmp/rules.txt\nsudo iptables-restore < /tmp/rules.txt\n```\n\n** :**\n0",
+      "description": "## iptables 복원 오류\n\n**이게 뭐야?**\niptables 규칙 복원(restore)    .\n\n**restore?**\nFelix      .\n    .\n\n** :**\n-   \n-   \n- iptables  \n\n** :**\n```bash\n# iptables-restore  \nsudo iptables-save > /tmp/rules.txt\nsudo iptables-restore < /tmp/rules.txt\n```\n\n** :**\n0",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -391,7 +391,7 @@
           "refId": "A"
         }
       ],
-      "title": "iptables",
+      "title": "iptables 복원 오류",
       "type": "stat"
     },
     {
@@ -404,7 +404,7 @@
       },
       "id": 101,
       "panels": [],
-      "title": "",
+      "title": "정책 적용 & 성능",
       "type": "row"
     },
     {
@@ -523,7 +523,7 @@
           "refId": "C"
         }
       ],
-      "title": "",
+      "title": "정책 적용 지연시간",
       "type": "timeseries"
     },
     {
@@ -531,7 +531,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "## Felix  (Resync)\n\n** ?**\nFelix    .\n\n**?**\nFelix etcd/API     \n    .\n\n** :**\n- Felix \n- etcd/API   \n-   \n- \n\n** :**\n  ,\n   .\n\n** :**\n-  : \n-  : etcd/",
+      "description": "## Felix 재동기화 (Resync)\n\n** ?**\nFelix    .\n\n**?**\nFelix etcd/API     \n    .\n\n** :**\n- Felix \n- etcd/API   \n-   \n- \n\n** :**\n  ,\n   .\n\n** :**\n-  : \n-  : etcd/",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -615,7 +615,7 @@
           "refId": "A"
         }
       ],
-      "title": "Felix",
+      "title": "Felix 재동기화",
       "type": "timeseries"
     },
     {
@@ -628,7 +628,7 @@
       },
       "id": 102,
       "panels": [],
-      "title": "",
+      "title": "엔드포인트 & iptables",
       "type": "row"
     },
     {
@@ -721,7 +721,7 @@
           "refId": "A"
         }
       ],
-      "title": "",
+      "title": "노드별 엔드포인트",
       "type": "timeseries"
     },
     {
@@ -729,7 +729,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "##  iptables  \n\n** ?**\n  Felix  iptables  .\n\n**  :**\n-   \n-  /\n-   \n\n** :**\n-  :  \n-  :  \n-   :   \n\n** :**\n1.   \n2.   \n3. eBPF   ()\n\n**eBPF vs iptables:**\n- eBPF: O(1) ,  \n- iptables: O(n) ,",
+      "description": "## 노드별 iptables 규칙\n\n**이게 뭐야?**\n  Felix  iptables  .\n\n**  :**\n-   \n-  /\n-   \n\n** :**\n-  :  \n-  :  \n-   :   \n\n** :**\n1.   \n2.   \n3. eBPF   ()\n\n**eBPF vs iptables:**\n- eBPF: O(1) ,  \n- iptables: O(n) ,",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -814,7 +814,7 @@
           "refId": "A"
         }
       ],
-      "title": "iptables",
+      "title": "노드별 iptables 규칙",
       "type": "timeseries"
     },
     {
@@ -827,7 +827,7 @@
       },
       "id": 103,
       "panels": [],
-      "title": "IP  & IPAM",
+      "title": "IP 관리 & IPAM",
       "type": "row"
     },
     {
@@ -920,7 +920,7 @@
           "refId": "A"
         }
       ],
-      "title": "IP Set  (IP )",
+      "title": "IP Set 크기 (버전별)",
       "type": "timeseries"
     },
     {
@@ -1043,7 +1043,7 @@
           "refId": "A"
         }
       ],
-      "title": "Felix  ( )",
+      "title": "Felix 로그 (레벨별)",
       "type": "timeseries"
     }
   ],
