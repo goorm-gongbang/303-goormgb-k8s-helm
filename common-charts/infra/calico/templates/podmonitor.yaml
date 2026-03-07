@@ -18,14 +18,19 @@ spec:
   podMetricsEndpoints:
     - targetPort: {{ .Values.metrics.port }}
       interval: {{ .Values.metrics.interval | default "30s" }}
-      {{- if .Values.metrics.relabeling }}
       relabelings:
+        # Pod IP + Felix 메트릭 포트로 주소 재설정 (컨테이너 포트 스펙에 없어도 동작)
+        - sourceLabels: [__meta_kubernetes_pod_ip]
+          regex: (.+)
+          replacement: $1:{{ .Values.metrics.port }}
+          targetLabel: __address__
+        {{- if .Values.metrics.relabeling }}
         # Pod 이름과 IP를 결합하여 가독성 있는 인스턴스명 생성
-        - sourceLabels: [__meta_kubernetes_pod_node_name, __address__]
+        - sourceLabels: [__meta_kubernetes_pod_node_name, __meta_kubernetes_pod_ip]
           separator: " ("
-          replacement: "$1$2)"
+          replacement: "$1$2:{{ .Values.metrics.port }})"
           targetLabel: instance
         - sourceLabels: [__meta_kubernetes_pod_node_name]
           targetLabel: node
-      {{- end }}
+        {{- end }}
 {{- end }}
