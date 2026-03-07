@@ -1,0 +1,11 @@
+apiVersion: v2
+name: calico
+description: Calico CNI with Tigera Operator (official Helm chart wrapper)
+type: application
+version: 1.0.0
+appVersion: "3.29.3"
+
+dependencies:
+  - name: tigera-operator
+    version: "v3.29.3"
+    repository: https://docs.tigera.io/calico/charts
