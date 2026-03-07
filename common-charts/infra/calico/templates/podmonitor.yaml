@@ -1,0 +1,31 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: calico-felix
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: calico
+    app.kubernetes.io/component: felix
+    release: {{ .Release.Name }}
+spec:
+  namespaceSelector:
+    matchNames:
+      - calico-system
+  selector:
+    matchLabels:
+      k8s-app: calico-node
+  podMetricsEndpoints:
+    - targetPort: {{ .Values.metrics.port }}
+      interval: {{ .Values.metrics.interval | default "30s" }}
+      {{- if .Values.metrics.relabeling }}
+      relabelings:
+        # Pod 이름과 IP를 결합하여 가독성 있는 인스턴스명 생성
+        - sourceLabels: [__meta_kubernetes_pod_node_name, __address__]
+          separator: " ("
+          replacement: "$1$2)"
+          targetLabel: instance
+        - sourceLabels: [__meta_kubernetes_pod_node_name]
+          targetLabel: node
+      {{- end }}
+{{- end }}
