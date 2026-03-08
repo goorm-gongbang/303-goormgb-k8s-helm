@@ -328,8 +328,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "pilot_services or vector(0)",
-          "legendFormat": "Services",
+          "expr": "sum(pilot_services) or vector(0)",
+          "legendFormat": "서비스",
           "refId": "A"
         }
       ],
@@ -386,8 +386,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "pilot_virt_services or vector(0)",
-          "legendFormat": "VirtualServices",
+          "expr": "sum(pilot_virt_services) or vector(0)",
+          "legendFormat": "VS",
           "refId": "A"
         }
       ],
