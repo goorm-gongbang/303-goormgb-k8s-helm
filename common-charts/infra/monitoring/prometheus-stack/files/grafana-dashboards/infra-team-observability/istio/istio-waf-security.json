@@ -547,37 +547,37 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` != `/api/datasources/` [$__auto]))",
           "legendFormat": "SQL Injection",
           "refId": "A"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` != `/api/datasources/` [$__auto]))",
           "legendFormat": "XSS",
           "refId": "B"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` != `/api/datasources/` [$__auto]))",
           "legendFormat": "Path Traversal",
           "refId": "C"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` != `/api/datasources/` [$__auto]))",
           "legendFormat": "Command Injection",
           "refId": "D"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` != `/api/datasources/` [$__auto]))",
           "legendFormat": "Bot/Scanner",
           "refId": "E"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` != `/api/datasources/` [$__auto]))",
           "legendFormat": "Log4Shell",
           "refId": "F"
         }
