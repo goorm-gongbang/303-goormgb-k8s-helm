@@ -709,7 +709,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum by (client_ip) (count_over_time({namespace=\"istio-system\"} |= `type\":\"security\"` | json [$__range]))",
+          "expr": "sum by (client_ip) (count_over_time({namespace=\"istio-system\"} |= `type\":\"security\"` | regexp `client_ip\\\":\\\"(?P<client_ip>[^\\\"]+)\\\"` [$__range]))",
           "legendFormat": "",
           "refId": "A"
         }
@@ -743,7 +743,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum by (path) (count_over_time({namespace=\"istio-system\"} |= `type\":\"security\"` | json [$__range]))",
+          "expr": "sum by (path) (count_over_time({namespace=\"istio-system\"} |= `type\":\"security\"` | regexp `path\\\":\\\"(?P<path>[^\\\"]+)\\\"` [$__range]))",
           "legendFormat": "",
           "refId": "A"
         }
@@ -779,7 +779,7 @@
       }
     ]
   },
-  "time": { "from": "now-24h", "to": "now" },
+  "time": { "from": "now-1h", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
   "title": "Istio WAF 보안 모니터링",
