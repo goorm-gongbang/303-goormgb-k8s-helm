@@ -126,11 +126,10 @@ kube-prometheus-stack:
       dashboards:
         enabled: true
         folder: /tmp/dashboards
-        # defaultFolderName 제거 - ConfigMap annotation(grafana_folder)으로만 폴더 지정
         folderAnnotation: grafana_folder
         searchNamespace: monitoring
         provider:
-          foldersFromFilesStructure: false
+          foldersFromFilesStructure: true  # 디렉토리 구조를 Grafana 폴더로 변환
           allowUiUpdates: true
 
     # kube-prometheus-stack 기본 대시보드 완전 비활성화
