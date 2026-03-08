@@ -36,11 +36,11 @@
   "panels": [
     {
       "datasource": { "type": "datasource", "uid": "-- Dashboard --" },
-      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
       "id": 99,
       "options": {
         "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
-        "content": "## 📦 Repo: [goorm-gongbang/303-goormgb-k8s-helm](https://github.com/goorm-gongbang/303-goormgb-k8s-helm) | Branch: `argocd-sync/dev`",
+        "content": "| 항목 | 값 |\n|---|---|\n| **Repository** | [goorm-gongbang/303-goormgb-k8s-helm](https://github.com/goorm-gongbang/303-goormgb-k8s-helm) |\n| **Branch** | `argocd-sync/dev` |\n| **ArgoCD** | [argocd.goormgb.space](https://argocd.goormgb.space) |\n\n| ArgoCD UI | Grafana 대시보드 |\n|---|---|\n| 현재 상태 확인, 수동 Sync 실행, 앱별 상세 조회 | 시간대별 추이, 패턴 분석, 알람 설정, 다른 메트릭과 연계 분석 |\n| **운영/조작 중심** | **모니터링/분석 중심** |",
         "mode": "markdown"
       },
       "pluginVersion": "11.4.0",
@@ -48,7 +48,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 4 },
       "id": 100,
       "title": "앱 상태 현황 (메트릭)",
       "type": "row"
@@ -65,7 +65,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 3 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 5 },
       "id": 10,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "expr": "count(argocd_app_info{sync_status=\"Synced\"})", "legendFormat": "Synced", "refId": "A" }],
@@ -84,7 +84,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 3 },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 5 },
       "id": 11,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "expr": "count(argocd_app_info{sync_status=\"OutOfSync\"})", "legendFormat": "OutOfSync", "refId": "A" }],
@@ -103,7 +103,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 3 },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 5 },
       "id": 12,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "expr": "count(argocd_app_info{health_status=\"Healthy\"})", "legendFormat": "Healthy", "refId": "A" }],
@@ -122,7 +122,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 3 },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 5 },
       "id": 13,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "expr": "count(argocd_app_info{health_status=~\"Degraded|Progressing|Unknown\"})", "legendFormat": "Unhealthy", "refId": "A" }],
@@ -131,14 +131,61 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 7 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
+      "id": 103,
+      "title": "Webhook & 배포 흐름",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "datasource", "uid": "-- Dashboard --" },
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 10 },
+      "id": 104,
+      "options": {
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
+        "content": "**배포 흐름:** `Git Push` → `GitHub Webhook` → `ArgoCD Webhook 수신` → `Refresh/Reconciliation 시작` → `Sync 완료`\n\n각 단계의 시간을 비교하면 배포 지연 구간을 파악할 수 있습니다.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.4.0",
+      "type": "text"
+    },
+    {
+      "datasource": "Loki",
+      "description": "GitHub에서 push 이벤트 발생 시 ArgoCD가 수신하는 webhook 로그. 이 시점이 Git 변경 감지의 시작점",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 12 },
+      "id": 105,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": "Loki",
+          "editorMode": "code",
+          "expr": "{namespace=\"argocd\"} |~ \"Received push event|webhook|received event|git-webhook\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Webhook 수신 로그",
+      "type": "logs"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
       "id": 101,
       "title": "Reconciliation 로그",
       "type": "row"
     },
     {
       "datasource": "Loki",
-      "description": "앱별 Reconciliation 완료 건수",
+      "description": "Reconciliation: ArgoCD가 Git과 클러스터 상태를 주기적으로 비교/동기화하는 과정. 건수가 많으면 Git 변경이 잦거나, 누군가 kubectl로 직접 수정해서 상태 불일치(drift)가 발생했을 수 있음",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -148,7 +195,7 @@
             "axisColorMode": "text",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
+            "barWidthFactor": 0.9,
             "drawStyle": "bars",
             "fillOpacity": 80,
             "hideFrom": { "legend": false, "tooltip": false, "viz": false },
@@ -163,10 +210,10 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 8 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 19 },
       "id": 1,
       "options": {
-        "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
+        "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "bottom", "showLegend": true },
         "tooltip": { "mode": "multi", "sort": "none" }
       },
       "targets": [
@@ -184,9 +231,9 @@
     },
     {
       "datasource": "Loki",
-      "description": "Sync/Reconciliation 관련 로그",
+      "description": "Sync: 수동/자동으로 Git→클러스터 배포 실행. Reconciliation: 주기적(기본 3분)으로 Git과 클러스터 상태 비교 후 차이 감지 시 자동 동기화",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 14 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 27 },
       "id": 2,
       "options": {
         "dedupStrategy": "none",
@@ -212,7 +259,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 35 },
       "id": 102,
       "title": "에러 및 알림",
       "type": "row"
@@ -221,7 +268,7 @@
       "datasource": "Loki",
       "description": "에러 로그",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 23 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 36 },
       "id": 3,
       "options": {
         "dedupStrategy": "none",
@@ -249,7 +296,7 @@
       "datasource": "Loki",
       "description": "Notification 트리거 로그",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 29 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 42 },
       "id": 4,
       "options": {
         "dedupStrategy": "none",

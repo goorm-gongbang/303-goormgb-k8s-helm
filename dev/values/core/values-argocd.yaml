@@ -47,3 +47,11 @@ applications:
 # Prometheus 메트릭 수집
 metrics:
   enabled: true
+
+# ArgoCD Notifications - Discord 알림
+notifications:
+  enabled: true
+  discord:
+    eso:
+      enabled: true
+      secretManagerKey: dev/argocd/discord-webhook-infra
