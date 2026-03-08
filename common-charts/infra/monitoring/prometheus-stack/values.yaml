@@ -38,6 +38,14 @@ kube-prometheus-stack:
     enabled: true
     # adminPassword는 existingSecret 사용 시 무시됨
 
+    # Sidecar 설정 - ConfigMap에서 대시보드 자동 로드
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        labelValue: "1"
+        folderAnnotation: grafana_folder
+
     persistence:
       enabled: true
       size: 5Gi
