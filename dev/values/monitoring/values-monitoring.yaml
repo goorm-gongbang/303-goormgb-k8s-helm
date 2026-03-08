@@ -184,9 +184,7 @@ kube-prometheus-stack:
 
     # ConfigMap 기반 커스텀 대시보드는 sidecar가 자동 감지
     # ConfigMap에 grafana_dashboard: "1" 라벨 + grafana_folder annotation 사용
-    # dashboardsConfigMaps는 사용하지 않음 (256KB 제한으로 ConfigMap 분리됨)
-    dashboardsConfigMaps:
-      dev-team-observability: grafana-dashboards-dev-team-observability
+    # dashboardsConfigMaps 사용 안 함 (sidecar와 중복되어 충돌 발생)
 
     # Grafana.com 대시보드 매핑
     dashboards:
