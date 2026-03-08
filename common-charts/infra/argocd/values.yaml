@@ -35,3 +35,12 @@ applications: []
 # Prometheus ServiceMonitor
 metrics:
   enabled: false
+
+# ArgoCD Notifications 설정
+notifications:
+  enabled: false
+  discord:
+    # ESO에서 webhook URL 가져오기
+    eso:
+      enabled: false
+      secretManagerKey: ""  # 예: dev/argocd/discord-webhook
