@@ -547,37 +547,37 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SQL_INJECTION` [$__interval]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SQL_INJECTION` [$__range]))",
           "legendFormat": "SQL Injection",
           "refId": "A"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `XSS_DETECTED` [$__interval]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `XSS_DETECTED` [$__range]))",
           "legendFormat": "XSS",
           "refId": "B"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `PATH_TRAVERSAL` [$__interval]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `PATH_TRAVERSAL` [$__range]))",
           "legendFormat": "Path Traversal",
           "refId": "C"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `COMMAND_INJECTION` [$__interval]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `COMMAND_INJECTION` [$__range]))",
           "legendFormat": "Command Injection",
           "refId": "D"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `BOT_SCANNER` [$__interval]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `BOT_SCANNER` [$__range]))",
           "legendFormat": "Bot/Scanner",
           "refId": "E"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `LOG4SHELL` [$__interval]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `LOG4SHELL` [$__range]))",
           "legendFormat": "Log4Shell",
           "refId": "F"
         }
