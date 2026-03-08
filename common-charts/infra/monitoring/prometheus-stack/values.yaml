@@ -45,6 +45,9 @@ kube-prometheus-stack:
         label: grafana_dashboard
         labelValue: "1"
         folderAnnotation: grafana_folder
+        provider:
+          foldersFromFilesStructure: false
+          allowUiUpdates: true
 
     persistence:
       enabled: true
