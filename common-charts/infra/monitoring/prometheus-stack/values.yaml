@@ -45,6 +45,9 @@ kube-prometheus-stack:
         label: grafana_dashboard
         labelValue: "1"
         folderAnnotation: grafana_folder
+        provider:
+          foldersFromFilesStructure: false
+          allowUiUpdates: true
 
     persistence:
       enabled: true
@@ -77,6 +80,35 @@ kube-prometheus-stack:
           cpu: 200m
           memory: 256Mi
 
+    config:
+      global:
+        resolve_timeout: 5m
+
+      route:
+        group_by: ['alertname', 'namespace', 'severity']
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 4h
+        receiver: 'discord-notifications'
+        routes:
+          - receiver: 'discord-notifications'
+            matchers:
+              - severity =~ "critical|warning"
+
+      receivers:
+        - name: 'discord-notifications'
+          discord_configs:
+            - webhook_url: 'https://discord.com/api/webhooks/1480147981414957128/tCmoOt1d1ZUGmbaFET-QIveQq64kZ4Vlo4U700Ax8p-WiOt4km2SzSgyugFWiQKa0j1V'
+              title: '{{ if eq .Status "firing" }}🚨 Alert{{ else }}✅ Resolved{{ end }}'
+              message: |
+                **{{ .CommonLabels.alertname }}**
+                {{ range .Alerts }}
+                • 상태: {{ .Status }}
+                • 심각도: {{ .Labels.severity }}
+                • 네임스페이스: {{ .Labels.namespace }}
+                • 설명: {{ .Annotations.description }}
+                {{ end }}
+
   # Node Exporter (모든 노드에서 실행)
   nodeExporter:
     enabled: true
@@ -99,6 +131,10 @@ gateway:
   prometheus:
     enabled: false
     host: ""
+
+# Alert Rules (PrometheusRule CRD)
+alertRules:
+  enabled: true
 
 # Node placement
 nodeSelector: {}

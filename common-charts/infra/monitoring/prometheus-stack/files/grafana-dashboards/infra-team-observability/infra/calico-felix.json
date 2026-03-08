@@ -42,7 +42,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "count(felix_active_local_endpoints)",
+          "expr": "count(count by (instance) (felix_active_local_endpoints))",
           "legendFormat": "활성 노드",
           "refId": "A"
         }
@@ -75,7 +75,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_active_local_endpoints)",
+          "expr": "sum(max by (instance) (felix_active_local_endpoints))",
           "legendFormat": "엔드포인트",
           "refId": "A"
         }
@@ -108,7 +108,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_active_local_policies)",
+          "expr": "sum(max by (instance) (felix_active_local_policies))",
           "legendFormat": "정책",
           "refId": "A"
         }
@@ -141,7 +141,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_iptables_rules)",
+          "expr": "sum(max by (instance, table) (felix_iptables_rules))",
           "legendFormat": "규칙",
           "refId": "A"
         }
@@ -174,7 +174,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_iptables_save_errors_total) or vector(0)",
+          "expr": "sum(max by (instance) (felix_iptables_save_errors_total)) or vector(0)",
           "legendFormat": "오류",
           "refId": "A"
         }
@@ -207,7 +207,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_iptables_restore_errors_total) or vector(0)",
+          "expr": "sum(max by (instance) (felix_iptables_restore_errors_total)) or vector(0)",
           "legendFormat": "오류",
           "refId": "A"
         }
@@ -259,9 +259,9 @@
         "tooltip": { "mode": "multi", "sort": "desc" }
       },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "histogram_quantile(0.5, sum(rate(felix_int_dataplane_apply_time_seconds_bucket[5m])) by (le))", "legendFormat": "P50", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "histogram_quantile(0.9, sum(rate(felix_int_dataplane_apply_time_seconds_bucket[5m])) by (le))", "legendFormat": "P90", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "histogram_quantile(0.99, sum(rate(felix_int_dataplane_apply_time_seconds_bucket[5m])) by (le))", "legendFormat": "P99", "refId": "C" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(max by (instance) (felix_int_dataplane_apply_time_seconds{quantile=\"0.5\"}))", "legendFormat": "P50", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(max by (instance) (felix_int_dataplane_apply_time_seconds{quantile=\"0.9\"}))", "legendFormat": "P90", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(max by (instance) (felix_int_dataplane_apply_time_seconds{quantile=\"0.99\"}))", "legendFormat": "P99", "refId": "C" }
       ],
       "title": "데이터플레인 적용 시간",
       "type": "timeseries"
@@ -297,7 +297,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(increase(felix_resyncs_started_total[5m])) by (instance)",
+          "expr": "max by (instance) (increase(felix_resyncs_started[5m]))",
           "legendFormat": "{{ instance }}",
           "refId": "A"
         }
@@ -344,7 +344,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "felix_active_local_endpoints",
+          "expr": "max by (instance) (felix_active_local_endpoints)",
           "legendFormat": "{{ instance }}",
           "refId": "A"
         }
@@ -383,7 +383,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "felix_iptables_rules",
+          "expr": "sum by (instance) (max by (instance, table) (felix_iptables_rules{ip_version=\"4\"}))",
           "legendFormat": "{{ instance }}",
           "refId": "A"
         }
@@ -401,7 +401,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "## IP Set 크기 (IP 버전별)\n\n**이 지표가 뭐예요?**\nCalico IPAM(IP Address Management)의 IP Set 크기입니다.\n\n**IPAM이란?**\n클러스터 IP 주소 할당을 관리합니다.\n\n**일반적인 구성:**\n- Pod CIDR: 10.244.0.0/16\n- 최대 할당 IP: 약 65,000개\n\n**확인 명령어:**\n```bash\n# IP 풀 확인\ncalicoctl get ippool -o wide\n\n# 할당된 IP 확인\ncalicoctl ipam show\n\n# 블록별 확인\ncalicoctl ipam show --show-blocks\n```\n\n**IP 부족 시:**\n- 노드를 추가해도 Pod 생성 실패\n- IP 풀 확장 또는 CIDR 변경 필요",
+      "description": "## IP Set 수\n\n**이 지표가 뭐예요?**\nCalico Felix가 관리하는 IP Set 수입니다.\n\n**IP Set이란?**\niptables에서 IP 그룹을 효율적으로 관리하는 방식입니다.\n네트워크 정책의 IP 셀렉터를 IP Set으로 변환합니다.\n\n**확인 명령어:**\n```bash\n# IP Set 목록\nsudo ipset list | grep cali\n\n# Calico IP 풀\ncalicoctl get ippool -o wide\n```",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -430,17 +430,23 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_ipset_size) by (ip_version)",
-          "legendFormat": "IPv{{ ip_version }}",
+          "expr": "sum(max by (instance, ip_version) (felix_ipsets_calico)) by (ip_version)",
+          "legendFormat": "{{ ip_version }}",
           "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(max by (instance) (felix_ipsets_total))",
+          "legendFormat": "Total",
+          "refId": "B"
         }
       ],
-      "title": "IP Set 크기 (IP 버전별)",
+      "title": "IP Set 수",
       "type": "timeseries"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "## Felix 로그 메시지 (레벨별)\n\n**이 지표가 뭐예요?**\nFelix가 생성한 로그 메시지 레벨별 수입니다.\n\n**로그 레벨:**\n- **Error**: 심각한 문제, 즉시 조사 필요\n- **Warning**: 잠재적 문제, 모니터링 필요\n- **Info**: 정상 동작 정보\n\n**확인 명령어:**\n```bash\n# 에러 로그 확인\nkubectl logs -n calico-system -l k8s-app=calico-node -c calico-node | grep -i error\n\n# 최근 로그\nkubectl logs -n calico-system -l k8s-app=calico-node -c calico-node --tail=100\n```\n\n**일반적인 에러:**\n- Connection refused: etcd/API 서버 연결 문제\n- Resource not found: CRD 누락\n- Permission denied: RBAC 설정 문제",
+      "description": "## Felix 로그 오류\n\n**이 지표가 뭐예요?**\nFelix에서 발생한 로그 관련 오류입니다.\n\n**지표 설명:**\n- **Logs Dropped**: 버퍼 초과로 드롭된 로그\n- **Log Errors**: 로그 기록 시 발생한 오류\n\n**확인 명령어:**\n```bash\n# 에러 로그 확인\nkubectl logs -n calico-system -l k8s-app=calico-node -c calico-node | grep -i error\n\n# 최근 로그\nkubectl logs -n calico-system -l k8s-app=calico-node -c calico-node --tail=100\n```\n\n**정상 상태:**\n0개가 정상입니다.",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -459,8 +465,8 @@
           "unit": "short"
         },
         "overrides": [
-          { "matcher": { "id": "byRegexp", "options": ".*error.*" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
-          { "matcher": { "id": "byRegexp", "options": ".*warning.*" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] }
+          { "matcher": { "id": "byName", "options": "Log Errors" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Logs Dropped" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] }
         ]
       },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
@@ -472,18 +478,24 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(increase(felix_logs_dropped_total[5m])) by (level)",
-          "legendFormat": "{{ level }}",
+          "expr": "sum(max by (instance) (increase(felix_logs_dropped[5m])))",
+          "legendFormat": "Logs Dropped",
           "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(max by (instance) (increase(felix_log_errors[5m])))",
+          "legendFormat": "Log Errors",
+          "refId": "B"
         }
       ],
-      "title": "Felix 로그 메시지 (레벨별)",
+      "title": "Felix 로그 오류",
       "type": "timeseries"
     }
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["calico", "felix", "cni", "network", "korean"],
+  "tags": ["calico", "felix", "cni", "network"],
   "templating": {
     "list": [
       {

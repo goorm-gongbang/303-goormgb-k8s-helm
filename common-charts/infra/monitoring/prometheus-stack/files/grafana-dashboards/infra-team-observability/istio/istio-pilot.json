@@ -138,7 +138,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(pilot_xds_pushes{type=\"cds\"})",
+          "expr": "sum(pilot_xds)",
           "legendFormat": "Envoy Proxies",
           "refId": "A"
         }
@@ -1508,6 +1508,6 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Istio Control Plane 모니터링",
-  "uid": "istio-pilot-korean",
+  "uid": "istio-pilot",
   "version": 1
 }

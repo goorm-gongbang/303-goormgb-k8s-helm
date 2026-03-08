@@ -17,7 +17,7 @@ logging:
   enabled: true
   level: warn
 
-# 탐지 패턴 (기본값 사용)
+# 탐지 패턴
 patterns:
   sqlInjection:
     enabled: true
@@ -25,9 +25,26 @@ patterns:
     enabled: true
   pathTraversal:
     enabled: true
+  commandInjection:
+    enabled: true
+  ldapInjection:
+    enabled: true
+  xxeInjection:
+    enabled: true
+  ssrf:
+    enabled: true
+  log4shell:
+    enabled: true
+  headerInjection:
+    enabled: true
+  botScanner:
+    enabled: true
 
 # 제외 경로 (health check, metrics, 내부 서비스 등)
 excludePaths:
+  # Grafana 내부 API (Loki 쿼리 등 - SQL Injection 오탐 방지)
+  - "/api/datasources/"
+
   # Health checks
   - "/health"
   - "/healthz"

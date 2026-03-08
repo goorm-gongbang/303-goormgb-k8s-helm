@@ -326,11 +326,39 @@ spec:
                     end
                   end
 
-                  -- Bot/Scanner 체크 (User-Agent 헤더)
+                  -- User-Agent 헤더 검사
                   local user_agent = headers:get("user-agent") or ""
+
+                  -- Bot/Scanner 체크 (User-Agent)
                   local bot_match = check_patterns(user_agent, BOT_PATTERNS, "BOT_SCANNER")
                   if bot_match then
                     log_security_event(request_handle, "BOT_SCANNER_DETECTED", bot_match, client_ip, path, BLOCK_MODE)
+                    if BLOCK_MODE then
+                      request_handle:respond(
+                        {[":status"] = "{{ .Values.response.statusCode }}"},
+                        "{{ .Values.response.body }}"
+                      )
+                      return
+                    end
+                  end
+
+                  -- Log4Shell 체크 (User-Agent) - Log4j 공격은 헤더에 주입되는 경우가 많음
+                  local log4j_header_match = check_patterns(user_agent, LOG4J_PATTERNS, "LOG4SHELL")
+                  if log4j_header_match then
+                    log_security_event(request_handle, "LOG4SHELL_DETECTED", log4j_header_match, client_ip, path, BLOCK_MODE)
+                    if BLOCK_MODE then
+                      request_handle:respond(
+                        {[":status"] = "{{ .Values.response.statusCode }}"},
+                        "{{ .Values.response.body }}"
+                      )
+                      return
+                    end
+                  end
+
+                  -- XSS 체크 (User-Agent) - 악성 스크립트가 헤더에 주입될 수 있음
+                  local xss_header_match = check_patterns(user_agent, XSS_PATTERNS, "XSS")
+                  if xss_header_match then
+                    log_security_event(request_handle, "XSS_DETECTED", xss_header_match, client_ip, path, BLOCK_MODE)
                     if BLOCK_MODE then
                       request_handle:respond(
                         {[":status"] = "{{ .Values.response.statusCode }}"},
