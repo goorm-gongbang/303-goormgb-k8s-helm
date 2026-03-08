@@ -1,0 +1,30 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: argocd-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: argocd
+    release: prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: argocd
+  namespaceSelector:
+    matchNames:
+      - argocd
+  endpoints:
+    # argocd-server metrics
+    - port: metrics
+      interval: 30s
+      path: /metrics
+    # argocd-application-controller metrics
+    - port: metrics
+      interval: 30s
+      path: /metrics
+    # argocd-repo-server metrics
+    - port: metrics
+      interval: 30s
+      path: /metrics
+{{- end }}
