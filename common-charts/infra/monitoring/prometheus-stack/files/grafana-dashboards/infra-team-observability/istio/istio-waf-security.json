@@ -47,7 +47,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"` != `/api/datasources/` [$__range]))",
           "legendFormat": "Total",
           "refId": "A"
         }
@@ -87,7 +87,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `blocked\":true` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `blocked\":true` != `/api/datasources/` [$__range]))",
           "legendFormat": "Blocked",
           "refId": "A"
         }
@@ -126,7 +126,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` != `/api/datasources/` [$__range]))",
           "legendFormat": "SQL Injection",
           "refId": "A"
         }
@@ -165,7 +165,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` != `/api/datasources/` [$__range]))",
           "legendFormat": "XSS",
           "refId": "A"
         }
@@ -204,7 +204,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` != `/api/datasources/` [$__range]))",
           "legendFormat": "Path Traversal",
           "refId": "A"
         }
@@ -244,7 +244,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` != `/api/datasources/` [$__range]))",
           "legendFormat": "Bot/Scanner",
           "refId": "A"
         }
@@ -291,7 +291,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` != `/api/datasources/` [$__range]))",
           "legendFormat": "Command Injection",
           "refId": "A"
         }
@@ -330,7 +330,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LDAP_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LDAP_INJECTION` != `/api/datasources/` [$__range]))",
           "legendFormat": "LDAP Injection",
           "refId": "A"
         }
@@ -369,7 +369,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XXE_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XXE_INJECTION` != `/api/datasources/` [$__range]))",
           "legendFormat": "XXE",
           "refId": "A"
         }
@@ -408,7 +408,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SSRF_DETECTED` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SSRF_DETECTED` != `/api/datasources/` [$__range]))",
           "legendFormat": "SSRF",
           "refId": "A"
         }
@@ -447,7 +447,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` != `/api/datasources/` [$__range]))",
           "legendFormat": "Log4Shell",
           "refId": "A"
         }
@@ -486,7 +486,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `HEADER_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `HEADER_INJECTION` != `/api/datasources/` [$__range]))",
           "legendFormat": "Header Injection",
           "refId": "A"
         }
@@ -547,37 +547,37 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` != `/api/datasources/` [$__range]))",
           "legendFormat": "SQL Injection",
           "refId": "A"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` != `/api/datasources/` [$__range]))",
           "legendFormat": "XSS",
           "refId": "B"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` != `/api/datasources/` [$__range]))",
           "legendFormat": "Path Traversal",
           "refId": "C"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` != `/api/datasources/` [$__range]))",
           "legendFormat": "Command Injection",
           "refId": "D"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` != `/api/datasources/` [$__range]))",
           "legendFormat": "Bot/Scanner",
           "refId": "E"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` != `/api/datasources/` [$__range]))",
           "legendFormat": "Log4Shell",
           "refId": "F"
         }
@@ -617,37 +617,37 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` != `/api/datasources/` [$__range]))",
           "legendFormat": "SQL Injection",
           "refId": "A"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` != `/api/datasources/` [$__range]))",
           "legendFormat": "XSS",
           "refId": "B"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` != `/api/datasources/` [$__range]))",
           "legendFormat": "Path Traversal",
           "refId": "C"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` != `/api/datasources/` [$__range]))",
           "legendFormat": "Command Injection",
           "refId": "D"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` != `/api/datasources/` [$__range]))",
           "legendFormat": "Bot/Scanner",
           "refId": "E"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SSRF` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SSRF` != `/api/datasources/` [$__range]))",
           "legendFormat": "SSRF",
           "refId": "F"
         }
@@ -673,7 +673,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "{namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"`",
+          "expr": "{namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"` != `/api/datasources/`",
           "legendFormat": "",
           "refId": "A"
         }
@@ -709,7 +709,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum by (client_ip) (count_over_time({namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"` | regexp `client_ip\\\":\\\"(?P<client_ip>[^\\\"]+)\\\"` [$__range]))",
+          "expr": "sum by (client_ip) (count_over_time({namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"` != `/api/datasources/` | regexp `client_ip\\\":\\\"(?P<client_ip>[^\\\"]+)\\\"` [$__range]))",
           "legendFormat": "",
           "refId": "A"
         }
@@ -743,7 +743,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum by (path) (count_over_time({namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"` | regexp `path\\\":\\\"(?P<path>[^\\\"]+)\\\"` [$__range]))",
+          "expr": "sum by (path) (count_over_time({namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"` != `/api/datasources/` | regexp `path\\\":\\\"(?P<path>[^\\\"]+)\\\"` [$__range]))",
           "legendFormat": "",
           "refId": "A"
         }
