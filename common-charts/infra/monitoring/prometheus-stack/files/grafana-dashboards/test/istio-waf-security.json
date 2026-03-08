@@ -17,7 +17,7 @@
     },
     {
       "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-      "description": "## 총 탐지 건수\n\n지난 24시간 동안 탐지된 총 보안 위협 수입니다.\n\n**탐지 대상:**\n- SQL Injection\n- XSS\n- Path Traversal\n- Command Injection\n- LDAP Injection\n- XXE Injection\n- SSRF\n- Log4Shell\n- Header Injection\n- Bot/Scanner",
+      "description": "## 총 탐지 건수\n\n지난 24시간 동안 탐지된 총 보안 위협 수입니다.\n\n**탐지 대상:**\n- SQL Injection\n- XSS\n- Path Traversal\n- Command Injection\n- LDAP Injection\n- XXE Injection\n- SSRF\n- Log4Shell\n- Header Injection\n- Bot/Scanner\n\n---\n\n## 🔍 탐지 로그 검색 방법\n\n**Grafana Explore에서 Loki로 검색:**\n```\n{namespace=\"istio-system\"} |= `type\":\"security\"`\n```\n\n**공격 유형별 검색:**\n```\n{namespace=\"istio-system\"} |= `SQL_INJECTION`\n{namespace=\"istio-system\"} |= `XSS_DETECTED`\n{namespace=\"istio-system\"} |= `BOT_SCANNER`\n```\n\n**차단된 요청만 검색:**\n```\n{namespace=\"istio-system\"} |= `blocked\":true`\n```\n\n**특정 IP 검색:**\n```\n{namespace=\"istio-system\"} |= `type\":\"security\"` |= `공격자IP`\n```\n\n**CLI로 검색:**\n```bash\nkubectl logs -n istio-system -l app=istio-ingressgateway | grep security\n```\n\n💡 **Tip:** 아래 '최근 보안 이벤트' 패널에서 실시간 로그를 확인할 수 있습니다.",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -657,7 +657,7 @@
     },
     {
       "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-      "description": "## 최근 보안 이벤트 로그\n\n실시간으로 탐지되는 보안 이벤트 로그입니다.\n\n**로그 필드:**\n- timestamp: 탐지 시간\n- event: 공격 유형\n- client_ip: 공격자 IP\n- path: 공격 대상 경로\n- blocked: 차단 여부\n- matched: 매칭된 패턴",
+      "description": "## 최근 보안 이벤트 로그\n\n실시간으로 탐지되는 보안 이벤트 로그입니다.\n\n**로그 필드:**\n- timestamp: 탐지 시간\n- event: 공격 유형\n- client_ip: 공격자 IP\n- path: 공격 대상 경로\n- blocked: 차단 여부\n- matched: 매칭된 패턴\n\n---\n\n## 🔍 상세 검색하려면\n\n**Grafana 메뉴 → Explore → Loki 선택**\n\n**전체 보안 이벤트:**\n```\n{namespace=\"istio-system\"} |= `type\":\"security\"` | json\n```\n\n**JSON 파싱 후 필터:**\n```\n{namespace=\"istio-system\"} |= `type\":\"security\"` | json | event = `SQL_INJECTION`\n```\n\n**특정 경로 공격 검색:**\n```\n{namespace=\"istio-system\"} |= `type\":\"security\"` | json | path =~ `/api/.*`\n```\n\n**로그 클릭 시 상세 정보 확인 가능!**",
       "gridPos": { "h": 8, "w": 16, "x": 8, "y": 20 },
       "id": 15,
       "options": {
