@@ -133,26 +133,14 @@
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
       "id": 103,
-      "title": "Webhook & 배포 흐름",
+      "title": "Webhook 수신 로그 (Git Push → GitHub Webhook → ArgoCD 수신 → Reconciliation → Sync 완료)",
       "type": "row"
-    },
-    {
-      "datasource": { "type": "datasource", "uid": "-- Dashboard --" },
-      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 10 },
-      "id": 104,
-      "options": {
-        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
-        "content": "**배포 흐름:** `Git Push` → `GitHub Webhook` → `ArgoCD Webhook 수신` → `Refresh/Reconciliation 시작` → `Sync 완료`\n\n각 단계의 시간을 비교하면 배포 지연 구간을 파악할 수 있습니다.",
-        "mode": "markdown"
-      },
-      "pluginVersion": "11.4.0",
-      "type": "text"
     },
     {
       "datasource": "Loki",
       "description": "GitHub에서 push 이벤트 발생 시 ArgoCD가 수신하는 webhook 로그. 이 시점이 Git 변경 감지의 시작점",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 12 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 10 },
       "id": 105,
       "options": {
         "dedupStrategy": "none",
@@ -178,7 +166,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
       "id": 101,
       "title": "Reconciliation 로그",
       "type": "row"
@@ -210,7 +198,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 19 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 17 },
       "id": 1,
       "options": {
         "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "bottom", "showLegend": true },
@@ -220,7 +208,8 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` [$__interval]))",
+          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` [5m]))",
+          "interval": "5m",
           "legendFormat": "{{ application }}",
           "queryType": "range",
           "refId": "A"
@@ -233,7 +222,7 @@
       "datasource": "Loki",
       "description": "Sync: 수동/자동으로 Git→클러스터 배포 실행. Reconciliation: 주기적(기본 3분)으로 Git과 클러스터 상태 비교 후 차이 감지 시 자동 동기화",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 27 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 25 },
       "id": 2,
       "options": {
         "dedupStrategy": "none",
@@ -259,7 +248,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 35 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
       "id": 102,
       "title": "에러 및 알림",
       "type": "row"
@@ -268,7 +257,7 @@
       "datasource": "Loki",
       "description": "에러 로그",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 36 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 34 },
       "id": 3,
       "options": {
         "dedupStrategy": "none",
@@ -296,7 +285,7 @@
       "datasource": "Loki",
       "description": "Notification 트리거 로그",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 42 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 40 },
       "id": 4,
       "options": {
         "dedupStrategy": "none",
