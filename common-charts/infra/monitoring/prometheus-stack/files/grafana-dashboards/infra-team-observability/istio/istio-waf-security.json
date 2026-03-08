@@ -580,6 +580,30 @@
           "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` != `/api/datasources/` [$__auto]))",
           "legendFormat": "Log4Shell",
           "refId": "F"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SSRF` != `/api/datasources/` [$__auto]))",
+          "legendFormat": "SSRF",
+          "refId": "G"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LDAP_INJECTION` != `/api/datasources/` [$__auto]))",
+          "legendFormat": "LDAP Injection",
+          "refId": "H"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XXE_INJECTION` != `/api/datasources/` [$__auto]))",
+          "legendFormat": "XXE Injection",
+          "refId": "I"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `HEADER_INJECTION` != `/api/datasources/` [$__auto]))",
+          "legendFormat": "Header Injection",
+          "refId": "J"
         }
       ],
       "title": "공격 유형별 탐지 추이",
