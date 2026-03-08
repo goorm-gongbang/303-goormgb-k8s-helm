@@ -138,7 +138,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(pilot_xds_pushes{type=\"cds\"})",
+          "expr": "sum(pilot_xds)",
           "legendFormat": "Envoy Proxies",
           "refId": "A"
         }
