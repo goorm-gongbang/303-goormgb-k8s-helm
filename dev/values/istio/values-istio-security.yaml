@@ -17,13 +17,27 @@ logging:
   enabled: true
   level: warn
 
-# 탐지 패턴 (기본값 사용)
+# 탐지 패턴
 patterns:
   sqlInjection:
     enabled: true
   xss:
     enabled: true
   pathTraversal:
+    enabled: true
+  commandInjection:
+    enabled: true
+  ldapInjection:
+    enabled: true
+  xxeInjection:
+    enabled: true
+  ssrf:
+    enabled: true
+  log4shell:
+    enabled: true
+  headerInjection:
+    enabled: true
+  botScanner:
     enabled: true
 
 # 제외 경로 (health check, metrics, 내부 서비스 등)
