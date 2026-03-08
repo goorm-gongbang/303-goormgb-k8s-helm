@@ -716,7 +716,7 @@
       ],
       "title": "🚨 Top 공격자 IP",
       "transformations": [
-        { "id": "reduce", "options": { "reducers": ["sum"] } },
+        { "id": "reduce", "options": { "reducers": ["lastNotNull"] } },
         { "id": "organize", "options": { "renameByName": { "Field": "공격자 IP", "Total": "건수" } } },
         { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "건수" }] } },
         { "id": "limit", "options": { "limitField": 5 } }
@@ -750,7 +750,7 @@
       ],
       "title": "🎯 Top 공격 대상 경로",
       "transformations": [
-        { "id": "reduce", "options": { "reducers": ["sum"] } },
+        { "id": "reduce", "options": { "reducers": ["lastNotNull"] } },
         { "id": "organize", "options": { "renameByName": { "Field": "경로", "Total": "건수" } } },
         { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "건수" }] } },
         { "id": "limit", "options": { "limitField": 5 } }
