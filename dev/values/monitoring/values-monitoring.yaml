@@ -139,21 +139,13 @@ kube-prometheus-stack:
     defaultDashboardsTimezone: utc
 
     # 대시보드 프로바이더 설정
-    # - 팀 메인 폴더: 커스텀 대시보드용
-    # - 팀 템플릿 폴더: provisioned 기본 대시보드 보관용
+    # - 커스텀 대시보드: sidecar가 담당 (grafana_folder annotation 사용)
+    # - 템플릿 대시보드: dashboardProviders로 관리 (Grafana.com gnetId)
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
         providers:
-          - name: "dev-team-observability"
-            orgId: 1
-            folder: "서비스 관측 (개발팀)"
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/dev-team-observability
-
+          # 템플릿 폴더만 유지 (커스텀 대시보드는 sidecar가 담당)
           - name: "dev-team-observability-templates"
             orgId: 1
             folder: "서비스 관측 템플릿 (개발팀)"
@@ -162,15 +154,6 @@ kube-prometheus-stack:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/dev-team-observability-templates
-
-          - name: "infra-team-observability"
-            orgId: 1
-            folder: "플랫폼 관측 (인프라팀)"
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/infra-team-observability
 
           - name: "infra-team-observability-templates"
             orgId: 1
