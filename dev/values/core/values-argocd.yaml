@@ -43,3 +43,7 @@ applications:
     path: common-charts/apps/java-service
     valuesFile: ../../../dev/values/values-sample.yaml
     enabled: false # 아직 비활성화
+
+# Prometheus 메트릭 수집
+metrics:
+  enabled: true
