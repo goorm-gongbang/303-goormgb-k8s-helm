@@ -182,21 +182,9 @@ kube-prometheus-stack:
             options:
               path: /var/lib/grafana/dashboards/infra-team-observability-templates
 
-          - name: "test"
-            orgId: 1
-            folder: "test"
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/test
-
-    # ConfigMap 기반 커스텀 대시보드 매핑 (파일 분리)
-    # 한글 설명이 포함된 학습용 대시보드
-    # ConfigMap에 grafana_dashboard: "1" 라벨이 있으면 sidecar가 자동 감지
-    dashboardsConfigMaps:
-      dev-team-observability: grafana-dashboards-dev-team-observability
-      infra-team-observability: grafana-dashboards-infra-team-observability
+    # ConfigMap 기반 커스텀 대시보드는 sidecar가 자동 감지
+    # ConfigMap에 grafana_dashboard: "1" 라벨 + grafana_folder annotation 사용
+    # dashboardsConfigMaps 사용 안 함 (sidecar와 중복되어 충돌 발생)
 
     # Grafana.com 대시보드 매핑
     dashboards:
