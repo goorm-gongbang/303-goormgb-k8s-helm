@@ -165,7 +165,7 @@
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["node", "resources", "system", "linux", "korean"],
+  "tags": ["node", "resources", "system", "linux"],
   "templating": {
     "list": [
       { "current": { "selected": false, "text": "Prometheus", "value": "Prometheus" }, "hide": 0, "includeAll": false, "label": "데이터소스", "multi": false, "name": "datasource", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "skipUrlSync": false, "type": "datasource" },

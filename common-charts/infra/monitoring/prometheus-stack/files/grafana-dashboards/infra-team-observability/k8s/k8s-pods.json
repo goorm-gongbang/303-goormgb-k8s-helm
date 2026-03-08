@@ -646,7 +646,7 @@
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["kubernetes", "pods", "containers", "korean"],
+  "tags": ["kubernetes", "pods", "containers"],
   "templating": {
     "list": [
       {
@@ -681,6 +681,6 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Kubernetes Pod 모니터링",
-  "uid": "k8s-pods-korean",
+  "uid": "k8s-pods",
   "version": 1
 }

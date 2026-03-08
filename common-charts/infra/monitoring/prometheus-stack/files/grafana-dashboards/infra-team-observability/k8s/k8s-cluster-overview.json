@@ -365,7 +365,7 @@
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["kubernetes", "cluster", "overview", "korean"],
+  "tags": ["kubernetes", "cluster", "overview"],
   "templating": {
     "list": [
       {
