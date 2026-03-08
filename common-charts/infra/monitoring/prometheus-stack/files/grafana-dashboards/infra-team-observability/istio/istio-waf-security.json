@@ -17,7 +17,7 @@
     },
     {
       "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-      "description": "## 총 탐지 건수\n\n선택한 시간 범위 동안 탐지된 총 보안 위협 수입니다.\n\n**탐지 대상:**\n- SQL Injection\n- XSS\n- Path Traversal\n- Command Injection\n- LDAP Injection\n- XXE Injection\n- SSRF\n- Log4Shell\n- Header Injection\n- Bot/Scanner\n\n---\n\n## 🔍 탐지 로그 검색 방법\n\n**Grafana Explore에서 Loki로 검색:**\n```\n{namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"`\n```\n\n**공격 유형별 검색:**\n```\n{namespace=\"istio-system\"} |= `SQL_INJECTION`\n{namespace=\"istio-system\"} |= `XSS_DETECTED`\n{namespace=\"istio-system\"} |= `BOT_SCANNER`\n```\n\n**차단된 요청만 검색:**\n```\n{namespace=\"istio-system\"} |= `blocked\":true`\n```\n\n**특정 IP 검색:**\n```\n{namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"` |= `공격자IP`\n```\n\n**CLI로 검색:**\n```bash\nkubectl logs -n istio-system -l app=istio-ingressgateway | grep security\n```\n\n💡 **Tip:** 아래 '최근 보안 이벤트' 패널에서 실시간 로그를 확인할 수 있습니다.",
+      "description": "## 총 탐지 건수\n\nWAF에서 탐지된 총 보안 위협 수입니다.\n\n**탐지 대상:**\n- SQL Injection\n- XSS\n- Path Traversal\n- Command Injection\n- LDAP Injection\n- XXE Injection\n- SSRF\n- Log4Shell\n- Header Injection\n- Bot/Scanner\n\n---\n\n## 🔍 탐지 로그 검색 방법\n\n**Grafana Explore에서 Loki로 검색:**\n```\n{namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"`\n```\n\n**공격 유형별 검색:**\n```\n{namespace=\"istio-system\"} |= `SQL_INJECTION`\n{namespace=\"istio-system\"} |= `XSS_DETECTED`\n{namespace=\"istio-system\"} |= `BOT_SCANNER`\n```\n\n**차단된 요청만 검색:**\n```\n{namespace=\"istio-system\"} |= `blocked\":true`\n```\n\n**특정 IP 검색:**\n```\n{namespace=\"istio-system\"} |= `script log:` |= `type\":\"security\"` |= `공격자IP`\n```\n\n**CLI로 검색:**\n```bash\nkubectl logs -n istio-system -l app=istio-ingressgateway | grep security\n```\n\n💡 **Tip:** 아래 '최근 보안 이벤트' 패널에서 실시간 로그를 확인할 수 있습니다.",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -52,7 +52,7 @@
           "refId": "A"
         }
       ],
-      "title": "총 탐지 (선택 범위)",
+      "title": "총 탐지",
       "type": "stat"
     },
     {
@@ -87,12 +87,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `blocked\":true` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `blocked\":true` [$__range]))",
           "legendFormat": "Blocked",
           "refId": "A"
         }
       ],
-      "title": "차단됨 (선택 범위)",
+      "title": "차단됨",
       "type": "stat"
     },
     {
@@ -126,12 +126,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SQL_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` [$__range]))",
           "legendFormat": "SQL Injection",
           "refId": "A"
         }
       ],
-      "title": "SQL Injection (선택 범위)",
+      "title": "SQL Injection",
       "type": "stat"
     },
     {
@@ -165,12 +165,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `XSS_DETECTED` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` [$__range]))",
           "legendFormat": "XSS",
           "refId": "A"
         }
       ],
-      "title": "XSS (선택 범위)",
+      "title": "XSS",
       "type": "stat"
     },
     {
@@ -204,12 +204,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `PATH_TRAVERSAL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` [$__range]))",
           "legendFormat": "Path Traversal",
           "refId": "A"
         }
       ],
-      "title": "Path Traversal (선택 범위)",
+      "title": "Path Traversal",
       "type": "stat"
     },
     {
@@ -244,12 +244,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `BOT_SCANNER` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` [$__range]))",
           "legendFormat": "Bot/Scanner",
           "refId": "A"
         }
       ],
-      "title": "Bot/Scanner (선택 범위)",
+      "title": "Bot/Scanner",
       "type": "stat"
     },
     {
@@ -291,12 +291,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `COMMAND_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` [$__range]))",
           "legendFormat": "Command Injection",
           "refId": "A"
         }
       ],
-      "title": "Command Injection (선택 범위)",
+      "title": "Command Injection",
       "type": "stat"
     },
     {
@@ -330,12 +330,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `LDAP_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LDAP_INJECTION` [$__range]))",
           "legendFormat": "LDAP Injection",
           "refId": "A"
         }
       ],
-      "title": "LDAP Injection (선택 범위)",
+      "title": "LDAP Injection",
       "type": "stat"
     },
     {
@@ -369,12 +369,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `XXE_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XXE_INJECTION` [$__range]))",
           "legendFormat": "XXE",
           "refId": "A"
         }
       ],
-      "title": "XXE Injection (선택 범위)",
+      "title": "XXE Injection",
       "type": "stat"
     },
     {
@@ -408,12 +408,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SSRF_DETECTED` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SSRF_DETECTED` [$__range]))",
           "legendFormat": "SSRF",
           "refId": "A"
         }
       ],
-      "title": "SSRF (선택 범위)",
+      "title": "SSRF",
       "type": "stat"
     },
     {
@@ -447,12 +447,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `LOG4SHELL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` [$__range]))",
           "legendFormat": "Log4Shell",
           "refId": "A"
         }
       ],
-      "title": "Log4Shell (선택 범위)",
+      "title": "Log4Shell",
       "type": "stat"
     },
     {
@@ -486,12 +486,12 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `HEADER_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `HEADER_INJECTION` [$__range]))",
           "legendFormat": "Header Injection",
           "refId": "A"
         }
       ],
-      "title": "Header Injection (선택 범위)",
+      "title": "Header Injection",
       "type": "stat"
     },
     {
@@ -547,37 +547,37 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SQL_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` [$__range]))",
           "legendFormat": "SQL Injection",
           "refId": "A"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `XSS_DETECTED` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` [$__range]))",
           "legendFormat": "XSS",
           "refId": "B"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `PATH_TRAVERSAL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` [$__range]))",
           "legendFormat": "Path Traversal",
           "refId": "C"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `COMMAND_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` [$__range]))",
           "legendFormat": "Command Injection",
           "refId": "D"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `BOT_SCANNER` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` [$__range]))",
           "legendFormat": "Bot/Scanner",
           "refId": "E"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `LOG4SHELL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` [$__range]))",
           "legendFormat": "Log4Shell",
           "refId": "F"
         }
@@ -617,37 +617,37 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SQL_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` [$__range]))",
           "legendFormat": "SQL Injection",
           "refId": "A"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `XSS_DETECTED` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` [$__range]))",
           "legendFormat": "XSS",
           "refId": "B"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `PATH_TRAVERSAL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` [$__range]))",
           "legendFormat": "Path Traversal",
           "refId": "C"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `COMMAND_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` [$__range]))",
           "legendFormat": "Command Injection",
           "refId": "D"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `BOT_SCANNER` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` [$__range]))",
           "legendFormat": "Bot/Scanner",
           "refId": "E"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SSRF` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SSRF` [$__range]))",
           "legendFormat": "SSRF",
           "refId": "F"
         }
