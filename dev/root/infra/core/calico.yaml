@@ -45,7 +45,3 @@ spec:
       kind: APIServer
       jsonPointers:
         - /status
-    - group: monitoring.coreos.com
-      kind: PodMonitor
-      jsonPointers:
-        - /spec
