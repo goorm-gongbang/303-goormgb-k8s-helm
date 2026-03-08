@@ -47,7 +47,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `type\":\"security\"` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `type\":\"security\"` [$__interval]))",
           "legendFormat": "Total",
           "refId": "A"
         }
@@ -87,7 +87,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `blocked\":true` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `blocked\":true` [$__interval]))",
           "legendFormat": "Blocked",
           "refId": "A"
         }
@@ -117,7 +117,7 @@
       "id": 3,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
@@ -126,7 +126,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SQL_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SQL_INJECTION` [$__interval]))",
           "legendFormat": "SQL Injection",
           "refId": "A"
         }
@@ -156,7 +156,7 @@
       "id": 4,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
@@ -165,7 +165,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `XSS_DETECTED` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `XSS_DETECTED` [$__interval]))",
           "legendFormat": "XSS",
           "refId": "A"
         }
@@ -195,7 +195,7 @@
       "id": 5,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
@@ -204,7 +204,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `PATH_TRAVERSAL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `PATH_TRAVERSAL` [$__interval]))",
           "legendFormat": "Path Traversal",
           "refId": "A"
         }
@@ -235,7 +235,7 @@
       "id": 6,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
@@ -244,7 +244,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `BOT_SCANNER` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `BOT_SCANNER` [$__interval]))",
           "legendFormat": "Bot/Scanner",
           "refId": "A"
         }
@@ -282,7 +282,7 @@
       "id": 7,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
@@ -291,7 +291,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `COMMAND_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `COMMAND_INJECTION` [$__interval]))",
           "legendFormat": "Command Injection",
           "refId": "A"
         }
@@ -321,7 +321,7 @@
       "id": 8,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
@@ -330,7 +330,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `LDAP_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `LDAP_INJECTION` [$__interval]))",
           "legendFormat": "LDAP Injection",
           "refId": "A"
         }
@@ -360,7 +360,7 @@
       "id": 9,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
@@ -369,7 +369,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `XXE_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `XXE_INJECTION` [$__interval]))",
           "legendFormat": "XXE",
           "refId": "A"
         }
@@ -399,7 +399,7 @@
       "id": 10,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
@@ -408,7 +408,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SSRF_DETECTED` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `SSRF_DETECTED` [$__interval]))",
           "legendFormat": "SSRF",
           "refId": "A"
         }
@@ -438,7 +438,7 @@
       "id": 11,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
@@ -447,7 +447,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `LOG4SHELL` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `LOG4SHELL` [$__interval]))",
           "legendFormat": "Log4Shell",
           "refId": "A"
         }
@@ -477,7 +477,7 @@
       "id": 12,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
@@ -486,7 +486,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `HEADER_INJECTION` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `HEADER_INJECTION` [$__interval]))",
           "legendFormat": "Header Injection",
           "refId": "A"
         }
