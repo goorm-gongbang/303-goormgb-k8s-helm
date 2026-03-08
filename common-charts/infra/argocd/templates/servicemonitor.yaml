@@ -1,8 +1,10 @@
 {{- if .Values.metrics.enabled }}
+---
+# ArgoCD Server Metrics
 apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
+kind: PodMonitor
 metadata:
-  name: argocd-metrics
+  name: argocd-server
   namespace: {{ .Release.Namespace }}
   labels:
     app: argocd
@@ -10,20 +12,53 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/part-of: argocd
+      app.kubernetes.io/name: argocd-server
   namespaceSelector:
     matchNames:
       - argocd
-  endpoints:
-    # argocd-server metrics
+  podMetricsEndpoints:
     - port: metrics
       interval: 30s
       path: /metrics
-    # argocd-application-controller metrics
+---
+# ArgoCD Application Controller Metrics
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: argocd-application-controller
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: argocd
+    release: prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-application-controller
+  namespaceSelector:
+    matchNames:
+      - argocd
+  podMetricsEndpoints:
     - port: metrics
       interval: 30s
       path: /metrics
-    # argocd-repo-server metrics
+---
+# ArgoCD Repo Server Metrics
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: argocd-repo-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: argocd
+    release: prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-repo-server
+  namespaceSelector:
+    matchNames:
+      - argocd
+  podMetricsEndpoints:
     - port: metrics
       interval: 30s
       path: /metrics
