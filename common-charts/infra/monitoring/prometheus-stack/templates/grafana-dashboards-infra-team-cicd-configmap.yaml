@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     grafana_dashboard: "1"
   annotations:
-    grafana_folder: "인프라팀/CI-CD"
+    grafana_folder: "인프라팀/CICD모니터링"
 data:
   {{- $files := .Files.Glob "files/grafana-dashboards/infra-team-observability/cicd/*.json" }}
   {{- range $path, $_ := $files }}
