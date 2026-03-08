@@ -680,6 +680,82 @@
       ],
       "title": "최근 보안 이벤트",
       "type": "logs"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 28 },
+      "id": 104,
+      "panels": [],
+      "title": "Top 5 위협 분석",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "description": "## Top 5 공격자 IP\n\n가장 많은 공격을 시도한 IP 주소입니다.\n\n**조치 방법:**\n- 반복 공격 IP는 방화벽에서 차단 고려\n- IP 평판 조회: https://www.abuseipdb.com/\n\n**차단 명령어:**\n```bash\n# Calico GlobalNetworkPolicy로 차단\nkubectl apply -f - <<EOF\napiVersion: projectcalico.org/v3\nkind: GlobalNetworkPolicy\nmetadata:\n  name: block-attacker-ip\nspec:\n  selector: all()\n  types:\n  - Ingress\n  ingress:\n  - action: Deny\n    source:\n      nets:\n      - \"공격자IP/32\"\nEOF\n```",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 10 }, { "color": "red", "value": 50 }] }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "건수" }, "properties": [{ "id": "custom.cellOptions", "value": { "mode": "basic", "type": "color-background" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 29 },
+      "id": 16,
+      "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "건수" }] },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "expr": "sum by (client_ip) (count_over_time({namespace=\"istio-system\"} |= `type\":\"security\"` | json [$__range]))",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "🚨 Top 공격자 IP",
+      "transformations": [
+        { "id": "reduce", "options": { "reducers": ["sum"] } },
+        { "id": "organize", "options": { "renameByName": { "Field": "공격자 IP", "Total": "건수" } } },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "건수" }] } },
+        { "id": "limit", "options": { "limitField": 5 } }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "description": "## Top 5 공격 대상 경로\n\n가장 많이 공격받은 URL 경로입니다.\n\n**분석 포인트:**\n- 로그인/인증 경로가 많으면 → 무차별 대입 공격\n- API 경로가 많으면 → API 취약점 스캔\n- 관리자 경로가 많으면 → 권한 상승 시도\n\n**경로별 상세 검색:**\n```\n{namespace=\"istio-system\"} |= `type\":\"security\"` | json | path = `/api/login`\n```",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 10 }, { "color": "red", "value": 50 }] }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "건수" }, "properties": [{ "id": "custom.cellOptions", "value": { "mode": "basic", "type": "color-background" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 29 },
+      "id": 17,
+      "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "건수" }] },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "expr": "sum by (path) (count_over_time({namespace=\"istio-system\"} |= `type\":\"security\"` | json [$__range]))",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "🎯 Top 공격 대상 경로",
+      "transformations": [
+        { "id": "reduce", "options": { "reducers": ["sum"] } },
+        { "id": "organize", "options": { "renameByName": { "Field": "경로", "Total": "건수" } } },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "건수" }] } },
+        { "id": "limit", "options": { "limitField": 5 } }
+      ],
+      "type": "table"
     }
   ],
   "refresh": "30s",
