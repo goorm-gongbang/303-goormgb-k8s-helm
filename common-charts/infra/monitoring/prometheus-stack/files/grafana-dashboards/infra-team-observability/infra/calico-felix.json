@@ -42,7 +42,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "count(felix_active_local_endpoints)",
+          "expr": "count(count by (instance) (felix_active_local_endpoints))",
           "legendFormat": "활성 노드",
           "refId": "A"
         }
@@ -75,7 +75,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_active_local_endpoints)",
+          "expr": "sum(max by (instance) (felix_active_local_endpoints))",
           "legendFormat": "엔드포인트",
           "refId": "A"
         }
@@ -108,7 +108,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_active_local_policies)",
+          "expr": "sum(max by (instance) (felix_active_local_policies))",
           "legendFormat": "정책",
           "refId": "A"
         }
@@ -141,7 +141,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_iptables_rules)",
+          "expr": "sum(max by (instance, table) (felix_iptables_rules))",
           "legendFormat": "규칙",
           "refId": "A"
         }
@@ -174,7 +174,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_iptables_save_errors_total) or vector(0)",
+          "expr": "sum(max by (instance) (felix_iptables_save_errors_total)) or vector(0)",
           "legendFormat": "오류",
           "refId": "A"
         }
@@ -207,7 +207,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_iptables_restore_errors_total) or vector(0)",
+          "expr": "sum(max by (instance) (felix_iptables_restore_errors_total)) or vector(0)",
           "legendFormat": "오류",
           "refId": "A"
         }
@@ -259,9 +259,9 @@
         "tooltip": { "mode": "multi", "sort": "desc" }
       },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(felix_int_dataplane_apply_time_seconds{quantile=\"0.5\"})", "legendFormat": "P50", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(felix_int_dataplane_apply_time_seconds{quantile=\"0.9\"})", "legendFormat": "P90", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(felix_int_dataplane_apply_time_seconds{quantile=\"0.99\"})", "legendFormat": "P99", "refId": "C" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(max by (instance) (felix_int_dataplane_apply_time_seconds{quantile=\"0.5\"}))", "legendFormat": "P50", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(max by (instance) (felix_int_dataplane_apply_time_seconds{quantile=\"0.9\"}))", "legendFormat": "P90", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(max by (instance) (felix_int_dataplane_apply_time_seconds{quantile=\"0.99\"}))", "legendFormat": "P99", "refId": "C" }
       ],
       "title": "데이터플레인 적용 시간",
       "type": "timeseries"
@@ -297,8 +297,8 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(increase(felix_resyncs_started[5m])) by (instance)",
-          "legendFormat": "{{ instance }}",
+          "expr": "sum by (instance) (max by (instance) (increase(felix_resyncs_started[5m]))) * on(instance) group_left(nodename) label_replace(node_uname_info, \"instance\", \"$1:9091\", \"instance\", \"(.+):9100\")",
+          "legendFormat": "{{ nodename }} ({{ instance }})",
           "refId": "A"
         }
       ],
@@ -344,8 +344,8 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum by (instance) (felix_active_local_endpoints)",
-          "legendFormat": "{{ instance }}",
+          "expr": "max by (instance) (felix_active_local_endpoints) * on(instance) group_left(nodename) label_replace(node_uname_info, \"instance\", \"$1:9091\", \"instance\", \"(.+):9100\")",
+          "legendFormat": "{{ nodename }} ({{ instance }})",
           "refId": "A"
         }
       ],
@@ -383,8 +383,8 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum by (instance) (felix_iptables_rules{ip_version=\"4\"})",
-          "legendFormat": "{{ instance }}",
+          "expr": "sum by (instance) (max by (instance, table) (felix_iptables_rules{ip_version=\"4\"})) * on(instance) group_left(nodename) label_replace(node_uname_info, \"instance\", \"$1:9091\", \"instance\", \"(.+):9100\")",
+          "legendFormat": "{{ nodename }} ({{ instance }})",
           "refId": "A"
         }
       ],
@@ -430,13 +430,13 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_ipsets_calico) by (ip_version)",
+          "expr": "sum(max by (instance, ip_version) (felix_ipsets_calico)) by (ip_version)",
           "legendFormat": "{{ ip_version }}",
           "refId": "A"
         },
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(felix_ipsets_total)",
+          "expr": "sum(max by (instance) (felix_ipsets_total))",
           "legendFormat": "Total",
           "refId": "B"
         }
@@ -478,13 +478,13 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(increase(felix_logs_dropped[5m]))",
+          "expr": "sum(max by (instance) (increase(felix_logs_dropped[5m])))",
           "legendFormat": "Logs Dropped",
           "refId": "A"
         },
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(increase(felix_log_errors[5m]))",
+          "expr": "sum(max by (instance) (increase(felix_log_errors[5m])))",
           "legendFormat": "Log Errors",
           "refId": "B"
         }
