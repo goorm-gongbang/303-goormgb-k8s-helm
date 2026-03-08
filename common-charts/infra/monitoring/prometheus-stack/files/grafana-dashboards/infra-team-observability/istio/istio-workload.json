@@ -648,6 +648,6 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Istio 워크로드 모니터링",
-  "uid": "istio-workload-korean",
+  "uid": "istio-workload",
   "version": 1
 }

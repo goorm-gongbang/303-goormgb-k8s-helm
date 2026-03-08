@@ -1508,6 +1508,6 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Istio Control Plane 모니터링",
-  "uid": "istio-pilot-korean",
+  "uid": "istio-pilot",
   "version": 1
 }

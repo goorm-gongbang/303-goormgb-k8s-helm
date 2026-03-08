@@ -495,7 +495,7 @@
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["calico", "felix", "cni", "network", "korean"],
+  "tags": ["calico", "felix", "cni", "network"],
   "templating": {
     "list": [
       {
