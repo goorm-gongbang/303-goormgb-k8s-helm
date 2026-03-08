@@ -182,15 +182,6 @@ kube-prometheus-stack:
             options:
               path: /var/lib/grafana/dashboards/infra-team-observability-templates
 
-          - name: "platform-observability-kr"
-            orgId: 1
-            folder: "플랫폼 관측 템플릿 (인프라팀)"
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/platform-observability-kr
-
           - name: "test"
             orgId: 1
             folder: "test"
@@ -206,7 +197,6 @@ kube-prometheus-stack:
     dashboardsConfigMaps:
       dev-team-observability: grafana-dashboards-dev-team-observability
       infra-team-observability: grafana-dashboards-infra-team-observability
-      platform-observability-kr: grafana-dashboards-platform-observability-kr
 
     # Grafana.com 대시보드 매핑
     dashboards:
