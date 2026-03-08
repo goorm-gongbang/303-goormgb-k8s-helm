@@ -2,9 +2,11 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ include "prometheus-stack.fullname" . }}-infra-alerts
+  name: {{ .Release.Name }}-infra-alerts
+  namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "prometheus-stack.labels" . | nindent 4 }}
+    app: prometheus-stack
+    release: {{ .Release.Name }}
     prometheus: kube-prometheus-stack-prometheus
     role: alert-rules
 spec:
