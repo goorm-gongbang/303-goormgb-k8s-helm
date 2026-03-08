@@ -31,3 +31,7 @@ rbac:
 
 # ArgoCD Application 정의 (예시)
 applications: []
+
+# Prometheus ServiceMonitor
+metrics:
+  enabled: false
