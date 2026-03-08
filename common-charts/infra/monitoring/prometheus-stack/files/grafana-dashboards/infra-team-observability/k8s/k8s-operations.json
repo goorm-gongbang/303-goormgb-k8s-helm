@@ -170,14 +170,14 @@
       "options": { "cellHeight": "md", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true },
       "targets": [
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_condition{condition=\"Ready\", status=\"true\"}", "format": "table", "instant": true, "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "100 * (1 - avg by(node) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])))", "format": "table", "instant": true, "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)", "format": "table", "instant": true, "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "label_replace((1 - avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m]))) * on(instance) group_left(nodename) node_uname_info, \"node\", \"$1\", \"nodename\", \"(.*)\") * 100", "format": "table", "instant": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "label_replace((1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * on(instance) group_left(nodename) node_uname_info, \"node\", \"$1\", \"nodename\", \"(.*)\") * 100", "format": "table", "instant": true, "refId": "C" },
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (kube_pod_info)", "format": "table", "instant": true, "refId": "D" }
       ],
       "title": "노드 현황",
       "transformations": [
         { "id": "merge", "options": {} },
-        { "id": "organize", "options": { "excludeByName": { "Time": true, "condition": true, "status": true, "__name__": true, "job": true, "instance": true }, "indexByName": { "node": 0, "Value #A": 1, "Value #B": 2, "Value #C": 3, "Value #D": 4 }, "renameByName": { "node": "Node", "Value #A": "Ready", "Value #B": "CPU %", "Value #C": "Memory %", "Value #D": "Pods" } } }
+        { "id": "organize", "options": { "excludeByName": { "Time": true, "condition": true, "status": true, "__name__": true, "job": true, "instance": true, "nodename": true }, "indexByName": { "node": 0, "Value #A": 1, "Value #B": 2, "Value #C": 3, "Value #D": 4 }, "renameByName": { "node": "Node", "Value #A": "Ready", "Value #B": "CPU %", "Value #C": "Memory %", "Value #D": "Pods" } } }
       ],
       "type": "table"
     },
