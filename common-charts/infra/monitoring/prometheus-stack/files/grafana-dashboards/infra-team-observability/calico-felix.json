@@ -43,7 +43,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "count(felix_active_local_endpoints)",
-          "legendFormat": "Active Nodes",
+          "legendFormat": "활성 노드",
           "refId": "A"
         }
       ],
@@ -76,7 +76,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "sum(felix_active_local_endpoints)",
-          "legendFormat": "Endpoints",
+          "legendFormat": "엔드포인트",
           "refId": "A"
         }
       ],
@@ -109,7 +109,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "sum(felix_active_local_policies)",
-          "legendFormat": "Policies",
+          "legendFormat": "정책",
           "refId": "A"
         }
       ],
@@ -142,7 +142,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "sum(felix_iptables_rules)",
-          "legendFormat": "Rules",
+          "legendFormat": "규칙",
           "refId": "A"
         }
       ],
@@ -175,7 +175,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "sum(felix_iptables_save_errors_total) or vector(0)",
-          "legendFormat": "Errors",
+          "legendFormat": "오류",
           "refId": "A"
         }
       ],
@@ -208,7 +208,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "sum(felix_iptables_restore_errors_total) or vector(0)",
-          "legendFormat": "Errors",
+          "legendFormat": "오류",
           "refId": "A"
         }
       ],

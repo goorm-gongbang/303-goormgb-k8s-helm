@@ -43,7 +43,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "count(kube_pod_info{namespace=~\"$namespace\"})",
-          "legendFormat": "Total Pods",
+          "legendFormat": "전체 파드",
           "refId": "A"
         }
       ],
@@ -76,7 +76,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "count(kube_pod_status_phase{namespace=~\"$namespace\", phase=\"Running\"} == 1)",
-          "legendFormat": "Running",
+          "legendFormat": "실행 중",
           "refId": "A"
         }
       ],
@@ -116,7 +116,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "count(kube_pod_status_phase{namespace=~\"$namespace\", phase=\"Pending\"} == 1) or vector(0)",
-          "legendFormat": "Pending",
+          "legendFormat": "대기 중",
           "refId": "A"
         }
       ],
@@ -155,7 +155,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "count(kube_pod_status_phase{namespace=~\"$namespace\", phase=\"Failed\"} == 1) or vector(0)",
-          "legendFormat": "Failed",
+          "legendFormat": "실패",
           "refId": "A"
         }
       ],
@@ -235,7 +235,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "expr": "sum(kube_pod_status_ready{namespace=~\"$namespace\", condition=\"true\"}) / count(kube_pod_info{namespace=~\"$namespace\"})",
-          "legendFormat": "Ready %",
+          "legendFormat": "Ready 비율",
           "refId": "A"
         }
       ],
@@ -586,9 +586,9 @@
         "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_container_status_running{namespace=~\"$namespace\", pod=~\"$pod\"} == 1)", "legendFormat": "Running", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_container_status_waiting{namespace=~\"$namespace\", pod=~\"$pod\"} == 1)", "legendFormat": "Waiting", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_container_status_terminated{namespace=~\"$namespace\", pod=~\"$pod\"} == 1)", "legendFormat": "Terminated", "refId": "C" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_container_status_running{namespace=~\"$namespace\", pod=~\"$pod\"} == 1)", "legendFormat": "실행 중", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_container_status_waiting{namespace=~\"$namespace\", pod=~\"$pod\"} == 1)", "legendFormat": "대기 중", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_container_status_terminated{namespace=~\"$namespace\", pod=~\"$pod\"} == 1)", "legendFormat": "종료됨", "refId": "C" }
       ],
       "title": "컨테이너 상태 분포",
       "type": "piechart"
