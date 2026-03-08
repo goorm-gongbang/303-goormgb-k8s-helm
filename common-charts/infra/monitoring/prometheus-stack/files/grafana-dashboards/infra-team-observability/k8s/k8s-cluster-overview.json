@@ -261,7 +261,7 @@
         "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "showLegend": true },
         "tooltip": { "mode": "multi", "sort": "desc" }
       },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "100 * (1 - avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])))", "legendFormat": "{{ instance }}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "label_replace((1 - avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m]))) * on(instance) group_left(nodename) node_uname_info, \"node\", \"$1 ($2)\", \"nodename\", \"(.*)\")", "legendFormat": "{{ nodename }} ({{ instance }})", "refId": "A" }],
       "title": "노드별 CPU 사용률",
       "type": "timeseries"
     },
@@ -293,7 +293,7 @@
         "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "showLegend": true },
         "tooltip": { "mode": "multi", "sort": "desc" }
       },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)", "legendFormat": "{{ instance }}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * on(instance) group_left(nodename) node_uname_info * 100", "legendFormat": "{{ nodename }} ({{ instance }})", "refId": "A" }],
       "title": "노드별 메모리 사용률",
       "type": "timeseries"
     },
