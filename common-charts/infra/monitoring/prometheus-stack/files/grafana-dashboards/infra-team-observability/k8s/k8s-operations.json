@@ -212,7 +212,7 @@
   ],
   "refresh": "10s",
   "schemaVersion": 39,
-  "tags": ["kubernetes", "operations", "k9s", "overview", "korean"],
+  "tags": ["kubernetes", "operations", "k9s", "overview"],
   "templating": {
     "list": [
       { "current": { "selected": false, "text": "Prometheus", "value": "Prometheus" }, "hide": 0, "includeAll": false, "label": "데이터소스", "multi": false, "name": "datasource", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "skipUrlSync": false, "type": "datasource" },
