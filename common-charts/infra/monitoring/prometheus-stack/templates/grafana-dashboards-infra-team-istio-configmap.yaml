@@ -1,9 +1,9 @@
 {{- if index .Values "kube-prometheus-stack" "grafana" "enabled" }}
-{{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/infra-team-observability/*.json" -}}
+{{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/infra-team-observability/istio/*.json" -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: grafana-dashboards-infra-team-observability
+  name: grafana-dashboards-infra-team-istio
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: grafana
