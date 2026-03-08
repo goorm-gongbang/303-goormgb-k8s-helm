@@ -184,8 +184,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.9,
-            "drawStyle": "bars",
-            "fillOpacity": 80,
+            "drawStyle": "line",
+            "fillOpacity": 20,
             "hideFrom": { "legend": false, "tooltip": false, "viz": false },
             "lineWidth": 1,
             "scaleDistribution": { "type": "linear" },
@@ -208,8 +208,8 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` [5m]))",
-          "interval": "5m",
+          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` [1m]))",
+          "interval": "1m",
           "legendFormat": "{{ application }}",
           "queryType": "range",
           "refId": "A"
