@@ -41,7 +41,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -81,7 +81,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -120,7 +120,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -159,7 +159,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -198,7 +198,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -238,7 +238,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -285,7 +285,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -324,7 +324,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -363,7 +363,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -402,7 +402,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -441,7 +441,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -480,7 +480,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
@@ -547,37 +547,37 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `SQL_INJECTION` != `/api/datasources/` [$__auto]))",
           "legendFormat": "SQL Injection",
           "refId": "A"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `XSS_DETECTED` != `/api/datasources/` [$__auto]))",
           "legendFormat": "XSS",
           "refId": "B"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `PATH_TRAVERSAL` != `/api/datasources/` [$__auto]))",
           "legendFormat": "Path Traversal",
           "refId": "C"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `COMMAND_INJECTION` != `/api/datasources/` [$__auto]))",
           "legendFormat": "Command Injection",
           "refId": "D"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `BOT_SCANNER` != `/api/datasources/` [$__auto]))",
           "legendFormat": "Bot/Scanner",
           "refId": "E"
         },
         {
           "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` != `/api/datasources/` [$__range]))",
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `script log:` |= `LOG4SHELL` != `/api/datasources/` [$__auto]))",
           "legendFormat": "Log4Shell",
           "refId": "F"
         }
@@ -611,7 +611,7 @@
         "displayLabels": ["name", "percent"],
         "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value"] },
         "pieType": "donut",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
@@ -716,7 +716,7 @@
       ],
       "title": "🚨 Top 공격자 IP",
       "transformations": [
-        { "id": "reduce", "options": { "reducers": ["sum"] } },
+        { "id": "reduce", "options": { "reducers": ["lastNotNull"] } },
         { "id": "organize", "options": { "renameByName": { "Field": "공격자 IP", "Total": "건수" } } },
         { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "건수" }] } },
         { "id": "limit", "options": { "limitField": 5 } }
@@ -750,7 +750,7 @@
       ],
       "title": "🎯 Top 공격 대상 경로",
       "transformations": [
-        { "id": "reduce", "options": { "reducers": ["sum"] } },
+        { "id": "reduce", "options": { "reducers": ["lastNotNull"] } },
         { "id": "organize", "options": { "renameByName": { "Field": "경로", "Total": "건수" } } },
         { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "건수" }] } },
         { "id": "limit", "options": { "limitField": 5 } }
