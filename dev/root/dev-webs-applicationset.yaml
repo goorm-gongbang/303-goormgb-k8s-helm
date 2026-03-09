@@ -23,9 +23,9 @@ spec:
       labels:
         ns: dev-webs
       annotations:
-        notifications.argoproj.io/subscribe.on-deployed.discord: ""
-        notifications.argoproj.io/subscribe.on-deploy-failed.discord: ""
-        notifications.argoproj.io/subscribe.on-health-degraded.discord: ""
+        notifications.argoproj.io/subscribe.on-deployed.webhook.discord: ""
+        notifications.argoproj.io/subscribe.on-deploy-failed.webhook.discord: ""
+        notifications.argoproj.io/subscribe.on-health-degraded.webhook.discord: ""
     spec:
       project: default
       source:
