@@ -17,11 +17,7 @@ spec:
       name: 'dev-{{name}}'
       labels:
         ns: dev-ai
-      annotations:
-        notifications.argoproj.io/subscribe.on-sync-running.discord: ""
-        notifications.argoproj.io/subscribe.on-deployed.discord: ""
-        notifications.argoproj.io/subscribe.on-deploy-failed.discord: ""
-        notifications.argoproj.io/subscribe.on-health-degraded.discord: ""
+      annotations: {}
     spec:
       project: default
       source:

@@ -1,0 +1,26 @@
+# Istio Security (WAF-like protection) - istio-gateway 이후 설치
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-security
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
+    targetRevision: argocd-sync/dev
+    path: common-charts/infra/istio-security
+    helm:
+      valueFiles:
+        - ../../../dev/values/istio/values-istio-security.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -8,7 +8,7 @@ metadata:
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 spec:
-  ttlSecondsAfterFinished: 3600
+  ttlSecondsAfterFinished: 600
   template:
     metadata:
       annotations:
@@ -69,9 +69,10 @@ spec:
               echo "=== PostgreSQL PreSync Backup ==="
               echo "Triggered before ArgoCD sync"
 
-              # Validate and iterate over databases safely
-              IFS=',' read -ra DB_ARRAY <<< "$DATABASES"
-              for db in "${DB_ARRAY[@]}"; do
+              # Validate and iterate over databases safely (POSIX compatible)
+              echo "$DATABASES" | tr ',' '\n' | while read db; do
+                # Skip empty lines
+                [ -z "$db" ] && continue
                 # Validate database name (alphanumeric, underscore, hyphen only)
                 if ! echo "$db" | grep -qE '^[a-zA-Z0-9_-]+$'; then
                   echo "ERROR: Invalid database name: $db"

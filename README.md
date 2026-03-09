@@ -55,13 +55,38 @@ main                          # 개발/PR 머지
 
 ## kubeadm vs EKS 차이
 
-| 컴포넌트     | kubeadm (MiniPC)             | EKS (AWS)        |
-| ------------ | ---------------------------- | ---------------- |
-| TLS 인증서   | cert-manager + Let's Encrypt | ACM              |
-| 데이터베이스 | PostgreSQL Pod               | RDS              |
-| 캐시         | Redis Pod                    | ElastiCache      |
-| WAF          | ModSecurity (in-cluster)     | AWS WAF          |
-| DDNS         | Cloudflare CronJob           | 불필요 (고정 IP) |
+| 컴포넌트       | kubeadm (MiniPC)             | EKS (AWS)         |
+| -------------- | ---------------------------- | ----------------- |
+| TLS 인증서     | cert-manager + Let's Encrypt | ACM               |
+| 데이터베이스   | PostgreSQL Pod               | RDS               |
+| 캐시           | Redis Pod                    | ElastiCache       |
+| Rate Limit     | Istio EnvoyFilter            | Istio EnvoyFilter |
+| Security (WAF) | Istio EnvoyFilter + Lua      | Istio EnvoyFilter + Lua |
+| DDNS           | Cloudflare CronJob           | 불필요 (고정 IP)  |
+
+## Security Filter (WAF-like)
+
+Istio IngressGateway에서 L7 요청을 검사하여 공격 패턴을 탐지/차단합니다.
+
+### 탐지 항목
+- **SQL Injection**: UNION SELECT, DROP TABLE, OR 1=1 등
+- **XSS**: `<script>`, `javascript:`, `onerror=` 등
+- **Path Traversal**: `../`, `%2e%2e` 등
+
+### 모드 전환
+```yaml
+# dev/values/istio/values-istio-security.yaml
+mode: detect  # 로그만 (기본값)
+mode: block   # 403 차단
+```
+
+### 로그 확인 (Grafana → Loki)
+```
+{namespace="istio-system", container="istio-proxy"} |= "security"
+```
+
+### 제외 경로
+health check, metrics, swagger 등은 자동 제외됨 (`excludePaths` 참고)
 
 ## 도메인 (임시 도메인!)
 

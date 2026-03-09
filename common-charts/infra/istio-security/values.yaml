@@ -1,0 +1,227 @@
+# Istio Security - WAF-like protection
+# EnvoyFilter + Lua 기반 SQL Injection, XSS 탐지
+
+enabled: true
+
+# 적용 대상
+selector:
+  labels:
+    istio: ingressgateway
+
+# 차단 모드 설정
+mode: block  # block | detect (detect는 로그만, 차단 안 함)
+
+# 로깅 설정
+logging:
+  enabled: true
+  # 로그 레벨: info, warn, error
+  level: warn
+
+# 탐지 패턴 (Lua pattern matching)
+patterns:
+  sqlInjection:
+    enabled: true
+    rules:
+      - name: "sql-quotes"
+        pattern: "['\";].*['\";]"
+        description: "Multiple quotes detected"
+      - name: "sql-union"
+        pattern: "[Uu][Nn][Ii][Oo][Nn]%s+[Ss][Ee][Ll][Ee][Cc][Tt]"
+        description: "UNION SELECT statement"
+      - name: "sql-select-from"
+        pattern: "[Ss][Ee][Ll][Ee][Cc][Tt]%s+.-%s+[Ff][Rr][Oo][Mm]"
+        description: "SELECT FROM statement"
+      - name: "sql-drop"
+        pattern: "[Dd][Rr][Oo][Pp]%s+[Tt][Aa][Bb][Ll][Ee]"
+        description: "DROP TABLE statement"
+      - name: "sql-delete"
+        pattern: "[Dd][Ee][Ll][Ee][Tt][Ee]%s+[Ff][Rr][Oo][Mm]"
+        description: "DELETE FROM statement"
+      - name: "sql-insert"
+        pattern: "[Ii][Nn][Ss][Ee][Rr][Tt]%s+[Ii][Nn][Tt][Oo]"
+        description: "INSERT INTO statement"
+      - name: "sql-update-set"
+        pattern: "[Uu][Pp][Dd][Aa][Tt][Ee]%s+.-%s+[Ss][Ee][Tt]"
+        description: "UPDATE SET statement"
+      - name: "sql-comment"
+        pattern: "%-%-"
+        description: "SQL comment"
+      - name: "sql-or-bypass"
+        pattern: "[Oo][Rr]%s+['\"]?1['\"]?%s*=%s*['\"]?1"
+        description: "OR 1=1 bypass"
+
+  xss:
+    enabled: true
+    rules:
+      - name: "xss-script-tag"
+        pattern: "<[Ss][Cc][Rr][Ii][Pp][Tt]"
+        description: "Script tag detected"
+      - name: "xss-javascript"
+        pattern: "[Jj][Aa][Vv][Aa][Ss][Cc][Rr][Ii][Pp][Tt]:"
+        description: "javascript: protocol"
+      - name: "xss-onerror"
+        pattern: "[Oo][Nn][Ee][Rr][Rr][Oo][Rr]%s*="
+        description: "onerror event handler"
+      - name: "xss-onload"
+        pattern: "[Oo][Nn][Ll][Oo][Aa][Dd]%s*="
+        description: "onload event handler"
+      - name: "xss-onclick"
+        pattern: "[Oo][Nn][Cc][Ll][Ii][Cc][Kk]%s*="
+        description: "onclick event handler"
+      - name: "xss-img-tag"
+        pattern: "<[Ii][Mm][Gg][^>]+[Oo][Nn]"
+        description: "img tag with event handler"
+      - name: "xss-iframe"
+        pattern: "<[Ii][Ff][Rr][Aa][Mm][Ee]"
+        description: "iframe tag"
+      - name: "xss-eval"
+        pattern: "[Ee][Vv][Aa][Ll]%s*%("
+        description: "eval() function"
+
+  pathTraversal:
+    enabled: true
+    rules:
+      - name: "path-traversal-dots"
+        pattern: "%.%./"
+        description: "Directory traversal attempt"
+      - name: "path-traversal-encoded"
+        pattern: "%%2e%%2e"
+        description: "Encoded directory traversal"
+      - name: "path-traversal-backslash"
+        pattern: "%.%.\\/"
+        description: "Backslash directory traversal"
+
+  commandInjection:
+    enabled: true
+    rules:
+      - name: "cmd-semicolon"
+        pattern: ";%s*[a-zA-Z]"
+        description: "Semicolon command chain"
+      - name: "cmd-pipe"
+        pattern: "|%s*[a-zA-Z]"
+        description: "Pipe command"
+      - name: "cmd-backtick"
+        pattern: "`[^`]+`"
+        description: "Backtick execution"
+      - name: "cmd-dollar-paren"
+        pattern: "%$%([^%)]+%)"
+        description: "Dollar-paren execution"
+      - name: "cmd-ampersand"
+        pattern: "&&%s*[a-zA-Z]"
+        description: "Ampersand command chain"
+      - name: "cmd-common"
+        pattern: "[;|]%s*[rwx]?[mckla][atd]%s"
+        description: "Common dangerous commands (rm, cat, etc)"
+
+  ldapInjection:
+    enabled: true
+    rules:
+      - name: "ldap-wildcard"
+        pattern: "%*%)%("
+        description: "LDAP wildcard injection"
+      - name: "ldap-null"
+        pattern: "%%00"
+        description: "LDAP null byte"
+      - name: "ldap-filter"
+        pattern: "%)%([a-zA-Z]+="
+        description: "LDAP filter manipulation"
+
+  xxeInjection:
+    enabled: true
+    rules:
+      - name: "xxe-entity"
+        pattern: "<!%s*[Ee][Nn][Tt][Ii][Tt][Yy]"
+        description: "XML ENTITY declaration"
+      - name: "xxe-system"
+        pattern: "[Ss][Yy][Ss][Tt][Ee][Mm]%s+[\"']"
+        description: "XML SYSTEM keyword"
+      - name: "xxe-doctype"
+        pattern: "<!%s*[Dd][Oo][Cc][Tt][Yy][Pp][Ee]"
+        description: "XML DOCTYPE declaration"
+
+  ssrf:
+    enabled: true
+    rules:
+      - name: "ssrf-aws-metadata"
+        pattern: "169%.254%.169%.254"
+        description: "AWS metadata endpoint"
+      - name: "ssrf-localhost"
+        pattern: "127%.0%.0%.1"
+        description: "Localhost access"
+      - name: "ssrf-internal-ip"
+        pattern: "10%.%d+%.%d+%.%d+"
+        description: "Internal IP (10.x.x.x)"
+      - name: "ssrf-internal-172"
+        pattern: "172%.%d+%.%d+%.%d+"
+        description: "Internal IP (172.x.x.x)"
+      - name: "ssrf-internal-192"
+        pattern: "192%.168%.%d+%.%d+"
+        description: "Internal IP (192.168.x.x)"
+      - name: "ssrf-gcp-metadata"
+        pattern: "metadata%.google%.internal"
+        description: "GCP metadata endpoint"
+
+  log4shell:
+    enabled: true
+    rules:
+      - name: "log4j-jndi"
+        pattern: "%$%{[jJ][nN][dD][iI]:"
+        description: "Log4j JNDI lookup"
+      - name: "log4j-lower"
+        pattern: "%$%{[lL][oO][wW][eE][rR]:"
+        description: "Log4j lower lookup"
+      - name: "log4j-upper"
+        pattern: "%$%{[uU][pP][pP][eE][rR]:"
+        description: "Log4j upper lookup"
+      - name: "log4j-env"
+        pattern: "%$%{[eE][nN][vV]:"
+        description: "Log4j env lookup"
+
+  headerInjection:
+    enabled: true
+    rules:
+      - name: "header-crlf"
+        pattern: "%%0[dD]%%0[aA]"
+        description: "CRLF injection (encoded)"
+      - name: "header-newline"
+        pattern: "\\r\\n"
+        description: "CRLF injection (escaped)"
+
+  botScanner:
+    enabled: true
+    rules:
+      - name: "bot-sqlmap"
+        pattern: "[Ss][Qq][Ll][Mm][Aa][Pp]"
+        description: "SQLMap scanner"
+      - name: "bot-nikto"
+        pattern: "[Nn][Ii][Kk][Tt][Oo]"
+        description: "Nikto scanner"
+      - name: "bot-nmap"
+        pattern: "[Nn][Mm][Aa][Pp]"
+        description: "Nmap scanner"
+      - name: "bot-masscan"
+        pattern: "[Mm][Aa][Ss][Ss][Cc][Aa][Nn]"
+        description: "Masscan scanner"
+      - name: "bot-dirbuster"
+        pattern: "[Dd][Ii][Rr][Bb][Uu][Ss][Tt][Ee][Rr]"
+        description: "DirBuster scanner"
+      - name: "bot-gobuster"
+        pattern: "[Gg][Oo][Bb][Uu][Ss][Tt][Ee][Rr]"
+        description: "GoBuster scanner"
+      - name: "bot-burp"
+        pattern: "[Bb][Uu][Rr][Pp]"
+        description: "Burp Suite"
+
+# 제외 경로 (이 경로는 검사 안 함)
+excludePaths:
+  - "/health"
+  - "/healthz"
+  - "/ready"
+  - "/readyz"
+  - "/actuator/health"
+  - "/metrics"
+
+# 응답 설정
+response:
+  statusCode: 403
+  body: "Forbidden: Security violation detected"

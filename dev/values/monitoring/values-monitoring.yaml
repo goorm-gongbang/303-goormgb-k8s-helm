@@ -121,38 +121,31 @@ kube-prometheus-stack:
   grafana:
     fullnameOverride: grafana
 
-    # 대시보드 폴더 설정
+    # 대시보드 폴더 설정 (sidecar 방식)
     sidecar:
       dashboards:
         enabled: true
         folder: /tmp/dashboards
-        defaultFolderName: "플랫폼 관측 (인프라팀)" # annotation 없는 대시보드 기본 폴더
-        folderAnnotation: grafana_folder # ConfigMap annotation으로 폴더 지정
-        searchNamespace: monitoring # 다른 namespace의 불필요한 대시보드 수집 방지
+        folderAnnotation: grafana_folder
+        searchNamespace: monitoring
         provider:
-          foldersFromFilesStructure: false
-          allowUiUpdates: true # UI에서 대시보드 수정 허용
+          foldersFromFilesStructure: true  # 디렉토리 구조를 Grafana 폴더로 변환
+          allowUiUpdates: true
 
-    # kube-prometheus-stack Angular 기본 대시보드 모두 비활성화 (React 버전 사용)
+    # kube-prometheus-stack 기본 대시보드 완전 비활성화
+    # (우리가 test 폴더에 직접 구성한 대시보드 사용)
     defaultDashboardsEnabled: false
     forceDeployDashboards: false
+    defaultDashboardsTimezone: utc
 
     # 대시보드 프로바이더 설정
-    # - 팀 메인 폴더: 커스텀 대시보드용
-    # - 팀 템플릿 폴더: provisioned 기본 대시보드 보관용
+    # - 커스텀 대시보드: sidecar가 담당 (grafana_folder annotation 사용)
+    # - 템플릿 대시보드: dashboardProviders로 관리 (Grafana.com gnetId)
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
         providers:
-          - name: "dev-team-observability"
-            orgId: 1
-            folder: "서비스 관측 (개발팀)"
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/dev-team-observability
-
+          # 템플릿 폴더만 유지 (커스텀 대시보드는 sidecar가 담당)
           - name: "dev-team-observability-templates"
             orgId: 1
             folder: "서비스 관측 템플릿 (개발팀)"
@@ -161,15 +154,6 @@ kube-prometheus-stack:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/dev-team-observability-templates
-
-          - name: "infra-team-observability"
-            orgId: 1
-            folder: "플랫폼 관측 (인프라팀)"
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/infra-team-observability
 
           - name: "infra-team-observability-templates"
             orgId: 1
@@ -180,10 +164,9 @@ kube-prometheus-stack:
             options:
               path: /var/lib/grafana/dashboards/infra-team-observability-templates
 
-    # ConfigMap 기반 커스텀 대시보드 매핑 (파일 분리)
-    dashboardsConfigMaps:
-      dev-team-observability: grafana-dashboards-dev-team-observability
-      infra-team-observability: grafana-dashboards-infra-team-observability
+    # ConfigMap 기반 커스텀 대시보드는 sidecar가 자동 감지
+    # ConfigMap에 grafana_dashboard: "1" 라벨 + grafana_folder annotation 사용
+    # dashboardsConfigMaps 사용 안 함 (sidecar와 중복되어 충돌 발생)
 
     # Grafana.com 대시보드 매핑
     dashboards:
@@ -541,6 +524,9 @@ kube-prometheus-stack:
           datasource:
             - name: DS_TEMPO
               value: Tempo
+
+      # test 폴더 대시보드는 grafana-dashboards-test-configmap.yaml에서 관리
+      # (files/grafana-dashboards/test/*.json - 한글 대시보드)
 
     # ESO에서 생성한 secret 사용
     admin:

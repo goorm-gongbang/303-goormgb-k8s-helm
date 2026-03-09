@@ -1,0 +1,148 @@
+{{- if .Values.alertRules.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}-infra-alerts
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: prometheus-stack
+    release: {{ .Release.Name }}
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+    # Pod 관련 알림
+    - name: pod.rules
+      rules:
+        - alert: PodCrashLooping
+          expr: increase(kube_pod_container_status_restarts_total[10m]) > 3
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Pod {{ "{{" }} $labels.pod {{ "}}" }} 재시작 반복"
+            description: "{{ "{{" }} $labels.namespace {{ "}}" }}/{{ "{{" }} $labels.pod {{ "}}" }}가 10분간 {{ "{{" }} $value | printf \"%.0f\" {{ "}}" }}회 재시작됨"
+
+        - alert: PodNotReady
+          expr: kube_pod_status_phase{phase=~"Pending|Unknown"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod {{ "{{" }} $labels.pod {{ "}}" }} 준비 안됨"
+            description: "{{ "{{" }} $labels.namespace {{ "}}" }}/{{ "{{" }} $labels.pod {{ "}}" }}가 15분간 {{ "{{" }} $labels.phase {{ "}}" }} 상태"
+
+    # 노드 리소스 알림
+    - name: node.rules
+      rules:
+        - alert: NodeHighCPU
+          expr: (1 - avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m]))) * 100 > 85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "노드 CPU 사용률 높음"
+            description: "{{ "{{" }} $labels.instance {{ "}}" }} CPU 사용률 {{ "{{" }} $value | printf \"%.1f\" {{ "}}" }}% (10분간 85% 초과)"
+
+        - alert: NodeHighMemory
+          expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 90
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "노드 메모리 사용률 높음"
+            description: "{{ "{{" }} $labels.instance {{ "}}" }} 메모리 사용률 {{ "{{" }} $value | printf \"%.1f\" {{ "}}" }}% (OOM 위험)"
+
+        - alert: NodeDiskSpaceLow
+          expr: (1 - node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) * 100 > 85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "노드 디스크 공간 부족"
+            description: "{{ "{{" }} $labels.instance {{ "}}" }} {{ "{{" }} $labels.mountpoint {{ "}}" }} 사용률 {{ "{{" }} $value | printf \"%.1f\" {{ "}}" }}%"
+
+    # ArgoCD 알림
+    - name: argocd.rules
+      rules:
+        - alert: ArgoCDSyncFailed
+          expr: argocd_app_info{sync_status="OutOfSync"} == 1 and argocd_app_info{health_status!="Healthy"} == 1
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "ArgoCD Sync 실패"
+            description: "앱 {{ "{{" }} $labels.name {{ "}}" }}이 OutOfSync 상태 (Health: {{ "{{" }} $labels.health_status {{ "}}" }})"
+
+    # Calico 네트워크 알림
+    - name: calico.rules
+      rules:
+        - alert: CalicoNodeDown
+          expr: up{job=~".*calico.*"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Calico 노드 다운"
+            description: "{{ "{{" }} $labels.instance {{ "}}" }} Calico 에이전트가 5분간 응답 없음"
+
+    # Istio/트래픽 알림
+    - name: istio.rules
+      rules:
+        - alert: HighErrorRate
+          expr: sum(rate(istio_requests_total{response_code=~"5.*"}[5m])) / sum(rate(istio_requests_total[5m])) * 100 > 5
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "5xx 에러율 높음"
+            description: "전체 트래픽 중 5xx 에러 비율 {{ "{{" }} $value | printf \"%.2f\" {{ "}}" }}% (5분간 5% 초과)"
+
+        - alert: ServiceHighErrorRate
+          expr: sum by (destination_service_name) (rate(istio_requests_total{response_code=~"5.*"}[5m])) / sum by (destination_service_name) (rate(istio_requests_total[5m])) * 100 > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "서비스 에러율 높음"
+            description: "{{ "{{" }} $labels.destination_service_name {{ "}}" }} 5xx 에러율 {{ "{{" }} $value | printf \"%.2f\" {{ "}}" }}%"
+
+        - alert: High403Rate
+          expr: sum(rate(istio_requests_total{response_code="403"}[5m])) > 10
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: "403 차단 급증 (WAF/인증 이상)"
+            description: "403 Forbidden 응답 {{ "{{" }} $value | printf \"%.1f\" {{ "}}" }}req/s (잠재적 공격 또는 설정 오류)"
+
+        - alert: High429Rate
+          expr: sum(rate(istio_requests_total{response_code="429"}[5m])) > 50
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Rate Limit 초과 급증"
+            description: "429 Too Many Requests {{ "{{" }} $value | printf \"%.1f\" {{ "}}" }}req/s (DDoS 또는 과부하)"
+
+    # 인증서 알림
+    - name: cert.rules
+      rules:
+        - alert: CertificateExpiringSoon
+          expr: (certmanager_certificate_expiration_timestamp_seconds - time()) / 86400 < 14
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "인증서 만료 임박"
+            description: "{{ "{{" }} $labels.name {{ "}}" }} 인증서가 {{ "{{" }} $value | printf \"%.0f\" {{ "}}" }}일 후 만료"
+
+        - alert: CertificateExpiryCritical
+          expr: (certmanager_certificate_expiration_timestamp_seconds - time()) / 86400 < 3
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: "인증서 만료 긴급"
+            description: "{{ "{{" }} $labels.name {{ "}}" }} 인증서가 {{ "{{" }} $value | printf \"%.0f\" {{ "}}" }}일 후 만료! 즉시 갱신 필요"
+{{- end }}

@@ -1,4 +1,4 @@
-{{- if .Values.oidc.enabled }}
+# ArgoCD ConfigMap - OIDC + Resource Customizations 통합
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,6 +8,7 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
 data:
+  {{- if .Values.oidc.enabled }}
   url: https://{{ .Values.gateway.host }}
   # Local admin 유지 (admin + Google OAuth 둘 다 가능)
   admin.enabled: "true"
@@ -22,4 +23,14 @@ data:
       {{- range .Values.oidc.requestedScopes }}
       - {{ . }}
       {{- end }}
-{{- end }}
+  {{- end }}
+  # Calico Installation - 항상 Healthy로 취급
+  resource.customizations.health.operator.tigera.io_Installation: |
+    hs = {}
+    hs.status = "Healthy"
+    return hs
+  # Calico APIServer - 항상 Healthy로 취급
+  resource.customizations.health.operator.tigera.io_APIServer: |
+    hs = {}
+    hs.status = "Healthy"
+    return hs
