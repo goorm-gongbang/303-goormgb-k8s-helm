@@ -15,7 +15,8 @@ spec:
     helm:
       valueFiles:
         - ../../../../dev/values/monitoring/values-monitoring.yaml
-        - ../../../../dev/values/monitoring/values-alerting.yaml
+        - ../../../../dev/values/monitoring/alerting/values-alertmanager-dev.yaml
+        - ../../../../dev/values/monitoring/alerting/values-rules-dev-5xx.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
