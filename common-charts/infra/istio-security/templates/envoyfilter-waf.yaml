@@ -148,6 +148,23 @@ spec:
                   return str
                 end
 
+                -- UTF-8 안전 문자열 자르기 함수 (멀티바이트 문자 경계 보호)
+                local function utf8_safe_sub(str, max_bytes)
+                  if str == nil or str == "" then return "" end
+                  if #str <= max_bytes then return str end
+
+                  local pos = max_bytes
+                  -- UTF-8 continuation byte (10xxxxxx = 0x80-0xBF) 건너뛰기
+                  while pos > 0 and str:byte(pos) >= 0x80 and str:byte(pos) <= 0xBF do
+                    pos = pos - 1
+                  end
+                  -- 멀티바이트 시작 문자(11xxxxxx = 0xC0 이상)면 해당 문자 제외
+                  if pos > 0 and str:byte(pos) >= 0xC0 then
+                    pos = pos - 1
+                  end
+                  return str:sub(1, pos)
+                end
+
                 -- URL 디코딩 함수
                 local function url_decode(str)
                   if str == nil then return "" end
@@ -196,7 +213,7 @@ spec:
                   -- 모든 untrusted input에 JSON 이스케이프 적용
                   local safe_client_ip = json_escape(client_ip or "unknown")
                   local safe_path = json_escape(path or "")
-                  local safe_matched = json_escape((details.matched or ""):sub(1, 100))
+                  local safe_matched = json_escape(utf8_safe_sub(details.matched or "", 100))
                   local safe_description = json_escape(details.description or "")
                   local safe_rule = json_escape(details.rule or "unknown")
                   local safe_category = json_escape(details.category or "unknown")
