@@ -612,7 +612,7 @@ kube-prometheus-stack:
             filterBySpanID: true
 
   alertmanager:
-    # 알람 설정은 values-alerting.yaml에서 관리
+    # 알람 설정은 dev/values/monitoring/alerting/*.yaml에서 관리
     alertmanagerSpec:
       nodeSelector:
         kubernetes.io/hostname: mini-gmk

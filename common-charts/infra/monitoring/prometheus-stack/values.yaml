@@ -126,3 +126,24 @@ alertRules:
 # Node placement
 nodeSelector: {}
 tolerations: []
+
+# Custom alert rules (wrapper chart)
+alertRules:
+  enabled: false
+  http5xxOnly:
+    enabled: false
+    alertName: DevHttp5xxDetected
+    environment: unknown
+    namespace: ""
+    jobRegex: "(java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*recommendation.*|.*seat.*)"
+    lookback: 5m
+    for: 1m
+    threshold: 0
+    severity: critical
+
+# Alertmanager Discord webhook secret settings
+alertmanager:
+  discord:
+    eso:
+      enabled: false
+      secretManagerKey: ""  # 예: dev/monitoring/discord-webhook-alerts
