@@ -29,6 +29,223 @@
         "x": 0,
         "y": 0
       },
+      "id": 10,
+      "panels": [],
+      "title": "서비스 상태 요약",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "전체 요청 중 에러(4xx+5xx) 비율입니다. 서비스 건강도를 한눈에 파악할 수 있습니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "orange",
+                "value": 5
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "100 * sum(increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"[45]..\"}[$__range])) / sum(increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\"}[$__range]))",
+          "legendFormat": "에러율",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "에러율 (%)",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "HTTP 상태코드 클래스별 요청 분포입니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "2xx"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "3xx"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "4xx"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "5xx"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true,
+          "values": ["percent"]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"2..\"}[$__range]))",
+          "legendFormat": "2xx",
+          "instant": true,
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"3..\"}[$__range]))",
+          "legendFormat": "3xx",
+          "instant": true,
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"4..\"}[$__range]))",
+          "legendFormat": "4xx",
+          "instant": true,
+          "range": false,
+          "refId": "C"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"5..\"}[$__range]))",
+          "legendFormat": "5xx",
+          "instant": true,
+          "range": false,
+          "refId": "D"
+        }
+      ],
+      "title": "상태코드 분포",
+      "type": "piechart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
       "id": 6,
       "panels": [],
       "title": "상태코드 추이 및 문제 경로",
@@ -121,7 +338,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 7
       },
       "id": 9,
       "options": {
@@ -199,7 +416,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 14
       },
       "id": 7,
       "options": {
@@ -213,7 +430,7 @@
           "placement": "bottom",
           "showLegend": true
         },
-        "orientation": "horizontal",
+        "orientation": "auto",
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
@@ -228,9 +445,9 @@
         {
           "editorMode": "code",
           "expr": "topk(10, sum by (http_route) (increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"4..\"}[$__range])))\n",
+          "interval": "1m",
           "legendFormat": "{{http_route}}",
-          "instant": true,
-          "range": false,
+          "range": true,
           "refId": "A"
         }
       ],
@@ -287,7 +504,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 22
       },
       "id": 8,
       "options": {
@@ -301,7 +518,7 @@
           "placement": "bottom",
           "showLegend": true
         },
-        "orientation": "horizontal",
+        "orientation": "auto",
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
@@ -316,9 +533,9 @@
         {
           "editorMode": "code",
           "expr": "topk(10, sum by (http_route) (increase(http_server_request_duration_seconds_count{service_name=~\"${app_name}\", http_response_status_code=~\"5..\"}[$__range])))\n",
+          "interval": "1m",
           "legendFormat": "{{http_route}}",
-          "instant": true,
-          "range": false,
+          "range": true,
           "refId": "A"
         }
       ],
@@ -331,7 +548,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 31
       },
       "id": 5,
       "panels": [],
@@ -343,19 +560,16 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "orange",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "orange",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -363,10 +577,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 4,
+        "w": 6,
         "x": 0,
-        "y": 26
+        "y": 32
       },
       "id": 1,
       "options": {
@@ -403,19 +617,16 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "red",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
-              },
-              {
                 "color": "red",
-                "value": 80
+                "value": null
               }
             ]
           }
@@ -423,10 +634,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 26
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 32
       },
       "id": 4,
       "options": {
@@ -462,7 +673,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "green",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -471,10 +683,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -482,10 +690,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 34
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 32
       },
       "id": 3,
       "options": {
@@ -521,19 +729,16 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "blue",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "blue",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -541,10 +746,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 34
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 32
       },
       "id": 2,
       "options": {
