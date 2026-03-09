@@ -3,13 +3,18 @@
 #
 # ⚠️ 보안 주의: Discord webhook URL은 External Secret으로 관리됩니다.
 # AWS Secrets Manager에 저장 후 ESO를 통해 주입됩니다.
+#
+# 채널 구조:
+#   - #alerts-critical: 심각한 알람 (노드 다운, 서비스 장애 등)
+#   - #alerts-warning: 경고 알람 (리소스 부족 등)
+#   - #alerts-info: 정보성 알람
 
 # Alertmanager Discord webhook ESO 설정
 alertmanager:
   discord:
     eso:
       enabled: true
-      secretManagerKey: "dev/monitoring/discord-webhook"  # AWS Secrets Manager 키
+      secretManagerKey: "dev/monitoring/discord-webhook-alerts"  # AWS Secrets Manager 키
 
 kube-prometheus-stack:
   alertmanager:
@@ -28,22 +33,22 @@ kube-prometheus-stack:
         group_wait: 30s
         group_interval: 5m
         repeat_interval: 4h
-        receiver: 'discord'
+        receiver: 'discord-warning'  # 기본 receiver
         routes:
           # 🔴 Critical 알람 (노드 다운 등) - 1시간마다 반복
           - match:
               severity: critical
-            receiver: 'discord'
+            receiver: 'discord-critical'
             repeat_interval: 1h
           # 🟡 Warning 알람 - 4시간마다 반복
           - match:
               severity: warning
-            receiver: 'discord'
+            receiver: 'discord-warning'
             repeat_interval: 4h
           # 🔵 Info 알람 - 12시간마다 반복
           - match:
               severity: info
-            receiver: 'discord'
+            receiver: 'discord-info'
             repeat_interval: 12h
           # Watchdog (heartbeat) 알람 무시
           - match:
@@ -54,18 +59,52 @@ kube-prometheus-stack:
               alertname: InfoInhibitor
             receiver: 'null'
 
-      # 수신자 설정
+      # 수신자 설정 - 채널별 분리
       receivers:
-        # Discord (Slack 호환 endpoint 사용)
-        # webhook URL은 alertmanager-discord-webhook 시크릿에서 로드됨
-        # api_url_file을 사용하여 시크릿 파일 참조
-        - name: 'discord'
+        # 🔴 Critical 알람 → #alerts-critical
+        - name: 'discord-critical'
           slack_configs:
-            - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhook/webhook-url'
-              channel: '#alerts'
+            - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhook/critical-webhook-url'
+              channel: '#alerts-critical'
               send_resolved: true
               title: |-
-                {{ if eq .Status "resolved" }}✅ RESOLVED{{ else }}{{ if eq .CommonLabels.severity "critical" }}🔴 CRITICAL{{ else if eq .CommonLabels.severity "warning" }}🟡 WARNING{{ else }}🔵 INFO{{ end }}{{ end }} {{ .CommonAnnotations.summary }}
+                {{ if eq .Status "resolved" }}✅ RESOLVED{{ else }}🔴 CRITICAL{{ end }} {{ .CommonAnnotations.summary }}
+              text: |-
+                *Alert:* {{ .CommonLabels.alertname }}
+                *Severity:* {{ .CommonLabels.severity }}
+                *Namespace:* {{ .CommonLabels.namespace | default "N/A" }}
+                *Description:* {{ .CommonAnnotations.description | default "No description" }}
+                {{ range .Alerts }}
+                *Instance:* {{ .Labels.instance | default .Labels.node | default "N/A" }}
+                *Started:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+                {{ end }}
+
+        # 🟡 Warning 알람 → #alerts-warning
+        - name: 'discord-warning'
+          slack_configs:
+            - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhook/warning-webhook-url'
+              channel: '#alerts-warning'
+              send_resolved: true
+              title: |-
+                {{ if eq .Status "resolved" }}✅ RESOLVED{{ else }}🟡 WARNING{{ end }} {{ .CommonAnnotations.summary }}
+              text: |-
+                *Alert:* {{ .CommonLabels.alertname }}
+                *Severity:* {{ .CommonLabels.severity }}
+                *Namespace:* {{ .CommonLabels.namespace | default "N/A" }}
+                *Description:* {{ .CommonAnnotations.description | default "No description" }}
+                {{ range .Alerts }}
+                *Instance:* {{ .Labels.instance | default .Labels.node | default "N/A" }}
+                *Started:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+                {{ end }}
+
+        # 🔵 Info 알람 → #alerts-info
+        - name: 'discord-info'
+          slack_configs:
+            - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhook/info-webhook-url'
+              channel: '#alerts-info'
+              send_resolved: true
+              title: |-
+                {{ if eq .Status "resolved" }}✅ RESOLVED{{ else }}🔵 INFO{{ end }} {{ .CommonAnnotations.summary }}
               text: |-
                 *Alert:* {{ .CommonLabels.alertname }}
                 *Severity:* {{ .CommonLabels.severity }}
