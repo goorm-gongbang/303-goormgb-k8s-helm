@@ -83,13 +83,22 @@ patterns:
     rules:
       - name: "path-traversal-dots"
         pattern: "%.%./"
-        description: "Directory traversal attempt"
+        description: "Directory traversal attempt (../)"
+      - name: "path-traversal-triple-dots"
+        pattern: "%.%.%./"
+        description: "Deep directory traversal attempt (..../)"
       - name: "path-traversal-encoded"
-        pattern: "%%2e%%2e"
-        description: "Encoded directory traversal"
+        pattern: "%%2[eE]%%2[eE]"
+        description: "Encoded directory traversal (%2e%2e)"
+      - name: "path-traversal-encoded-slash"
+        pattern: "%%2[eE]%%2[eE]%%2[fF]"
+        description: "Fully encoded directory traversal (%2e%2e%2f)"
       - name: "path-traversal-backslash"
-        pattern: "%.%.\\/"
-        description: "Backslash directory traversal"
+        pattern: "%.%.%\\"
+        description: "Backslash directory traversal (..\\)"
+      - name: "path-traversal-mixed"
+        pattern: "%.%.%%2[fF]"
+        description: "Mixed encoding directory traversal (..%2f)"
 
   commandInjection:
     enabled: true

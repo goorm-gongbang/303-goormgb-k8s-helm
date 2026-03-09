@@ -131,6 +131,40 @@ spec:
                   {{- end }}
                 }
 
+                -- JSON 이스케이프 함수 (보안: untrusted input에 필수 적용)
+                local function json_escape(str)
+                  if str == nil then return "" end
+                  str = tostring(str)
+                  -- JSON 특수문자 이스케이프
+                  str = str:gsub('\\', '\\\\')  -- 백슬래시 먼저
+                  str = str:gsub('"', '\\"')   -- 큰따옴표
+                  str = str:gsub('\n', '\\n')  -- 개행
+                  str = str:gsub('\r', '\\r')  -- 캐리지 리턴
+                  str = str:gsub('\t', '\\t')  -- 탭
+                  str = str:gsub('\b', '\\b')  -- 백스페이스
+                  str = str:gsub('\f', '\\f')  -- 폼피드
+                  -- 제어 문자 제거 (0x00-0x1F)
+                  str = str:gsub('[%c]', '')
+                  return str
+                end
+
+                -- UTF-8 안전 문자열 자르기 함수 (멀티바이트 문자 경계 보호)
+                local function utf8_safe_sub(str, max_bytes)
+                  if str == nil or str == "" then return "" end
+                  if #str <= max_bytes then return str end
+
+                  local pos = max_bytes
+                  -- UTF-8 continuation byte (10xxxxxx = 0x80-0xBF) 건너뛰기
+                  while pos > 0 and str:byte(pos) >= 0x80 and str:byte(pos) <= 0xBF do
+                    pos = pos - 1
+                  end
+                  -- 멀티바이트 시작 문자(11xxxxxx = 0xC0 이상)면 해당 문자 제외
+                  if pos > 0 and str:byte(pos) >= 0xC0 then
+                    pos = pos - 1
+                  end
+                  return str:sub(1, pos)
+                end
+
                 -- URL 디코딩 함수
                 local function url_decode(str)
                   if str == nil then return "" end
@@ -172,24 +206,70 @@ spec:
                   return nil
                 end
 
-                -- 로그 출력 함수 (JSON 포맷)
+                -- 로그 출력 함수 (JSON 포맷, 보안 강화)
                 local function log_security_event(request_handle, event_type, details, client_ip, path, blocked)
                   if not LOG_ENABLED then return end
+
+                  -- 모든 untrusted input에 JSON 이스케이프 적용
+                  local safe_client_ip = json_escape(client_ip or "unknown")
+                  local safe_path = json_escape(path or "")
+                  local safe_matched = json_escape(utf8_safe_sub(details.matched or "", 100))
+                  local safe_description = json_escape(details.description or "")
+                  local safe_rule = json_escape(details.rule or "unknown")
+                  local safe_category = json_escape(details.category or "unknown")
 
                   local log_entry = string.format(
                     '{"timestamp":"%s","level":"warn","type":"security","event":"%s","category":"%s","rule":"%s","description":"%s","client_ip":"%s","path":"%s","blocked":%s,"matched":"%s"}',
                     os.date("!%Y-%m-%dT%H:%M:%SZ"),
                     event_type,
-                    details.category or "unknown",
-                    details.rule or "unknown",
-                    details.description or "",
-                    client_ip or "unknown",
-                    path or "",
+                    safe_category,
+                    safe_rule,
+                    safe_description,
+                    safe_client_ip,
+                    safe_path,
                     blocked and "true" or "false",
-                    (details.matched or ""):gsub('"', '\\"'):sub(1, 100)
+                    safe_matched
                   )
 
                   request_handle:logWarn(log_entry)
+                end
+
+                -- 모든 패턴 카테고리를 하나의 테이블로 통합 (리팩토링)
+                local PATH_CHECK_PATTERNS = {
+                  { patterns = SQL_PATTERNS, category = "SQL_INJECTION", event = "SQL_INJECTION_DETECTED" },
+                  { patterns = XSS_PATTERNS, category = "XSS", event = "XSS_DETECTED" },
+                  { patterns = PATH_PATTERNS, category = "PATH_TRAVERSAL", event = "PATH_TRAVERSAL_DETECTED" },
+                  { patterns = CMD_PATTERNS, category = "COMMAND_INJECTION", event = "COMMAND_INJECTION_DETECTED" },
+                  { patterns = LDAP_PATTERNS, category = "LDAP_INJECTION", event = "LDAP_INJECTION_DETECTED" },
+                  { patterns = XXE_PATTERNS, category = "XXE_INJECTION", event = "XXE_INJECTION_DETECTED" },
+                  { patterns = SSRF_PATTERNS, category = "SSRF", event = "SSRF_DETECTED" },
+                  { patterns = LOG4J_PATTERNS, category = "LOG4SHELL", event = "LOG4SHELL_DETECTED" },
+                  { patterns = HEADER_PATTERNS, category = "HEADER_INJECTION", event = "HEADER_INJECTION_DETECTED" },
+                }
+
+                local HEADER_CHECK_PATTERNS = {
+                  { patterns = BOT_PATTERNS, category = "BOT_SCANNER", event = "BOT_SCANNER_DETECTED" },
+                  { patterns = LOG4J_PATTERNS, category = "LOG4SHELL", event = "LOG4SHELL_DETECTED" },
+                  { patterns = XSS_PATTERNS, category = "XSS", event = "XSS_DETECTED" },
+                }
+
+                -- 공통 패턴 검사 및 응답 함수
+                local function check_and_respond(request_handle, input, pattern_list, client_ip, path)
+                  for _, p in ipairs(pattern_list) do
+                    local match = check_patterns(input, p.patterns, p.category)
+                    if match then
+                      log_security_event(request_handle, p.event, match, client_ip, path, BLOCK_MODE)
+                      if BLOCK_MODE then
+                        request_handle:respond(
+                          {[":status"] = "{{ .Values.response.statusCode }}"},
+                          "{{ .Values.response.body }}"
+                        )
+                        return true  -- 차단됨
+                      end
+                      -- detect 모드에서는 계속 검사 (모든 패턴 로깅)
+                    end
+                  end
+                  return false  -- 차단 안됨
                 end
 
                 function envoy_on_request(request_handle)
@@ -206,166 +286,15 @@ spec:
                     return
                   end
 
-                  -- 검사 대상: path + query string
-                  local check_target = path
-
-                  -- SQL Injection 체크
-                  local sql_match = check_patterns(check_target, SQL_PATTERNS, "SQL_INJECTION")
-                  if sql_match then
-                    log_security_event(request_handle, "SQL_INJECTION_DETECTED", sql_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
-                  end
-
-                  -- XSS 체크
-                  local xss_match = check_patterns(check_target, XSS_PATTERNS, "XSS")
-                  if xss_match then
-                    log_security_event(request_handle, "XSS_DETECTED", xss_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
-                  end
-
-                  -- Path Traversal 체크
-                  local path_match = check_patterns(check_target, PATH_PATTERNS, "PATH_TRAVERSAL")
-                  if path_match then
-                    log_security_event(request_handle, "PATH_TRAVERSAL_DETECTED", path_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
-                  end
-
-                  -- Command Injection 체크
-                  local cmd_match = check_patterns(check_target, CMD_PATTERNS, "COMMAND_INJECTION")
-                  if cmd_match then
-                    log_security_event(request_handle, "COMMAND_INJECTION_DETECTED", cmd_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
-                  end
-
-                  -- LDAP Injection 체크
-                  local ldap_match = check_patterns(check_target, LDAP_PATTERNS, "LDAP_INJECTION")
-                  if ldap_match then
-                    log_security_event(request_handle, "LDAP_INJECTION_DETECTED", ldap_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
-                  end
-
-                  -- XXE Injection 체크
-                  local xxe_match = check_patterns(check_target, XXE_PATTERNS, "XXE_INJECTION")
-                  if xxe_match then
-                    log_security_event(request_handle, "XXE_INJECTION_DETECTED", xxe_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
-                  end
-
-                  -- SSRF 체크
-                  local ssrf_match = check_patterns(check_target, SSRF_PATTERNS, "SSRF")
-                  if ssrf_match then
-                    log_security_event(request_handle, "SSRF_DETECTED", ssrf_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
-                  end
-
-                  -- Log4Shell 체크
-                  local log4j_match = check_patterns(check_target, LOG4J_PATTERNS, "LOG4SHELL")
-                  if log4j_match then
-                    log_security_event(request_handle, "LOG4SHELL_DETECTED", log4j_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
-                  end
-
-                  -- Header Injection 체크
-                  local header_match = check_patterns(check_target, HEADER_PATTERNS, "HEADER_INJECTION")
-                  if header_match then
-                    log_security_event(request_handle, "HEADER_INJECTION_DETECTED", header_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
+                  -- Path/Query String 검사
+                  if check_and_respond(request_handle, path, PATH_CHECK_PATTERNS, client_ip, path) then
+                    return
                   end
 
                   -- User-Agent 헤더 검사
                   local user_agent = headers:get("user-agent") or ""
-
-                  -- Bot/Scanner 체크 (User-Agent)
-                  local bot_match = check_patterns(user_agent, BOT_PATTERNS, "BOT_SCANNER")
-                  if bot_match then
-                    log_security_event(request_handle, "BOT_SCANNER_DETECTED", bot_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
-                  end
-
-                  -- Log4Shell 체크 (User-Agent) - Log4j 공격은 헤더에 주입되는 경우가 많음
-                  local log4j_header_match = check_patterns(user_agent, LOG4J_PATTERNS, "LOG4SHELL")
-                  if log4j_header_match then
-                    log_security_event(request_handle, "LOG4SHELL_DETECTED", log4j_header_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
-                  end
-
-                  -- XSS 체크 (User-Agent) - 악성 스크립트가 헤더에 주입될 수 있음
-                  local xss_header_match = check_patterns(user_agent, XSS_PATTERNS, "XSS")
-                  if xss_header_match then
-                    log_security_event(request_handle, "XSS_DETECTED", xss_header_match, client_ip, path, BLOCK_MODE)
-                    if BLOCK_MODE then
-                      request_handle:respond(
-                        {[":status"] = "{{ .Values.response.statusCode }}"},
-                        "{{ .Values.response.body }}"
-                      )
-                      return
-                    end
+                  if check_and_respond(request_handle, user_agent, HEADER_CHECK_PATTERNS, client_ip, path) then
+                    return
                   end
                 end
 {{- end }}
