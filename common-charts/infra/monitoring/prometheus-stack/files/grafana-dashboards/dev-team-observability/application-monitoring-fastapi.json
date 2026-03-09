@@ -1637,10 +1637,10 @@
   "templating": {
     "list": [
       {
-        "allValue": ".*",
+        "allValue": "dev-ai-.*",
         "current": {
-          "text": ["$__all"],
-          "value": ["$__all"]
+          "text": ["ai-defense"],
+          "value": ["dev-ai-defense"]
         },
         "includeAll": true,
         "label": "애플리케이션",
