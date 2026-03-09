@@ -13,13 +13,11 @@ letsencrypt:
     enabled: true
     server: https://acme-v02.api.letsencrypt.org/directory
 
-# Route53 DNS-01 solver - 환경별로 설정
-route53:
-  region: ""
-  hostedZoneID: ""
+# Cloudflare DNS-01 solver - 환경별로 설정
+cloudflare:
   secret:
-    name: route53-credentials  # bootstrap-aws.sh 에서 생성됨
-    namespace: cert-manager    # secret이 있는 namespace
+    name: cloudflare-cert-manager-credentials
+    awsSecretKey: ""  # AWS Secrets Manager key (ESO용)
 
 # TLS Certificates - 환경별로 설정
 certificates: []

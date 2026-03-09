@@ -1,9 +1,9 @@
 # kubeadm-dev 클러스터 데이터 서비스 설정
 # PostgreSQL, Redis → CP 노드 (mini-gmk)에 스케줄링
 
-# TODO: S3 백업 활성화 시 AWS Secrets Manager에 dev/infra/s3-backup 추가 필요
+# S3 백업 활성화 (dev/infra/s3-backup secret 생성 완료)
 backup:
-  enabled: false
+  enabled: true
 
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
@@ -12,3 +12,4 @@ tolerations:
   - key: "node-role.kubernetes.io/control-plane"
     operator: "Exists"
     effect: "NoSchedule"
+

@@ -4,9 +4,9 @@ kind: Kustomization
 resources:
   # === Core ===
   - infra/core/namespaces.yaml      # sync-wave: -10 (가장 먼저)
+  - infra/core/calico.yaml          # sync-wave: -10 (CNI, ArgoCD 관리)
   - infra/core/ecr-creds.yaml       # sync-wave: -8
   - infra/core/argocd.yaml
-  - infra/core/api-gateway.yaml
   - infra/core/ddns.yaml
 
   # === Security ===
@@ -18,10 +18,13 @@ resources:
   # === Data ===
   - infra/data/data.yaml
   - infra/data/cloudbeaver.yaml
+  - infra/data/redisinsight.yaml
 
   # === Istio ===
   - infra/istio/istio.yaml
   - infra/istio/kiali.yaml
+  - infra/istio/api-gateway.yaml    # 공통 API Gateway (istio-system)
+  - infra/istio/istio-security.yaml # WAF: SQL Injection, XSS, Path Traversal 탐지
 
   # === Monitoring ===
   - infra/monitoring/prometheus-stack.yaml
@@ -31,4 +34,7 @@ resources:
 
   # === Applications (ApplicationSet) ===
   - dev-webs-applicationset.yaml    # dev-webs: Spring Boot + Next.js
-  - dev-ai-applicationset.yaml      # dev-ai: FastAPI AI Agent
+  # - dev-ai-applicationset.yaml    # dev-ai: FastAPI AI Agent (dev 브랜치 머지 후 활성화)
+
+  # === App Routes ===
+  # - apps/ai-defense-route.yaml    # api.dev.goormgb.space/ai/* → ai-defense (dev 브랜치 머지 후 활성화)

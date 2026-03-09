@@ -16,6 +16,8 @@ spec:
       labels:
         {{- include "python-service.selectorLabels" . | nindent 8 }}
         sidecar.istio.io/inject: "{{ .Values.istio.sidecar }}"
+      annotations:
+        kiali.io/icon: microservice
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -26,6 +28,14 @@ spec:
         - name: {{ include "python-service.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

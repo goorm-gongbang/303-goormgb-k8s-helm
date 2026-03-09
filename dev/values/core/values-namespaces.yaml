@@ -7,7 +7,7 @@ namespaces:
   - name: dev-ai
     istio: true   # FastAPI AI Agent 서비스
   - name: data
-    istio: false  # PostgreSQL, Redis - Istio 불필요
+    istio: true   # PostgreSQL, Redis - Kiali에서 트래픽 모니터링
   - name: monitoring
     istio: false  # Prometheus, Grafana - Istio 불필요
   - name: infra

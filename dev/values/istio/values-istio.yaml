@@ -12,6 +12,16 @@ istiod:
   global:
     istioNamespace: istio-system
 
+    # Sidecar Proxy 기본 리소스 설정
+    proxy:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 500m
+          memory: 256Mi
+
   meshConfig:
     enableTracing: true
     defaultConfig:
@@ -47,14 +57,19 @@ istiod:
 # istio-ingressgateway는 istioctl로 설치됨 (scripts/istio/install.sh)
 # 여기서는 Gateway CRD만 생성
 
-# 공용 Gateway (모든 *.goormgb.space 트래픽 처리)
+# 공용 Gateway (인프라 서비스용)
+# api.dev.goormgb.space는 api-gateway에서 처리
 sharedGateway:
   enabled: true
   name: goormgb-gateway
   tls:
     credentialName: goormgb-tls
   hosts:
-    - "*.goormgb.space"
+    - "argocd.goormgb.space"
+    - "cloudbeaver.goormgb.space"
+    - "grafana.goormgb.space"
+    - "kiali.goormgb.space"
+    - "redisinsight.goormgb.space"
 
 # ===== Kiali =====
 kiali-server:

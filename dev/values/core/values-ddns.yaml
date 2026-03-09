@@ -1,8 +1,8 @@
-# kubeadm-dev - DDNS Route53 설정
+# kubeadm-dev - DDNS Cloudflare 설정
 # Domain: goormgb.space
 
 domain: "goormgb.space"
-hostedZoneID: "Z0444756O5UQIM83AJHO"
+zoneID: "f9fdc81712963738bc9d5ee628849e53"
 
 records:
   - "" # goormgb.space (root)
