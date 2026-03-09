@@ -23,6 +23,11 @@ image:
   tag: "de7a2ad"
   pullPolicy: Always
 
+# Python 모듈 경로 설정 (src/ 디렉토리 기준)
+env:
+  - name: PYTHONPATH
+    value: /app/src
+
 imagePullSecrets:
   - name: ecr-pull-secret
 
