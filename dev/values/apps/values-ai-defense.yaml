@@ -70,3 +70,8 @@ readinessProbe:
   initialDelaySeconds: 10
   periodSeconds: 5
   failureThreshold: 3
+
+# OpenTelemetry (앱에 opentelemetry SDK 설치 필요)
+otel:
+  enabled: true
+  collectorEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"
