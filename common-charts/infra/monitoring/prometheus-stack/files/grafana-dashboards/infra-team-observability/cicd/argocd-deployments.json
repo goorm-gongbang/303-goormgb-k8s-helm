@@ -2,23 +2,178 @@
   "annotations": {
     "list": []
   },
-  "description": "ArgoCD 배포 현황 및 Sync 이벤트 모니터링 (Loki 로그 기반)",
+  "description": "ArgoCD 배포 현황 모니터링 (Loki 로그 + Prometheus 메트릭)",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "GitHub Repo",
+      "tooltip": "303-goormgb-k8s-helm",
+      "type": "link",
+      "url": "https://github.com/goorm-gongbang/303-goormgb-k8s-helm"
+    },
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "ArgoCD UI",
+      "tooltip": "ArgoCD Dashboard",
+      "type": "link",
+      "url": "https://argocd.goormgb.space"
+    }
+  ],
   "panels": [
     {
+      "datasource": { "type": "datasource", "uid": "-- Dashboard --" },
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+      "id": 99,
+      "options": {
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
+        "content": "| 항목 | 값 |\n|---|---|\n| **Repository** | [goorm-gongbang/303-goormgb-k8s-helm](https://github.com/goorm-gongbang/303-goormgb-k8s-helm) |\n| **Branch** | `argocd-sync/dev` |\n| **ArgoCD** | [argocd.goormgb.space](https://argocd.goormgb.space) |\n\n| ArgoCD UI | Grafana 대시보드 |\n|---|---|\n| 현재 상태 확인, 수동 Sync 실행, 앱별 상세 조회 | 시간대별 추이, 패턴 분석, 알람 설정, 다른 메트릭과 연계 분석 |\n| **운영/조작 중심** | **모니터링/분석 중심** |",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.4.0",
+      "type": "text"
+    },
+    {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 4 },
       "id": 100,
-      "title": "Sync 이벤트 현황",
+      "title": "앱 상태 현황 (메트릭)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "현재 Synced 상태인 앱 수",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 5 },
+      "id": 10,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "count(argocd_app_info{sync_status=\"Synced\"})", "legendFormat": "Synced", "refId": "A" }],
+      "title": "Synced 앱",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "OutOfSync 상태인 앱 수",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 3 }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 5 },
+      "id": 11,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "count(argocd_app_info{sync_status=\"OutOfSync\"})", "legendFormat": "OutOfSync", "refId": "A" }],
+      "title": "OutOfSync 앱",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Healthy 상태인 앱 수",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 5 },
+      "id": 12,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "count(argocd_app_info{health_status=\"Healthy\"})", "legendFormat": "Healthy", "refId": "A" }],
+      "title": "Healthy 앱",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Degraded/Progressing 상태인 앱 수",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 2 }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 5 },
+      "id": 13,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "count(argocd_app_info{health_status=~\"Degraded|Progressing|Unknown\"})", "legendFormat": "Unhealthy", "refId": "A" }],
+      "title": "Unhealthy 앱",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
+      "id": 103,
+      "title": "Webhook 수신 로그 (Git Push → GitHub Webhook → ArgoCD 수신 → Reconciliation → Sync 완료)",
       "type": "row"
     },
     {
       "datasource": "Loki",
-      "description": "시간대별 로그 건수",
+      "description": "GitHub에서 push 이벤트 발생 시 ArgoCD가 수신하는 webhook 로그. 이 시점이 Git 변경 감지의 시작점",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 10 },
+      "id": 105,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": "Loki",
+          "editorMode": "code",
+          "expr": "{namespace=\"argocd\"} |~ \"Received push event|webhook|received event|git-webhook\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Webhook 수신 로그",
+      "type": "logs"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
+      "id": 101,
+      "title": "Reconciliation 로그",
+      "type": "row"
+    },
+    {
+      "datasource": "Loki",
+      "description": "Reconciliation: ArgoCD가 Git과 클러스터 상태를 주기적으로 비교/동기화하는 과정. 건수가 많으면 Git 변경이 잦거나, 누군가 kubectl로 직접 수정해서 상태 불일치(drift)가 발생했을 수 있음",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -26,61 +181,48 @@
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "bars",
-            "fillOpacity": 80,
-            "gradientMode": "none",
+            "barWidthFactor": 0.9,
+            "drawStyle": "line",
+            "fillOpacity": 20,
             "hideFrom": { "legend": false, "tooltip": false, "viz": false },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
             "lineWidth": 1,
-            "pointSize": 5,
             "scaleDistribution": { "type": "linear" },
             "showPoints": "never",
-            "spanNulls": false,
-            "stacking": { "group": "A", "mode": "none" },
+            "stacking": { "group": "A", "mode": "normal" },
             "thresholdsStyle": { "mode": "off" }
           },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null }
-            ]
-          }
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
         },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 24, "x": 0, "y": 1 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 17 },
       "id": 1,
       "options": {
-        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "bottom", "showLegend": true },
         "tooltip": { "mode": "multi", "sort": "none" }
       },
       "targets": [
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "sum(count_over_time({namespace=\"argocd\", container=\"argocd-application-controller\"} [$__interval]))",
-          "legendFormat": "로그 건수",
+          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` [1m]))",
+          "interval": "1m",
+          "legendFormat": "{{ application }}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "ArgoCD 로그 추이",
+      "title": "앱별 Reconciliation 건수",
       "type": "timeseries"
     },
     {
       "datasource": "Loki",
-      "description": "최근 Sync 관련 로그",
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
+      "description": "Sync: 수동/자동으로 Git→클러스터 배포 실행. Reconciliation: 주기적(기본 3분)으로 Git과 클러스터 상태 비교 후 차이 감지 시 자동 동기화",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 25 },
       "id": 2,
       "options": {
         "dedupStrategy": "none",
@@ -96,29 +238,54 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "{namespace=\"argocd\", container=\"argocd-application-controller\"} |~ \"(?i)sync|reconcil\"",
+          "expr": "{namespace=\"argocd\"} |~ \"Reconciliation completed|Sync operation|Update successful\"",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Sync 관련 로그",
+      "title": "Sync/Reconciliation 로그",
       "type": "logs"
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
-      "id": 101,
-      "title": "에러 및 경고",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
+      "id": 102,
+      "title": "에러 및 알림",
       "type": "row"
     },
     {
       "datasource": "Loki",
-      "description": "ArgoCD 에러 로그",
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
+      "description": "에러 로그",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 34 },
+      "id": 3,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
       },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 17 },
+      "targets": [
+        {
+          "datasource": "Loki",
+          "editorMode": "code",
+          "expr": "{namespace=\"argocd\"} |~ \"level=error|\\\"level\\\":\\\"error\\\"\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "에러 로그",
+      "type": "logs"
+    },
+    {
+      "datasource": "Loki",
+      "description": "Notification 트리거 로그",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 40 },
       "id": 4,
       "options": {
         "dedupStrategy": "none",
@@ -134,50 +301,12 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "{namespace=\"argocd\"} |~ \"(?i)error|warn|fail\"",
+          "expr": "{namespace=\"argocd\"} |~ \"Trigger|TRIGGERED|FAILED|Notification\"",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "에러/경고 로그",
-      "type": "logs"
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
-      "id": 102,
-      "title": "전체 로그",
-      "type": "row"
-    },
-    {
-      "datasource": "Loki",
-      "description": "ArgoCD 전체 로그",
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 28 },
-      "id": 5,
-      "options": {
-        "dedupStrategy": "none",
-        "enableLogDetails": true,
-        "prettifyLogMessage": false,
-        "showCommonLabels": false,
-        "showLabels": false,
-        "showTime": true,
-        "sortOrder": "Descending",
-        "wrapLogMessage": true
-      },
-      "targets": [
-        {
-          "datasource": "Loki",
-          "editorMode": "code",
-          "expr": "{namespace=\"argocd\"}",
-          "queryType": "range",
-          "refId": "A"
-        }
-      ],
-      "title": "전체 로그",
+      "title": "알림 트리거 로그",
       "type": "logs"
     }
   ],
@@ -185,9 +314,24 @@
   "schemaVersion": 39,
   "tags": ["argocd", "cicd", "loki"],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": { "selected": false, "text": "Prometheus", "value": "prometheus" },
+        "hide": 0,
+        "includeAll": false,
+        "label": "데이터소스",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
   },
-  "time": { "from": "now-1h", "to": "now" },
+  "time": { "from": "now-15m", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
   "title": "ArgoCD 배포 모니터링",

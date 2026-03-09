@@ -20,12 +20,15 @@ spec:
       interval: 30s
       path: /metrics
       relabelings:
-        - sourceLabels: [__meta_kubernetes_pod_name]
+        - action: replace
+          sourceLabels: [__meta_kubernetes_pod_name]
           targetLabel: pod
-        - sourceLabels: [__meta_kubernetes_namespace]
+        - action: replace
+          sourceLabels: [__meta_kubernetes_namespace]
           targetLabel: namespace
         # instance를 "istiod (IP:port)" 형식으로 변경
-        - sourceLabels: [__meta_kubernetes_pod_name, __address__]
+        - action: replace
+          sourceLabels: [__meta_kubernetes_pod_name, __address__]
           separator: " ("
           replacement: "$1$2)"
           targetLabel: instance
