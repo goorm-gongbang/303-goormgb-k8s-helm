@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/recommendation
-  tag: "bfa9708"
+  tag: "de588c1"
   pullPolicy: Always
 
 imagePullSecrets:
