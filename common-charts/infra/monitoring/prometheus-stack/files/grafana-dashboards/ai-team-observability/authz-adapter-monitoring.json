@@ -26,8 +26,8 @@
       "gridPos": {"h": 3, "w": 6, "x": 0, "y": 0},
       "id": 1,
       "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"expr": "up{job=\"authz-adapter\"}", "legendFormat": "Up", "refId": "A"}],
-      "title": "Adapter Status",
+      "targets": [{"expr": "up{job=\"authz-adapter\"}", "legendFormat": "상태", "refId": "A"}],
+      "title": "어댑터 상태",
       "type": "stat"
     },
     {
@@ -39,7 +39,7 @@
       "id": 2,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
       "targets": [{"expr": "sum(rate(authz_adapter_check_requests_total[1m]))", "legendFormat": "RPS", "refId": "A"}],
-      "title": "Request Rate",
+      "title": "요청 처리율",
       "type": "stat"
     },
     {
@@ -51,7 +51,7 @@
       "id": 3,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
       "targets": [{"expr": "histogram_quantile(0.95, sum(rate(authz_adapter_check_latency_seconds_bucket[5m])) by (le)) * 1000", "legendFormat": "p95", "refId": "A"}],
-      "title": "Check Latency (p95)",
+      "title": "검사 지연시간 (p95)",
       "type": "stat"
     },
     {
@@ -62,8 +62,8 @@
       "gridPos": {"h": 3, "w": 6, "x": 18, "y": 0},
       "id": 4,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"expr": "sum(increase(authz_adapter_fail_open_total[1h]))", "legendFormat": "Fail-open", "refId": "A"}],
-      "title": "Fail-open (1h)",
+      "targets": [{"expr": "sum(increase(authz_adapter_fail_open_total[1h]))", "legendFormat": "횟수", "refId": "A"}],
+      "title": "Fail-open 발생 (1h)",
       "type": "stat"
     },
     {
@@ -71,7 +71,7 @@
       "gridPos": {"h": 1, "w": 24, "x": 0, "y": 3},
       "id": 10,
       "panels": [],
-      "title": "Request Metrics",
+      "title": "요청 메트릭",
       "type": "row"
     },
     {
@@ -88,12 +88,12 @@
       "id": 5,
       "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
       "targets": [
-        {"expr": "sum(rate(authz_adapter_check_requests_total{result=\"allow\"}[1m]))", "legendFormat": "Allow", "refId": "A"},
-        {"expr": "sum(rate(authz_adapter_check_requests_total{result=\"deny\"}[1m]))", "legendFormat": "Deny", "refId": "B"},
-        {"expr": "sum(rate(authz_adapter_check_requests_total{result=\"skipped\"}[1m]))", "legendFormat": "Skipped", "refId": "C"},
+        {"expr": "sum(rate(authz_adapter_check_requests_total{result=\"allow\"}[1m]))", "legendFormat": "허용", "refId": "A"},
+        {"expr": "sum(rate(authz_adapter_check_requests_total{result=\"deny\"}[1m]))", "legendFormat": "차단", "refId": "B"},
+        {"expr": "sum(rate(authz_adapter_check_requests_total{result=\"skipped\"}[1m]))", "legendFormat": "스킵", "refId": "C"},
         {"expr": "sum(rate(authz_adapter_check_requests_total{result=\"fail_open\"}[1m]))", "legendFormat": "Fail-open", "refId": "D"}
       ],
-      "title": "Request Rate by Result",
+      "title": "결과별 요청 처리율",
       "type": "timeseries"
     },
     {
@@ -114,7 +114,7 @@
         {"expr": "histogram_quantile(0.95, sum(rate(authz_adapter_check_latency_seconds_bucket[5m])) by (le))", "legendFormat": "p95", "refId": "B"},
         {"expr": "histogram_quantile(0.99, sum(rate(authz_adapter_check_latency_seconds_bucket[5m])) by (le))", "legendFormat": "p99", "refId": "C"}
       ],
-      "title": "Check Latency",
+      "title": "검사 지연시간",
       "type": "timeseries"
     },
     {
@@ -122,7 +122,7 @@
       "gridPos": {"h": 1, "w": 24, "x": 0, "y": 12},
       "id": 11,
       "panels": [],
-      "title": "AI Defense Integration",
+      "title": "AI Defense 연동",
       "type": "row"
     },
     {
@@ -135,17 +135,17 @@
           "unit": "reqps"
         },
         "overrides": [
-          {"matcher": {"id": "byName", "options": "Error"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}
+          {"matcher": {"id": "byName", "options": "에러"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}
         ]
       },
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 13},
       "id": 7,
       "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
       "targets": [
-        {"expr": "sum(rate(authz_adapter_ai_defense_calls_total{status=\"success\"}[1m]))", "legendFormat": "Success", "refId": "A"},
-        {"expr": "sum(rate(authz_adapter_ai_defense_calls_total{status=\"error\"}[1m]))", "legendFormat": "Error", "refId": "B"}
+        {"expr": "sum(rate(authz_adapter_ai_defense_calls_total{status=\"success\"}[1m]))", "legendFormat": "성공", "refId": "A"},
+        {"expr": "sum(rate(authz_adapter_ai_defense_calls_total{status=\"error\"}[1m]))", "legendFormat": "에러", "refId": "B"}
       ],
-      "title": "AI Defense Call Rate",
+      "title": "AI Defense 호출율",
       "type": "timeseries"
     },
     {
@@ -166,7 +166,7 @@
         {"expr": "histogram_quantile(0.95, sum(rate(authz_adapter_ai_defense_latency_seconds_bucket[5m])) by (le))", "legendFormat": "p95", "refId": "B"},
         {"expr": "histogram_quantile(0.99, sum(rate(authz_adapter_ai_defense_latency_seconds_bucket[5m])) by (le))", "legendFormat": "p99", "refId": "C"}
       ],
-      "title": "AI Defense Latency",
+      "title": "AI Defense 응답 지연시간",
       "type": "timeseries"
     },
     {
@@ -174,7 +174,7 @@
       "gridPos": {"h": 1, "w": 24, "x": 0, "y": 21},
       "id": 12,
       "panels": [],
-      "title": "Decisions",
+      "title": "결정",
       "type": "row"
     },
     {
@@ -193,7 +193,7 @@
       "targets": [
         {"expr": "sum(increase(authz_adapter_decisions_total[1h])) by (decision)", "legendFormat": "{{decision}}", "refId": "A"}
       ],
-      "title": "Decision Distribution (1h)",
+      "title": "결정 분포 (1h)",
       "type": "piechart"
     },
     {
@@ -212,7 +212,7 @@
       "targets": [
         {"expr": "sum(rate(authz_adapter_decisions_total[5m])) by (action)", "legendFormat": "{{action}}", "refId": "A"}
       ],
-      "title": "Decisions by Action",
+      "title": "Action별 결정 추이",
       "type": "timeseries"
     }
   ],

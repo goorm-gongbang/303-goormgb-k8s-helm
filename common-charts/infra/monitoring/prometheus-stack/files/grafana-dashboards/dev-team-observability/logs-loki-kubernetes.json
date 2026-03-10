@@ -109,7 +109,7 @@
       "targets": [
         {
           "datasource": "Loki",
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container =~\"$container\"} |= \"$query\" [$__interval]))",
+          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\"} |= \"$query\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -148,7 +148,7 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container =~\"$container\"} |= \"$query\"",
+          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\"} |= \"$query\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -172,8 +172,8 @@
           "text": "",
           "value": ""
         },
-        "description": "String to search for",
-        "label": "Search Query",
+        "description": "검색어 (ERROR, WARN 등 로그 레벨 포함)",
+        "label": "검색어",
         "name": "query",
         "options": [
           {
@@ -235,89 +235,24 @@
         "type": "custom"
       },
       {
-        "allValue": "api-gateway|auth-guard|order-core|queue|recommendation|seat",
+        "allValue": ".+",
         "current": {
           "text": "All",
           "value": "$__all"
         },
+        "datasource": "Loki",
+        "definition": "label_values({namespace=\"dev-webs\"}, container)",
         "hide": 0,
         "includeAll": true,
-        "label": "Container",
+        "label": "컨테이너",
         "multi": true,
         "name": "container",
-        "options": [
-          {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "api-gateway",
-            "value": "api-gateway"
-          },
-          {
-            "selected": false,
-            "text": "auth-guard",
-            "value": "auth-guard"
-          },
-          {
-            "selected": false,
-            "text": "order-core",
-            "value": "order-core"
-          },
-          {
-            "selected": false,
-            "text": "queue",
-            "value": "queue"
-          },
-          {
-            "selected": false,
-            "text": "recommendation",
-            "value": "recommendation"
-          },
-          {
-            "selected": false,
-            "text": "seat",
-            "value": "seat"
-          }
-        ],
-        "query": "api-gateway,auth-guard,order-core,queue,recommendation,seat",
-        "type": "custom"
-      },
-      {
-        "allValue": "ERROR|WARN|INFO",
-        "current": {
-          "text": [
-            "$__all"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "includeAll": true,
-        "label": "Log Level",
-        "multi": true,
-        "name": "level",
-        "options": [
-          {
-            "selected": false,
-            "text": "ERROR",
-            "value": "ERROR"
-          },
-          {
-            "selected": false,
-            "text": "WARN",
-            "value": "WARN"
-          },
-          {
-            "selected": false,
-            "text": "INFO",
-            "value": "INFO"
-          }
-        ],
-        "query": "ERROR,WARN,INFO",
-        "type": "custom"
+        "options": [],
+        "query": "label_values({namespace=\"dev-webs\"}, container)",
+        "refresh": 2,
+        "regex": "^(?!istio-proxy).*$",
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
