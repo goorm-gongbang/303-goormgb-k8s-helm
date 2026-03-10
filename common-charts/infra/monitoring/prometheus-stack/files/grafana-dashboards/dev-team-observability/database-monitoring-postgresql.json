@@ -103,7 +103,7 @@
           "refId": "A"
         }
       ],
-      "title": "Max Connections",
+      "title": "최대 연결 수",
       "type": "stat"
     },
     {
@@ -203,7 +203,7 @@
           "step": 2
         }
       ],
-      "title": "Active sessions",
+      "title": "활성 세션 수",
       "type": "timeseries"
     },
     {
@@ -301,7 +301,7 @@
           "refId": "A"
         }
       ],
-      "title": "Average CPU Usage",
+      "title": "평균 CPU 사용률",
       "type": "timeseries"
     },
     {
@@ -407,7 +407,7 @@
           "refId": "B"
         }
       ],
-      "title": "Average Memory Usage",
+      "title": "평균 메모리 사용률",
       "type": "timeseries"
     },
     {
@@ -525,7 +525,7 @@
           "refId": "B"
         }
       ],
-      "title": "Transactions",
+      "title": "트랜잭션",
       "type": "timeseries"
     },
     {
@@ -625,7 +625,7 @@
           "step": 2
         }
       ],
-      "title": "Lock tables",
+      "title": "테이블 잠금",
       "type": "timeseries"
     },
     {
@@ -730,7 +730,7 @@
           "refId": "A"
         }
       ],
-      "title": "Conflicts/Deadlocks",
+      "title": "충돌/데드락",
       "type": "timeseries"
     },
     {
@@ -839,7 +839,7 @@
           "refId": "A"
         }
       ],
-      "title": "Cache Hit Rate",
+      "title": "캐시 적중률",
       "type": "timeseries"
     },
     {
@@ -936,7 +936,7 @@
           "refId": "A"
         }
       ],
-      "title": "Temp File (Bytes)",
+      "title": "임시 파일 크기",
       "type": "timeseries"
     },
     {
@@ -1041,7 +1041,7 @@
           "refId": "A"
         }
       ],
-      "title": "Checkpoint Stats",
+      "title": "체크포인트 통계",
       "type": "timeseries"
     },
     {
@@ -1126,7 +1126,7 @@
           "refId": "A"
         }
       ],
-      "title": "Version",
+      "title": "버전",
       "type": "stat"
     },
     {
@@ -1198,7 +1198,7 @@
           "step": 4
         }
       ],
-      "title": "Current insert data",
+      "title": "현재 Insert 수",
       "type": "stat"
     },
     {
@@ -1270,7 +1270,7 @@
           "step": 4
         }
       ],
-      "title": "Current update data",
+      "title": "현재 Update 수",
       "type": "stat"
     },
     {
@@ -1340,7 +1340,7 @@
           "refId": "A"
         }
       ],
-      "title": "Seq Page Cost",
+      "title": "순차 페이지 비용",
       "type": "stat"
     },
     {
@@ -1410,7 +1410,7 @@
           "refId": "A"
         }
       ],
-      "title": "Max Worker Processes",
+      "title": "최대 워커 프로세스",
       "type": "stat"
     },
     {
@@ -1480,7 +1480,7 @@
           "refId": "A"
         }
       ],
-      "title": "Max Parallel Workers",
+      "title": "최대 병렬 워커",
       "type": "stat"
     },
     {
@@ -1552,7 +1552,7 @@
           "refId": "A"
         }
       ],
-      "title": "Start Time",
+      "title": "시작 시간",
       "type": "stat"
     },
     {
@@ -1622,7 +1622,7 @@
           "refId": "A"
         }
       ],
-      "title": "Shared Buffers",
+      "title": "공유 버퍼",
       "type": "stat"
     },
     {
@@ -1692,7 +1692,7 @@
           "refId": "A"
         }
       ],
-      "title": "Effective Cache",
+      "title": "유효 캐시",
       "type": "stat"
     },
     {
@@ -1762,7 +1762,7 @@
           "refId": "A"
         }
       ],
-      "title": "Random Page Cost",
+      "title": "랜덤 페이지 비용",
       "type": "stat"
     },
     {
@@ -1834,7 +1834,7 @@
           "step": 4
         }
       ],
-      "title": "Current fetch data",
+      "title": "현재 Fetch 수",
       "type": "stat"
     },
     {
@@ -1905,7 +1905,7 @@
           "refId": "A"
         }
       ],
-      "title": "Max WAL Size",
+      "title": "최대 WAL 크기",
       "type": "stat"
     },
     {
@@ -1975,7 +1975,7 @@
           "refId": "A"
         }
       ],
-      "title": "Maintenance Work Mem",
+      "title": "유지보수 작업 메모리",
       "type": "stat"
     },
     {
@@ -2046,7 +2046,7 @@
           "refId": "A"
         }
       ],
-      "title": "Work Mem",
+      "title": "작업 메모리",
       "type": "stat"
     },
     {
@@ -2174,7 +2174,7 @@
           "refId": "E"
         }
       ],
-      "title": "Buffers (bgwriter)",
+      "title": "버퍼 (bgwriter)",
       "type": "timeseries"
     },
     {
@@ -2272,7 +2272,7 @@
           "refId": "A"
         }
       ],
-      "title": "Open File Descriptors",
+      "title": "열린 파일 디스크립터",
       "type": "timeseries"
     },
     {
@@ -2369,7 +2369,7 @@
           "step": 2
         }
       ],
-      "title": "Fetch data (SELECT)",
+      "title": "Fetch 추이 (SELECT)",
       "type": "timeseries"
     },
     {
@@ -2466,7 +2466,7 @@
           "step": 2
         }
       ],
-      "title": "Insert data",
+      "title": "Insert 추이",
       "type": "timeseries"
     },
     {
@@ -2563,7 +2563,7 @@
           "step": 2
         }
       ],
-      "title": "Update data",
+      "title": "Update 추이",
       "type": "timeseries"
     },
     {
@@ -2660,7 +2660,7 @@
           "step": 2
         }
       ],
-      "title": "Delete data",
+      "title": "Delete 추이",
       "type": "timeseries"
     },
     {
@@ -2757,7 +2757,7 @@
           "step": 2
         }
       ],
-      "title": "Return data",
+      "title": "Return 추이",
       "type": "timeseries"
     },
     {
@@ -2854,7 +2854,7 @@
           "step": 2
         }
       ],
-      "title": "Idle sessions",
+      "title": "유휴 세션",
       "type": "timeseries"
     }
   ],

@@ -28,7 +28,7 @@ config:
   defaultTtl: 1800
 
 exporter:
-  enabled: false
+  enabled: true
   image:
     repository: oliver006/redis_exporter
     tag: v1.66.0

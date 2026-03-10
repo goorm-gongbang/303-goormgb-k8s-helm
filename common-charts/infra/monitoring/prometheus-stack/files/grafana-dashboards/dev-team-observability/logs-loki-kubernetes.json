@@ -109,7 +109,7 @@
       "targets": [
         {
           "datasource": "Loki",
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container =~\"$container\"} |= \"$query\" [$__interval]))",
+          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", pod=~\"$service\"} |= \"$query\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -148,12 +148,12 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container =~\"$container\"} |= \"$query\"",
+          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", pod=~\"$service\"} |= \"$query\"",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Log Stream",
+      "title": "로그 스트림",
       "type": "logs"
     }
   ],
@@ -172,8 +172,8 @@
           "text": "",
           "value": ""
         },
-        "description": "String to search for",
-        "label": "Search Query",
+        "description": "검색어 (ERROR, WARN 등 로그 레벨 포함)",
+        "label": "검색어",
         "name": "query",
         "options": [
           {
@@ -235,83 +235,74 @@
         "type": "custom"
       },
       {
-        "allValue": "api-gateway|auth-guard|order-core|queue|recommendation|seat",
         "current": {
-          "text": ["All"],
-          "value": ["$__all"]
+          "text": "java-service",
+          "value": "java-service"
         },
-        "hide": 0,
-        "includeAll": true,
-        "label": "Container",
-        "multi": true,
+        "hide": 2,
+        "includeAll": false,
+        "label": "컨테이너",
+        "multi": false,
         "name": "container",
         "options": [
           {
-            "selected": false,
-            "text": "api-gateway",
-            "value": "api-gateway"
-          },
-          {
-            "selected": false,
-            "text": "auth-guard",
-            "value": "auth-guard"
-          },
-          {
-            "selected": false,
-            "text": "order-core",
-            "value": "order-core"
-          },
-          {
-            "selected": false,
-            "text": "queue",
-            "value": "queue"
-          },
-          {
-            "selected": false,
-            "text": "recommendation",
-            "value": "recommendation"
-          },
-          {
-            "selected": false,
-            "text": "seat",
-            "value": "seat"
+            "selected": true,
+            "text": "java-service",
+            "value": "java-service"
           }
         ],
-        "query": "api-gateway,auth-guard,order-core,queue,recommendation,seat",
+        "query": "java-service",
         "type": "custom"
       },
       {
-        "allValue": "ERROR|WARN|INFO",
+        "allValue": "dev-.*",
         "current": {
-          "text": [
-            "$__all"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": "All",
+          "value": "$__all"
         },
+        "hide": 0,
         "includeAll": true,
-        "label": "Log Level",
+        "label": "서비스",
         "multi": true,
-        "name": "level",
+        "name": "service",
         "options": [
           {
-            "selected": false,
-            "text": "ERROR",
-            "value": "ERROR"
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
           },
           {
             "selected": false,
-            "text": "WARN",
-            "value": "WARN"
+            "text": "dev-api-gateway",
+            "value": "dev-api-gateway.*"
           },
           {
             "selected": false,
-            "text": "INFO",
-            "value": "INFO"
+            "text": "dev-auth-guard",
+            "value": "dev-auth-guard.*"
+          },
+          {
+            "selected": false,
+            "text": "dev-order-core",
+            "value": "dev-order-core.*"
+          },
+          {
+            "selected": false,
+            "text": "dev-queue",
+            "value": "dev-queue.*"
+          },
+          {
+            "selected": false,
+            "text": "dev-recommendation",
+            "value": "dev-recommendation.*"
+          },
+          {
+            "selected": false,
+            "text": "dev-seat",
+            "value": "dev-seat.*"
           }
         ],
-        "query": "ERROR,WARN,INFO",
+        "query": "dev-api-gateway : dev-api-gateway.*, dev-auth-guard : dev-auth-guard.*, dev-order-core : dev-order-core.*, dev-queue : dev-queue.*, dev-recommendation : dev-recommendation.*, dev-seat : dev-seat.*",
         "type": "custom"
       }
     ]

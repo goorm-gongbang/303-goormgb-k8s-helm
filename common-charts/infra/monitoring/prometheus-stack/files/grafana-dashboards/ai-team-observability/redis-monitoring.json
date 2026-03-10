@@ -80,7 +80,7 @@
           "refId": "A"
         }
       ],
-      "title": "Redis Up",
+      "title": "Redis 상태",
       "type": "stat"
     },
     {
@@ -93,7 +93,7 @@
       },
       "id": 24,
       "panels": [],
-      "title": "Performance",
+      "title": "성능",
       "type": "row"
     },
     {
@@ -183,7 +183,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg(irate(redis_commands_total{instance=~\"$instance\"} [1m])) by (cmd)",
+          "expr": "avg(irate(redis_commands_total{release=~\"$release\", instance=~\"$instance\"} [1m])) by (cmd)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -193,7 +193,7 @@
           "step": 240
         }
       ],
-      "title": "Commands per second",
+      "title": "초당 명령 처리량",
       "type": "timeseries"
     },
     {
@@ -304,7 +304,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg(irate(redis_commands_duration_seconds_total{instance=~\"$instance\"}[1m])) by (cmd)\n  /\navg(irate(redis_commands_total{instance=~\"$instance\"}[1m])) by (cmd)\n",
+          "expr": "avg(irate(redis_commands_duration_seconds_total{release=~\"$release\", instance=~\"$instance\"}[1m])) by (cmd)\n  /\navg(irate(redis_commands_total{release=~\"$release\", instance=~\"$instance\"}[1m])) by (cmd)\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -314,7 +314,7 @@
           "step": 240
         }
       ],
-      "title": "Command latency per second",
+      "title": "명령 처리 지연시간",
       "type": "timeseries"
     },
     {
@@ -454,7 +454,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg(irate(redis_keyspace_hits_total{instance=~\"$instance\"}[1m]) / (irate(redis_keyspace_misses_total{instance=~\"$instance\"}[1m]) + irate(redis_keyspace_hits_total{instance=~\"$instance\"}[1m]))) by (instance)",
+          "expr": "avg(irate(redis_keyspace_hits_total{release=~\"$release\", instance=~\"$instance\"}[1m]) / (irate(redis_keyspace_misses_total{release=~\"$release\", instance=~\"$instance\"}[1m]) + irate(redis_keyspace_hits_total{release=~\"$release\", instance=~\"$instance\"}[1m]))) by (instance)",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -475,7 +475,7 @@
           "refId": "B"
         }
       ],
-      "title": "Hit ratio per instance",
+      "title": "캐시 적중률",
       "type": "timeseries"
     },
     {
@@ -488,7 +488,7 @@
       },
       "id": 22,
       "panels": [],
-      "title": "Memory",
+      "title": "메모리",
       "type": "row"
     },
     {
@@ -628,7 +628,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_memory_used_bytes{instance=~\"$instance\"})",
+          "expr": "sum(redis_memory_used_bytes{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -642,7 +642,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_memory_max_bytes{instance=~\"$instance\"})",
+          "expr": "sum(redis_memory_max_bytes{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -655,13 +655,13 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_memory_used_rss_bytes{instance=~\"$instance\"})",
+          "expr": "sum(redis_memory_used_rss_bytes{release=~\"$release\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "Used RSS memory",
           "refId": "C"
         }
       ],
-      "title": "Total Memory Usage",
+      "title": "메모리 사용량",
       "type": "timeseries"
     },
     {
@@ -809,7 +809,7 @@
           "refId": "C"
         }
       ],
-      "title": "Memory fragmentation ratio per instance",
+      "title": "메모리 단편화 비율",
       "type": "timeseries"
     },
     {
@@ -972,7 +972,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "irate(redis_evicted_keys_total{instance=~\"$instance\"}[1m])",
+          "expr": "irate(redis_evicted_keys_total{release=~\"$release\", instance=~\"$instance\"}[1m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -981,7 +981,7 @@
           "step": 240
         }
       ],
-      "title": "Key evictions per second per instance",
+      "title": "키 강제 축출량",
       "type": "timeseries"
     },
     {
@@ -994,7 +994,7 @@
       },
       "id": 26,
       "panels": [],
-      "title": "Basic activity",
+      "title": "기본 활동",
       "type": "row"
     },
     {
@@ -1084,7 +1084,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_connected_clients{instance=~\"$instance\"})",
+          "expr": "sum(redis_connected_clients{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1095,7 +1095,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_blocked_clients{instance=~\"$instance\"})",
+          "expr": "sum(redis_blocked_clients{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1103,7 +1103,7 @@
           "refId": "B"
         }
       ],
-      "title": "Connected/Blocked Clients",
+      "title": "연결/블로킹 클라이언트 수",
       "type": "timeseries"
     },
     {
@@ -1229,7 +1229,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum (redis_db_keys{instance=~\"$instance\"}) by (db)",
+          "expr": "sum (redis_db_keys{release=~\"$release\", instance=~\"$instance\"}) by (db)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1239,7 +1239,7 @@
           "target": ""
         }
       ],
-      "title": "Total Items per DB",
+      "title": "DB별 키 수",
       "type": "timeseries"
     },
     {
@@ -1329,7 +1329,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum (redis_db_keys{instance=~\"$instance\"}) - sum (redis_db_keys_expiring{instance=~\"$instance\"})",
+          "expr": "sum (redis_db_keys{release=~\"$release\", instance=~\"$instance\"}) - sum (redis_db_keys_expiring{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -1343,7 +1343,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_db_keys_expiring{instance=~\"$instance\"})",
+          "expr": "sum(redis_db_keys_expiring{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1353,7 +1353,7 @@
           "step": 240
         }
       ],
-      "title": "Expiring vs Not-Expiring Keys",
+      "title": "만료/비만료 키 분포",
       "type": "timeseries"
     }
   ],
@@ -1368,6 +1368,26 @@
   "templating": {
     "list": [
       {
+        "current": {
+          "text": "redis-ai",
+          "value": "redis-ai"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Redis 대상",
+        "multi": false,
+        "name": "release",
+        "options": [
+          {
+            "selected": true,
+            "text": "redis-ai",
+            "value": "redis-ai"
+          }
+        ],
+        "query": "redis-ai",
+        "type": "custom"
+      },
+      {
         "allValue": ".*",
         "current": {
           "text": [
@@ -1378,7 +1398,7 @@
           ]
         },
         "datasource": "Prometheus",
-        "definition": "label_values(redis_up{release=~\"$release\"},instance)",
+        "definition": "label_values(redis_up{release=\"redis-ai\"},instance)",
         "hide": 2,
         "includeAll": true,
         "multi": true,
@@ -1386,7 +1406,7 @@
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(redis_up{release=~\"$release\"},instance)",
+          "query": "label_values(redis_up{release=\"redis-ai\"},instance)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
@@ -1407,32 +1427,6 @@
         "refresh": 1,
         "regex": "",
         "type": "datasource"
-      },
-      {
-        "allValue": ".*",
-        "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "definition": "label_values(redis_up{release=~\"redis-ai\"},release)",
-        "includeAll": false,
-        "label": "Redis 대상",
-        "multi": false,
-        "name": "release",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(redis_up{release=~\"redis-ai\"},release)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "type": "query"
       }
     ]
   },

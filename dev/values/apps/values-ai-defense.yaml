@@ -20,7 +20,7 @@ args:
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/ai
-  tag: "latest"
+  tag: "de7a2ad"
   pullPolicy: Always
 
 # Python 모듈 경로 설정 + AI Defense 환경변수
