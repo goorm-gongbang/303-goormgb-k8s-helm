@@ -1664,8 +1664,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "애플리케이션 모니터링 (FastAPI)",
-  "uid": "fastapi-monitoring-dev",
+  "title": "[AI] FastAPI 모니터링",
+  "uid": "ai-fastapi-monitoring",
   "version": 1,
   "weekStart": ""
 }

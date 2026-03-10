@@ -788,10 +788,10 @@
   "templating": {
     "list": [
       {
-        "allValue": ".*",
+        "allValue": "dev-ai-.*",
         "current": {
-          "text": ["$__all"],
-          "value": ["$__all"]
+          "text": ["ai-defense"],
+          "value": ["dev-ai-defense"]
         },
         "includeAll": true,
         "label": "Application Name",
@@ -799,42 +799,12 @@
         "name": "app_name",
         "options": [
           {
-            "selected": false,
-            "text": "api-gateway",
-            "value": "java-cloud-gateway"
-          },
-          {
-            "selected": false,
-            "text": "auth-guard",
-            "value": "dev-auth-guard"
-          },
-          {
-            "selected": false,
-            "text": "order-core",
-            "value": "dev-order-core"
-          },
-          {
-            "selected": false,
-            "text": "queue",
-            "value": "dev-queue"
-          },
-          {
-            "selected": false,
-            "text": "recommendation",
-            "value": "dev-recommendation"
-          },
-          {
-            "selected": false,
-            "text": "seat",
-            "value": "dev-seat"
-          },
-          {
-            "selected": false,
+            "selected": true,
             "text": "ai-defense",
             "value": "dev-ai-defense"
           }
         ],
-        "query": "api-gateway : java-cloud-gateway,auth-guard : dev-auth-guard,order-core : dev-order-core,queue : dev-queue,recommendation : dev-recommendation,seat : dev-seat,ai-defense : dev-ai-defense",
+        "query": "ai-defense : dev-ai-defense",
         "type": "custom"
       },
       {
@@ -881,8 +851,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "HTTP 상태코드 분석",
-  "uid": "dfevjtvzho5q8d",
+  "title": "[AI] HTTP 상태코드 분석",
+  "uid": "ai-http-status-analysis",
   "version": 33,
   "weekStart": ""
 }

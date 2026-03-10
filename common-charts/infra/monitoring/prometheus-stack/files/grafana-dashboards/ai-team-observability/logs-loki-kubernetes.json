@@ -188,10 +188,8 @@
       {
         "allValue": ".+",
         "current": {
-          "text": "All",
-          "value": [
-            "$__all"
-          ]
+          "text": "dev-ai",
+          "value": ["dev-ai"]
         },
         "datasource": "Loki",
         "definition": "",
@@ -206,7 +204,7 @@
           "type": 1
         },
         "refresh": 1,
-        "regex": "",
+        "regex": "dev-ai",
         "type": "query"
       },
       {
@@ -313,8 +311,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "로그 확인(Loki Kubernetes Logs)",
-  "uid": "cfevec81ezw8wc",
+  "title": "[AI] 로그 확인",
+  "uid": "ai-logs-loki",
   "version": 12,
   "weekStart": ""
 }

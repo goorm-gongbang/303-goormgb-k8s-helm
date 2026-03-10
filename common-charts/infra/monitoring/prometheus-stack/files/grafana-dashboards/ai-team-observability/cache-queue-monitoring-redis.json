@@ -1454,8 +1454,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "캐시/큐 모니터링(Redis)",
-  "uid": "bRd48yKMdd",
+  "title": "[AI] Redis 캐시/큐 모니터링",
+  "uid": "ai-redis",
   "version": 23,
   "weekStart": ""
 }
