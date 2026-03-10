@@ -1,0 +1,116 @@
+# Swagger 인증 - OAuth2 Proxy ext_authz
+# /swagger-ui/*, /v3/api-docs/*, /ai/docs*, /ai/openapi.json 경로에 Google OAuth 적용
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: swagger-ext-authz
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    # ext_authz 클러스터 정의
+    - applyTo: CLUSTER
+      match:
+        context: GATEWAY
+      patch:
+        operation: ADD
+        value:
+          name: oauth2-proxy
+          type: STRICT_DNS
+          connect_timeout: 10s
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: oauth2-proxy
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: oauth2-proxy.istio-system.svc.cluster.local
+                          port_value: 4180
+    # ext_authz 필터 추가 (router 전에)
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.ext_authz
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
+            stat_prefix: ext_authz
+            transport_api_version: V3
+            http_service:
+              server_uri:
+                uri: http://oauth2-proxy.istio-system.svc.cluster.local:4180
+                cluster: oauth2-proxy
+                timeout: 10s
+              path_prefix: /oauth2/auth
+              authorization_request:
+                allowed_headers:
+                  patterns:
+                    - exact: cookie
+                    - exact: authorization
+              authorization_response:
+                allowed_upstream_headers:
+                  patterns:
+                    - exact: x-auth-request-user
+                    - exact: x-auth-request-email
+            failure_mode_allow: false
+---
+# Swagger 경로에만 ext_authz 적용하는 Lua 필터
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: swagger-auth-lua
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.ext_authz
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inline_code: |
+              function envoy_on_request(request_handle)
+                local path = request_handle:headers():get(":path")
+                -- Swagger 경로 체크
+                local is_swagger = false
+                if path then
+                  -- Java Backend Swagger
+                  if string.find(path, "^/swagger%-ui") or
+                     string.find(path, "^/v3/api%-docs") or
+                     string.find(path, "^/swagger%-resources") or
+                     -- FastAPI AI Docs
+                     string.find(path, "^/ai/docs") or
+                     string.find(path, "^/ai/openapi") or
+                     string.find(path, "^/ai/redoc") then
+                    is_swagger = true
+                  end
+                end
+                -- Swagger가 아니면 ext_authz 스킵
+                if not is_swagger then
+                  request_handle:streamInfo():dynamicMetadata():set("envoy.filters.http.ext_authz", "skip", true)
+                end
+              end
