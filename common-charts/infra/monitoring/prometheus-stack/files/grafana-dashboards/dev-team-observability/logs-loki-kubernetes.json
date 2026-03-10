@@ -186,28 +186,23 @@
         "type": "textbox"
       },
       {
-        "allValue": ".+",
         "current": {
-          "text": "All",
-          "value": [
-            "$__all"
-          ]
+          "text": "dev-webs",
+          "value": "dev-webs"
         },
-        "datasource": "Loki",
-        "definition": "",
-        "includeAll": true,
-        "multi": true,
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
         "name": "namespace",
-        "options": [],
-        "query": {
-          "label": "namespace",
-          "refId": "LokiVariableQueryEditor-VariableQuery",
-          "stream": "",
-          "type": 1
-        },
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
+        "options": [
+          {
+            "selected": true,
+            "text": "dev-webs",
+            "value": "dev-webs"
+          }
+        ],
+        "query": "dev-webs",
+        "type": "custom"
       },
       {
         "allValue": ".+",
@@ -215,36 +210,80 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "Loki",
-        "definition": "label_values(stream)",
+        "hide": 2,
         "includeAll": true,
         "multi": true,
         "name": "stream",
-        "options": [],
-        "query": "label_values(stream)",
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "stdout",
+            "value": "stdout"
+          },
+          {
+            "selected": false,
+            "text": "stderr",
+            "value": "stderr"
+          }
+        ],
+        "query": "stdout,stderr",
+        "type": "custom"
       },
       {
-        "allValue": ".+",
+        "allValue": "api-gateway|auth-guard|order-core|queue|recommendation|seat",
         "current": {
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "Loki",
-        "definition": "label_values(container)",
         "hide": 0,
         "includeAll": true,
         "label": "Container",
         "multi": true,
         "name": "container",
-        "options": [],
-        "query": "label_values(container)",
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "type": "query"
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "api-gateway",
+            "value": "api-gateway"
+          },
+          {
+            "selected": false,
+            "text": "auth-guard",
+            "value": "auth-guard"
+          },
+          {
+            "selected": false,
+            "text": "order-core",
+            "value": "order-core"
+          },
+          {
+            "selected": false,
+            "text": "queue",
+            "value": "queue"
+          },
+          {
+            "selected": false,
+            "text": "recommendation",
+            "value": "recommendation"
+          },
+          {
+            "selected": false,
+            "text": "seat",
+            "value": "seat"
+          }
+        ],
+        "query": "api-gateway,auth-guard,order-core,queue,recommendation,seat",
+        "type": "custom"
       },
       {
         "allValue": "ERROR|WARN|INFO",
@@ -279,31 +318,6 @@
         ],
         "query": "ERROR,WARN,INFO",
         "type": "custom"
-      },
-      {
-        "allValue": ".+",
-        "current": {
-          "text": "All",
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": "Loki",
-        "definition": "",
-        "includeAll": true,
-        "label": "Application Name",
-        "multi": true,
-        "name": "instance",
-        "options": [],
-        "query": {
-          "label": "instance",
-          "refId": "LokiVariableQueryEditor-VariableQuery",
-          "stream": "",
-          "type": 1
-        },
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
       }
     ]
   },
