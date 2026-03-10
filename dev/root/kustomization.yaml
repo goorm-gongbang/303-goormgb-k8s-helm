@@ -14,6 +14,8 @@ resources:
   - infra/security/cert-manager.yaml
   - infra/security/rbac.yaml
   - infra/security/service-secrets.yaml
+  - infra/security/oauth2-proxy.yaml     # Swagger OAuth 인증
+  - infra/security/swagger-gateway.yaml  # swagger.dev.goormgb.space Gateway
 
   # === Data ===
   - infra/data/data.yaml
