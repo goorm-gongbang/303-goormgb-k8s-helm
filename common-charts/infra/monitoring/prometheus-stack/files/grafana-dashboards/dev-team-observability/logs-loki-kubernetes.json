@@ -302,7 +302,7 @@
             "value": "dev-seat.*"
           }
         ],
-        "query": "dev-api-gateway,dev-auth-guard,dev-order-core,dev-queue,dev-recommendation,dev-seat",
+        "query": "dev-api-gateway : dev-api-gateway.*, dev-auth-guard : dev-auth-guard.*, dev-order-core : dev-order-core.*, dev-queue : dev-queue.*, dev-recommendation : dev-recommendation.*, dev-seat : dev-seat.*",
         "type": "custom"
       }
     ]
