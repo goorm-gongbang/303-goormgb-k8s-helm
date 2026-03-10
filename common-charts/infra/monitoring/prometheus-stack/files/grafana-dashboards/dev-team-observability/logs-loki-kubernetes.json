@@ -109,7 +109,7 @@
       "targets": [
         {
           "datasource": "Loki",
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\"} |= \"$query\" [$__interval]))",
+          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", pod=~\"$pod\"} |= \"$query\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -148,7 +148,7 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\"} |= \"$query\"",
+          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", pod=~\"$pod\"} |= \"$query\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -235,22 +235,42 @@
         "type": "custom"
       },
       {
+        "current": {
+          "text": "java-service",
+          "value": "java-service"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "컨테이너",
+        "multi": false,
+        "name": "container",
+        "options": [
+          {
+            "selected": true,
+            "text": "java-service",
+            "value": "java-service"
+          }
+        ],
+        "query": "java-service",
+        "type": "custom"
+      },
+      {
         "allValue": ".+",
         "current": {
           "text": "All",
           "value": "$__all"
         },
         "datasource": "Loki",
-        "definition": "label_values({namespace=\"dev-webs\"}, container)",
+        "definition": "label_values({namespace=\"dev-webs\", container=\"java-service\"}, pod)",
         "hide": 0,
         "includeAll": true,
-        "label": "컨테이너",
+        "label": "Pod",
         "multi": true,
-        "name": "container",
+        "name": "pod",
         "options": [],
-        "query": "label_values({namespace=\"dev-webs\"}, container)",
+        "query": "label_values({namespace=\"dev-webs\", container=\"java-service\"}, pod)",
         "refresh": 2,
-        "regex": "^(?!istio-proxy).*$",
+        "regex": "",
         "sort": 1,
         "type": "query"
       }
