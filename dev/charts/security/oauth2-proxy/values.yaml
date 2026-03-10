@@ -1,0 +1,43 @@
+# Default values for oauth2-proxy
+replicaCount: 1
+
+image:
+  repository: quay.io/oauth2-proxy/oauth2-proxy
+  tag: v7.6.0
+  pullPolicy: IfNotPresent
+
+# Google OAuth settings
+config:
+  provider: google
+  cookieSecret: ""
+  clientID: ""
+  clientSecret: ""
+  cookieSecure: true
+  emailDomains: "*"
+  # Authenticated emails file path
+  authenticatedEmailsFile: /etc/oauth2-proxy/authenticated-emails.txt
+
+# Email whitelist
+authenticatedEmails: []
+
+# ESO integration
+eso:
+  enabled: false
+  secretKey: ""  # client_id, client_secret, cookie_secret, authenticated_emails
+
+# Service settings
+service:
+  port: 4180
+
+# Node placement
+nodeSelector: {}
+tolerations: []
+
+# Resources
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi

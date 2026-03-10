@@ -14,6 +14,7 @@ resources:
   - infra/security/cert-manager.yaml
   - infra/security/rbac.yaml
   - infra/security/service-secrets.yaml
+  - infra/security/oauth2-proxy.yaml  # Swagger OAuth 인증
 
   # === Data ===
   - infra/data/data.yaml
@@ -25,6 +26,7 @@ resources:
   - infra/istio/kiali.yaml
   - infra/istio/api-gateway.yaml    # 공통 API Gateway (istio-system)
   - infra/istio/istio-security.yaml # WAF: SQL Injection, XSS, Path Traversal 탐지
+  - infra/istio/swagger-auth.yaml   # Swagger OAuth 인증 (ext_authz)
 
   # === Monitoring ===
   - infra/monitoring/prometheus-stack.yaml
