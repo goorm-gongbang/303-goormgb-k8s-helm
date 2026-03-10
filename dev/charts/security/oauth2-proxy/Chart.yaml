@@ -1,6 +1,0 @@
-apiVersion: v2
-name: oauth2-proxy
-description: OAuth2 Proxy for Swagger authentication
-type: application
-version: 1.0.0
-appVersion: "7.6.0"
