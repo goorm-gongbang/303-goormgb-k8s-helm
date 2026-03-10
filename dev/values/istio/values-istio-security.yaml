@@ -75,3 +75,23 @@ excludePaths:
 response:
   statusCode: 403
   body: "Forbidden: Security violation detected"
+
+# 내부 경로 차단 (외부 접근 불가)
+denyPaths:
+  enabled: true
+  paths:
+    # Prometheus/Metrics
+    - "/api/prometheus*"
+    - "/actuator/prometheus*"
+    - "*/prometheus"
+    - "/metrics*"
+    - "*/metrics"
+    # Health checks
+    - "/health*"
+    - "/healthz*"
+    - "/ready*"
+    - "/readyz*"
+    - "/livez*"
+    - "/actuator/health*"
+    - "*/health"
+    - "*/healthz"
