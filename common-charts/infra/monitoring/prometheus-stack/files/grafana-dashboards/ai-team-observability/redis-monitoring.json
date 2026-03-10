@@ -1409,30 +1409,25 @@
         "type": "datasource"
       },
       {
-        "allValue": ".*",
         "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": "redis-ai",
+          "value": "redis-ai"
         },
         "definition": "label_values(redis_up{release=~\"redis-ai\"},release)",
+        "hide": 2,
         "includeAll": false,
         "label": "Redis 대상",
         "multi": false,
         "name": "release",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(redis_up{release=~\"redis-ai\"},release)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "type": "query"
+        "options": [
+          {
+            "selected": true,
+            "text": "redis-ai",
+            "value": "redis-ai"
+          }
+        ],
+        "query": "redis-ai",
+        "type": "custom"
       }
     ]
   },
