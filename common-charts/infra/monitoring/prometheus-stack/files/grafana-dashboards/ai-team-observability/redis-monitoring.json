@@ -183,7 +183,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg(irate(redis_commands_total{instance=~\"$instance\"} [1m])) by (cmd)",
+          "expr": "avg(irate(redis_commands_total{release=~\"$release\", instance=~\"$instance\"} [1m])) by (cmd)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -304,7 +304,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg(irate(redis_commands_duration_seconds_total{instance=~\"$instance\"}[1m])) by (cmd)\n  /\navg(irate(redis_commands_total{instance=~\"$instance\"}[1m])) by (cmd)\n",
+          "expr": "avg(irate(redis_commands_duration_seconds_total{release=~\"$release\", instance=~\"$instance\"}[1m])) by (cmd)\n  /\navg(irate(redis_commands_total{release=~\"$release\", instance=~\"$instance\"}[1m])) by (cmd)\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -454,7 +454,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg(irate(redis_keyspace_hits_total{instance=~\"$instance\"}[1m]) / (irate(redis_keyspace_misses_total{instance=~\"$instance\"}[1m]) + irate(redis_keyspace_hits_total{instance=~\"$instance\"}[1m]))) by (instance)",
+          "expr": "avg(irate(redis_keyspace_hits_total{release=~\"$release\", instance=~\"$instance\"}[1m]) / (irate(redis_keyspace_misses_total{release=~\"$release\", instance=~\"$instance\"}[1m]) + irate(redis_keyspace_hits_total{release=~\"$release\", instance=~\"$instance\"}[1m]))) by (instance)",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -628,7 +628,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_memory_used_bytes{instance=~\"$instance\"})",
+          "expr": "sum(redis_memory_used_bytes{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -642,7 +642,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_memory_max_bytes{instance=~\"$instance\"})",
+          "expr": "sum(redis_memory_max_bytes{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -655,7 +655,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_memory_used_rss_bytes{instance=~\"$instance\"})",
+          "expr": "sum(redis_memory_used_rss_bytes{release=~\"$release\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "Used RSS memory",
           "refId": "C"
@@ -972,7 +972,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "irate(redis_evicted_keys_total{instance=~\"$instance\"}[1m])",
+          "expr": "irate(redis_evicted_keys_total{release=~\"$release\", instance=~\"$instance\"}[1m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1084,7 +1084,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_connected_clients{instance=~\"$instance\"})",
+          "expr": "sum(redis_connected_clients{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1095,7 +1095,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_blocked_clients{instance=~\"$instance\"})",
+          "expr": "sum(redis_blocked_clients{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1229,7 +1229,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum (redis_db_keys{instance=~\"$instance\"}) by (db)",
+          "expr": "sum (redis_db_keys{release=~\"$release\", instance=~\"$instance\"}) by (db)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1329,7 +1329,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum (redis_db_keys{instance=~\"$instance\"}) - sum (redis_db_keys_expiring{instance=~\"$instance\"})",
+          "expr": "sum (redis_db_keys{release=~\"$release\", instance=~\"$instance\"}) - sum (redis_db_keys_expiring{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -1343,7 +1343,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "sum(redis_db_keys_expiring{instance=~\"$instance\"})",
+          "expr": "sum(redis_db_keys_expiring{release=~\"$release\", instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1368,6 +1368,26 @@
   "templating": {
     "list": [
       {
+        "current": {
+          "text": "redis-ai",
+          "value": "redis-ai"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Redis 대상",
+        "multi": false,
+        "name": "release",
+        "options": [
+          {
+            "selected": true,
+            "text": "redis-ai",
+            "value": "redis-ai"
+          }
+        ],
+        "query": "redis-ai",
+        "type": "custom"
+      },
+      {
         "allValue": ".*",
         "current": {
           "text": [
@@ -1378,7 +1398,7 @@
           ]
         },
         "datasource": "Prometheus",
-        "definition": "label_values(redis_up{release=~\"$release\"},instance)",
+        "definition": "label_values(redis_up{release=\"redis-ai\"},instance)",
         "hide": 2,
         "includeAll": true,
         "multi": true,
@@ -1386,7 +1406,7 @@
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(redis_up{release=~\"$release\"},instance)",
+          "query": "label_values(redis_up{release=\"redis-ai\"},instance)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
@@ -1407,27 +1427,6 @@
         "refresh": 1,
         "regex": "",
         "type": "datasource"
-      },
-      {
-        "current": {
-          "text": "redis-ai",
-          "value": "redis-ai"
-        },
-        "definition": "label_values(redis_up{release=~\"redis-ai\"},release)",
-        "hide": 2,
-        "includeAll": false,
-        "label": "Redis 대상",
-        "multi": false,
-        "name": "release",
-        "options": [
-          {
-            "selected": true,
-            "text": "redis-ai",
-            "value": "redis-ai"
-          }
-        ],
-        "query": "redis-ai",
-        "type": "custom"
       }
     ]
   },
