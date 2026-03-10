@@ -12,7 +12,7 @@
       "type": "stat",
       "title": "Total Page Views (24h)",
       "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"page_view\" [24h])",
@@ -35,7 +35,7 @@
       "type": "stat",
       "title": "Unique Sessions (24h)",
       "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"page_view\" | json | __error__=\"\" [24h])",
@@ -58,7 +58,7 @@
       "type": "stat",
       "title": "Match Clicks (24h)",
       "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"match_click\" [24h])",
@@ -81,7 +81,7 @@
       "type": "stat",
       "title": "Checkout Starts (24h)",
       "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"checkout_start\" [24h])",
@@ -104,7 +104,7 @@
       "type": "timeseries",
       "title": "Page Views Over Time",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"page_view\" [$__interval])",
@@ -125,7 +125,7 @@
       "type": "timeseries",
       "title": "User Actions Over Time",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"match_click\" [$__interval])",
@@ -156,7 +156,7 @@
       "type": "piechart",
       "title": "Device Type Distribution",
       "gridPos": { "h": 8, "w": 8, "x": 0, "y": 12 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "sum by (device_type) (count_over_time({app=\"goormgb-frontend\"} | json | __error__=\"\" [$__range]))",
@@ -178,7 +178,7 @@
       "type": "piechart",
       "title": "Login Status",
       "gridPos": { "h": 8, "w": 8, "x": 8, "y": 12 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "sum by (is_logged_in) (count_over_time({app=\"goormgb-frontend\"} | json | __error__=\"\" [$__range]))",
@@ -200,7 +200,7 @@
       "type": "bargauge",
       "title": "Top Pages",
       "gridPos": { "h": 8, "w": 8, "x": 16, "y": 12 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "topk(10, sum by (route) (count_over_time({app=\"goormgb-frontend\"} |= \"page_view\" | json | __error__=\"\" [$__range])))",
@@ -222,7 +222,7 @@
       "type": "timeseries",
       "title": "Onboarding Funnel",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"onboarding_start\" [$__interval])",
@@ -253,7 +253,7 @@
       "type": "timeseries",
       "title": "API Errors",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"api_error\" [$__interval])",
@@ -274,7 +274,7 @@
       "type": "logs",
       "title": "Recent Events",
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 28 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "datasource": "Loki",
       "targets": [
         {
           "expr": "{app=\"goormgb-frontend\"}",
