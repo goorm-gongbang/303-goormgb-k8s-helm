@@ -1,6 +1,7 @@
 {
   "annotations": {
-    "list": []
+    "list": [],
+    "enable": false
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
