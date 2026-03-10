@@ -80,7 +80,7 @@
           "refId": "A"
         }
       ],
-      "title": "Redis Up",
+      "title": "Redis 상태",
       "type": "stat"
     },
     {
@@ -93,7 +93,7 @@
       },
       "id": 24,
       "panels": [],
-      "title": "Performance",
+      "title": "성능",
       "type": "row"
     },
     {
@@ -193,7 +193,7 @@
           "step": 240
         }
       ],
-      "title": "Commands per second",
+      "title": "초당 명령 처리량",
       "type": "timeseries"
     },
     {
@@ -314,7 +314,7 @@
           "step": 240
         }
       ],
-      "title": "Command latency per second",
+      "title": "명령 처리 지연시간",
       "type": "timeseries"
     },
     {
@@ -475,7 +475,7 @@
           "refId": "B"
         }
       ],
-      "title": "Hit ratio per instance",
+      "title": "캐시 적중률",
       "type": "timeseries"
     },
     {
@@ -488,7 +488,7 @@
       },
       "id": 22,
       "panels": [],
-      "title": "Memory",
+      "title": "메모리",
       "type": "row"
     },
     {
@@ -661,7 +661,7 @@
           "refId": "C"
         }
       ],
-      "title": "Total Memory Usage",
+      "title": "메모리 사용량",
       "type": "timeseries"
     },
     {
@@ -809,7 +809,7 @@
           "refId": "C"
         }
       ],
-      "title": "Memory fragmentation ratio per instance",
+      "title": "메모리 단편화 비율",
       "type": "timeseries"
     },
     {
@@ -981,7 +981,7 @@
           "step": 240
         }
       ],
-      "title": "Key evictions per second per instance",
+      "title": "키 강제 축출량",
       "type": "timeseries"
     },
     {
@@ -994,7 +994,7 @@
       },
       "id": 26,
       "panels": [],
-      "title": "Basic activity",
+      "title": "기본 활동",
       "type": "row"
     },
     {
@@ -1103,7 +1103,7 @@
           "refId": "B"
         }
       ],
-      "title": "Connected/Blocked Clients",
+      "title": "연결/블로킹 클라이언트 수",
       "type": "timeseries"
     },
     {
@@ -1239,7 +1239,7 @@
           "target": ""
         }
       ],
-      "title": "Total Items per DB",
+      "title": "DB별 키 수",
       "type": "timeseries"
     },
     {
@@ -1353,7 +1353,7 @@
           "step": 240
         }
       ],
-      "title": "Expiring vs Not-Expiring Keys",
+      "title": "만료/비만료 키 분포",
       "type": "timeseries"
     }
   ],

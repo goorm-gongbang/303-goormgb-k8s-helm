@@ -119,7 +119,7 @@
           "refId": "A"
         }
       ],
-      "title": "Percent of 5xx Requests",
+      "title": "5xx 요청 비율",
       "type": "timeseries"
     },
     {
@@ -213,7 +213,7 @@
           "refId": "A"
         }
       ],
-      "title": "Request Per Sec",
+      "title": "초당 요청 수 (RPS)",
       "type": "timeseries"
     },
     {
@@ -307,7 +307,7 @@
           "refId": "A"
         }
       ],
-      "title": "PR 95 Requests Duration",
+      "title": "요청 지연시간 (p95)",
       "type": "timeseries"
     },
     {
@@ -401,7 +401,7 @@
           "refId": "A"
         }
       ],
-      "title": "PR 99 Requests Duration",
+      "title": "요청 지연시간 (p99)",
       "type": "timeseries"
     },
     {
@@ -496,7 +496,7 @@
           "refId": "A"
         }
       ],
-      "title": "Percent of 4xx Requests",
+      "title": "4xx 요청 비율",
       "type": "timeseries"
     },
     {
@@ -567,7 +567,7 @@
           "refId": "A"
         }
       ],
-      "title": "Requests Average Duration",
+      "title": "평균 요청 지연시간",
       "type": "bargauge"
     },
     {
@@ -632,7 +632,7 @@
         }
       ],
       "timeFrom": "24h",
-      "title": "Total Exceptions",
+      "title": "예외 발생 수",
       "type": "stat"
     },
     {
@@ -691,7 +691,7 @@
         }
       ],
       "timeFrom": "24h",
-      "title": "Total Requests",
+      "title": "총 요청 수",
       "transformations": [
         {
           "id": "seriesToRows",
@@ -767,7 +767,7 @@
         }
       ],
       "timeFrom": "24h",
-      "title": "Requests Count",
+      "title": "요청 건수",
       "transformations": [
         {
           "id": "seriesToRows",
@@ -885,7 +885,7 @@
           "refId": "A"
         }
       ],
-      "title": "Percent of 2xx Requests",
+      "title": "2xx 요청 비율",
       "type": "timeseries"
     }
   ],
