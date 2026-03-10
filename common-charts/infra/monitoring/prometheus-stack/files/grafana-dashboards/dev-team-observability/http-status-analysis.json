@@ -827,14 +827,9 @@
             "selected": false,
             "text": "seat",
             "value": "dev-seat"
-          },
-          {
-            "selected": false,
-            "text": "ai-defense",
-            "value": "dev-ai-defense"
           }
         ],
-        "query": "api-gateway : java-cloud-gateway,auth-guard : dev-auth-guard,order-core : dev-order-core,queue : dev-queue,recommendation : dev-recommendation,seat : dev-seat,ai-defense : dev-ai-defense",
+        "query": "api-gateway : java-cloud-gateway,auth-guard : dev-auth-guard,order-core : dev-order-core,queue : dev-queue,recommendation : dev-recommendation,seat : dev-seat",
         "type": "custom"
       },
       {

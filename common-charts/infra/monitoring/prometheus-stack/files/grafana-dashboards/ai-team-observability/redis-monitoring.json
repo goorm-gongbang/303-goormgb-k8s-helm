@@ -1418,15 +1418,15 @@
             "$__all"
           ]
         },
-        "definition": "label_values(redis_up{release=~\"redis-cache|redis-queue\"},release)",
-        "includeAll": true,
+        "definition": "label_values(redis_up{release=~\"redis-ai\"},release)",
+        "includeAll": false,
         "label": "Redis 대상",
-        "multi": true,
+        "multi": false,
         "name": "release",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(redis_up{release=~\"redis-cache|redis-queue\"},release)",
+          "query": "label_values(redis_up{release=~\"redis-ai\"},release)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
@@ -1454,7 +1454,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "[AI] Redis 캐시/큐 모니터링",
+  "title": "[AI] Redis 모니터링 (Cache/Session)",
   "uid": "ai-redis",
   "version": 23,
   "weekStart": ""
