@@ -1,0 +1,47 @@
+# Swagger Gateway + VirtualService
+# swagger.dev.goormgb.space → OAuth2 Proxy → 실제 서비스
+---
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: swagger-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: goormgb-tls  # 와일드카드 인증서 사용
+      hosts:
+        - "swagger.dev.goormgb.space"
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "swagger.dev.goormgb.space"
+      tls:
+        httpsRedirect: true
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: swagger-route
+  namespace: istio-system
+spec:
+  hosts:
+    - "swagger.dev.goormgb.space"
+  gateways:
+    - swagger-gateway
+  http:
+    # 모든 요청을 OAuth2 Proxy로 라우팅
+    - route:
+        - destination:
+            host: oauth2-proxy.istio-system.svc.cluster.local
+            port:
+              number: 4180
