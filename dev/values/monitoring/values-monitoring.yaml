@@ -540,14 +540,11 @@ kube-prometheus-stack:
     grafana.ini:
       server:
         root_url: https://grafana.goormgb.space
-      # Viewer 권한에서 Alert 에러 방지
+      # Alerting 완전 비활성화 (Viewer RBAC 에러 방지)
       unified_alerting:
-        enabled: true
-        min_interval: 10s
+        enabled: false
       alerting:
         enabled: false
-      rbac:
-        permission_cache: true
       auth.google:
         enabled: true
         allow_sign_up: true
