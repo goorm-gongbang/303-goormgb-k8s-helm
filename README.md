@@ -108,10 +108,6 @@ health check, metrics, swagger 등은 자동 제외됨 (`excludePaths` 참고)
 | [101-goormgb-frontend](https://github.com/goorm-gongbang/101-goormgb-frontend)           | Next.js 프론트엔드      |
 | [102-goormgb-backend](https://github.com/goorm-gongbang/102-goormgb-backend)             | Java Spring Boot 백엔드 |
 
-## 모니터링 기준 (dev)
-
-- 운영 기준 문서: `dev/values/monitoring/alerting/MONITORING_BASELINE_DEV.md`
-
 ## 주의사항
 
 - `argocd-sync/*` 브랜치에 push하면 즉시 배포됩니다
