@@ -80,8 +80,18 @@ response:
 denyPaths:
   enabled: true
   paths:
+    # Prometheus/Metrics
     - "/api/prometheus*"
     - "/actuator/prometheus*"
     - "*/prometheus"
     - "/metrics*"
     - "*/metrics"
+    # Health checks
+    - "/health*"
+    - "/healthz*"
+    - "/ready*"
+    - "/readyz*"
+    - "/livez*"
+    - "/actuator/health*"
+    - "*/health"
+    - "*/healthz"
