@@ -1409,7 +1409,7 @@
         "type": "datasource"
       },
       {
-        "allValue": ".*",
+        "allValue": "redis-cache|redis-queue",
         "current": {
           "text": [
             "All"
