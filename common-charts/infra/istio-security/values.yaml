@@ -234,3 +234,14 @@ excludePaths:
 response:
   statusCode: 403
   body: "Forbidden: Security violation detected"
+
+# 내부 경로 차단 (AuthorizationPolicy)
+# 외부에서 접근하면 안 되는 경로들
+denyPaths:
+  enabled: false
+  paths: []
+  # 예시:
+  # - "/api/prometheus*"
+  # - "/actuator/prometheus*"
+  # - "/metrics*"
+  # - "*/metrics"
