@@ -1,4 +1,6 @@
 # 403 응답 시 OAuth2 로그인 페이지로 리다이렉트
+# 문제: 만료된 쿠키로 인한 403 → 로그인 리다이렉트 필요
+# 해결: envoy_on_request에서 호스트 저장 → envoy_on_response에서 403을 302로 변환
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
@@ -25,16 +27,26 @@ spec:
           typed_config:
             "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
             inlineCode: |
-              function envoy_on_response(response_handle)
-                local host = response_handle:headers():get(":authority") or ""
-                local status = response_handle:headers():get(":status")
+              -- 요청 단계: swagger 도메인인지 확인하고 메타데이터에 저장
+              function envoy_on_request(request_handle)
+                local host = request_handle:headers():get(":authority") or ""
+                local path = request_handle:headers():get(":path") or "/"
 
-                -- swagger 도메인의 403 응답만 처리
-                if string.find(host, "swagger") and status == "403" then
-                  local path = response_handle:headers():get("x-original-uri") or "/"
+                if string.find(host, "swagger") then
+                  request_handle:streamInfo():dynamicMetadata():set("swagger_filter", "is_swagger", "true")
+                  request_handle:streamInfo():dynamicMetadata():set("swagger_filter", "original_path", path)
+                end
+              end
+
+              -- 응답 단계: swagger 도메인의 403을 302 리다이렉트로 변환
+              function envoy_on_response(response_handle)
+                local status = response_handle:headers():get(":status")
+                local metadata = response_handle:streamInfo():dynamicMetadata():get("swagger_filter")
+
+                if metadata and metadata["is_swagger"] == "true" and status == "403" then
+                  local path = metadata["original_path"] or "/"
                   local redirect_url = "/oauth2/start?rd=" .. path
 
-                  -- 302 리다이렉트로 변경
                   response_handle:headers():replace(":status", "302")
                   response_handle:headers():add("location", redirect_url)
                   response_handle:headers():add("cache-control", "no-cache, no-store")
