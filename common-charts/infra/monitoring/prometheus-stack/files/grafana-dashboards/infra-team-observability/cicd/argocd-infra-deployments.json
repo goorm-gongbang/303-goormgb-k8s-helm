@@ -121,7 +121,7 @@
       "gridPos": { "h": 4, "w": 6, "x": 18, "y": 3 },
       "id": 13,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "expr": "count(argocd_app_info{health_status=~\"Degraded|Progressing|Unknown\", name!~\"dev-.*\"})", "legendFormat": "Unhealthy", "refId": "A" }],
+      "targets": [{ "expr": "count(argocd_app_info{health_status=\"Degraded\", name!~\"dev-.*\"}) OR on() vector(0)", "legendFormat": "Unhealthy", "refId": "A" }],
       "title": "Unhealthy",
       "type": "stat"
     },

@@ -121,7 +121,7 @@
       "gridPos": { "h": 4, "w": 6, "x": 18, "y": 3 },
       "id": 13,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "expr": "count(argocd_app_info{health_status=~\"Degraded|Progressing|Unknown\", name=~\"dev-.*\"})", "legendFormat": "Unhealthy", "refId": "A" }],
+      "targets": [{ "expr": "count(argocd_app_info{health_status=\"Degraded\", name=~\"dev-.*\"}) OR on() vector(0)", "legendFormat": "Unhealthy", "refId": "A" }],
       "title": "Unhealthy",
       "type": "stat"
     },
@@ -246,6 +246,151 @@
       ],
       "title": "시간대별 배포 횟수",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
+      "id": 103,
+      "title": "Reconciliation & 에러",
+      "type": "row"
+    },
+    {
+      "datasource": "Loki",
+      "description": "서비스 앱 Reconciliation 로그",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.9,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "stacking": { "group": "A", "mode": "normal" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 28 },
+      "id": 31,
+      "options": {
+        "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      },
+      "targets": [
+        {
+          "datasource": "Loki",
+          "editorMode": "code",
+          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` | application=~\"dev-.*\" [1m]))",
+          "interval": "1m",
+          "legendFormat": "{{ application }}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "서비스 앱 Reconciliation 건수",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Loki",
+      "description": "서비스 앱 관련 에러 로그",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 36 },
+      "id": 32,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": "Loki",
+          "editorMode": "code",
+          "expr": "{namespace=\"argocd\"} |~ \"level=error|\\\"level\\\":\\\"error\\\"\" |~ \"dev-\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "서비스 앱 에러 로그",
+      "type": "logs"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 44 },
+      "id": 104,
+      "title": "Git Webhook & Sync",
+      "type": "row"
+    },
+    {
+      "datasource": "Loki",
+      "description": "GitHub Webhook 수신 로그 (push event)",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 45 },
+      "id": 33,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": "Loki",
+          "editorMode": "code",
+          "expr": "{namespace=\"argocd\", container=\"argocd-server\"} |~ \"(?i)webhook|received.*event|push.*event|processing.*hook\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Webhook 수신 로그",
+      "type": "logs"
+    },
+    {
+      "datasource": "Loki",
+      "description": "서비스 앱 Sync 완료 로그",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 51 },
+      "id": 34,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": "Loki",
+          "editorMode": "code",
+          "expr": "{namespace=\"argocd\"} |~ \"(?i)sync.*completed|sync.*succeeded|operation.*completed|Update.*successful\" |~ \"dev-\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "서비스 앱 Sync 완료 로그",
+      "type": "logs"
     }
   ],
   "refresh": "30s",
