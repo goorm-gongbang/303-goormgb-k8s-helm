@@ -15,6 +15,10 @@ spec:
     {{- range .Values.extAuthz.rules }}
     - to:
         - operation:
+            {{- if .hosts }}
+            hosts:
+              {{- toYaml .hosts | nindent 14 }}
+            {{- end }}
             methods:
               {{- toYaml .methods | nindent 14 }}
             paths:
