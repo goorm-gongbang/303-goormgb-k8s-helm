@@ -5,7 +5,7 @@ replicaCount: 2
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/queue
-  tag: "de588c1"
+  tag: "039019b"
   pullPolicy: Always
 
 imagePullSecrets:
