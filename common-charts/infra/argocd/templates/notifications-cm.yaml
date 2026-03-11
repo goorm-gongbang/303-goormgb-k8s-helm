@@ -160,17 +160,17 @@ data:
             }]
           }
 
-  # 트리거 설정
+  # 트리거 설정 (operationState가 nil인 경우 체크)
   trigger.on-sync-running: |
-    - when: app.status.operationState.phase in ['Running']
+    - when: app.status.operationState != nil and app.status.operationState.phase in ['Running']
       send: [app-sync-running]
 
   trigger.on-deployed: |
-    - when: app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
+    - when: app.status.operationState != nil and app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
       send: [app-deployed]
 
   trigger.on-deploy-failed: |
-    - when: app.status.operationState.phase in ['Error', 'Failed']
+    - when: app.status.operationState != nil and app.status.operationState.phase in ['Error', 'Failed']
       send: [app-deploy-failed]
 
   trigger.on-health-degraded: |
