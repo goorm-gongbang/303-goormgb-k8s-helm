@@ -97,10 +97,11 @@ denyPaths:
     - "*/healthz"
 
 # External Authorization (AI Defense)
-# POST /api/* 요청에 대해 authz-adapter로 검사
+# api.dev.goormgb.space의 POST /api/* 요청에 대해 authz-adapter로 검사
 extAuthz:
   enabled: true
   provider: authz-adapter  # meshConfig.extensionProviders에 정의된 이름
   rules:
-    - methods: ["POST"]
+    - hosts: ["api.dev.goormgb.space"]
+      methods: ["POST"]
       paths: ["/api/*"]

@@ -34,6 +34,7 @@ istio:
 service:
   type: ClusterIP
   port: 9001
+  portName: grpc
 
 # Health checks (HTTP metrics 포트)
 livenessProbe:
