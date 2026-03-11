@@ -160,7 +160,7 @@
           "refId": "A"
         }
       ],
-      "title": "서비스별 배포 비율",
+      "title": "서비스별 Sync 총합 (선택 기간)",
       "type": "piechart"
     },
     {
@@ -298,7 +298,7 @@
           "refId": "A"
         }
       ],
-      "title": "서비스 앱 Reconciliation 건수",
+      "title": "서비스 앱 Reconciliation 건수 (선택 기간)",
       "type": "timeseries"
     },
     {
