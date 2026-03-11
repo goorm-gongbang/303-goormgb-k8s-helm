@@ -38,17 +38,24 @@ spec:
                 end
               end
 
-              -- 응답 단계: swagger 도메인의 403을 302 리다이렉트로 변환
+              -- 응답 단계: swagger 도메인 처리
               function envoy_on_response(response_handle)
                 local status = response_handle:headers():get(":status")
                 local metadata = response_handle:streamInfo():dynamicMetadata():get("swagger_filter")
 
-                if metadata and metadata["is_swagger"] == "true" and status == "403" then
-                  local path = metadata["original_path"] or "/"
-                  local redirect_url = "/oauth2/start?rd=" .. path
+                if metadata and metadata["is_swagger"] == "true" then
+                  -- 모든 swagger 응답에 캐시 방지 헤더 추가 (에러 캐싱 방지)
+                  response_handle:headers():remove("cache-control")
+                  response_handle:headers():add("cache-control", "no-cache, no-store, must-revalidate, max-age=0")
+                  response_handle:headers():add("pragma", "no-cache")
 
-                  response_handle:headers():replace(":status", "302")
-                  response_handle:headers():add("location", redirect_url)
-                  response_handle:headers():add("cache-control", "no-cache, no-store")
+                  -- 403 응답을 302 리다이렉트로 변환
+                  if status == "403" then
+                    local path = metadata["original_path"] or "/"
+                    local redirect_url = "/oauth2/start?rd=" .. path
+
+                    response_handle:headers():replace(":status", "302")
+                    response_handle:headers():add("location", redirect_url)
+                  end
                 end
               end
