@@ -12,6 +12,7 @@ spec:
     - list:
         elements:
           - name: ai-defense
+          - name: authz-adapter
   template:
     metadata:
       name: 'dev-{{name}}'
@@ -26,7 +27,7 @@ spec:
       source:
         repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
         targetRevision: argocd-sync/dev
-        path: common-charts/apps/python-service
+        path: common-charts/apps/ai-service
         helm:
           valueFiles:
             - ../../../dev/values/apps/values-{{name}}.yaml

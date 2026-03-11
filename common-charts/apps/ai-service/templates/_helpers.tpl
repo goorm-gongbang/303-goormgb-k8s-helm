@@ -1,15 +1,15 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "python-service.name" -}}
+{{- define "ai-service.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
-Release.Name만 사용 (dev-xxx-python-service → dev-xxx)
+Release.Name만 사용 (dev-xxx-ai-service → dev-xxx)
 */}}
-{{- define "python-service.fullname" -}}
+{{- define "ai-service.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -20,17 +20,17 @@ Release.Name만 사용 (dev-xxx-python-service → dev-xxx)
 {{/*
 Common labels
 */}}
-{{- define "python-service.labels" -}}
+{{- define "ai-service.labels" -}}
 helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-{{ include "python-service.selectorLabels" . }}
+{{ include "ai-service.selectorLabels" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
-{{- define "python-service.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "python-service.name" . }}
+{{- define "ai-service.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "ai-service.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app: {{ .Release.Name }}
 version: {{ .Values.image.tag | default "latest" | quote }}

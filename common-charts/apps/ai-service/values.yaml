@@ -1,4 +1,4 @@
-# Python FastAPI 서비스 기본 설정
+# AI 서비스 기본 설정 (Python, Go 등)
 # 환경별 override: dev/values/apps/values-<app>.yaml
 
 replicaCount: 1
