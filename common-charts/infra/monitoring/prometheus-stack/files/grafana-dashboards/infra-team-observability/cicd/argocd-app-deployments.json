@@ -134,7 +134,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "서비스별 Sync 누적 횟수 (Prometheus 시작 이후)",
+      "description": "서비스별 Sync 성공 누적 횟수",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -199,57 +199,6 @@
     {
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
-      "id": 102,
-      "title": "배포 타임라인",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "시간대별 서비스 배포 추이",
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "bars",
-            "fillOpacity": 80,
-            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
-            "lineWidth": 1,
-            "scaleDistribution": { "type": "linear" },
-            "showPoints": "never",
-            "stacking": { "group": "A", "mode": "normal" }
-          },
-          "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 19 },
-      "id": 30,
-      "options": {
-        "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum by (name) (increase(argocd_app_sync_total{phase=\"Succeeded\", name=~\"dev-.*\"}[1h]))",
-          "legendFormat": "{{ name }}",
-          "refId": "A"
-        }
-      ],
-      "title": "시간대별 배포 횟수",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
       "id": 103,
       "title": "에러 로그",
       "type": "row"
@@ -258,7 +207,7 @@
       "datasource": "Loki",
       "description": "서비스 앱 관련 에러 로그",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 36 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 19 },
       "id": 32,
       "options": {
         "dedupStrategy": "none",
@@ -284,7 +233,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 44 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
       "id": 104,
       "title": "Git Webhook & Sync",
       "type": "row"
@@ -293,7 +242,7 @@
       "datasource": "Loki",
       "description": "GitHub Webhook 수신 로그 (push event)",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 45 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 28 },
       "id": 33,
       "options": {
         "dedupStrategy": "none",
@@ -321,7 +270,7 @@
       "datasource": "Loki",
       "description": "서비스 앱 Sync 완료 로그",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 51 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 34 },
       "id": 34,
       "options": {
         "dedupStrategy": "none",

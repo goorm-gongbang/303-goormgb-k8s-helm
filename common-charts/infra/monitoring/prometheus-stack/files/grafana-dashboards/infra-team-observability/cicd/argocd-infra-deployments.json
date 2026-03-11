@@ -134,7 +134,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "인프라 Sync 누적 횟수 (Prometheus 시작 이후)",
+      "description": "인프라 Sync 성공 누적 횟수",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
