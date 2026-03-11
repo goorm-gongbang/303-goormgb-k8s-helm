@@ -40,6 +40,11 @@ spec:
             - name: {{ .Values.service.portName | default "http" }}
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: {{ .Values.metrics.portName | default "metrics" }}
+              containerPort: {{ .Values.metrics.port | default 9090 }}
+              protocol: TCP
+            {{- end }}
           env:
             {{- if .Values.otel.enabled }}
             - name: OTEL_SERVICE_NAME
