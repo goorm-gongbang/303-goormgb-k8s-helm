@@ -37,7 +37,7 @@
       "id": 99,
       "options": {
         "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
-        "content": "## 서비스 배포 모니터링\n`dev-ai-*`, `dev-web-*` 등 애플리케이션 서비스 배포 현황",
+        "content": "## 서비스 배포 모니터링 - `dev-ai-*`, `dev-web-*` 등 애플리케이션 서비스 배포 현황",
         "mode": "markdown"
       },
       "type": "text"
@@ -414,7 +414,7 @@
       }
     ]
   },
-  "time": { "from": "now-24h", "to": "now" },
+  "time": { "from": "now-30m", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
   "title": "ArgoCD 서비스 배포",

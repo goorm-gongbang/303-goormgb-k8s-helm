@@ -37,7 +37,7 @@
       "id": 99,
       "options": {
         "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
-        "content": "## 인프라 배포 모니터링\nIstio, Monitoring Stack, ArgoCD, Cert-Manager 등 클러스터 인프라 컴포넌트",
+        "content": "## 인프라 배포 모니터링 - Istio, Monitoring Stack, ArgoCD, Cert-Manager 등 클러스터 인프라 컴포넌트",
         "mode": "markdown"
       },
       "type": "text"
@@ -375,7 +375,7 @@
       }
     ]
   },
-  "time": { "from": "now-24h", "to": "now" },
+  "time": { "from": "now-30m", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
   "title": "ArgoCD 인프라 배포",
