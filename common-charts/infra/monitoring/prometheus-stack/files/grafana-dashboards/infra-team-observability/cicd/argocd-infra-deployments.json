@@ -1,8 +1,6 @@
 {
-  "annotations": {
-    "list": []
-  },
-  "description": "ArgoCD 배포 현황 모니터링 (Loki 로그 + Prometheus 메트릭)",
+  "annotations": { "list": [] },
+  "description": "인프라 배포 모니터링 - Istio, Monitoring, ArgoCD, Cert-Manager 등",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -15,47 +13,45 @@
       "keepTime": false,
       "tags": [],
       "targetBlank": true,
-      "title": "GitHub Repo",
-      "tooltip": "303-goormgb-k8s-helm",
-      "type": "link",
-      "url": "https://github.com/goorm-gongbang/303-goormgb-k8s-helm"
-    },
-    {
-      "asDropdown": false,
-      "icon": "external link",
-      "includeVars": false,
-      "keepTime": false,
-      "tags": [],
-      "targetBlank": true,
       "title": "ArgoCD UI",
       "tooltip": "ArgoCD Dashboard",
       "type": "link",
       "url": "https://argocd.goormgb.space"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "서비스 배포",
+      "type": "link",
+      "url": "/d/argocd-app-deployments"
     }
   ],
   "panels": [
     {
       "datasource": { "type": "datasource", "uid": "-- Dashboard --" },
-      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
       "id": 99,
       "options": {
         "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
-        "content": "| 항목 | 값 |\n|---|---|\n| **Repository** | [goorm-gongbang/303-goormgb-k8s-helm](https://github.com/goorm-gongbang/303-goormgb-k8s-helm) |\n| **Branch** | `argocd-sync/dev` |\n| **ArgoCD** | [argocd.goormgb.space](https://argocd.goormgb.space) |\n\n| ArgoCD UI | Grafana 대시보드 |\n|---|---|\n| 현재 상태 확인, 수동 Sync 실행, 앱별 상세 조회 | 시간대별 추이, 패턴 분석, 알람 설정, 다른 메트릭과 연계 분석 |\n| **운영/조작 중심** | **모니터링/분석 중심** |",
+        "content": "## 인프라 배포 모니터링\nIstio, Monitoring Stack, ArgoCD, Cert-Manager 등 클러스터 인프라 컴포넌트",
         "mode": "markdown"
       },
-      "pluginVersion": "11.4.0",
       "type": "text"
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 4 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
       "id": 100,
-      "title": "앱 상태 현황 (메트릭)",
+      "title": "인프라 앱 상태",
       "type": "row"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "현재 Synced 상태인 앱 수",
+      "description": "Synced 상태인 인프라 앱",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -65,54 +61,16 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 5 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 3 },
       "id": 10,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "expr": "count(argocd_app_info{sync_status=\"Synced\"})", "legendFormat": "Synced", "refId": "A" }],
-      "title": "Synced 앱",
+      "targets": [{ "expr": "count(argocd_app_info{sync_status=\"Synced\", name!~\"dev-.*\"})", "legendFormat": "Synced", "refId": "A" }],
+      "title": "Synced",
       "type": "stat"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "OutOfSync 상태인 앱 수",
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 3 }] },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 5 },
-      "id": 11,
-      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "expr": "count(argocd_app_info{sync_status=\"OutOfSync\"})", "legendFormat": "OutOfSync", "refId": "A" }],
-      "title": "OutOfSync 앱",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Healthy 상태인 앱 수",
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 5 },
-      "id": 12,
-      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "expr": "count(argocd_app_info{health_status=\"Healthy\"})", "legendFormat": "Healthy", "refId": "A" }],
-      "title": "Healthy 앱",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Degraded/Progressing 상태인 앱 수",
+      "description": "OutOfSync 상태인 인프라 앱",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -122,16 +80,61 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 5 },
-      "id": 13,
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 3 },
+      "id": 11,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "expr": "count(argocd_app_info{health_status=~\"Degraded|Progressing|Unknown\"})", "legendFormat": "Unhealthy", "refId": "A" }],
-      "title": "Unhealthy 앱",
+      "targets": [{ "expr": "count(argocd_app_info{sync_status=\"OutOfSync\", name!~\"dev-.*\"})", "legendFormat": "OutOfSync", "refId": "A" }],
+      "title": "OutOfSync",
       "type": "stat"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "서비스별 Sync 성공 누적 비율",
+      "description": "Healthy 상태인 인프라 앱",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 3 },
+      "id": 12,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "count(argocd_app_info{health_status=\"Healthy\", name!~\"dev-.*\"})", "legendFormat": "Healthy", "refId": "A" }],
+      "title": "Healthy",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Unhealthy 상태인 인프라 앱",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 2 }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 3 },
+      "id": 13,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "expr": "count(argocd_app_info{health_status=~\"Degraded|Progressing|Unknown\", name!~\"dev-.*\"})", "legendFormat": "Unhealthy", "refId": "A" }],
+      "title": "Unhealthy",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 7 },
+      "id": 101,
+      "title": "인프라별 배포 현황",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "인프라 컴포넌트별 배포 비율",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -140,7 +143,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 8 },
       "id": 20,
       "options": {
         "displayLabels": ["name", "percent"],
@@ -152,94 +155,69 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum by (name) (argocd_app_sync_total{phase=\"Succeeded\"})",
+          "expr": "sum by (name) (argocd_app_sync_total{phase=\"Succeeded\", name!~\"dev-.*\"})",
           "legendFormat": "{{ name }}",
           "refId": "A"
         }
       ],
-      "title": "서비스별 배포 비율 (누적)",
+      "title": "인프라별 배포 비율",
       "type": "piechart"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "최근 선택 기간 내 서비스별 배포 횟수",
+      "description": "인프라 앱 목록 및 현재 상태",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
+          "color": { "mode": "thresholds" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
           "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
-          "unit": "short"
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "sync_status" },
+            "properties": [
+              { "id": "mappings", "value": [{ "options": { "Synced": { "color": "green", "index": 0 }, "OutOfSync": { "color": "yellow", "index": 1 } }, "type": "value" }] },
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "health_status" },
+            "properties": [
+              { "id": "mappings", "value": [{ "options": { "Healthy": { "color": "green", "index": 0 }, "Degraded": { "color": "red", "index": 1 }, "Progressing": { "color": "blue", "index": 2 } }, "type": "value" }] },
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } }
+            ]
+          }
+        ]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 9 },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 8 },
       "id": 21,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
+      "options": { "showHeader": true, "cellHeight": "sm", "footer": { "show": false } },
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "topk(10, sum by (name) (increase(argocd_app_sync_total{phase=\"Succeeded\"}[$__range])))",
-          "legendFormat": "{{ name }}",
+          "expr": "argocd_app_info{name!~\"dev-.*\"}",
+          "format": "table",
+          "instant": true,
           "refId": "A"
         }
       ],
-      "title": "배포 횟수 Top 10 (선택 기간)",
-      "type": "stat"
+      "title": "인프라 앱 목록",
+      "transformations": [
+        { "id": "filterFieldsByName", "options": { "include": { "names": ["name", "sync_status", "health_status"] } } }
+      ],
+      "type": "table"
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
-      "id": 103,
-      "title": "Webhook 수신 로그 (Git Push → GitHub Webhook → ArgoCD 수신 → Reconciliation → Sync 완료)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
+      "id": 102,
+      "title": "Reconciliation & 에러",
       "type": "row"
     },
     {
       "datasource": "Loki",
-      "description": "GitHub에서 push 이벤트 발생 시 ArgoCD가 수신하는 webhook 로그. 이 시점이 Git 변경 감지의 시작점",
-      "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 18 },
-      "id": 105,
-      "options": {
-        "dedupStrategy": "none",
-        "enableLogDetails": true,
-        "prettifyLogMessage": false,
-        "showCommonLabels": false,
-        "showLabels": false,
-        "showTime": true,
-        "sortOrder": "Descending",
-        "wrapLogMessage": true
-      },
-      "targets": [
-        {
-          "datasource": "Loki",
-          "editorMode": "code",
-          "expr": "{namespace=\"argocd\"} |~ \"Received push event|webhook|received event|git-webhook\"",
-          "queryType": "range",
-          "refId": "A"
-        }
-      ],
-      "title": "Webhook 수신 로그",
-      "type": "logs"
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
-      "id": 101,
-      "title": "Reconciliation 로그",
-      "type": "row"
-    },
-    {
-      "datasource": "Loki",
-      "description": "Reconciliation: ArgoCD가 Git과 클러스터 상태를 주기적으로 비교/동기화하는 과정. 건수가 많으면 Git 변경이 잦거나, 누군가 kubectl로 직접 수정해서 상태 불일치(drift)가 발생했을 수 있음",
+      "description": "인프라 앱 Reconciliation 로그",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -264,67 +242,32 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 17 },
-      "id": 1,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 19 },
+      "id": 30,
       "options": {
-        "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
         "tooltip": { "mode": "multi", "sort": "none" }
       },
       "targets": [
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` [1m]))",
+          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` | application!~\"dev-.*\" [1m]))",
           "interval": "1m",
           "legendFormat": "{{ application }}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "앱별 Reconciliation 건수",
+      "title": "인프라 앱 Reconciliation 건수",
       "type": "timeseries"
     },
     {
       "datasource": "Loki",
-      "description": "Sync: 수동/자동으로 Git→클러스터 배포 실행. Reconciliation: 주기적(기본 3분)으로 Git과 클러스터 상태 비교 후 차이 감지 시 자동 동기화",
+      "description": "ArgoCD 에러 로그",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 25 },
-      "id": 2,
-      "options": {
-        "dedupStrategy": "none",
-        "enableLogDetails": true,
-        "prettifyLogMessage": false,
-        "showCommonLabels": false,
-        "showLabels": false,
-        "showTime": true,
-        "sortOrder": "Descending",
-        "wrapLogMessage": true
-      },
-      "targets": [
-        {
-          "datasource": "Loki",
-          "editorMode": "code",
-          "expr": "{namespace=\"argocd\"} |~ \"Reconciliation completed|Sync operation|Update successful\"",
-          "queryType": "range",
-          "refId": "A"
-        }
-      ],
-      "title": "Sync/Reconciliation 로그",
-      "type": "logs"
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
-      "id": 102,
-      "title": "에러 및 알림",
-      "type": "row"
-    },
-    {
-      "datasource": "Loki",
-      "description": "에러 로그",
-      "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 34 },
-      "id": 3,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 27 },
+      "id": 31,
       "options": {
         "dedupStrategy": "none",
         "enableLogDetails": true,
@@ -348,11 +291,18 @@
       "type": "logs"
     },
     {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 35 },
+      "id": 103,
+      "title": "Git Webhook & Sync",
+      "type": "row"
+    },
+    {
       "datasource": "Loki",
-      "description": "Notification 트리거 로그",
+      "description": "GitHub Webhook 수신 로그 (push event)",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 40 },
-      "id": 4,
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 36 },
+      "id": 32,
       "options": {
         "dedupStrategy": "none",
         "enableLogDetails": true,
@@ -367,18 +317,46 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "{namespace=\"argocd\"} |~ \"Trigger|TRIGGERED|FAILED|Notification\"",
+          "expr": "{namespace=\"argocd\", container=\"argocd-server\"} |~ \"(?i)webhook|received.*event|push.*event|processing.*hook\"",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "알림 트리거 로그",
+      "title": "Webhook 수신 로그",
+      "type": "logs"
+    },
+    {
+      "datasource": "Loki",
+      "description": "Sync 완료 로그",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 42 },
+      "id": 33,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": "Loki",
+          "editorMode": "code",
+          "expr": "{namespace=\"argocd\"} |~ \"(?i)sync.*completed|sync.*succeeded|operation.*completed|Update.*successful\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Sync 완료 로그",
       "type": "logs"
     }
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["argocd", "cicd", "loki"],
+  "tags": ["argocd", "cicd", "infra"],
   "templating": {
     "list": [
       {
@@ -397,10 +375,10 @@
       }
     ]
   },
-  "time": { "from": "now-15m", "to": "now" },
+  "time": { "from": "now-24h", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
-  "title": "ArgoCD 배포 모니터링",
-  "uid": "argocd-deployments",
+  "title": "ArgoCD 인프라 배포",
+  "uid": "argocd-infra-deployments",
   "version": 1
 }
