@@ -33,6 +33,21 @@ istiod:
     # Access logging
     accessLogFile: /dev/stdout
 
+    # External Authorization (AI Defense)
+    extensionProviders:
+      - name: authz-adapter
+        envoyExtAuthzGrpc:
+          service: dev-authz-adapter.dev-ai.svc.cluster.local
+          port: 9001
+          timeout: 1s
+          includeRequestHeadersInCheck:
+            - authorization
+            - x-request-id
+            - x-forwarded-for
+          headersToUpstreamOnAllow:
+            - x-ai-defense-result
+            - x-ai-defense-score
+
   pilot:
     # CP 노드에 배치
     nodeSelector:

@@ -1,0 +1,77 @@
+# authz-adapter - Dev 환경
+# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/authz-adapter
+# Envoy ext_authz gRPC adapter - AI Defense 연동
+
+replicaCount: 1
+
+image:
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/authz-adapter
+  tag: "4731989"
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: ecr-pull-secret
+
+# Worker 노드에 배치
+nodeSelector:
+  kubernetes.io/hostname: mini-might
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+# Istio
+istio:
+  sidecar: true
+  gateway:
+    enabled: false  # 내부 서비스 (ext_authz)
+
+# Service (gRPC)
+service:
+  type: ClusterIP
+  port: 9001
+
+# Health checks (HTTP metrics 포트)
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 9090
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: 9090
+  initialDelaySeconds: 3
+  periodSeconds: 5
+  failureThreshold: 3
+
+# 환경변수
+env:
+  - name: GRPC_PORT
+    value: "9001"
+  - name: METRICS_PORT
+    value: "9090"
+  - name: AI_DEFENSE_URL
+    value: "http://ai-defense.dev-ai.svc.cluster.local:8000/ai/evaluate"
+  - name: AI_DEFENSE_TIMEOUT_MS
+    value: "800"
+  - name: TM_AUTHZ_CHECK_METHODS
+    value: "POST"
+  - name: TM_AUTHZ_CHECK_PATH_PREFIXES
+    value: "/api/"
+  - name: ADAPTER_POLICY_VERSION
+    value: "adapter-v1"
+  - name: LOG_LEVEL
+    value: "info"
+
+# OpenTelemetry
+otel:
+  enabled: true
+  collectorEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"

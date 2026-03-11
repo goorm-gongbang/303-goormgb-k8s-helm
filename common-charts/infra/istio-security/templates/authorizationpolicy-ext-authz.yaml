@@ -1,0 +1,23 @@
+{{- if .Values.extAuthz.enabled }}
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: ext-authz-ai-defense
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      {{- toYaml .Values.selector.labels | nindent 6 }}
+  action: CUSTOM
+  provider:
+    name: {{ .Values.extAuthz.provider }}
+  rules:
+    {{- range .Values.extAuthz.rules }}
+    - to:
+        - operation:
+            methods:
+              {{- toYaml .methods | nindent 14 }}
+            paths:
+              {{- toYaml .paths | nindent 14 }}
+    {{- end }}
+{{- end }}

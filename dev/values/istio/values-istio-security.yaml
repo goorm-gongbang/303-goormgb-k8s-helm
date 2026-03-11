@@ -95,3 +95,12 @@ denyPaths:
     - "/actuator/health*"
     - "*/health"
     - "*/healthz"
+
+# External Authorization (AI Defense)
+# POST /api/* 요청에 대해 authz-adapter로 검사
+extAuthz:
+  enabled: true
+  provider: authz-adapter  # meshConfig.extensionProviders에 정의된 이름
+  rules:
+    - methods: ["POST"]
+      paths: ["/api/*"]

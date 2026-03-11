@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "python-service.fullname" . }}
+  name: {{ include "ai-service.fullname" . }}
   labels:
-    {{- include "python-service.labels" . | nindent 4 }}
+    {{- include "ai-service.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "python-service.selectorLabels" . | nindent 6 }}
+      {{- include "ai-service.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "python-service.selectorLabels" . | nindent 8 }}
+        {{- include "ai-service.selectorLabels" . | nindent 8 }}
         sidecar.istio.io/inject: "{{ .Values.istio.sidecar }}"
       annotations:
         kiali.io/icon: microservice
@@ -25,7 +25,7 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
-        - name: {{ include "python-service.name" . }}
+        - name: {{ include "ai-service.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.command }}
@@ -43,7 +43,7 @@ spec:
           env:
             {{- if .Values.otel.enabled }}
             - name: OTEL_SERVICE_NAME
-              value: {{ include "python-service.fullname" . }}
+              value: {{ include "ai-service.fullname" . }}
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: {{ .Values.otel.collectorEndpoint | quote }}
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
