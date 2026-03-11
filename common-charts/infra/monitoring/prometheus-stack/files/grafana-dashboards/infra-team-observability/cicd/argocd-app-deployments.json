@@ -134,7 +134,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "서비스별 배포 횟수 (선택 기간)",
+      "description": "서비스별 Sync 누적 횟수 (Prometheus 시작 이후)",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -155,12 +155,12 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum by (name) (increase(argocd_app_sync_total{phase=\"Succeeded\", name=~\"dev-.*\"}[$__range]))",
+          "expr": "sum by (name) (argocd_app_sync_total{phase=\"Succeeded\", name=~\"dev-.*\"})",
           "legendFormat": "{{ name }}",
           "refId": "A"
         }
       ],
-      "title": "서비스별 Sync 총합 (선택 기간)",
+      "title": "서비스별 Sync 누적",
       "type": "piechart"
     },
     {
