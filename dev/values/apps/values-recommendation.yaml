@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/recommendation
-  tag: "039019b"
+  tag: "bd6b353"
   pullPolicy: Always
 
 imagePullSecrets:
