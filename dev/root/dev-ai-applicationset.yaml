@@ -12,7 +12,6 @@ spec:
     - list:
         elements:
           - name: ai-defense
-          - name: authz-adapter
   template:
     metadata:
       name: 'dev-{{name}}'

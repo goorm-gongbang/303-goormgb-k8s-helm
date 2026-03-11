@@ -60,7 +60,7 @@ applications:
     namespace: dev-ai
     repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
     targetRevision: argocd-sync/dev
-    path: common-charts/apps/python-service
+    path: common-charts/apps/ai-service
     valuesFile: ../../../dev/values/apps/values-ai-defense.yaml
     enabled: true
 
