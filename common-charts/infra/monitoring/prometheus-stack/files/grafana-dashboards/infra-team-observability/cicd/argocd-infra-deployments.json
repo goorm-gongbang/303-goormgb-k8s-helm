@@ -252,8 +252,8 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` | application!~\"dev-.*\" [1m]))",
-          "interval": "1m",
+          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` | application!~\"dev-.*\" [$__range]))",
+          "interval": "",
           "legendFormat": "{{ application }}",
           "queryType": "range",
           "refId": "A"
