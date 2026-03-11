@@ -148,7 +148,7 @@ kube-prometheus-stack:
           # 템플릿 폴더만 유지 (커스텀 대시보드는 sidecar가 담당)
           - name: "dev-team-observability-templates"
             orgId: 1
-            folder: "서비스 관측 템플릿 (개발팀)"
+            folder: "표준 템플릿 - 서비스 관측 (개발)"
             type: file
             disableDeletion: false
             editable: true
@@ -157,7 +157,7 @@ kube-prometheus-stack:
 
           - name: "infra-team-observability-templates"
             orgId: 1
-            folder: "플랫폼 관측 템플릿 (인프라팀)"
+            folder: "표준 템플릿 - 플랫폼 관측 (인프라)"
             type: file
             disableDeletion: false
             editable: true
