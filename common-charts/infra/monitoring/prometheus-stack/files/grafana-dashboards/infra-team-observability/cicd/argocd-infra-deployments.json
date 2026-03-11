@@ -134,7 +134,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "인프라 Sync 성공 누적 횟수",
+      "description": "선택된 시간 범위 내 인프라 Sync 성공 횟수",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -155,12 +155,12 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum by (name) (argocd_app_sync_total{phase=\"Succeeded\", name!~\"dev-.*\"})",
+          "expr": "sum by (name) (increase(argocd_app_sync_total{phase=\"Succeeded\", name!~\"dev-.*\"}[$__range]))",
           "legendFormat": "{{ name }}",
           "refId": "A"
         }
       ],
-      "title": "인프라별 Sync 누적",
+      "title": "인프라별 Sync 횟수",
       "type": "piechart"
     },
     {
