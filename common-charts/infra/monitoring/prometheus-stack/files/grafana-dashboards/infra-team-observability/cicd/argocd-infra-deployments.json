@@ -212,55 +212,8 @@
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
       "id": 102,
-      "title": "Reconciliation & 에러",
+      "title": "에러 로그",
       "type": "row"
-    },
-    {
-      "datasource": "Loki",
-      "description": "인프라 앱 Reconciliation 로그",
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.9,
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
-            "lineWidth": 1,
-            "scaleDistribution": { "type": "linear" },
-            "showPoints": "never",
-            "stacking": { "group": "A", "mode": "normal" },
-            "thresholdsStyle": { "mode": "off" }
-          },
-          "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 19 },
-      "id": 30,
-      "options": {
-        "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
-        "tooltip": { "mode": "multi", "sort": "none" }
-      },
-      "targets": [
-        {
-          "datasource": "Loki",
-          "editorMode": "code",
-          "expr": "sum by (application) (count_over_time({namespace=\"argocd\"} |~ \"Reconciliation completed\" | pattern `<_> application=<application> <_>` | application!~\"dev-.*\" [$__range]))",
-          "interval": "",
-          "legendFormat": "{{ application }}",
-          "queryType": "range",
-          "refId": "A"
-        }
-      ],
-      "title": "인프라 앱 Reconciliation 건수 (선택 기간)",
-      "type": "timeseries"
     },
     {
       "datasource": "Loki",
