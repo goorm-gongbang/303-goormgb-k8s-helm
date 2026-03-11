@@ -160,7 +160,7 @@
           "refId": "A"
         }
       ],
-      "title": "인프라별 배포 비율",
+      "title": "인프라별 Sync 총합 (선택 기간)",
       "type": "piechart"
     },
     {
@@ -259,7 +259,7 @@
           "refId": "A"
         }
       ],
-      "title": "인프라 앱 Reconciliation 건수",
+      "title": "인프라 앱 Reconciliation 건수 (선택 기간)",
       "type": "timeseries"
     },
     {
