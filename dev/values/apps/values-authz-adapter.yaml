@@ -72,7 +72,15 @@ env:
   - name: LOG_LEVEL
     value: "info"
 
-# OpenTelemetry
+# Prometheus Metrics
+metrics:
+  enabled: true
+  port: 9090
+  portName: metrics
+  path: /metrics
+  interval: 15s
+
+# OpenTelemetry (gRPC는 http:// prefix 없이)
 otel:
   enabled: true
-  collectorEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"
+  collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"
