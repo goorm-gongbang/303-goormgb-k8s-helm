@@ -34,7 +34,7 @@ resources:
   - infra/monitoring/loki.yaml
   - infra/monitoring/tempo.yaml
   - infra/monitoring/otel-collector.yaml
-  - infra/monitoring/alloy.yaml         # Faro Receiver (Frontend RUM)
+  # - infra/monitoring/alloy.yaml       # Faro Receiver (Frontend RUM) - 프론트엔드 적용 전까지 비활성화
 
   # === Applications (ApplicationSet) ===
   - dev-webs-applicationset.yaml    # dev-webs: Spring Boot + Next.js
