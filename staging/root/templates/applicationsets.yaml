@@ -6,7 +6,7 @@ ApplicationSets - 서비스 배포용 ApplicationSet
 {{- $destination := .Values.destination -}}
 
 {{- range $name, $appSet := .Values.applicationSets }}
-{{- if $appSet.enabled }}
+{{- if and $appSet.enabled $appSet.services }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
