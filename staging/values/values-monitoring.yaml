@@ -233,6 +233,8 @@ kube-prometheus-stack:
         auth_url: https://accounts.google.com/o/oauth2/auth
         token_url: https://oauth2.googleapis.com/token
         api_url: https://openidconnect.googleapis.com/v1/userinfo
+        # 이메일 기반 역할 할당
+        # Admin: DevOps, Editor: Developers, Viewer: 기타 허용된 멤버
         role_attribute_path: >-
           contains(['212clab@gmail.com', 'rhuba23@gmail.com', 'chamchi0129@gmail.com'], email) && 'Admin' ||
           contains(['jusanha17@gmail.com', 'yuuijin863@gmail.com', 'rhkdgur120@gmail.com', 'siyeon0713@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'cdh4112618@gmail.com'], email) && 'Editor' ||

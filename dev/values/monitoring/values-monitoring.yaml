@@ -556,7 +556,7 @@ kube-prometheus-stack:
         token_url: https://oauth2.googleapis.com/token
         api_url: https://openidconnect.googleapis.com/v1/userinfo
         # client_id, client_secret은 envFromSecret에서 주입
-        # 허용된 이메일만 로그인 가능 (빈 문자열 반환 시 로그인 거부)
+        # 이메일 기반 역할 할당
         # Admin: DevOps, Editor: Developers, Viewer: 기타 허용된 멤버
         role_attribute_path: >-
           contains(['212clab@gmail.com', 'rhuba23@gmail.com', 'chamchi0129@gmail.com'], email) && 'Admin' ||
@@ -570,8 +570,9 @@ kube-prometheus-stack:
         disable_login_form: false # admin 로그인 유지
 
     # Role mapping (이메일 기반)
-    # DevOps: Admin, Developer: Viewer
-    # 주의: Grafana Enterprise나 별도 플러그인 필요할 수 있음
+    # Admin: DevOps (212clab, rhuba, chamchi)
+    # Editor: Developers
+    # Viewer: 기타 허용된 멤버
 
     # CP 노드에 배치
     nodeSelector:

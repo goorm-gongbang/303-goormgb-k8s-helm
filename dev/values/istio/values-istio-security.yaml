@@ -77,24 +77,21 @@ response:
   body: "Forbidden: Security violation detected"
 
 # 내부 경로 차단 (외부 접근 불가)
+# 주의: 접미사 와일드카드(*/path)는 오탐 위험이 있어 접두사 기반만 사용
 denyPaths:
   enabled: true
   paths:
-    # Prometheus/Metrics
+    # Prometheus/Metrics (접두사 기반만 사용)
     - "/api/prometheus*"
     - "/actuator/prometheus*"
-    - "*/prometheus"
     - "/metrics*"
-    - "*/metrics"
-    # Health checks
+    # Health checks (접두사 기반만 사용)
     - "/health*"
     - "/healthz*"
     - "/ready*"
     - "/readyz*"
     - "/livez*"
     - "/actuator/health*"
-    - "*/health"
-    - "*/healthz"
 
 # External Authorization (AI Defense) - 비활성화
 # 추후 Policy Controller 방식으로 전환 예정

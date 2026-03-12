@@ -420,7 +420,7 @@
           },
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "sum by(testid) (rate(k6_http_reqs_total{testid=~\"$testid\"}[1m]))",
+          "expr": "sum by(testid) (rate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval]))",
           "format": "time_series",
           "hide": false,
           "instant": false,
