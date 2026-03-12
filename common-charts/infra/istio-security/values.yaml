@@ -424,8 +424,8 @@ jwtAuth:
     # 자체 Auth 서비스 (내부 토큰)
     - name: goormgb-auth
       issuer: "https://auth.goormgb.com"
-      # JWKS URI - auth-guard 서비스에서 제공
-      jwksUri: "http://auth-guard.goormgb.svc.cluster.local:8080/.well-known/jwks.json"
+      # JWKS URI - auth-guard 서비스에서 제공 (Istio mTLS로 암호화됨)
+      jwksUri: "http://auth-guard.dev-webs.svc.cluster.local:8080/.well-known/jwks.json"
       fromHeaders:
         - name: Authorization
           prefix: "Bearer "
