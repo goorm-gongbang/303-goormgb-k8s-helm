@@ -592,7 +592,7 @@ kube-prometheus-stack:
 
     persistence:
       enabled: true
-      size: 2Gi
+      size: 5Gi
 
     resources:
       requests:
