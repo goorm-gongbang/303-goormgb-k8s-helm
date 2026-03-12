@@ -1,12 +1,13 @@
-{{- if and .Values.enabled .Values.rateLimiting.global.enabled .Values.rateLimiting.global.redis.internal }}
+{{- if and .Values.enabled .Values.rateLimiting.global.enabled }}
 # ============================================================
 # Rate Limit Service + Redis
 # Global Rate Limiting을 위한 인프라
 # ============================================================
 
+{{- if .Values.rateLimiting.global.redis.internal }}
 ---
 # ===========================================
-# Redis for Rate Limiting
+# Redis for Rate Limiting (Internal)
 # ===========================================
 apiVersion: apps/v1
 kind: Deployment
@@ -64,6 +65,7 @@ spec:
       name: redis
   selector:
     app: ratelimit-redis
+{{- end }}
 
 ---
 # ===========================================
@@ -149,7 +151,11 @@ spec:
             - name: REDIS_SOCKET_TYPE
               value: "tcp"
             - name: REDIS_URL
+              {{- if .Values.rateLimiting.global.redis.internal }}
               value: "ratelimit-redis.istio-system.svc.cluster.local:6379"
+              {{- else }}
+              value: "{{ .Values.rateLimiting.global.redis.host }}:{{ .Values.rateLimiting.global.redis.port }}"
+              {{- end }}
             - name: USE_STATSD
               value: "false"
             - name: RUNTIME_ROOT

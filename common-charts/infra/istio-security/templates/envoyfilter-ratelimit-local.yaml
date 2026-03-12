@@ -142,8 +142,9 @@ spec:
                 -- 메모리 내 카운터 (Pod 재시작 시 초기화됨)
                 -- 실제 운영에서는 Redis 사용 권장
                 local ip_counters = {}
-                local last_reset = os.time()
-                local RESET_INTERVAL = 60  -- 60초마다 카운터 리셋
+                local ENTRY_TTL = 60  -- 각 항목 만료 시간 (초)
+                local last_gc = os.time()
+                local GC_INTERVAL = 30  -- GC 실행 간격 (초)
 
                 -- JSON 이스케이프 함수
                 local function json_escape(str)
@@ -177,33 +178,48 @@ spec:
                   return DEFAULT_TOKENS, DEFAULT_MAX
                 end
 
-                -- 카운터 리셋 체크
-                local function check_reset()
+                -- 만료된 항목 정리 (점진적 GC)
+                local function gc_expired_entries()
                   local now = os.time()
-                  if now - last_reset >= RESET_INTERVAL then
-                    ip_counters = {}
-                    last_reset = now
+                  if now - last_gc < GC_INTERVAL then
+                    return
+                  end
+                  last_gc = now
+
+                  -- 만료된 항목만 개별 삭제 (전체 리셋 대신)
+                  local keys_to_delete = {}
+                  for key, counter in pairs(ip_counters) do
+                    if now - counter.last_access > ENTRY_TTL then
+                      table.insert(keys_to_delete, key)
+                    end
+                  end
+
+                  for _, key in ipairs(keys_to_delete) do
+                    ip_counters[key] = nil
                   end
                 end
 
                 -- Rate Limit 체크
                 local function check_rate_limit(client_ip, path)
-                  check_reset()
+                  gc_expired_entries()
 
+                  local now = os.time()
                   local limit, max_tokens = get_route_limit(path)
                   local key = client_ip .. ":" .. path
 
                   if ip_counters[key] == nil then
-                    ip_counters[key] = { count = 0, first_request = os.time() }
+                    ip_counters[key] = { count = 0, first_request = now, last_access = now }
                   end
 
                   local counter = ip_counters[key]
-                  local elapsed = os.time() - counter.first_request
+                  counter.last_access = now  -- 접근 시간 갱신 (TTL용)
 
-                  -- 1초 경과 시 카운터 리셋
+                  local elapsed = now - counter.first_request
+
+                  -- 1초 경과 시 카운터 리셋 (개별 항목 슬라이딩 윈도우)
                   if elapsed >= 1 then
                     counter.count = 0
-                    counter.first_request = os.time()
+                    counter.first_request = now
                   end
 
                   counter.count = counter.count + 1

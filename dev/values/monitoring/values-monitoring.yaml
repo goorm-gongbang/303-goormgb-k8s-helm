@@ -121,6 +121,14 @@ kube-prometheus-stack:
   grafana:
     fullnameOverride: grafana
 
+    # init-chown-data 비활성화 (PVC 권한 문제 방지)
+    initChownData:
+      enabled: false
+    securityContext:
+      runAsUser: 472
+      runAsGroup: 472
+      fsGroup: 472
+
     # 대시보드 폴더 설정 (sidecar 방식)
     sidecar:
       dashboards:
