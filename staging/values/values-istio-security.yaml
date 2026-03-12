@@ -1,4 +1,4 @@
-# Istio Security - Dev Environment
+# EKS Staging - Istio Security
 # WAF-like protection using EnvoyFilter + Lua
 
 enabled: true
@@ -9,8 +9,8 @@ selector:
     istio: ingressgateway
 
 # 차단 모드: block (차단) | detect (로그만)
-# Dev 환경에서는 detect 모드로 시작하여 테스트 후 block으로 전환 권장
-mode: detect
+# Staging 환경에서는 block 모드 사용
+mode: block
 
 # 로깅 설정
 logging:
@@ -62,13 +62,13 @@ excludePaths:
   # Kubernetes probes
   - "/api/v1/health"
 
-  # Swagger/OpenAPI (개발 환경)
+  # Swagger/OpenAPI
   - "/swagger"
   - "/swagger-ui"
   - "/v3/api-docs"
   - "/openapi"
 
-  # Kiali (별도 도메인이지만 혹시 모를 내부 호출)
+  # Kiali
   - "/kiali"
 
 # 응답 설정
@@ -94,6 +94,5 @@ denyPaths:
     - "/actuator/health*"
 
 # External Authorization (AI Defense) - 비활성화
-# 추후 Policy Controller 방식으로 전환 예정
 extAuthz:
   enabled: false
