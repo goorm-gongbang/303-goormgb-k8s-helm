@@ -936,7 +936,7 @@
           "expr": "avg by(testid) (sum by(testid) (rate(k6_http_reqs_total{testid=~\"$testid\", expected_response=\"false\"}[$__rate_interval])))",
           "hide": false,
           "instant": false,
-          "legendFormat": "Failed RPS - {{testid}}",
+          "legendFormat": "실패 RPS - {{testid}}",
           "range": true,
           "refId": "D"
         },
@@ -949,12 +949,12 @@
           "exemplar": false,
           "expr": "(histogram_sum(rate(k6_http_req_duration_seconds{testid=~\"$testid\"}[$__rate_interval])) / histogram_count(rate(k6_http_req_duration_seconds{testid=~\"$testid\"}[$__rate_interval])))",
           "hide": false,
-          "legendFormat": "Avg Response Time - {{testid}}",
+          "legendFormat": "평균 응답시간 - {{testid}}",
           "range": true,
           "refId": "C"
         }
       ],
-      "title": "Performance Overview",
+      "title": "성능 개요",
       "type": "timeseries"
     },
     {
@@ -967,7 +967,7 @@
       },
       "id": 32,
       "panels": [],
-      "title": "HTTP Metrics",
+      "title": "HTTP 메트릭",
       "type": "row"
     },
     {
@@ -1059,7 +1059,7 @@
           "expr": "avg by(testid)(histogram_sum(rate(k6_http_req_blocked_seconds{testid=~\"$testid\", name=~\"$url\",scenario=~\"$scenario\"}[$__rate_interval])) / histogram_count(rate(k6_http_req_blocked_seconds{testid=~\"$testid\", name=~\"$url\",scenario=~\"$scenario\"}[$__rate_interval])))",
           "hide": false,
           "interval": "",
-          "legendFormat": "Blocked - {{testid}}",
+          "legendFormat": "차단됨 - {{testid}}",
           "range": true,
           "refId": "A"
         },
@@ -1073,7 +1073,7 @@
           "expr": "avg by(testid)(histogram_sum(rate(k6_http_req_connecting_seconds{testid=~\"$testid\", name=~\"$url\",scenario=~\"$scenario\"}[$__rate_interval])) / histogram_count(rate(k6_http_req_connecting_seconds{testid=~\"$testid\", name=~\"$url\",scenario=~\"$scenario\"}[$__rate_interval])))",
           "hide": false,
           "interval": "",
-          "legendFormat": "Connecting - {{testid}}",
+          "legendFormat": "연결중 - {{testid}}",
           "range": true,
           "refId": "E"
         },
