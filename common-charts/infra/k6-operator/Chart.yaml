@@ -9,4 +9,4 @@ appVersion: "0.0.18"
 dependencies:
   - name: k6-operator
     version: "4.3.0"
-    repository: https://grafana.github.io/helm-charts
+    repository: oci://__AWS_ACCOUNT_ID__.dkr.ecr.ap-northeast-2.amazonaws.com/helm

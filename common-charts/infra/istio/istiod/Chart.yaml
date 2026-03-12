@@ -8,4 +8,4 @@ appVersion: "1.29.1"
 dependencies:
   - name: istiod
     version: "1.29.1"
-    repository: https://istio-release.storage.googleapis.com/charts
+    repository: oci://__AWS_ACCOUNT_ID__.dkr.ecr.ap-northeast-2.amazonaws.com/helm
