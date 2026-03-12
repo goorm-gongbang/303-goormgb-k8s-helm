@@ -1,4 +1,4 @@
-# Python FastAPI 서비스 기본 설정
+# AI 서비스 기본 설정 (Python, Go 등)
 # 환경별 override: dev/values/apps/values-<app>.yaml
 
 replicaCount: 1
@@ -83,3 +83,17 @@ envFrom: []
 #     name: ai-config
 # - secretRef:
 #     name: ai-secrets
+
+# Prometheus Metrics
+metrics:
+  enabled: false
+  port: 9090
+  portName: metrics
+  path: /metrics
+  interval: 30s
+
+# OpenTelemetry (앱에 opentelemetry SDK 필요)
+# pip install opentelemetry-api opentelemetry-sdk opentelemetry-instrumentation-fastapi
+otel:
+  enabled: false
+  collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"

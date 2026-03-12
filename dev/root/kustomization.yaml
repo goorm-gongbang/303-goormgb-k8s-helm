@@ -14,6 +14,9 @@ resources:
   - infra/security/cert-manager.yaml
   - infra/security/rbac.yaml
   - infra/security/service-secrets.yaml
+  - infra/security/oauth2-proxy.yaml     # Swagger OAuth 인증
+  - infra/security/swagger-gateway.yaml  # swagger.dev.goormgb.space Gateway
+  - infra/security/swagger-403-redirect.yaml  # 403→로그인 리다이렉트
 
   # === Data ===
   - infra/data/data.yaml
@@ -31,10 +34,11 @@ resources:
   - infra/monitoring/loki.yaml
   - infra/monitoring/tempo.yaml
   - infra/monitoring/otel-collector.yaml
+  # - infra/monitoring/alloy.yaml       # Faro Receiver (Frontend RUM) - 프론트엔드 적용 전까지 비활성화
 
   # === Applications (ApplicationSet) ===
   - dev-webs-applicationset.yaml    # dev-webs: Spring Boot + Next.js
-  # - dev-ai-applicationset.yaml    # dev-ai: FastAPI AI Agent (dev 브랜치 머지 후 활성화)
+  - dev-ai-applicationset.yaml      # dev-ai: FastAPI AI Agent
 
   # === App Routes ===
-  # - apps/ai-defense-route.yaml    # api.dev.goormgb.space/ai/* → ai-defense (dev 브랜치 머지 후 활성화)
+  - apps/ai-defense-route.yaml      # api.dev.goormgb.space/ai/* → ai-defense

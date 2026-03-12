@@ -20,8 +20,33 @@ args:
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/ai
-  tag: "latest"
+  tag: "de7a2ad"
   pullPolicy: Always
+
+# Python 모듈 경로 설정 + AI Defense 환경변수
+env:
+  - name: PYTHONPATH
+    value: /app/src
+  # AI Defense 설정
+  - name: TM_AI_DEFENSE_HOST
+    value: "0.0.0.0"
+  - name: TM_AI_DEFENSE_PORT
+    value: "8000"
+  - name: TM_RUNTIME_STATE_BACKEND
+    value: "redis"
+  - name: TM_DEFENSE_POLICY_VERSION
+    value: "def-pol-2.0.0"
+  # Redis 연결 (Secrets Manager에서 가져옴)
+  - name: AI_REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_HOST
+  - name: AI_REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_PORT
 
 imagePullSecrets:
   - name: ecr-pull-secret
@@ -65,3 +90,16 @@ readinessProbe:
   initialDelaySeconds: 10
   periodSeconds: 5
   failureThreshold: 3
+
+# Prometheus Metrics (FastAPI - 같은 포트에서 /metrics 노출)
+metrics:
+  enabled: true
+  port: 8000
+  portName: http
+  path: /metrics
+  interval: 15s
+
+# OpenTelemetry (앱에 opentelemetry SDK 설치 필요)
+otel:
+  enabled: true
+  collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"

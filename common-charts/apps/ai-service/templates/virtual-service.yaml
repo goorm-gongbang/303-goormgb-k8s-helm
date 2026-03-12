@@ -2,9 +2,9 @@
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
-  name: {{ include "python-service.fullname" . }}-gateway
+  name: {{ include "ai-service.fullname" . }}-gateway
   labels:
-    {{- include "python-service.labels" . | nindent 4 }}
+    {{- include "ai-service.labels" . | nindent 4 }}
 spec:
   selector:
     istio: ingressgateway
@@ -30,21 +30,21 @@ spec:
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
-  name: {{ include "python-service.fullname" . }}-vs
+  name: {{ include "ai-service.fullname" . }}-vs
   labels:
-    {{- include "python-service.labels" . | nindent 4 }}
+    {{- include "ai-service.labels" . | nindent 4 }}
 spec:
   hosts:
     - {{ .Values.istio.gateway.host | quote }}
   gateways:
-    - {{ include "python-service.fullname" . }}-gateway
+    - {{ include "ai-service.fullname" . }}-gateway
   http:
     - match:
         - uri:
             prefix: /
       route:
         - destination:
-            host: {{ include "python-service.fullname" . }}
+            host: {{ include "ai-service.fullname" . }}
             port:
               number: {{ .Values.service.port }}
 {{- end }}

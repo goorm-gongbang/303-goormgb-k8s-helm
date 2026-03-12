@@ -222,15 +222,61 @@ patterns:
         description: "Burp Suite"
 
 # 제외 경로 (이 경로는 검사 안 함)
+# ---------------------------------------------------------
+# 동작 방식:
+#   Lua 코드의 is_excluded_path() 함수에서 string.find()로 검사
+#   경로(path)에 아래 문자열이 "포함"되어 있으면 WAF 검사를 건너뜀
+#   (부분 문자열 매칭 - prefix/suffix 아님)
+#
+# 예시:
+#   "/explore" 설정 시 → /explore, /grafana/explore, /explore?query=... 모두 제외됨
+#   "/assets/" 설정 시 → /assets/*, /grafana/assets/* 모두 제외됨
+# ---------------------------------------------------------
 excludePaths:
+  # === 헬스체크 엔드포인트 ===
+  # k8s liveness/readiness probe, 로드밸런서 헬스체크
   - "/health"
   - "/healthz"
   - "/ready"
   - "/readyz"
   - "/actuator/health"
+
+  # === 메트릭 수집 ===
+  # Prometheus scrape 요청
   - "/metrics"
+
+  # === Grafana 오탐 방지 ===
+  # 아래 경로들은 정상적인 Grafana 사용 시 WAF 규칙에 오탐(false positive)됨
+  #
+  # 1. /explore - Grafana Explore 기능
+  #    - 쿼리 문자열에 LogQL/PromQL 표현식 포함 (따옴표, SQL 키워드 등)
+  #    - 예: /explore?left=["now-1h","now","Loki",{"expr":"{app=\"test\"}"}]
+  #    - sql-quotes 규칙에 탐지됨 (Multiple quotes detected)
+  #
+  # 2. /assets/ - 정적 파일 (JS, CSS, 이미지 등)
+  #    - 파일명에 '--' 또는 특수문자 포함 가능
+  #    - 예: /assets/app--dark--3a2b1c.js
+  #    - sql-comment 규칙에 탐지됨 (-- 패턴)
+  #
+  # 3. /api/ds/query - Grafana 데이터소스 쿼리 API
+  #    - 백엔드에서 Prometheus/Loki 쿼리 실행
+  #    - 쿼리 본문에 PromQL/LogQL 표현식 포함
+  - "/explore"
+  - "/assets/"
+  - "/api/ds/query"
 
 # 응답 설정
 response:
   statusCode: 403
   body: "Forbidden: Security violation detected"
+
+# 내부 경로 차단 (AuthorizationPolicy)
+# 외부에서 접근하면 안 되는 경로들
+denyPaths:
+  enabled: false
+  paths: []
+  # 예시:
+  # - "/api/prometheus*"
+  # - "/actuator/prometheus*"
+  # - "/metrics*"
+  # - "*/metrics"

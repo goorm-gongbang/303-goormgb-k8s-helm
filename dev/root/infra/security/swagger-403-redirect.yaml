@@ -1,0 +1,61 @@
+# 403 응답 시 OAuth2 로그인 페이지로 리다이렉트
+# 문제: 만료된 쿠키로 인한 403 → 로그인 리다이렉트 필요
+# 해결: envoy_on_request에서 호스트 저장 → envoy_on_response에서 403을 302로 변환
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: swagger-403-redirect
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inlineCode: |
+              -- 요청 단계: swagger 도메인인지 확인하고 메타데이터에 저장
+              function envoy_on_request(request_handle)
+                local host = request_handle:headers():get(":authority") or ""
+                local path = request_handle:headers():get(":path") or "/"
+
+                if string.find(host, "swagger") then
+                  request_handle:streamInfo():dynamicMetadata():set("swagger_filter", "is_swagger", "true")
+                  request_handle:streamInfo():dynamicMetadata():set("swagger_filter", "original_path", path)
+                end
+              end
+
+              -- 응답 단계: swagger 도메인 처리
+              function envoy_on_response(response_handle)
+                local status = response_handle:headers():get(":status")
+                local metadata = response_handle:streamInfo():dynamicMetadata():get("swagger_filter")
+
+                if metadata and metadata["is_swagger"] == "true" then
+                  -- 모든 swagger 응답에 캐시 방지 헤더 추가 (에러 캐싱 방지)
+                  response_handle:headers():remove("cache-control")
+                  response_handle:headers():add("cache-control", "no-cache, no-store, must-revalidate, max-age=0")
+                  response_handle:headers():add("pragma", "no-cache")
+
+                  -- 403 응답을 302 리다이렉트로 변환
+                  if status == "403" then
+                    local path = metadata["original_path"] or "/"
+                    local redirect_url = "/oauth2/start?rd=" .. path
+
+                    response_handle:headers():replace(":status", "302")
+                    response_handle:headers():add("location", redirect_url)
+                  end
+                end
+              end

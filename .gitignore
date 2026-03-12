@@ -1,0 +1,28 @@
+# Secrets
+.env
+.env.local
+.env.*.local
+secrets/
+*.key
+*.pem
+*.crt
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Helm
+# charts/*/charts/  # ArgoCD에서 dependency 사용을 위해 주석 처리
+# *.tgz             # chart dependency .tgz 파일 포함 필요
+
+# Temporary
+*.tmp
+*.bak
+*.log
