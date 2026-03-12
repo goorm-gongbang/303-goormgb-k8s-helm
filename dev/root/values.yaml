@@ -311,6 +311,13 @@ gitCharts:
     syncWave: "-9"
     valueFiles:
       - ../../../dev/values/core/values-calico.yaml
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 5
+      duration: "10s"
+      maxDuration: "3m"
+      factor: 2
 
   loki-backup:
     enabled: true

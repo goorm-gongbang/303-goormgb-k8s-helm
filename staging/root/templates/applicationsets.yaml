@@ -24,7 +24,7 @@ spec:
           {{- end }}
   template:
     metadata:
-      name: 'dev-{{`{{name}}`}}'
+      name: 'staging-{{`{{name}}`}}'
       labels:
         ns: {{ $appSet.namespace }}
       annotations:
