@@ -21,7 +21,7 @@
       }
     ]
   },
-  "description": "k6 Load Testing Results - Prometheus 메트릭 기반 부하 테스트 결과 시각화",
+  "description": "k6 부하 테스트 결과 - Prometheus 메트릭 기반 실시간 성능 모니터링",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -39,7 +39,7 @@
       },
       "id": 47,
       "panels": [],
-      "title": "Performance Overview",
+      "title": "성능 개요",
       "type": "row"
     },
     {
@@ -131,7 +131,7 @@
           "refId": "A"
         }
       ],
-      "title": "Tests in this Time Range",
+      "title": "현재 시간 범위의 테스트",
       "transformations": [
         {
           "id": "joinByLabels",
@@ -263,7 +263,7 @@
           "refId": "A"
         }
       ],
-      "title": "Total Requests",
+      "title": "총 요청 수",
       "type": "stat"
     },
     {
@@ -346,7 +346,7 @@
           "refId": "A"
         }
       ],
-      "title": "HTTP Failures",
+      "title": "HTTP 실패",
       "type": "stat"
     },
     {
@@ -430,7 +430,7 @@
           "refId": "A"
         }
       ],
-      "title": "Peak RPS",
+      "title": "최대 RPS",
       "type": "stat"
     },
     {
@@ -517,7 +517,7 @@
           "refId": "A"
         }
       ],
-      "title": "P95 Response Time",
+      "title": "P95 응답시간",
       "transformations": [],
       "type": "stat"
     },
@@ -597,7 +597,7 @@
           "refId": "A"
         }
       ],
-      "title": "Data Received",
+      "title": "수신 데이터",
       "type": "stat"
     },
     {
@@ -676,7 +676,7 @@
           "refId": "A"
         }
       ],
-      "title": "Data Sent",
+      "title": "전송 데이터",
       "type": "stat"
     },
     {
@@ -684,7 +684,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "VUs, RPS, Response Time 통합 그래프",
+      "description": "VUs, RPS, 응답시간 통합 그래프",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -863,7 +863,7 @@
               },
               {
                 "id": "custom.axisLabel",
-                "value": "Response Time"
+                "value": "응답시간"
               },
               {
                 "id": "decimals",
@@ -906,7 +906,7 @@
           "hide": false,
           "instant": false,
           "interval": "",
-          "legendFormat": "Active VUs - {{testid}}",
+          "legendFormat": "활성 VUs - {{testid}}",
           "range": true,
           "refId": "A"
         },
@@ -922,7 +922,7 @@
           "hide": false,
           "instant": false,
           "interval": "",
-          "legendFormat": "RPS - {{testid}}",
+          "legendFormat": "초당요청 - {{testid}}",
           "range": true,
           "refId": "B"
         },
