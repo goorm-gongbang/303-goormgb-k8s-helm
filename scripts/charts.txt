@@ -1,0 +1,24 @@
+# Helm Charts to push to ECR
+# Format: REPO_URL|CHART_NAME|VERSION
+#
+# Istio
+https://istio-release.storage.googleapis.com/charts|base|1.29.1
+https://istio-release.storage.googleapis.com/charts|istiod|1.29.1
+
+# Kiali
+https://kiali.org/helm-charts|kiali-server|2.23.0
+
+# External Secrets
+https://charts.external-secrets.io|external-secrets|2.1.0
+
+# Calico
+https://docs.tigera.io/calico/charts|tigera-operator|v3.29.3
+
+# Grafana ecosystem
+https://grafana.github.io/helm-charts|loki|6.55.0
+https://grafana.github.io/helm-charts|promtail|6.17.1
+https://grafana.github.io/helm-charts|alloy|1.6.2
+https://grafana.github.io/helm-charts|k6-operator|4.3.0
+
+# Prometheus
+https://prometheus-community.github.io/helm-charts|kube-prometheus-stack|82.10.3

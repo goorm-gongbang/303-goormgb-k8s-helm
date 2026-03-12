@@ -3,9 +3,9 @@ name: istio-base
 description: Istio Base (CRDs and cluster-wide resources)
 type: application
 version: 1.0.0
-appVersion: "1.24.0"
+appVersion: "1.29.1"
 
 dependencies:
   - name: base
-    version: "1.24.0"
-    repository: https://istio-release.storage.googleapis.com/charts
+    version: "1.29.1"
+    repository: oci://__AWS_ACCOUNT_ID__.dkr.ecr.ap-northeast-2.amazonaws.com/helm
