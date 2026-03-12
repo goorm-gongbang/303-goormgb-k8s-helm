@@ -3,14 +3,14 @@ name: loki
 description: Grafana Loki for log aggregation (official loki chart)
 type: application
 version: 2.0.0
-appVersion: "3.0.0"
+appVersion: "3.6.7"
 
 dependencies:
   # 공식 Loki 차트 (loki-stack 대신)
   - name: loki
-    version: "6.16.0"
-    repository: https://grafana.github.io/helm-charts
+    version: "6.55.0"
+    repository: oci://497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/helm
   # Promtail - 로그 수집 에이전트
   - name: promtail
-    version: "6.16.6"
-    repository: https://grafana.github.io/helm-charts
+    version: "6.17.1"
+    repository: oci://497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/helm

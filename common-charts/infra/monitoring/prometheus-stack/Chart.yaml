@@ -3,9 +3,9 @@ name: prometheus-stack
 description: Prometheus + Grafana + AlertManager (kube-prometheus-stack wrapper)
 type: application
 version: 1.0.0
-appVersion: "0.79.0"
+appVersion: "0.89.0"
 
 dependencies:
   - name: kube-prometheus-stack
-    version: "67.4.0"
-    repository: https://prometheus-community.github.io/helm-charts
+    version: "82.10.3"
+    repository: oci://497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/helm
