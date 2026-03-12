@@ -5,9 +5,14 @@ set -e
 # Helm Charts → ECR Push Script
 #############################################
 
-AWS_ACCOUNT_ID="497012402578"
-AWS_REGION="ap-northeast-2"
+# 환경 변수에서 읽기 (필수)
+AWS_ACCOUNT_ID="${AWS_ACCOUNT_ID:?AWS_ACCOUNT_ID 환경 변수를 설정해주세요.}"
+AWS_REGION="${AWS_REGION:-ap-northeast-2}"
 ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+
+# 스크립트 디렉토리
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CHARTS_FILE="${SCRIPT_DIR}/charts.txt"
 
 # 임시 디렉토리
 WORK_DIR=$(mktemp -d)
@@ -30,13 +35,13 @@ push_chart() {
   # Helm repo 추가
   REPO_NAME="temp-${chart_name}"
   helm repo add ${REPO_NAME} ${repo_url} 2>/dev/null || true
-  helm repo update ${REPO_NAME} 2>/dev/null || helm repo update
+  helm repo update
 
   # 차트 다운로드
   cd ${WORK_DIR}
   helm pull ${REPO_NAME}/${chart_name} --version ${version}
 
-  # ECR에 푸시 (차트 이름이 자동으로 경로에 추가됨)
+  # ECR에 푸시
   TGZ_FILE=$(ls ${chart_name}-*.tgz 2>/dev/null | head -1)
   if [ -z "$TGZ_FILE" ]; then
     echo "ERROR: Chart file not found!"
@@ -52,30 +57,26 @@ push_chart() {
 }
 
 #############################################
-# 각 차트 Push
+# charts.txt 파일에서 차트 목록 읽기
 #############################################
 
-# Istio
-push_chart "https://istio-release.storage.googleapis.com/charts" "base" "1.29.1"
-push_chart "https://istio-release.storage.googleapis.com/charts" "istiod" "1.29.1"
+if [ ! -f "$CHARTS_FILE" ]; then
+  echo "ERROR: charts.txt not found at $CHARTS_FILE"
+  exit 1
+fi
 
-# Kiali
-push_chart "https://kiali.org/helm-charts" "kiali-server" "2.23.0"
+while IFS= read -r line || [ -n "$line" ]; do
+  # 주석과 빈 줄 무시
+  [[ "$line" =~ ^#.*$ ]] && continue
+  [[ -z "$line" ]] && continue
 
-# External Secrets
-push_chart "https://charts.external-secrets.io" "external-secrets" "2.1.0"
+  # 파싱: REPO_URL|CHART_NAME|VERSION
+  IFS='|' read -r repo_url chart_name version <<< "$line"
 
-# Calico
-push_chart "https://docs.tigera.io/calico/charts" "tigera-operator" "v3.29.3"
-
-# Grafana ecosystem
-push_chart "https://grafana.github.io/helm-charts" "loki" "6.55.0"
-push_chart "https://grafana.github.io/helm-charts" "promtail" "6.17.1"
-push_chart "https://grafana.github.io/helm-charts" "alloy" "1.6.2"
-push_chart "https://grafana.github.io/helm-charts" "k6-operator" "4.3.0"
-
-# Prometheus
-push_chart "https://prometheus-community.github.io/helm-charts" "kube-prometheus-stack" "82.10.3"
+  if [ -n "$repo_url" ] && [ -n "$chart_name" ] && [ -n "$version" ]; then
+    push_chart "$repo_url" "$chart_name" "$version"
+  fi
+done < "$CHARTS_FILE"
 
 echo ""
 echo "=== 완료! ==="

@@ -9,4 +9,4 @@ appVersion: "0.0.18"
 dependencies:
   - name: k6-operator
     version: "4.3.0"
-    repository: oci://497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/helm
+    repository: oci://__AWS_ACCOUNT_ID__.dkr.ecr.ap-northeast-2.amazonaws.com/helm

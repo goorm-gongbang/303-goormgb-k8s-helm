@@ -8,4 +8,4 @@ appVersion: "2.23.0"
 dependencies:
   - name: kiali-server
     version: "2.23.0"
-    repository: oci://497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/helm
+    repository: oci://__AWS_ACCOUNT_ID__.dkr.ecr.ap-northeast-2.amazonaws.com/helm
