@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/part-of: monitoring
     grafana_dashboard: "1"
   annotations:
-    grafana_folder: "Load Testing (k6)"
+    grafana_folder: "부하 테스트 (k6)"
 {{- if gt (len $dashboardFiles) 0 }}
 data:
 {{- range $path, $_ := $dashboardFiles }}
