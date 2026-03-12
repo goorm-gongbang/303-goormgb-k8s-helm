@@ -2,6 +2,10 @@
 # - VXLAN encapsulation
 # - mini-gmk 노드 기준 설정
 
+# FelixConfiguration - tigera-operator가 자동 생성하므로 비활성화
+felixConfiguration:
+  enabled: false
+
 # PodMonitor 설정 (Felix 메트릭 수집)
 metrics:
   enabled: true

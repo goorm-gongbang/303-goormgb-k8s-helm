@@ -1,11 +1,7 @@
 apiVersion: v2
-name: istiod
-description: Istio Control Plane (istiod)
+name: istiod-monitoring
+description: Istiod monitoring configuration (PodMonitor, ServiceMonitor)
 type: application
 version: 1.0.0
 appVersion: "1.29.1"
-
-dependencies:
-  - name: istiod
-    version: "1.29.1"
-    repository: oci://__AWS_ACCOUNT_ID__.dkr.ecr.ap-northeast-2.amazonaws.com/helm
+# OCI dependency removed - using direct OCI reference in ArgoCD
