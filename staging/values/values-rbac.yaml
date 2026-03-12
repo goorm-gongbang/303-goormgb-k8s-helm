@@ -1,0 +1,11 @@
+# EKS Staging - Team RBAC Configuration
+
+clusterRoleName: team-viewer
+
+members:
+  - kind: User
+    name: grgb-wonny
+  - kind: User
+    name: grgb-chamchi
+  - kind: User
+    name: grgb-rhuba
