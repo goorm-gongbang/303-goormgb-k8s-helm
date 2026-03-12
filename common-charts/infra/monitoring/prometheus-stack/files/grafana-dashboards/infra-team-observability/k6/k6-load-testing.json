@@ -1087,7 +1087,7 @@
           "expr": "avg by(testid)(histogram_sum(rate(k6_http_req_duration_seconds{testid=~\"$testid\", name=~\"$url\",scenario=~\"$scenario\"}[$__rate_interval])) / histogram_count(rate(k6_http_req_duration_seconds{testid=~\"$testid\", name=~\"$url\",scenario=~\"$scenario\"}[$__rate_interval])))",
           "hide": false,
           "interval": "",
-          "legendFormat": "Duration - {{testid}}",
+          "legendFormat": "응답시간 - {{testid}}",
           "range": true,
           "refId": "G"
         },
@@ -1101,12 +1101,12 @@
           "expr": "avg by(testid)(histogram_sum(rate(k6_http_req_waiting_seconds{testid=~\"$testid\", name=~\"$url\",scenario=~\"$scenario\"}[$__rate_interval])) / histogram_count(rate(k6_http_req_waiting_seconds{testid=~\"$testid\", name=~\"$url\",scenario=~\"$scenario\"}[$__rate_interval])))",
           "hide": false,
           "interval": "",
-          "legendFormat": "Waiting (TTFB) - {{testid}}",
+          "legendFormat": "대기 (TTFB) - {{testid}}",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "HTTP Timing Breakdown",
+      "title": "HTTP 타이밍 상세",
       "type": "timeseries"
     },
     {
@@ -1193,7 +1193,7 @@
           "exemplar": true,
           "expr": "avg by(testid)(sum by(testid)(irate(k6_data_received_total{testid=~\"$testid\"}[$__rate_interval])))",
           "interval": "",
-          "legendFormat": "Received - {{testid}}",
+          "legendFormat": "수신 - {{testid}}",
           "range": true,
           "refId": "A"
         },
@@ -1207,12 +1207,12 @@
           "expr": "avg by(testid)(sum by(testid)(irate(k6_data_sent_total{testid=~\"$testid\"}[$__rate_interval])))",
           "hide": false,
           "interval": "",
-          "legendFormat": "Sent - {{testid}}",
+          "legendFormat": "전송 - {{testid}}",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "Data Flow",
+      "title": "데이터 흐름",
       "type": "timeseries"
     },
     {
@@ -1324,14 +1324,14 @@
           "refId": "A"
         }
       ],
-      "title": "HTTP Status Code Distribution",
+      "title": "HTTP 상태 코드 분포",
       "type": "stat"
     }
   ],
-  "refresh": "5s",
+  "refresh": "30s",
   "schemaVersion": 38,
   "style": "dark",
-  "tags": ["k6", "load-testing", "prometheus"],
+  "tags": ["k6", "부하테스트", "prometheus"],
   "templating": {
     "list": [
       {
@@ -1406,12 +1406,12 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "k6 Load Testing Results",
+  "title": "k6 부하 테스트 결과",
   "uid": "k6-load-testing",
   "version": 1,
   "weekStart": ""
