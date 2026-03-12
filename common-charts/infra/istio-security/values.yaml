@@ -280,3 +280,121 @@ denyPaths:
   # - "/actuator/prometheus*"
   # - "/metrics*"
   # - "*/metrics"
+
+# ============================================================
+# Rate Limiting 설정
+# ============================================================
+# Local Rate Limit: Pod별 개별 카운트 (1차 방어선, Redis 불필요)
+# Global Rate Limit: Redis 기반 분산 카운팅 (정밀 제어)
+# ============================================================
+
+rateLimiting:
+  # --- Local Rate Limit (Envoy 내장) ---
+  local:
+    enabled: true
+
+    # 기본 설정 (전체 경로에 적용)
+    default:
+      enabled: true
+      # 토큰 버킷 설정
+      tokensPerFill: 100        # 리필 시 추가되는 토큰 수
+      fillInterval: 1s          # 리필 간격
+      maxTokens: 100            # 버킷 최대 토큰 수
+      # 결과: 초당 100 요청 허용
+
+    # IP별 제한 (X-Forwarded-For 기반)
+    perClient:
+      enabled: true
+      tokensPerFill: 50         # IP당 초당 50 요청
+      fillInterval: 1s
+      maxTokens: 100            # 버스트 허용 (최대 100)
+
+    # 경로별 제한 (민감한 API)
+    perRoute:
+      enabled: true
+      routes:
+        # 로그인 API - Brute Force 방지
+        - path: "/auth/"
+          tokensPerFill: 10       # 초당 10 요청
+          fillInterval: 1s
+          maxTokens: 20
+
+        # 결제 API - 더 엄격하게
+        - path: "/payment/"
+          tokensPerFill: 5
+          fillInterval: 1s
+          maxTokens: 10
+
+        # 회원가입 - 스팸 방지
+        - path: "/signup"
+          tokensPerFill: 3
+          fillInterval: 1s
+          maxTokens: 5
+
+    # Rate Limit 응답 설정
+    response:
+      statusCode: 429
+      body: "Too Many Requests"
+      headers:
+        - name: "Retry-After"
+          value: "60"
+        - name: "X-RateLimit-Limit"
+          value: "100"
+
+    # 로깅 설정
+    logging:
+      enabled: true
+      # 제한 걸린 요청만 로깅 (true) / 모든 요청 로깅 (false)
+      onlyLimited: true
+
+  # --- Global Rate Limit (Redis 기반) ---
+  global:
+    enabled: false    # Redis 설정 후 true로 변경
+
+    # Redis 설정
+    redis:
+      # 내부 Redis 사용 (이 차트에서 배포)
+      internal: true
+      # 외부 Redis 사용 시
+      # internal: false
+      # host: "redis.redis-system.svc.cluster.local"
+      # port: 6379
+
+    # Rate Limit 서비스 설정
+    service:
+      replicas: 2
+      image: envoyproxy/ratelimit:latest
+
+    # 도메인별 설정
+    domain: "goormgb-ratelimit"
+
+    # Rate Limit 규칙
+    descriptors:
+      # IP별 전역 제한
+      - key: remote_address
+        rateLimit:
+          requestsPerUnit: 1000
+          unit: minute
+
+      # 경로 + IP 조합
+      - key: path
+        value: "/api/auth"
+        descriptors:
+          - key: remote_address
+            rateLimit:
+              requestsPerUnit: 60
+              unit: minute
+
+      # 특정 IP 화이트리스트 (무제한)
+      - key: remote_address
+        value: "10.0.0.0/8"
+        rateLimit:
+          unlimited: true
+
+  # 제외 경로 (Rate Limit 적용 안 함)
+  excludePaths:
+    - "/health"
+    - "/healthz"
+    - "/ready"
+    - "/metrics"
+    - "/actuator/health"
