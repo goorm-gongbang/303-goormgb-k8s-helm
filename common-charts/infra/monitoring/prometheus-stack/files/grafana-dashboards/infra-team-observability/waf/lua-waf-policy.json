@@ -1,6 +1,6 @@
 {
   "annotations": { "list": [] },
-  "description": "Istio WAF (Web Application Firewall) 보안 필터 모니터링. Lua 스크립트 기반 10가지 보안 탐지 현황을 실시간으로 확인합니다.",
+  "description": "Lua 스크립트 기반 WAF 보안 정책 모니터링. SQL Injection, XSS, Path Traversal 등 10가지 공격 유형 탐지 현황을 실시간으로 확인합니다.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -806,7 +806,7 @@
   "time": { "from": "now-1h", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Istio WAF 보안 모니터링",
-  "uid": "istio-waf-security",
+  "title": "Lua WAF 보안 정책",
+  "uid": "lua-waf-policy",
   "version": 1
 }
