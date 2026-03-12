@@ -19,7 +19,7 @@ spec:
         retryOn: connect-failure,refused-stream,503,reset
       route:
         - destination:
-            host: kube-prometheus-stack-grafana
+            host: {{ .Values.grafana.fullnameOverride | default "kube-prometheus-stack-grafana" }}
             port:
               number: 80
 {{- end }}
