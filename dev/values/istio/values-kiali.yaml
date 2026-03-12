@@ -1,4 +1,4 @@
-# Kiali Server values
+# Kiali Server values (OCI chart)
 # https://github.com/kiali/helm-charts
 
 server:
@@ -14,3 +14,8 @@ external_services:
   tracing:
     enabled: true
     in_cluster_url: http://tempo.monitoring:3100
+
+# kiali-config (Git chart) values
+kialiVirtualService:
+  enabled: true
+  host: kiali.goormgb.space
