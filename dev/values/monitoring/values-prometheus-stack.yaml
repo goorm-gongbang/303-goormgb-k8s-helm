@@ -2,6 +2,16 @@
 # Domain: goormgb.space
 # Note: kube-prometheus-stack을 직접 배포하므로 prefix 없이 root level에 값 설정
 
+# ===== prometheus-extras용 설정 (ExternalSecrets, VirtualService) =====
+# Grafana Gateway (prometheus-extras 차트에서 사용)
+gateway:
+  grafana:
+    enabled: true
+    host: "grafana.goormgb.space"
+    tls:
+      credentialName: goormgb-tls
+
+# ===== kube-prometheus-stack용 설정 =====
 # Pod 이름 단순화 (prometheus-stack-xxx → prom-xxx)
 fullnameOverride: prom
 cleanPrometheusOperatorObjectNames: true
@@ -109,6 +119,12 @@ prometheus:
               storage: 10Gi
 
 grafana:
+  # prometheus-extras용 ESO 설정
+  eso:
+    enabled: true
+    secretManagerKey: dev/monitoring/grafana
+    oauthSecretManagerKey: dev/infra/oauth/google
+
   fullnameOverride: grafana
 
   # init-chown-data 비활성화 (PVC 권한 문제 방지)
