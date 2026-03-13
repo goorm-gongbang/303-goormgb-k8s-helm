@@ -1,0 +1,92 @@
+name: Sync to Portfolio
+
+on:
+  push:
+    branches:
+      - sanitizer
+  workflow_dispatch:
+
+env:
+  PORTFOLIO_REPO: "techupgrgbcn-crypto/playball-infra"
+
+jobs:
+  sanitize-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Sanitize content
+        run: |
+          find . -type f \( -name "*.yaml" -o -name "*.yml" -o -name "*.md" -o -name "*.sh" \) | while read file; do
+            # AWS 계정 ID
+            sed -i 's/497012402578/123456789012/g' "$file"
+            sed -i 's/274130523831/987654321098/g' "$file"
+
+            # Route53 Zone ID
+            sed -i 's/Z0444756O5UQIM83AJHO/ZEXAMPLEZONEID/g' "$file"
+
+            # 팀원 이름
+            sed -i 's/grgb-wonny/team-member-1/g' "$file"
+            sed -i 's/grgb-chamchi/team-member-2/g' "$file"
+            sed -i 's/grgb-rhuba/team-member-3/g' "$file"
+            sed -i 's/argocd-goormgb/argocd-myproject/g' "$file"
+
+            # 노드명
+            sed -i 's/mini-might/worker-node-1/g' "$file"
+            sed -i 's/mini-gmk/control-plane-1/g' "$file"
+
+            # IP 주소 (Public)
+            sed -i 's/122\.34\.166\.131/10.0.0.1/g' "$file"
+            sed -i 's/39\.119\.192\.15/10.0.0.2/g' "$file"
+            sed -i 's/118\.221\.42\.243/10.0.0.3/g' "$file"
+
+            # IP 주소 (Private)
+            sed -i 's/192\.168\.45\.154/10.0.0.11/g' "$file"
+            sed -i 's/192\.168\.45\.123/10.0.0.10/g' "$file"
+            sed -i 's/192\.168\.45\.0\/24/10.0.0.0\/24/g' "$file"
+
+            # 이메일 - Admin
+            sed -i 's/212clab@gmail\.com/admin@example.com/g' "$file"
+            sed -i 's/rhuba23@gmail\.com/admin2@example.com/g' "$file"
+            sed -i 's/chamchi0129@gmail\.com/admin3@example.com/g' "$file"
+
+            # 이메일 - Editor
+            sed -i 's/jusanha17@gmail\.com/editor1@example.com/g' "$file"
+            sed -i 's/yuuijin863@gmail\.com/editor2@example.com/g' "$file"
+            sed -i 's/rhkdgur120@gmail\.com/editor3@example.com/g' "$file"
+            sed -i 's/siyeon0713@gmail\.com/editor4@example.com/g' "$file"
+            sed -i 's/cdh4112618@gmail\.com/editor5@example.com/g' "$file"
+            sed -i 's/wkdwlgus317@hanyang\.ac\.kr/editor6@example.com/g' "$file"
+
+            # 이메일 - Viewer
+            sed -i 's/lab\.jehyun@gmail\.com/viewer1@example.com/g' "$file"
+            sed -i 's/hs4734@gmail\.com/viewer2@example.com/g' "$file"
+            sed -i 's/sayiamseyoun9@gmail\.com/viewer3@example.com/g' "$file"
+            sed -i 's/jbyun1105@gmail\.com/viewer4@example.com/g' "$file"
+            sed -i 's/jminwook0120@gmail\.com/viewer5@example.com/g' "$file"
+            sed -i 's/hejwien@gmail\.com/viewer6@example.com/g' "$file"
+            sed -i 's/wnconc@gmail\.com/viewer7@example.com/g' "$file"
+            sed -i 's/niceguy6112@gmail\.com/viewer8@example.com/g' "$file"
+          done
+
+      - name: Push to portfolio repo
+        run: |
+          git clone https://x-access-token:${{ secrets.PORTFOLIO_TOKEN }}@github.com/${{ env.PORTFOLIO_REPO }}.git portfolio
+
+          rm -rf portfolio/k8s-helm
+          mkdir -p portfolio/k8s-helm
+
+          # Copy directories
+          [ -d common-charts ] && cp -r common-charts portfolio/k8s-helm/
+          [ -d staging ] && cp -r staging portfolio/k8s-helm/
+          [ -d prod ] && cp -r prod portfolio/k8s-helm/
+          [ -d dev ] && cp -r dev portfolio/k8s-helm/
+          [ -f README.md ] && cp README.md portfolio/k8s-helm/
+
+          cd portfolio
+          git config user.name "techupgrgbcn-crypto"
+          git config user.email "techupgrgbcn-crypto@users.noreply.github.com"
+          git add k8s-helm/
+          git diff --staged --quiet || git commit -m "chore(k8s-helm): sync sanitized code"
+          git push origin main
