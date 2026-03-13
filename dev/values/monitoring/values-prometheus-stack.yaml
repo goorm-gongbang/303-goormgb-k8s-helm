@@ -538,9 +538,10 @@ grafana:
     passwordKey: admin-password
 
   # Google OAuth 설정 - Secret에서 환경변수 주입
-  envFromSecrets:
-    - name: google-oauth-credentials
-      optional: false
+  envFrom:
+    - secretRef:
+        name: google-oauth-credentials
+        optional: false
 
   grafana.ini:
     server:
@@ -560,7 +561,7 @@ grafana:
       auth_url: https://accounts.google.com/o/oauth2/auth
       token_url: https://oauth2.googleapis.com/token
       api_url: https://openidconnect.googleapis.com/v1/userinfo
-      # client_id, client_secret은 envFromSecrets에서 주입
+      # client_id, client_secret은 envFrom secretRef에서 주입
       # 이메일 기반 역할 할당
       role_attribute_path: >-
         contains(['212clab@gmail.com', 'rhuba23@gmail.com', 'chamchi0129@gmail.com'], email) && 'Admin' ||
