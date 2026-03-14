@@ -1,0 +1,48 @@
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: {{ .Values.ec2NodeClass.name }}
+spec:
+  amiSelectorTerms:
+    - alias: al2023@latest
+
+  role: {{ .Values.nodeRole | quote }}
+
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: {{ .Values.clusterName | quote }}
+
+  securityGroupSelectorTerms:
+    - tags:
+        kubernetes.io/cluster/{{ .Values.clusterName }}: owned
+
+  metadataOptions:
+    httpEndpoint: enabled
+    httpProtocolIPv6: disabled
+    httpPutResponseHopLimit: 2
+    httpTokens: required
+
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: {{ .Values.ec2NodeClass.volumeSize }}
+        volumeType: {{ .Values.ec2NodeClass.volumeType }}
+        encrypted: true
+        deleteOnTermination: true
+
+  userData: |
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+    --BOUNDARY
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
+    #!/bin/bash
+    systemctl enable amazon-ssm-agent
+    systemctl start amazon-ssm-agent
+
+    --BOUNDARY--
+
+  tags:
+    Environment: staging
+    ManagedBy: karpenter

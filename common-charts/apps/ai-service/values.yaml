@@ -3,8 +3,16 @@
 
 replicaCount: 1
 
+# ECR 설정 (root values에서 상속)
+ecr:
+  accountId: ""
+  region: "ap-northeast-2"
+
 image:
-  repository: ""  # ECR 주소 (values에서 override)
+  # 이미지 경로 (예: dev/goormgb/ai)
+  name: ""
+  # (deprecated) 전체 URL
+  repository: ""
   tag: "latest"
   pullPolicy: IfNotPresent
 

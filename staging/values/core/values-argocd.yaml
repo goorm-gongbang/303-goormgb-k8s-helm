@@ -1,0 +1,89 @@
+# ArgoCD Config - EKS Staging
+# Domain: playball.one
+
+# Istio Gateway 설정 (Istio 설치 후 활성화)
+gateway:
+  host: "argocd.staging.playball.one"
+  tls:
+    enabled: true
+    credentialName: staging-tls  # cert-manager로 관리
+
+# Google OAuth 설정 (선택사항 - 우선 비활성화)
+oidc:
+  enabled: false
+  name: Google
+  issuer: https://accounts.google.com
+  secretManagerKey: staging/infra/oauth/google
+  requestedScopes:
+    - openid
+    - profile
+    - email
+
+# RBAC 설정 - 기본 admin 사용
+rbac:
+  eso:
+    enabled: false
+  defaultPolicy: role:admin
+
+# Applications 정의
+applications:
+  # === Web Services (6개) ===
+  - name: api-gateway
+    namespace: staging-webs
+    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
+    targetRevision: argocd-sync/staging
+    path: common-charts/apps/java-service
+    valuesFile: ../../../staging/values/apps/values-api-gateway.yaml
+    enabled: true
+
+  - name: auth-guard
+    namespace: staging-webs
+    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
+    targetRevision: argocd-sync/staging
+    path: common-charts/apps/java-service
+    valuesFile: ../../../staging/values/apps/values-auth-guard.yaml
+    enabled: true
+
+  - name: order-core
+    namespace: staging-webs
+    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
+    targetRevision: argocd-sync/staging
+    path: common-charts/apps/java-service
+    valuesFile: ../../../staging/values/apps/values-order-core.yaml
+    enabled: true
+
+  - name: queue
+    namespace: staging-webs
+    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
+    targetRevision: argocd-sync/staging
+    path: common-charts/apps/java-service
+    valuesFile: ../../../staging/values/apps/values-queue.yaml
+    enabled: true
+
+  - name: recommendation
+    namespace: staging-webs
+    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
+    targetRevision: argocd-sync/staging
+    path: common-charts/apps/java-service
+    valuesFile: ../../../staging/values/apps/values-recommendation.yaml
+    enabled: true
+
+  - name: seat
+    namespace: staging-webs
+    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
+    targetRevision: argocd-sync/staging
+    path: common-charts/apps/java-service
+    valuesFile: ../../../staging/values/apps/values-seat.yaml
+    enabled: true
+
+# Prometheus 메트릭 수집
+metrics:
+  enabled: true
+
+# ArgoCD Notifications - Discord (선택사항)
+notifications:
+  enabled: false
+  discord:
+    eso:
+      enabled: false
+      secretManagerKey: staging/argocd/discord-webhook

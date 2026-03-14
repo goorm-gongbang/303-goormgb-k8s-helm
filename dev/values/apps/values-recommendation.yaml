@@ -1,11 +1,9 @@
 # recommendation - Dev 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/recommendation
-
 replicaCount: 1
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/recommendation
-  tag: "e850e82"
+  name: "dev/goormgb/recommendation"
+  tag: "239ebbd"
   pullPolicy: Always
 
 imagePullSecrets:
