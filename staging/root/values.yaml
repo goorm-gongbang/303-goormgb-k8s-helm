@@ -21,6 +21,7 @@ destination:
 ociCharts:
   istio-base:
     enabled: true
+    repoURL: https://istio-release.storage.googleapis.com/charts
     chart: base
     version: "1.29.1"
     namespace: istio-system
@@ -36,6 +37,7 @@ ociCharts:
 
   istiod:
     enabled: true
+    repoURL: https://istio-release.storage.googleapis.com/charts
     chart: istiod
     version: "1.29.1"
     namespace: istio-system
@@ -70,6 +72,7 @@ ociCharts:
 
   kiali-server:
     enabled: false  # staging에서 필요시 활성화
+    repoURL: https://kiali.org/helm-charts
     chart: kiali-server
     version: "2.23.0"
     namespace: istio-system
@@ -79,6 +82,7 @@ ociCharts:
 
   tigera-operator:
     enabled: false  # EKS는 VPC CNI 사용
+    repoURL: https://docs.tigera.io/calico/charts
     chart: tigera-operator
     version: "v3.29.3"
     namespace: tigera-operator
@@ -87,6 +91,7 @@ ociCharts:
 
   loki:
     enabled: true
+    repoURL: https://grafana.github.io/helm-charts
     chart: loki
     version: "6.55.0"
     namespace: monitoring
@@ -104,6 +109,7 @@ ociCharts:
 
   promtail:
     enabled: true
+    repoURL: https://grafana.github.io/helm-charts
     chart: promtail
     version: "6.17.1"
     namespace: monitoring
@@ -113,6 +119,7 @@ ociCharts:
 
   kube-prometheus-stack:
     enabled: true
+    repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
     version: "82.10.3"
     namespace: monitoring
@@ -142,6 +149,7 @@ ociCharts:
 
   aws-load-balancer-controller:
     enabled: true
+    repoURL: https://aws.github.io/eks-charts
     chart: aws-load-balancer-controller
     version: "1.11.0"
     namespace: kube-system
@@ -151,6 +159,7 @@ ociCharts:
 
   external-secrets:
     enabled: true
+    repoURL: https://charts.external-secrets.io
     chart: external-secrets
     version: "2.1.0"
     namespace: external-secrets
@@ -160,6 +169,7 @@ ociCharts:
 
   alloy:
     enabled: false
+    repoURL: https://grafana.github.io/helm-charts
     chart: alloy
     version: "1.6.2"
     namespace: monitoring
@@ -168,6 +178,7 @@ ociCharts:
 
   k6-operator:
     enabled: false
+    repoURL: https://grafana.github.io/helm-charts
     chart: k6-operator
     version: "4.3.0"
     namespace: k6-operator
@@ -176,6 +187,7 @@ ociCharts:
 
   tempo:
     enabled: false  # staging에서 필요시 활성화
+    repoURL: https://grafana.github.io/helm-charts
     chart: tempo
     version: "1.10.3"
     namespace: monitoring
@@ -191,6 +203,7 @@ ociCharts:
 
   opentelemetry-collector:
     enabled: false  # staging에서 필요시 활성화
+    repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-collector
     version: "0.85.0"
     namespace: monitoring
