@@ -63,7 +63,8 @@ nodePools:
       - spot
       - on-demand
 
-    # 인스턴스 설정 - large 이상만 (medium은 max pods 17개로 너무 작음)
+    # 인스턴스 설정 - arm64 (Graviton, 비용 효율)
+    # TODO: CI에서 multi-arch 이미지 빌드 필요
     arch: arm64
     instanceCategories:
       - t
