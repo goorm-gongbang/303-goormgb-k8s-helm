@@ -35,6 +35,8 @@ prometheusOperator:
     enabled: false
   tls:
     enabled: false
+  nodeSelector:
+    nodepool: system
   resources:
     requests:
       cpu: 100m
@@ -76,6 +78,9 @@ prometheus:
     retention: 7d
     retentionSize: "20GB"
 
+    nodeSelector:
+      nodepool: system
+
     resources:
       requests:
         cpu: 200m
@@ -102,6 +107,9 @@ grafana:
     oauthSecretManagerKey: staging/infra/oauth/google
 
   fullnameOverride: grafana
+
+  nodeSelector:
+    nodepool: system
 
   # init-chown-data 비활성화 (PVC 권한 문제 방지)
   initChownData:
@@ -224,9 +232,10 @@ grafana:
     passwordKey: admin-password
 
   # Google OAuth 설정 - Secret에서 환경변수 주입
-  envFromSecrets:
-    - name: google-oauth-credentials
-      optional: false
+  envFrom:
+    - secretRef:
+        name: google-oauth-credentials
+        optional: false
 
   grafana.ini:
     server:
@@ -295,6 +304,8 @@ grafana:
 
 alertmanager:
   alertmanagerSpec:
+    nodeSelector:
+      nodepool: system
     resources:
       requests:
         cpu: 50m

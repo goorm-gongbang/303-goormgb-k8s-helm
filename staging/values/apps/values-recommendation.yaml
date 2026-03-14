@@ -1,6 +1,6 @@
 # recommendation - Staging 환경
 fullnameOverride: "recommendation"
-replicaCount: 1
+replicaCount: 2  # HA 구성
 
 image:
   # TODO: staging CI/CD 구축 후 staging/playball/web/recommendation 로 전환
@@ -8,14 +8,28 @@ image:
   tag: "e850e82"
   pullPolicy: Always
 
-imagePullSecrets:
-  - name: ecr-pull-secret
+# IRSA로 cross-account ECR 인증 (imagePullSecrets 불필요)
+
+# Workloads NodePool에 배치
+nodeSelector:
+  nodepool: workloads
 
 tolerations:
   - key: "spot"
     operator: "Equal"
     value: "true"
     effect: "NoSchedule"
+
+# HA: 다른 노드에 분산 배치
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: recommendation
+          topologyKey: kubernetes.io/hostname
 
 resources:
   requests:

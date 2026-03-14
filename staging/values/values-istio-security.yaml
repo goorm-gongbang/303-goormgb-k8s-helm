@@ -167,6 +167,10 @@ rateLimiting:
 mtls:
   enabled: true
   mode: STRICT  # STRICT: mTLS 필수, PERMISSIVE: 허용
+  namespaces:
+    - staging-webs
+    - monitoring
+    # - staging-ai  # AI 서비스 사용시 활성화
 
 # ============================================================
 # JWT 인증 설정
