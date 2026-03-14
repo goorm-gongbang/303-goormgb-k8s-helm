@@ -1,3 +1,4 @@
+{{- $ecr := .Values.ecr -}}
 {{- range .Values.applications }}
 {{- if .enabled }}
 ---
@@ -10,13 +11,22 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  source:
-    repoURL: {{ .repoURL }}
-    targetRevision: {{ .targetRevision | default "HEAD" }}
-    path: {{ .path }}
-    helm:
-      valueFiles:
-        - {{ .valuesFile }}
+  sources:
+    - repoURL: {{ .repoURL }}
+      targetRevision: {{ .targetRevision | default "HEAD" }}
+      ref: values
+    - repoURL: {{ .repoURL }}
+      targetRevision: {{ .targetRevision | default "HEAD" }}
+      path: {{ .path }}
+      helm:
+        valueFiles:
+          - $values/{{ .valuesFile | replace "../../../" "" }}
+        {{- if $ecr.accountId }}
+        valuesObject:
+          ecr:
+            accountId: "{{ $ecr.accountId }}"
+            region: "{{ $ecr.region }}"
+        {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .namespace }}

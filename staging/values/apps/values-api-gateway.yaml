@@ -1,13 +1,11 @@
 # api-gateway - Staging 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/web/api-gateway
-
 fullnameOverride: "api-gateway"
-
 replicaCount: 1
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/web/api-gateway
-  tag: "latest"
+  # TODO: staging CI/CD 구축 후 staging/playball/web/api-gateway 로 전환
+  name: "dev/goormgb/api-gateway"
+  tag: "e850e82"
   pullPolicy: Always
 
 imagePullSecrets:
