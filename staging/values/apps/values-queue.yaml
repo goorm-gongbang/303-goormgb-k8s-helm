@@ -8,8 +8,7 @@ image:
   tag: "e850e82"
   pullPolicy: Always
 
-imagePullSecrets:
-  - name: ecr-pull-secret
+# IRSA로 cross-account ECR 인증 (imagePullSecrets 불필요)
 
 # Workloads NodePool에 배치
 nodeSelector:
