@@ -1,0 +1,56 @@
+# auth-guard - Staging 환경
+fullnameOverride: "auth-guard"
+replicaCount: 1
+
+image:
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/web/auth-guard
+  tag: "latest"
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: ecr-pull-secret
+
+tolerations:
+  - key: "spot"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+istio:
+  sidecar: true
+
+servicePort: &port 8080
+service:
+  type: ClusterIP
+  port: *port
+
+envFrom:
+  - configMapRef:
+      name: service-config
+  - secretRef:
+      name: service-config
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: *port
+  initialDelaySeconds: 60
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: *port
+  initialDelaySeconds: 30
+  periodSeconds: 5
+
+otel:
+  enabled: false

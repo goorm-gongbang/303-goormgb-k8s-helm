@@ -1,0 +1,13 @@
+{{- if .Values.mtls.enabled }}
+# Mesh-wide DestinationRule for mTLS
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: default-mtls
+  namespace: istio-system
+spec:
+  host: "*.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+{{- end }}

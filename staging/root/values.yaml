@@ -280,7 +280,13 @@ applicationSets:
     namespace: staging-webs
     chartPath: common-charts/apps/java-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
-    services: []  # staging 서비스 추가 시 여기에
+    services:
+      - name: api-gateway
+      - name: auth-guard
+      - name: order-core
+      - name: queue
+      - name: recommendation
+      - name: seat
 
   staging-ai-services:
     enabled: true
