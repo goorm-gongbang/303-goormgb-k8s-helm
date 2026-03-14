@@ -34,61 +34,16 @@ oidc:
 # RBAC 설정 - ESO에서 허용된 사용자 목록 가져옴
 rbac:
   eso:
-    enabled: true
+    enabled: false  # TODO: Secrets Manager에 staging/oauth/rbac/argocd 생성 후 true
     secretManagerKey: staging/oauth/rbac/argocd
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
 
 # Applications 정의
-applications:
-  # === Web Services (6개) ===
-  - name: api-gateway
-    namespace: staging-webs
-    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
-    targetRevision: argocd-sync/staging
-    path: common-charts/apps/java-service
-    valuesFile: ../../../staging/values/apps/values-api-gateway.yaml
-    enabled: true
-
-  - name: auth-guard
-    namespace: staging-webs
-    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
-    targetRevision: argocd-sync/staging
-    path: common-charts/apps/java-service
-    valuesFile: ../../../staging/values/apps/values-auth-guard.yaml
-    enabled: true
-
-  - name: order-core
-    namespace: staging-webs
-    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
-    targetRevision: argocd-sync/staging
-    path: common-charts/apps/java-service
-    valuesFile: ../../../staging/values/apps/values-order-core.yaml
-    enabled: true
-
-  - name: queue
-    namespace: staging-webs
-    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
-    targetRevision: argocd-sync/staging
-    path: common-charts/apps/java-service
-    valuesFile: ../../../staging/values/apps/values-queue.yaml
-    enabled: true
-
-  - name: recommendation
-    namespace: staging-webs
-    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
-    targetRevision: argocd-sync/staging
-    path: common-charts/apps/java-service
-    valuesFile: ../../../staging/values/apps/values-recommendation.yaml
-    enabled: true
-
-  - name: seat
-    namespace: staging-webs
-    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
-    targetRevision: argocd-sync/staging
-    path: common-charts/apps/java-service
-    valuesFile: ../../../staging/values/apps/values-seat.yaml
-    enabled: true
+# 앱 서비스는 ApplicationSet (staging-webs-services)으로 관리
+# 중복 방지를 위해 여기서는 비활성화
+applications: []
+  # ApplicationSet 사용: staging/root/values.yaml → applicationSets.staging-webs-services
 
 # Prometheus 메트릭 수집 (Prometheus 설치 후 enabled: true로 변경)
 metrics:
