@@ -7,7 +7,8 @@ image:
   tag: "08a50e4"
   pullPolicy: Always
 
-# IRSA로 cross-account ECR 인증 (imagePullSecrets 불필요)
+# IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
+imagePullSecrets: []
 
 # Workloads NodePool에 배치
 nodeSelector:
