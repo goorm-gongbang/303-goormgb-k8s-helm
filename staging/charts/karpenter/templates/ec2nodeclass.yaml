@@ -1,20 +1,23 @@
+{{- range $name, $pool := .Values.nodePools }}
+{{- if $pool.enabled }}
+---
 apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
-  name: {{ .Values.ec2NodeClass.name }}
+  name: {{ $name }}
 spec:
   amiSelectorTerms:
     - alias: al2023@latest
 
-  role: {{ .Values.nodeRole | quote }}
+  role: {{ $.Values.nodeRole | quote }}
 
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: {{ .Values.clusterName | quote }}
+        karpenter.sh/discovery: {{ $.Values.clusterName | quote }}
 
   securityGroupSelectorTerms:
     - tags:
-        kubernetes.io/cluster/{{ .Values.clusterName }}: owned
+        kubernetes.io/cluster/{{ $.Values.clusterName }}: owned
 
   metadataOptions:
     httpEndpoint: enabled
@@ -25,8 +28,8 @@ spec:
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:
-        volumeSize: {{ .Values.ec2NodeClass.volumeSize }}
-        volumeType: {{ .Values.ec2NodeClass.volumeType }}
+        volumeSize: {{ $.Values.ec2NodeClass.volumeSize }}
+        volumeType: {{ $.Values.ec2NodeClass.volumeType }}
         encrypted: true
         deleteOnTermination: true
 
@@ -44,5 +47,13 @@ spec:
     --BOUNDARY--
 
   tags:
+    {{- if eq (index $pool.capacityTypes 0) "on-demand" }}
+    Name: "ktcloud-team4-ondemand"
+    {{- else }}
+    Name: "ktcloud-team4-spot"
+    {{- end }}
     Environment: staging
     ManagedBy: karpenter
+    NodePool: {{ $name }}
+{{- end }}
+{{- end }}
