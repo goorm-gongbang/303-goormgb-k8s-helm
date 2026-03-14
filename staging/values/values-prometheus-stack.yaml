@@ -232,9 +232,10 @@ grafana:
     passwordKey: admin-password
 
   # Google OAuth 설정 - Secret에서 환경변수 주입
-  envFromSecrets:
-    - name: google-oauth-credentials
-      optional: false
+  envFrom:
+    - secretRef:
+        name: google-oauth-credentials
+        optional: false
 
   grafana.ini:
     server:
