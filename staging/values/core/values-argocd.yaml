@@ -1,6 +1,17 @@
 # ArgoCD Config - EKS Staging
 # Domain: playball.one
 
+# ArgoCD Server Service - NLB + HTTPS
+server:
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:ap-northeast-2:274130523831:certificate/e2886626-a973-4451-a9fa-d4113da73284"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+
 # Istio Gateway 설정 (Istio 설치 후 활성화)
 gateway:
   host: "argocd.staging.playball.one"
@@ -8,9 +19,9 @@ gateway:
     enabled: true
     credentialName: staging-tls  # cert-manager로 관리
 
-# Google OAuth 설정 (선택사항 - 우선 비활성화)
+# Google OAuth 설정
 oidc:
-  enabled: false
+  enabled: true
   name: Google
   issuer: https://accounts.google.com
   secretManagerKey: staging/infra/oauth/google
@@ -19,11 +30,13 @@ oidc:
     - profile
     - email
 
-# RBAC 설정 - 기본 admin 사용
+# RBAC 설정 - ESO에서 허용된 사용자 목록 가져옴
 rbac:
   eso:
-    enabled: false
-  defaultPolicy: role:admin
+    enabled: true
+    secretManagerKey: staging/oauth/rbac/argocd
+  # 등록되지 않은 사용자는 접근 불가
+  defaultPolicy: role:none
 
 # Applications 정의
 applications:
