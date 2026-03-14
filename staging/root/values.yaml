@@ -156,6 +156,25 @@ ociCharts:
     syncWave: "-9"
     valueFiles:
       - $values/staging/values/values-aws-lb-controller.yaml
+    ignoreDifferences:
+      - group: ""
+        kind: Secret
+        name: aws-load-balancer-tls
+        jsonPointers:
+          - /data
+      - group: admissionregistration.k8s.io
+        kind: MutatingWebhookConfiguration
+        jsonPointers:
+          - /webhooks/0/clientConfig/caBundle
+          - /webhooks/1/clientConfig/caBundle
+          - /webhooks/2/clientConfig/caBundle
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+        jsonPointers:
+          - /webhooks/0/clientConfig/caBundle
+          - /webhooks/1/clientConfig/caBundle
+          - /webhooks/2/clientConfig/caBundle
+          - /webhooks/3/clientConfig/caBundle
 
   external-secrets:
     enabled: true
