@@ -10,7 +10,7 @@ spec:
     mode: {{ .Values.mtls.mode | default "STRICT" }}
 ---
 # 각 네임스페이스별 mTLS (명시적 설정)
-{{- range $ns := list "staging-webs" "staging-ai" "monitoring" }}
+{{- range $ns := .Values.mtls.namespaces | default (list "staging-webs" "monitoring") }}
 apiVersion: security.istio.io/v1
 kind: PeerAuthentication
 metadata:
