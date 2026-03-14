@@ -38,6 +38,12 @@ spec:
     helm:
       valueFiles:
         - {{ .valuesFile }}
+      {{- if $ecr.accountId }}
+      valuesObject:
+        ecr:
+          accountId: "{{ $ecr.accountId }}"
+          region: "{{ $ecr.region }}"
+      {{- end }}
   {{- end }}
   destination:
     server: https://kubernetes.default.svc

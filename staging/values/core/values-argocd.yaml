@@ -1,6 +1,17 @@
 # ArgoCD Config - EKS Staging
 # Domain: playball.one
 
+# ArgoCD Server Service - NLB + HTTPS
+server:
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:ap-northeast-2:274130523831:certificate/e2886626-a973-4451-a9fa-d4113da73284"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+
 # Istio Gateway 설정 (Istio 설치 후 활성화)
 gateway:
   host: "argocd.staging.playball.one"
