@@ -275,6 +275,14 @@ gitCharts:
     valueFiles:
       - ../../../../staging/values/values-monitoring.yaml
 
+  # === ArgoCD Config (OAuth, Applications) ===
+  argocd-config:
+    enabled: true
+    path: common-charts/infra/argocd
+    namespace: argocd
+    valueFiles:
+      - ../../../staging/values/core/values-argocd.yaml
+
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
