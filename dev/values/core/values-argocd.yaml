@@ -1,6 +1,11 @@
 # kubeadm-dev - ArgoCD 설정
 # Domain: goormgb.space
 
+# ECR 설정 (applications에 주입)
+ecr:
+  accountId: "497012402578"
+  region: "ap-northeast-2"
+
 # CP 노드에 배치 (설정 관련)
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
@@ -55,14 +60,9 @@ applications:
     valuesFile: values.yaml
     enabled: true
 
-  # 3. AI Defense (Python FastAPI)
-  - name: ai-defense
-    namespace: dev-ai
-    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
-    targetRevision: argocd-sync/dev
-    path: common-charts/apps/ai-service
-    valuesFile: ../../../dev/values/apps/values-ai-defense.yaml
-    enabled: true
+  # 3. AI Defense → ApplicationSet(dev-ai-services)으로 이동
+  # - name: ai-defense
+  #   enabled: false
 
   # === Sample (비활성화) ===
   - name: dev-sample
