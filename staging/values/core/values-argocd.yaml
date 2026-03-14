@@ -8,9 +8,9 @@ gateway:
     enabled: true
     credentialName: staging-tls  # cert-manager로 관리
 
-# Google OAuth 설정 (선택사항 - 우선 비활성화)
+# Google OAuth 설정
 oidc:
-  enabled: false
+  enabled: true
   name: Google
   issuer: https://accounts.google.com
   secretManagerKey: staging/infra/oauth/google
@@ -19,11 +19,13 @@ oidc:
     - profile
     - email
 
-# RBAC 설정 - 기본 admin 사용
+# RBAC 설정 - ESO에서 허용된 사용자 목록 가져옴
 rbac:
   eso:
-    enabled: false
-  defaultPolicy: role:admin
+    enabled: true
+    secretManagerKey: staging/oauth/rbac/argocd
+  # 등록되지 않은 사용자는 접근 불가
+  defaultPolicy: role:none
 
 # Applications 정의
 applications:
