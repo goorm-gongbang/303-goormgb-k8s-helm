@@ -11,6 +11,8 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
+  {{- if hasPrefix "../" .valuesFile }}
+  {{/* 외부 values 파일 사용 시 multi-source */}}
   sources:
     - repoURL: {{ .repoURL }}
       targetRevision: {{ .targetRevision | default "HEAD" }}
@@ -27,6 +29,16 @@ spec:
             accountId: "{{ $ecr.accountId }}"
             region: "{{ $ecr.region }}"
         {{- end }}
+  {{- else }}
+  {{/* chart 내부 values 파일 사용 시 single-source */}}
+  source:
+    repoURL: {{ .repoURL }}
+    targetRevision: {{ .targetRevision | default "HEAD" }}
+    path: {{ .path }}
+    helm:
+      valueFiles:
+        - {{ .valuesFile }}
+  {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .namespace }}
