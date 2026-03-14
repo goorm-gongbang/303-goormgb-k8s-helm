@@ -140,6 +140,15 @@ ociCharts:
           - /metadata
           - /subsets
 
+  aws-load-balancer-controller:
+    enabled: true
+    chart: aws-load-balancer-controller
+    version: "1.11.0"
+    namespace: kube-system
+    syncWave: "-9"
+    valueFiles:
+      - $values/staging/values/values-aws-lb-controller.yaml
+
   external-secrets:
     enabled: true
     chart: external-secrets
