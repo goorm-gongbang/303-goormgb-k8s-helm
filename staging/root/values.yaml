@@ -141,12 +141,13 @@ ociCharts:
           - /subsets
 
   external-secrets:
-    enabled: false  # EKS Blueprints에서 설치
+    enabled: true
     chart: external-secrets
     version: "2.1.0"
     namespace: external-secrets
     syncWave: "-9"
-    valueFiles: []
+    valueFiles:
+      - $values/staging/values/values-eso.yaml
 
   alloy:
     enabled: false
@@ -208,6 +209,13 @@ gitCharts:
     namespace: default
     valueFiles:
       - ../../../staging/values/values-rbac.yaml
+
+  # ESO ClusterSecretStore (IRSA 기반)
+  eso-config:
+    enabled: true
+    path: staging/charts/eso
+    namespace: external-secrets
+    syncWave: "-8"
 
   # === Istio ===
   istio-gateway:
