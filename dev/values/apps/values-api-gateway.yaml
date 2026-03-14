@@ -1,13 +1,11 @@
 # api-gateway - Dev 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/api-gateway
-
 # Java Cloud Gateway (Spring Cloud Gateway)
 fullnameOverride: "java-cloud-gateway"
 
 replicaCount: 1
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/api-gateway
+  name: "dev/goormgb/api-gateway"
   tag: "32c4283"
   pullPolicy: Always
 

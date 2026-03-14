@@ -3,8 +3,9 @@ fullnameOverride: "queue"
 replicaCount: 1
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/web/queue
-  tag: "latest"
+  # TODO: staging CI/CD 구축 후 staging/playball/web/queue 로 전환
+  name: "dev/goormgb/queue"
+  tag: "e850e82"
   pullPolicy: Always
 
 imagePullSecrets:

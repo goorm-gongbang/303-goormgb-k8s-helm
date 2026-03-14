@@ -1,6 +1,11 @@
 # ArgoCD configuration
 # ArgoCD 자체는 bootstrap repo의 scripts/argocd/install.sh 로 설치
 
+# ECR 설정 (환경별 values에서 설정)
+ecr:
+  accountId: ""
+  region: "ap-northeast-2"
+
 # Istio Gateway 설정 - 환경별로 설정
 gateway:
   host: ""
