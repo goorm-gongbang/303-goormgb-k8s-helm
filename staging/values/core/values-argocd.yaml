@@ -12,8 +12,9 @@ server:
       service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
 
-# Istio Gateway 설정
+# Istio Gateway 설정 (Istio 설치 후 enabled: true로 변경)
 gateway:
+  enabled: false  # TODO: Istio 설치 후 true로 변경
   host: "argocd.staging.playball.one"
   tls:
     enabled: true
@@ -89,9 +90,9 @@ applications:
     valuesFile: ../../../staging/values/apps/values-seat.yaml
     enabled: true
 
-# Prometheus 메트릭 수집
+# Prometheus 메트릭 수집 (Prometheus 설치 후 enabled: true로 변경)
 metrics:
-  enabled: true
+  enabled: false  # TODO: Prometheus 설치 후 true로 변경
 
 # ArgoCD Notifications - Discord (선택사항)
 notifications:
