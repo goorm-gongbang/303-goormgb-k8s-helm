@@ -3,6 +3,10 @@
 
 # ArgoCD Server Service - NLB + HTTPS
 server:
+  # 외부 URL (OAuth redirect용)
+  url: https://argocd.staging.playball.one
+  # NLB에서 SSL 종료하므로 ArgoCD는 HTTP로 실행
+  insecure: true
   service:
     type: LoadBalancer
     annotations:
