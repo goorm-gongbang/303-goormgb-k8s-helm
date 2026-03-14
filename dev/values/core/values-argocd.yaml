@@ -16,7 +16,9 @@ tolerations:
     effect: "NoSchedule"
 
 gateway:
+  enabled: true
   host: "argocd.goormgb.space"
+  gatewayRef: "istio-system/goormgb-gateway"
   tls:
     enabled: true
     credentialName: goormgb-tls

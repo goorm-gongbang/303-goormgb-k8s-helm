@@ -3,12 +3,12 @@ fullnameOverride: "seat"
 replicaCount: 2  # HA 구성
 
 image:
-  # TODO: staging CI/CD 구축 후 staging/playball/web/seat 로 전환
-  name: "dev/goormgb/seat"
-  tag: "e850e82"
+  name: "staging/playball/web/seat"
+  tag: "08a50e4"
   pullPolicy: Always
 
-# IRSA로 cross-account ECR 인증 (imagePullSecrets 불필요)
+# IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
+imagePullSecrets: []
 
 # Workloads NodePool에 배치
 nodeSelector:

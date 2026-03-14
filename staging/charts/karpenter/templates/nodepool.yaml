@@ -10,6 +10,7 @@ spec:
     metadata:
       labels:
         nodepool: {{ $name }}
+        node-role.kubernetes.io/{{ $name }}: ""
     spec:
       nodeClassRef:
         group: karpenter.k8s.aws

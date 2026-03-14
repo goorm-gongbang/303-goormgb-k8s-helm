@@ -1,7 +1,7 @@
 # ArgoCD Config - EKS Staging
 # Domain: playball.one
 
-# ArgoCD Server Service - NLB + HTTPS
+# ArgoCD Server Service - NLB + HTTPS (Istio 안 거침)
 server:
   # 외부 URL (OAuth redirect용)
   url: https://argocd.staging.playball.one
@@ -16,13 +16,10 @@ server:
       service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
 
-# Istio Gateway 설정 (Istio 설치 후 enabled: true로 변경)
+# Istio Gateway 비활성화 (NLB 직접 노출)
 gateway:
-  enabled: false  # TODO: Istio 설치 후 true로 변경
+  enabled: false
   host: "argocd.staging.playball.one"
-  tls:
-    enabled: true
-    credentialName: staging-tls
 
 # Google OAuth 설정
 oidc:
