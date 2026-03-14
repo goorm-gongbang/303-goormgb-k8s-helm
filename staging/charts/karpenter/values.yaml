@@ -1,0 +1,34 @@
+# Karpenter Configuration
+clusterName: "ktcloud_team4_260204-goormgb-staging"
+nodeRole: "ktcloud_team4_260204-karpenter-node"
+
+# NodePool settings
+nodePool:
+  name: default
+  limits:
+    cpu: 100
+    memory: 200Gi
+
+  # Instance requirements
+  arch: arm64
+  capacityTypes:
+    - spot
+    - on-demand
+  instanceCategories:
+    - t
+    - m
+    - c
+    - r
+  instanceSizes:
+    - medium
+    - large
+    - xlarge
+  zones:
+    - ap-northeast-2a
+    - ap-northeast-2c
+
+# EC2NodeClass settings
+ec2NodeClass:
+  name: default
+  volumeSize: 50Gi
+  volumeType: gp3

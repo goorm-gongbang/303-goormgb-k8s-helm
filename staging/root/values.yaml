@@ -217,6 +217,13 @@ gitCharts:
     namespace: external-secrets
     syncWave: "-8"
 
+  # Karpenter NodePool & EC2NodeClass
+  karpenter-config:
+    enabled: true
+    path: staging/charts/karpenter
+    namespace: karpenter
+    syncWave: "-7"
+
   # === Istio ===
   istio-gateway:
     enabled: true

@@ -1,0 +1,55 @@
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: {{ .Values.nodePool.name }}
+spec:
+  template:
+    spec:
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: {{ .Values.ec2NodeClass.name }}
+
+      requirements:
+        - key: kubernetes.io/arch
+          operator: In
+          values:
+            - {{ .Values.nodePool.arch }}
+
+        - key: karpenter.k8s.aws/instance-category
+          operator: In
+          values:
+            {{- toYaml .Values.nodePool.instanceCategories | nindent 12 }}
+
+        - key: karpenter.k8s.aws/instance-generation
+          operator: Gt
+          values: ["4"]
+
+        - key: karpenter.k8s.aws/instance-size
+          operator: In
+          values:
+            {{- toYaml .Values.nodePool.instanceSizes | nindent 12 }}
+
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values:
+            {{- toYaml .Values.nodePool.capacityTypes | nindent 12 }}
+
+        - key: topology.kubernetes.io/zone
+          operator: In
+          values:
+            {{- toYaml .Values.nodePool.zones | nindent 12 }}
+
+      expireAfter: 720h
+
+  limits:
+    cpu: {{ .Values.nodePool.limits.cpu }}
+    memory: {{ .Values.nodePool.limits.memory }}
+
+  disruption:
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 1m
+    budgets:
+      - nodes: "10%"
+
+  weight: 100
