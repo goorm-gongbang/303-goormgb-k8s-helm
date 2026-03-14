@@ -12,12 +12,12 @@ server:
       service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
 
-# Istio Gateway 설정 (Istio 설치 후 활성화)
+# Istio Gateway 설정
 gateway:
   host: "argocd.staging.playball.one"
   tls:
     enabled: true
-    credentialName: staging-tls  # cert-manager로 관리
+    credentialName: staging-tls
 
 # Google OAuth 설정
 oidc:
