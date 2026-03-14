@@ -89,15 +89,17 @@ prometheus:
         cpu: 1000m
         memory: 3Gi
 
-    storageSpec:
-      volumeClaimTemplate:
-        metadata:
-          name: data
-        spec:
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 30Gi
+    # EBS CSI driver 미사용 - emptyDir 사용
+    # storageSpec:
+    #   volumeClaimTemplate:
+    #     metadata:
+    #       name: data
+    #     spec:
+    #       storageClassName: gp2
+    #       accessModes: ["ReadWriteOnce"]
+    #       resources:
+    #         requests:
+    #           storage: 30Gi
 
 grafana:
   # prometheus-extras용 ESO 설정
@@ -267,9 +269,9 @@ grafana:
     auth:
       disable_login_form: false
 
+  # EBS CSI driver 미사용 - persistence 비활성화
   persistence:
-    enabled: true
-    size: 5Gi
+    enabled: false
 
   resources:
     requests:
