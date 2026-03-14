@@ -7,7 +7,7 @@ spec:
   hosts:
     - {{ .Values.gateway.host | quote }}
   gateways:
-    - istio-system/goormgb-gateway
+    - {{ .Values.gateway.gatewayRef | default "istio-system/goormgb-gateway" }}
   http:
     - retries:
         attempts: 3

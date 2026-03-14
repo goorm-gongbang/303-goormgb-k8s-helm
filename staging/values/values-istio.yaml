@@ -34,3 +34,15 @@ gateway:
     annotations:
       service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
       service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+
+# Shared Gateway (VirtualService에서 참조)
+sharedGateway:
+  enabled: true
+  name: api-gateway
+  tls:
+    credentialName: staging-tls  # cert-manager에서 생성
+  hosts:
+    - "*.staging.playball.one"
+    - "argocd.staging.playball.one"
+    - "grafana.staging.playball.one"
+    - "api.staging.playball.one"

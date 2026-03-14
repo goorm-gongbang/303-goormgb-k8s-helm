@@ -1,4 +1,4 @@
-# ECR OCI Registry
+# ECR OCI Registry (main 계정에서 cross-account pull)
 ecr:
   accountId: "497012402578"
   region: "ap-northeast-2"
