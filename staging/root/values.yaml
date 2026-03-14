@@ -185,6 +185,15 @@ ociCharts:
     syncWave: "-9"
     valueFiles:
       - $values/staging/values/values-eso.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+    ignoreDifferences:
+      - group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        jsonPointers:
+          - /status
+          - /metadata/annotations
 
   alloy:
     enabled: false
