@@ -330,6 +330,8 @@ loki:
 
   singleBinary:
     replicas: 1
+    nodeSelector:
+      nodepool: system
     resources:
       requests:
         cpu: 100m

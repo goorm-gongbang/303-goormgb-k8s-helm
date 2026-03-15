@@ -26,7 +26,11 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
         - name: {{ include "ai-service.name" . }}
+          {{- if and .Values.ecr.accountId .Values.image.name }}
+          image: "{{ .Values.ecr.accountId }}.dkr.ecr.{{ .Values.ecr.region }}.amazonaws.com/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.command }}
           command:

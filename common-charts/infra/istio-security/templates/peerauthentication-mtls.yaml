@@ -1,0 +1,24 @@
+{{- if .Values.mtls.enabled }}
+# Mesh-wide mTLS 설정
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  mtls:
+    mode: {{ .Values.mtls.mode | default "STRICT" }}
+---
+# 각 네임스페이스별 mTLS (명시적 설정)
+{{- range $ns := .Values.mtls.namespaces | default (list "staging-webs" "monitoring") }}
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: {{ $ns }}
+spec:
+  mtls:
+    mode: {{ $.Values.mtls.mode | default "STRICT" }}
+---
+{{- end }}
+{{- end }}

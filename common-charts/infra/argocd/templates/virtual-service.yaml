@@ -1,3 +1,4 @@
+{{- if .Values.gateway.enabled }}
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
@@ -6,7 +7,7 @@ spec:
   hosts:
     - {{ .Values.gateway.host | quote }}
   gateways:
-    - istio-system/goormgb-gateway
+    - {{ .Values.gateway.gatewayRef | default "istio-system/goormgb-gateway" }}
   http:
     - retries:
         attempts: 3
@@ -17,3 +18,4 @@ spec:
             host: argocd-server.argocd.svc.cluster.local
             port:
               number: 80
+{{- end }}

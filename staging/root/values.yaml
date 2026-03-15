@@ -1,4 +1,4 @@
-# ECR OCI Registry
+# ECR OCI Registry (main 계정에서 cross-account pull)
 ecr:
   accountId: "497012402578"
   region: "ap-northeast-2"
@@ -21,6 +21,7 @@ destination:
 ociCharts:
   istio-base:
     enabled: true
+    repoURL: https://istio-release.storage.googleapis.com/charts
     chart: base
     version: "1.29.1"
     namespace: istio-system
@@ -36,6 +37,7 @@ ociCharts:
 
   istiod:
     enabled: true
+    repoURL: https://istio-release.storage.googleapis.com/charts
     chart: istiod
     version: "1.29.1"
     namespace: istio-system
@@ -70,6 +72,7 @@ ociCharts:
 
   kiali-server:
     enabled: false  # staging에서 필요시 활성화
+    repoURL: https://kiali.org/helm-charts
     chart: kiali-server
     version: "2.23.0"
     namespace: istio-system
@@ -79,6 +82,7 @@ ociCharts:
 
   tigera-operator:
     enabled: false  # EKS는 VPC CNI 사용
+    repoURL: https://docs.tigera.io/calico/charts
     chart: tigera-operator
     version: "v3.29.3"
     namespace: tigera-operator
@@ -87,6 +91,7 @@ ociCharts:
 
   loki:
     enabled: true
+    repoURL: https://grafana.github.io/helm-charts
     chart: loki
     version: "6.55.0"
     namespace: monitoring
@@ -104,6 +109,7 @@ ociCharts:
 
   promtail:
     enabled: true
+    repoURL: https://grafana.github.io/helm-charts
     chart: promtail
     version: "6.17.1"
     namespace: monitoring
@@ -113,6 +119,7 @@ ociCharts:
 
   kube-prometheus-stack:
     enabled: true
+    repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
     version: "82.10.3"
     namespace: monitoring
@@ -140,16 +147,63 @@ ociCharts:
           - /metadata
           - /subsets
 
+  aws-load-balancer-controller:
+    enabled: true
+    repoURL: https://aws.github.io/eks-charts
+    chart: aws-load-balancer-controller
+    version: "1.11.0"
+    namespace: kube-system
+    syncWave: "-9"
+    valueFiles:
+      - $values/staging/values/values-aws-lb-controller.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+      - RespectIgnoreDifferences=true
+    ignoreDifferences:
+      - group: ""
+        kind: Secret
+        name: aws-load-balancer-tls
+        jsonPointers:
+          - /data
+      - group: admissionregistration.k8s.io
+        kind: MutatingWebhookConfiguration
+        name: aws-load-balancer-webhook
+        jsonPointers:
+          - /webhooks
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+        name: aws-load-balancer-webhook
+        jsonPointers:
+          - /webhooks
+      - group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        jsonPointers:
+          - /status
+          - /metadata/annotations
+
   external-secrets:
-    enabled: false  # EKS Blueprints에서 설치
+    enabled: true
+    repoURL: https://charts.external-secrets.io
     chart: external-secrets
     version: "2.1.0"
     namespace: external-secrets
     syncWave: "-9"
-    valueFiles: []
+    valueFiles:
+      - $values/staging/values/values-eso.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+    ignoreDifferences:
+      - group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        jsonPointers:
+          - /status
+          - /metadata/annotations
 
   alloy:
     enabled: false
+    repoURL: https://grafana.github.io/helm-charts
     chart: alloy
     version: "1.6.2"
     namespace: monitoring
@@ -158,6 +212,7 @@ ociCharts:
 
   k6-operator:
     enabled: false
+    repoURL: https://grafana.github.io/helm-charts
     chart: k6-operator
     version: "4.3.0"
     namespace: k6-operator
@@ -166,6 +221,7 @@ ociCharts:
 
   tempo:
     enabled: false  # staging에서 필요시 활성화
+    repoURL: https://grafana.github.io/helm-charts
     chart: tempo
     version: "1.10.3"
     namespace: monitoring
@@ -181,6 +237,7 @@ ociCharts:
 
   opentelemetry-collector:
     enabled: false  # staging에서 필요시 활성화
+    repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-collector
     version: "0.85.0"
     namespace: monitoring
@@ -208,6 +265,20 @@ gitCharts:
     namespace: default
     valueFiles:
       - ../../../staging/values/values-rbac.yaml
+
+  # ESO ClusterSecretStore (IRSA 기반)
+  eso-config:
+    enabled: true
+    path: staging/charts/eso
+    namespace: external-secrets
+    syncWave: "-8"
+
+  # Karpenter NodePool & EC2NodeClass
+  karpenter-config:
+    enabled: true
+    path: staging/charts/karpenter
+    namespace: karpenter
+    syncWave: "-7"
 
   # === Istio ===
   istio-gateway:
@@ -251,6 +322,14 @@ gitCharts:
     valueFiles:
       - ../../../../staging/values/values-monitoring.yaml
 
+  # === ArgoCD Config (OAuth, Applications) ===
+  argocd-config:
+    enabled: true
+    path: common-charts/infra/argocd
+    namespace: argocd
+    valueFiles:
+      - ../../../staging/values/core/values-argocd.yaml
+
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
@@ -265,7 +344,13 @@ applicationSets:
     namespace: staging-webs
     chartPath: common-charts/apps/java-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
-    services: []  # staging 서비스 추가 시 여기에
+    services:
+      - name: api-gateway
+      - name: auth-guard
+      - name: order-core
+      - name: queue
+      - name: recommendation
+      - name: seat
 
   staging-ai-services:
     enabled: true

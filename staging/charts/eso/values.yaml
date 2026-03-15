@@ -1,0 +1,13 @@
+# ClusterSecretStore for EKS staging
+# IRSA 기반 - AWS credentials 불필요
+
+clusterSecretStore:
+  enabled: true
+  name: aws-secrets-manager
+  region: ap-northeast-2
+
+# Service Config - 앱 서비스용 환경변수 (DB, Redis 등)
+serviceConfig:
+  enabled: true
+  namespace: staging-webs
+  secretManagerKey: staging/services/db

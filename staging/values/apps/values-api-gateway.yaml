@@ -1,0 +1,119 @@
+# api-gateway - Staging 환경
+fullnameOverride: "api-gateway"
+replicaCount: 2  # HA 구성
+
+image:
+  name: "staging/playball/web/api-gateway"
+  tag: "08a50e4"
+  pullPolicy: Always
+
+# IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
+imagePullSecrets: []
+
+# Workloads NodePool에 배치
+nodeSelector:
+  nodepool: workloads
+
+# Spot 노드 허용
+tolerations:
+  - key: "spot"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+# HA: 다른 노드에 분산 배치
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: api-gateway
+          topologyKey: kubernetes.io/hostname
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Istio
+istio:
+  sidecar: true
+  gateway:
+    enabled: true
+    externalRef: "istio-system/api-gateway"
+    host: "api.staging.playball.one"
+  cors:
+    enabled: true
+    allowOrigins:
+      - "https://staging.playball.one"
+      - "http://localhost:3000"
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+      - OPTIONS
+    allowHeaders:
+      - "*"
+    allowCredentials: true
+    maxAge: "24h"
+
+# Service
+servicePort: &port 8085
+service:
+  type: ClusterIP
+  port: *port
+
+# Environment variables
+env:
+  - name: ALLOWED_ORIGINS
+    value: "https://staging.playball.one,http://localhost:3000"
+  - name: AUTH_GUARD_URL
+    value: "http://auth-guard.staging-webs.svc.cluster.local:8080"
+  - name: QUEUE_URL
+    value: "http://queue.staging-webs.svc.cluster.local:8081"
+  - name: SEAT_URL
+    value: "http://seat.staging-webs.svc.cluster.local:8082"
+  - name: ORDER_CORE_URL
+    value: "http://order-core.staging-webs.svc.cluster.local:8083"
+  - name: RECOMMENDATION_URL
+    value: "http://recommendation.staging-webs.svc.cluster.local:8084"
+  - name: REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: SPRING_DATA_REDIS_HOST
+  - name: REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: SPRING_DATA_REDIS_PORT
+
+envFrom:
+  - secretRef:
+      name: service-config
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: *port
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: *port
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  failureThreshold: 3
+
+otel:
+  enabled: false  # staging에서는 우선 비활성화

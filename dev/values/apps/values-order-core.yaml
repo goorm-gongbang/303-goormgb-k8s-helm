@@ -1,10 +1,8 @@
 # order-core - Dev 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/order-core
-
 replicaCount: 1
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/order-core
+  name: "dev/goormgb/order-core"
   tag: "239ebbd"
   pullPolicy: Always
 
