@@ -161,6 +161,8 @@ ociCharts:
     syncWave: "-1"
     valueFiles:
       - $values/dev/values/monitoring/values-prometheus-stack.yaml
+      - $values/dev/values/monitoring/alerting/values-alertmanager-dev.yaml
+      - $values/dev/values/monitoring/alerting/values-rules-dev-5xx.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
