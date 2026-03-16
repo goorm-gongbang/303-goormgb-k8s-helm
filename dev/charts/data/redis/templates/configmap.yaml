@@ -4,6 +4,7 @@ metadata:
   name: {{ .Release.Name }}-config
 data:
   redis.conf: |
+    port {{ .Values.service.port }}
     dir /data
     maxmemory {{ .Values.config.maxmemory }}
     maxmemory-policy {{ .Values.config.maxmemoryPolicy }}
