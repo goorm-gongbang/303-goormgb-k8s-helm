@@ -34,7 +34,7 @@ data:
               "color": 896234,
               "fields": [
                 {"name": "Application", "value": {{`{{.app.metadata.name | toJson}}`}}, "inline": true},
-                {"name": "Revision", "value": {{`{{.app.status.sync.revision | default "unknown" | trunc 7 | toJson}}`}}, "inline": true},
+                {"name": "Revision", "value": {{`{{ if .app.status.sync.revision }}{{ .app.status.sync.revision | trunc 7 | toJson }}{{ else }}"unknown"{{ end }}`}}, "inline": true},
                 {"name": "Namespace", "value": {{`{{.app.spec.destination.namespace | toJson}}`}}, "inline": true}
               ],
               "timestamp": {{`{{.app.status.operationState.startedAt | default "" | toJson}}`}}
@@ -50,7 +50,7 @@ data:
               "color": 896234,
               "fields": [
                 {"name": "Application", "value": {{`{{.app.metadata.name | toJson}}`}}, "inline": true},
-                {"name": "Revision", "value": {{`{{.app.status.sync.revision | default "unknown" | trunc 7 | toJson}}`}}, "inline": true},
+                {"name": "Revision", "value": {{`{{ if .app.status.sync.revision }}{{ .app.status.sync.revision | trunc 7 | toJson }}{{ else }}"unknown"{{ end }}`}}, "inline": true},
                 {"name": "Namespace", "value": {{`{{.app.spec.destination.namespace | toJson}}`}}, "inline": true}
               ],
               "timestamp": {{`{{.app.status.operationState.startedAt | default "" | toJson}}`}}
@@ -69,7 +69,7 @@ data:
               "color": 1621586,
               "fields": [
                 {"name": "Application", "value": {{`{{.app.metadata.name | toJson}}`}}, "inline": true},
-                {"name": "Revision", "value": {{`{{.app.status.sync.revision | default "unknown" | trunc 7 | toJson}}`}}, "inline": true},
+                {"name": "Revision", "value": {{`{{ if .app.status.sync.revision }}{{ .app.status.sync.revision | trunc 7 | toJson }}{{ else }}"unknown"{{ end }}`}}, "inline": true},
                 {"name": "Namespace", "value": {{`{{.app.spec.destination.namespace | toJson}}`}}, "inline": true}
               ],
               "timestamp": {{`{{.app.status.operationState.finishedAt | default "" | toJson}}`}}
@@ -85,7 +85,7 @@ data:
               "color": 1621586,
               "fields": [
                 {"name": "Application", "value": {{`{{.app.metadata.name | toJson}}`}}, "inline": true},
-                {"name": "Revision", "value": {{`{{.app.status.sync.revision | default "unknown" | trunc 7 | toJson}}`}}, "inline": true},
+                {"name": "Revision", "value": {{`{{ if .app.status.sync.revision }}{{ .app.status.sync.revision | trunc 7 | toJson }}{{ else }}"unknown"{{ end }}`}}, "inline": true},
                 {"name": "Namespace", "value": {{`{{.app.spec.destination.namespace | toJson}}`}}, "inline": true}
               ],
               "timestamp": {{`{{.app.status.operationState.finishedAt | default "" | toJson}}`}}
