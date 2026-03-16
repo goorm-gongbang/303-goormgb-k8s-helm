@@ -66,4 +66,4 @@ readinessProbe:
   periodSeconds: 5
 
 otel:
-  enabled: false
+  enabled: true

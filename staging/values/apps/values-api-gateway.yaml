@@ -116,4 +116,4 @@ readinessProbe:
   failureThreshold: 3
 
 otel:
-  enabled: false  # staging에서는 우선 비활성화
+  enabled: true
