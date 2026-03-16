@@ -349,7 +349,6 @@ applicationSets:
       - name: auth-guard
       - name: order-core
       - name: queue
-      - name: recommendation
       - name: seat
 
   staging-ai-services:
