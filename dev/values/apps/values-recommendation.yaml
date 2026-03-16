@@ -3,7 +3,7 @@ replicaCount: 1
 
 image:
   name: "dev/goormgb/recommendation"
-  tag: "ba54384"
+  tag: "0576d19"
   pullPolicy: Always
 
 imagePullSecrets:
