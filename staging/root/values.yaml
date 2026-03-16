@@ -71,7 +71,7 @@ ociCharts:
           - /spec/podMetricsEndpoints
 
   kiali-server:
-    enabled: false  # staging에서 필요시 활성화
+    enabled: true
     repoURL: https://kiali.org/helm-charts
     chart: kiali-server
     version: "2.23.0"
@@ -220,7 +220,7 @@ ociCharts:
     valueFiles: []
 
   tempo:
-    enabled: false  # staging에서 필요시 활성화
+    enabled: true
     repoURL: https://grafana.github.io/helm-charts
     chart: tempo
     version: "1.10.3"
@@ -236,7 +236,7 @@ ociCharts:
           - /spec/storageClassName
 
   opentelemetry-collector:
-    enabled: false  # staging에서 필요시 활성화
+    enabled: true
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-collector
     version: "0.85.0"
