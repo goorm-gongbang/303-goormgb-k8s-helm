@@ -110,6 +110,11 @@ grafana:
 
   fullnameOverride: grafana
 
+  # IRSA for CloudWatch Data Source
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::274130523831:role/goormgb-staging-grafana-cloudwatch
+
   nodeSelector:
     nodepool: system
 
@@ -278,7 +283,7 @@ grafana:
       cpu: 500m
       memory: 1Gi
 
-  # Loki + Tempo datasource
+  # Loki + Tempo + CloudWatch datasource
   additionalDataSources:
     - name: Loki
       type: loki
@@ -300,6 +305,16 @@ grafana:
           spanEndTimeShift: "1h"
           filterByTraceID: true
           filterBySpanID: true
+
+    # CloudWatch Data Source (RDS, ElastiCache 메트릭)
+    - name: CloudWatch
+      type: cloudwatch
+      access: proxy
+      isDefault: false
+      editable: true
+      jsonData:
+        authType: default  # IRSA 사용
+        defaultRegion: ap-northeast-2
 
 alertmanager:
   alertmanagerSpec:
