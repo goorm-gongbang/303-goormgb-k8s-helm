@@ -58,17 +58,6 @@ ociCharts:
       - group: admissionregistration.k8s.io
         kind: MutatingWebhookConfiguration
         jsonPointers:
-
-  # Istio IngressGateway (ClusterIP - ALB Ingress에서 라우팅)
-  istio-ingressgateway:
-    enabled: true
-    repoURL: https://istio-release.storage.googleapis.com/charts
-    chart: gateway
-    version: "1.29.1"
-    namespace: istio-system
-    syncWave: "-2"
-    valueFiles:
-      - $values/staging/values/values-istio-gateway.yaml
           - /webhooks
           - /metadata/resourceVersion
       - group: apps
@@ -80,6 +69,17 @@ ociCharts:
         kind: PodMonitor
         jsonPointers:
           - /spec/podMetricsEndpoints
+
+  # Istio IngressGateway (ClusterIP - ALB Ingress에서 라우팅)
+  istio-ingressgateway:
+    enabled: true
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: gateway
+    version: "1.29.1"
+    namespace: istio-system
+    syncWave: "-2"
+    valueFiles:
+      - $values/staging/values/values-istio-gateway.yaml
 
   kiali-server:
     enabled: true
