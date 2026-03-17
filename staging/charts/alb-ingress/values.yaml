@@ -23,6 +23,7 @@ ingress:
         name: argocd-server
         namespace: argocd
         port: 80
+        healthCheckPath: /healthz
 
     # Grafana - Istio 안 거침 (직접 라우팅)
     - host: grafana.staging.playball.one
@@ -30,6 +31,7 @@ ingress:
         name: grafana
         namespace: monitoring
         port: 80
+        healthCheckPath: /api/health
 
     # Kiali - Istio 안 거침 (직접 라우팅)
     - host: kiali.staging.playball.one
@@ -37,6 +39,7 @@ ingress:
         name: kiali
         namespace: istio-system
         port: 20001
+        healthCheckPath: /healthz
 
     # API - Istio IngressGateway 거침
     - host: api.staging.playball.one
@@ -44,3 +47,4 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
+        healthCheckPath: /healthz/ready
