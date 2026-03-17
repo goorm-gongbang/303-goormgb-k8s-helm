@@ -1,6 +1,6 @@
-# Karpenter Configuration - Staging
-clusterName: "ktcloud_team4_260204-goormgb-staging"
-nodeRole: "ktcloud_team4_260204-karpenter-node"
+# Karpenter Configuration - Staging (Main Account: 497012402578)
+clusterName: goormgb-staging-eks
+nodeRole: goormgb-karpenter-node
 
 # 공통 Zone 설정
 zones:

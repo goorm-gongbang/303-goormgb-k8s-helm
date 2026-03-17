@@ -10,10 +10,6 @@ image:
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
 imagePullSecrets: []
 
-# Workloads NodePool에 배치
-nodeSelector:
-  nodepool: workloads
-
 # Spot 노드 허용
 tolerations:
   - key: "spot"

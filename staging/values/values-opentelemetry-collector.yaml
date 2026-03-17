@@ -5,10 +5,6 @@ fullnameOverride: otel-collector
 mode: deployment
 replicaCount: 1
 
-# EKS: system nodepool에 배치
-nodeSelector:
-  nodepool: system
-
 resources:
   requests:
     cpu: 100m
