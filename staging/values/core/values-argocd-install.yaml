@@ -1,21 +1,15 @@
 # ArgoCD Installation Values (argo/argo-cd chart)
-# EKS Staging - NLB LoadBalancer 구성
+# EKS Staging - ClusterIP (ALB Ingress로 노출)
 
 # Server 설정
 server:
-  # Insecure 모드 (TLS는 Istio/ALB에서 처리)
+  # Insecure 모드 (TLS는 ALB에서 처리)
   extraArgs:
     - --insecure
 
-  # AWS NLB LoadBalancer
+  # ClusterIP - ALB Ingress에서 라우팅
   service:
-    type: LoadBalancer
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-type: nlb
-      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-      # Health check 설정
-      service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: TCP
-      service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "8080"
+    type: ClusterIP
 
   # 리소스 제한 (staging 환경)
   resources:

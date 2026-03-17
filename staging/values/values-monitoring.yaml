@@ -330,8 +330,6 @@ loki:
 
   singleBinary:
     replicas: 1
-    nodeSelector:
-      nodepool: system
     resources:
       requests:
         cpu: 100m
@@ -342,6 +340,7 @@ loki:
     persistence:
       enabled: true
       size: 20Gi
+      storageClassName: gp3
 
   # 불필요한 컴포넌트 비활성화 (SingleBinary 모드)
   backend:
@@ -415,3 +414,4 @@ tempo:
   persistence:
     enabled: true
     size: 20Gi
+    storageClassName: gp3

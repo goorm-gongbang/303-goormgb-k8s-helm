@@ -6,7 +6,7 @@ metadata:
   namespace: istio-system
 spec:
   selector:
-    istio: ingressgateway
+    istio: {{ .Values.sharedGateway.selector | default "ingressgateway" }}
   servers:
     - port:
         number: 443
@@ -28,5 +28,27 @@ spec:
         - {{ . | quote }}
         {{- end }}
       tls:
-        httpsRedirect: true
+        httpsRedirect: {{ .Values.sharedGateway.httpsRedirect | default true }}
+{{- end }}
+---
+{{- if .Values.apiGatewayConfig.enabled }}
+# API Gateway - ALB → Istio IngressGateway → VirtualService
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: {{ .Values.apiGatewayConfig.name | default "api-gateway" }}
+  namespace: istio-system
+spec:
+  selector:
+    istio: {{ .Values.apiGatewayConfig.selector | default "ingressgateway" }}
+  servers:
+    # HTTP only (TLS는 ALB에서 종료)
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        {{- range .Values.apiGatewayConfig.hosts }}
+        - {{ . | quote }}
+        {{- end }}
 {{- end }}

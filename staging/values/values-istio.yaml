@@ -1,9 +1,8 @@
 # EKS Staging 클러스터 Istio 설정
+# ALB Ingress 사용 - Istio IngressGateway는 API 트래픽만 처리
 
 # istiod (Helm chart values)
 pilot:
-  nodeSelector:
-    nodepool: system
   resources:
     requests:
       cpu: 200m
@@ -26,23 +25,19 @@ global:
 meshConfig:
   accessLogFile: /dev/stdout
 
-# Gateway 설정 (istio-gateway chart용)
-gateway:
-  nodeSelector:
-    nodepool: system
-  service:
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
-
-# Shared Gateway (VirtualService에서 참조)
+# Legacy gateways 비활성화 (ALB Ingress 사용)
 sharedGateway:
+  enabled: false
+apiGateway:
+  enabled: false
+monitoringGateway:
+  enabled: false
+
+# API Gateway CRD (Istio IngressGateway용)
+# ALB → Istio IngressGateway → VirtualService → API Pods
+apiGatewayConfig:
   enabled: true
   name: api-gateway
-  tls:
-    credentialName: staging-tls  # cert-manager에서 생성
+  selector: ingressgateway
   hosts:
-    - "*.staging.playball.one"
-    - "argocd.staging.playball.one"
-    - "grafana.staging.playball.one"
     - "api.staging.playball.one"

@@ -36,7 +36,4 @@ tempo:
 persistence:
   enabled: true
   size: 20Gi
-
-# EKS: system nodepool에 배치
-nodeSelector:
-  nodepool: system
+  storageClassName: gp3
