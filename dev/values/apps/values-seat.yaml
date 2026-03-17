@@ -3,7 +3,7 @@ replicaCount: 2
 
 image:
   name: "dev/goormgb/seat"
-  tag: "e440f38"
+  tag: "73ee129"
   pullPolicy: Always
 
 imagePullSecrets:
