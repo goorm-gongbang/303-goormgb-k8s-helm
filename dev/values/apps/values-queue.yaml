@@ -55,12 +55,12 @@ env:
   - name: REDIS_HOST
     valueFrom:
       secretKeyRef:
-        name: service-secrets
+        name: service-config
         key: REDIS_QUEUE_HOST
   - name: REDIS_PORT
     valueFrom:
       secretKeyRef:
-        name: service-secrets
+        name: service-config
         key: REDIS_QUEUE_PORT
 
 # OpenTelemetry Java Agent
