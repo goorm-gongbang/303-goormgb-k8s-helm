@@ -3,7 +3,7 @@ replicaCount: 2
 
 image:
   name: "dev/goormgb/queue"
-  tag: "e440f38"
+  tag: "239ebbd"
   pullPolicy: Always
 
 imagePullSecrets:
@@ -58,6 +58,17 @@ env:
         name: service-config
         key: REDIS_QUEUE_HOST
   - name: REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: REDIS_QUEUE_PORT
+  # Spring Boot 자동 바인딩 덮어쓰기 (SPRING_DATA_REDIS_* 우선 적용 방지)
+  - name: SPRING_DATA_REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: REDIS_QUEUE_HOST
+  - name: SPRING_DATA_REDIS_PORT
     valueFrom:
       secretKeyRef:
         name: service-config
