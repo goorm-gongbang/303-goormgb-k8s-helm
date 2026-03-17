@@ -14,8 +14,7 @@ ingress:
     external-dns.alpha.kubernetes.io/hostname: argocd.staging.playball.one,grafana.staging.playball.one,kiali.staging.playball.one,api.staging.playball.one
 
   # TLS 설정 (ACM 인증서)
-  # TODO: ACM 인증서 ARN 설정
-  # certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/xxx
+  certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/86c2157d-b449-4af4-8b8a-c1ac9271d6d9
 
   rules:
     # ArgoCD - Istio 안 거침 (직접 라우팅)
