@@ -36,6 +36,7 @@ istio:
     enabled: true
     allowOrigins:
       - "https://dev.goormgb.space"
+      - "https://swagger.dev.goormgb.space"
       - "http://localhost:3000"
     allowMethods:
       - GET
@@ -58,7 +59,7 @@ service:
 # Environment variables - 백엔드 서비스 URL
 env:
   - name: ALLOWED_ORIGINS
-    value: "https://dev.goormgb.space,http://localhost:3000"
+    value: "https://dev.goormgb.space,https://swagger.dev.goormgb.space,http://localhost:3000"
   - name: AUTH_GUARD_URL
     value: "http://dev-auth-guard.dev-webs.svc.cluster.local:8080"
   - name: QUEUE_URL
