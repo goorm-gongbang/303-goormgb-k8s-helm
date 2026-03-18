@@ -105,7 +105,7 @@ ociCharts:
     enabled: true
     repoURL: oci://public.ecr.aws/karpenter
     chart: karpenter
-    version: "1.9.0"
+    version: "v1.9.0"
     namespace: karpenter
     syncWave: "-8"
     valueFiles:
