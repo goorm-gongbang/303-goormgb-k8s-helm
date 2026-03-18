@@ -14,7 +14,7 @@ spec:
       rules:
         - alert: {{ $cfg.alertName }}
           expr: |
-            sum(
+            sum by (service_name)(
               increase(
                 http_server_request_duration_seconds_count{
                   {{ if $cfg.namespace }}
