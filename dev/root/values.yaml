@@ -372,7 +372,7 @@ gitCharts:
     syncWave: "0"
     valueFiles:
       - ../../../../dev/values/monitoring/values-prometheus-stack.yaml
-
+      - ../../../../dev/values/monitoring/alerting/values-alertmanager-dev.yaml
   alloy-config:
     enabled: false  # 프론트엔드 적용 전까지 비활성화
     path: common-charts/infra/monitoring/alloy
