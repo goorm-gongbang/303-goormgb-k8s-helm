@@ -108,7 +108,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/values-monitoring.yaml
+      - $values/staging/values/values-loki.yaml
     syncOptions:
       - Replace=true
     ignoreDifferences:
@@ -124,9 +124,9 @@ ociCharts:
     chart: promtail
     version: "6.17.1"
     namespace: monitoring
-    syncWave: "0"
+    syncWave: "1"
     valueFiles:
-      - $values/staging/values/values-monitoring.yaml
+      - $values/staging/values/values-promtail.yaml
 
   kube-prometheus-stack:
     enabled: true
