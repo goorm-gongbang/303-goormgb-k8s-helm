@@ -103,9 +103,9 @@ ociCharts:
   # Karpenter - Node Auto-scaling
   karpenter:
     enabled: true
-    repoURL: oci://public.ecr.aws/karpenter
-    chart: karpenter
-    version: "v1.9.0"
+    repoURL: oci://public.ecr.aws/karpenter/karpenter
+    chart: ""
+    version: "1.9.0"
     namespace: karpenter
     syncWave: "-8"
     valueFiles:
