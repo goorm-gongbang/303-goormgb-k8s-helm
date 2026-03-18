@@ -73,8 +73,8 @@ nodePools:
       - c
       - r
     instanceSizes:
-      - large
-      - xlarge
+      - xlarge     # 4 vCPU, 16GB - 5개 서비스 세트용
+      - 2xlarge    # 8 vCPU, 32GB - 여유있게
 
     # 리소스 제한 (앱용)
     limits:

@@ -33,6 +33,7 @@ Selector labels (immutable - 변경 금지)
 app.kubernetes.io/name: {{ include "java-service.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: {{ .Values.component | default "backend" }}
+app.kubernetes.io/part-of: {{ .Values.partOf | default "staging-webs" }}
 app: {{ .Release.Name }}
 {{- end }}
 

@@ -11,6 +11,11 @@ spec:
       labels:
         nodepool: {{ $name }}
         node-role.kubernetes.io/{{ $name }}: ""
+        {{- if eq $name "system" }}
+        role: infra
+        {{- else }}
+        role: app
+        {{- end }}
     spec:
       nodeClassRef:
         group: karpenter.k8s.aws
