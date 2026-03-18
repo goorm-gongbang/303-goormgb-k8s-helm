@@ -49,7 +49,7 @@ nodePools:
 
     # Disruption 설정
     consolidationPolicy: WhenEmptyOrUnderutilized
-    consolidateAfter: 5m
+    consolidateAfter: 1m  # 5m → 1m (빠른 통합)
     expireAfter: 720h
 
   # -----------------------------------------------------------------------------
