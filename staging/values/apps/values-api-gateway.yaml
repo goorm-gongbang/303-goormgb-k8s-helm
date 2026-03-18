@@ -98,17 +98,17 @@ livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: *port
-  initialDelaySeconds: 60
+  initialDelaySeconds: 120
   periodSeconds: 10
-  failureThreshold: 3
+  failureThreshold: 6
 
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
     port: *port
-  initialDelaySeconds: 30
+  initialDelaySeconds: 60
   periodSeconds: 5
-  failureThreshold: 3
+  failureThreshold: 6
 
 otel:
   enabled: true
