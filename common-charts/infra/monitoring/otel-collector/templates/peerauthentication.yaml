@@ -1,0 +1,21 @@
+# OTEL Collector - mTLS PERMISSIVE 설정
+# OTEL Java agent는 Istio sidecar를 거치지 않고 직접 연결하므로
+# plain HTTP 연결도 허용해야 함
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: otel-collector
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-collector
+  mtls:
+    mode: PERMISSIVE
+  portLevelMtls:
+    # gRPC 포트 - OTEL agent가 연결하는 포트
+    4317:
+      mode: PERMISSIVE
+    # HTTP 포트
+    4318:
+      mode: PERMISSIVE
