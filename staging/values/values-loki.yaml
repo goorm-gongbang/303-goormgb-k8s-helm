@@ -35,6 +35,8 @@ singleBinary:
     limits:
       cpu: 300m
       memory: 512Mi
+  nodeSelector:
+    nodepool: system
   persistence:
     enabled: true
     size: 20Gi
