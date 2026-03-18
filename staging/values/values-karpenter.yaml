@@ -26,3 +26,8 @@ replicas: 1
 
 # Logging
 logLevel: info
+
+# [임시] Affinity 비활성화 - Managed Node Group 없이 Karpenter 노드에서 실행
+# TODO: Managed Node Group baseline 복구 후 제거
+affinity: {}
+topologySpreadConstraints: []
