@@ -34,11 +34,11 @@ service:
 # Resources
 resources:
   requests:
-    cpu: 200m
-    memory: 512Mi
+    cpu: 100m
+    memory: 256Mi
   limits:
-    cpu: 1000m
-    memory: 1Gi
+    cpu: 500m
+    memory: 512Mi
 
 # Node scheduling
 nodeSelector: {}
@@ -72,19 +72,19 @@ livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: 8080
-  initialDelaySeconds: 180
+  initialDelaySeconds: 90
   periodSeconds: 10
   timeoutSeconds: 5
-  failureThreshold: 6
+  failureThreshold: 3
 
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
     port: 8080
-  initialDelaySeconds: 90
+  initialDelaySeconds: 45
   periodSeconds: 5
   timeoutSeconds: 3
-  failureThreshold: 6
+  failureThreshold: 3
 
 # Graceful shutdown
 terminationGracePeriodSeconds: 30

@@ -69,8 +69,6 @@ env:
     value: "http://dev-seat.dev-webs.svc.cluster.local:8082"
   - name: ORDER_CORE_URL
     value: "http://dev-order-core.dev-webs.svc.cluster.local:8083"
-  - name: RECOMMENDATION_URL
-    value: "http://dev-recommendation.dev-webs.svc.cluster.local:8084"
   # Redis - API Gateway는 REDIS_HOST/PORT 사용
   - name: REDIS_HOST
     valueFrom:
