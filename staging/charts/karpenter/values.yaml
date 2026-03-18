@@ -1,6 +1,6 @@
 # Karpenter Configuration - Staging (Main Account: 497012402578)
 clusterName: goormgb-staging-eks
-nodeRole: goormgb-karpenter-node
+nodeRole: goormgb-staging-karpenter-node
 
 # 공통 Zone 설정
 zones:

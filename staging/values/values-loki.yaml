@@ -36,7 +36,7 @@ singleBinary:
       cpu: 300m
       memory: 512Mi
   nodeSelector:
-    nodepool: system
+    role: infra
   persistence:
     enabled: true
     size: 20Gi
