@@ -28,9 +28,9 @@ nodePools:
       - t
       - m
     instanceSizes:
+      - medium
       - large
       - xlarge
-      - 2xlarge
 
     # 리소스 제한 (인프라용)
     limits:
