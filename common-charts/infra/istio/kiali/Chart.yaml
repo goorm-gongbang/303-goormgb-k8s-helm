@@ -1,11 +1,7 @@
 apiVersion: v2
-name: kiali
-description: Kiali - Istio Service Mesh Observability
+name: kiali-config
+description: Kiali additional configuration (ExternalSecret, VirtualService)
 type: application
 version: 1.0.0
-appVersion: "2.0.0"
-
-dependencies:
-  - name: kiali-server
-    version: "2.0.0"
-    repository: https://kiali.org/helm-charts
+appVersion: "2.23.0"
+# OCI dependency removed - using direct OCI reference in ArgoCD

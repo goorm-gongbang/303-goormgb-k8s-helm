@@ -19,8 +19,8 @@ secrets/
 Thumbs.db
 
 # Helm
-charts/*/charts/
-*.tgz
+# charts/*/charts/  # ArgoCD에서 dependency 사용을 위해 주석 처리
+# *.tgz             # chart dependency .tgz 파일 포함 필요
 
 # Temporary
 *.tmp

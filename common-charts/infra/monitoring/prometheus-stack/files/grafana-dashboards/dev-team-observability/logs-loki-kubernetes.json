@@ -109,7 +109,7 @@
       "targets": [
         {
           "datasource": "Loki",
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", pod=~\"$service\"} |= \"$query\" [$__interval]))",
+          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", instance=~\"$service\"} |= \"$query\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -148,7 +148,7 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", pod=~\"$service\"} |= \"$query\"",
+          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", instance=~\"$service\"} |= \"$query\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -274,35 +274,35 @@
           {
             "selected": false,
             "text": "dev-api-gateway",
-            "value": "dev-api-gateway.*"
+            "value": "dev-api-gateway"
           },
           {
             "selected": false,
             "text": "dev-auth-guard",
-            "value": "dev-auth-guard.*"
+            "value": "dev-auth-guard"
           },
           {
             "selected": false,
             "text": "dev-order-core",
-            "value": "dev-order-core.*"
+            "value": "dev-order-core"
           },
           {
             "selected": false,
             "text": "dev-queue",
-            "value": "dev-queue.*"
+            "value": "dev-queue"
           },
           {
             "selected": false,
             "text": "dev-recommendation",
-            "value": "dev-recommendation.*"
+            "value": "dev-recommendation"
           },
           {
             "selected": false,
             "text": "dev-seat",
-            "value": "dev-seat.*"
+            "value": "dev-seat"
           }
         ],
-        "query": "dev-api-gateway : dev-api-gateway.*, dev-auth-guard : dev-auth-guard.*, dev-order-core : dev-order-core.*, dev-queue : dev-queue.*, dev-recommendation : dev-recommendation.*, dev-seat : dev-seat.*",
+        "query": "dev-api-gateway,dev-auth-guard,dev-order-core,dev-queue,dev-recommendation,dev-seat",
         "type": "custom"
       }
     ]

@@ -1,5 +1,4 @@
 # ai-defense - Dev 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/ai
 # Python FastAPI 기반 AI Defense API
 
 replicaCount: 1
@@ -19,7 +18,7 @@ args:
   - "/ai"
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/ai
+  name: "dev/goormgb/ai"
   tag: "de7a2ad"
   pullPolicy: Always
 
@@ -91,7 +90,15 @@ readinessProbe:
   periodSeconds: 5
   failureThreshold: 3
 
+# Prometheus Metrics (FastAPI - 같은 포트에서 /metrics 노출)
+metrics:
+  enabled: true
+  port: 8000
+  portName: http
+  path: /metrics
+  interval: 15s
+
 # OpenTelemetry (앱에 opentelemetry SDK 설치 필요)
 otel:
   enabled: true
-  collectorEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"
+  collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"

@@ -1,0 +1,76 @@
+# ArgoCD Installation Values (argo/argo-cd chart)
+# EKS Staging - ClusterIP (ALB Ingress로 노출)
+
+# Server 설정
+server:
+  # Insecure 모드 (TLS는 ALB에서 처리)
+  extraArgs:
+    - --insecure
+
+  # ClusterIP - ALB Ingress에서 라우팅
+  service:
+    type: ClusterIP
+
+  # 리소스 제한 (staging 환경)
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# Controller 설정
+controller:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Repo Server 설정
+repoServer:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# Redis 설정 (내장 Redis 사용)
+redis:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+# ApplicationSet Controller
+applicationSet:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+# Notifications Controller
+notifications:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+# Global 설정
+configs:
+  cm:
+    url: https://argocd.staging.playball.one

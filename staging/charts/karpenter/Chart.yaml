@@ -1,0 +1,4 @@
+apiVersion: v2
+name: karpenter-config
+description: Karpenter NodePool and EC2NodeClass configuration
+version: 0.1.0
