@@ -279,6 +279,7 @@ grafana:
   additionalDataSources:
     - name: Loki
       type: loki
+      uid: loki
       access: proxy
       url: http://loki.monitoring.svc.cluster.local:3100
       isDefault: false
@@ -287,6 +288,7 @@ grafana:
 
     - name: Tempo
       type: tempo
+      uid: tempo
       access: proxy
       url: http://tempo.monitoring.svc.cluster.local:3100
       isDefault: false
@@ -301,6 +303,7 @@ grafana:
     # CloudWatch Data Source (RDS, ElastiCache 메트릭)
     - name: CloudWatch
       type: cloudwatch
+      uid: cloudwatch
       access: proxy
       isDefault: false
       editable: true
