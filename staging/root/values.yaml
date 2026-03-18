@@ -312,7 +312,9 @@ gitCharts:
     enabled: true
     path: staging/charts/karpenter
     namespace: karpenter
-    syncWave: "-7"
+    syncWave: "-6"
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
 
   # === ALB Ingress (Host-based routing) ===
   alb-ingress:
