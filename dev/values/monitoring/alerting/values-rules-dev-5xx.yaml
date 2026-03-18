@@ -7,6 +7,7 @@ alertRules:
     alertName: DevHttp5xxDetected
     environment: dev
     namespace: ""
+    serviceNameRegex: "(java-cloud-gateway|dev-auth-guard|dev-order-core|dev-queue|dev-recommendation|dev-seat)"
     jobRegex: "(java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*recommendation.*|.*seat.*)"
     lookback: 5m
     for: 1m
