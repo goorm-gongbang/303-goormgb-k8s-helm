@@ -373,11 +373,17 @@ applicationSets:
     chartPath: common-charts/apps/java-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
     services:
-      - name: api-gateway
+      # 순차 배포: auth-guard → 나머지 서비스 → api-gateway
       - name: auth-guard
-      - name: order-core
+        syncWave: "10"
       - name: queue
+        syncWave: "11"
       - name: seat
+        syncWave: "11"
+      - name: order-core
+        syncWave: "11"
+      - name: api-gateway
+        syncWave: "12"
 
   staging-ai-services:
     enabled: true
