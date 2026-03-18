@@ -14,4 +14,4 @@ clusterSecretStore:
 serviceConfig:
   enabled: true
   namespace: staging-webs
-  secretManagerKey: staging/services/db
+  secretManagerKey: staging/services/config

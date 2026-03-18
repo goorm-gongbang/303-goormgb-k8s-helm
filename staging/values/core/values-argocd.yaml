@@ -53,10 +53,10 @@ applications: []
 metrics:
   enabled: false  # TODO: Prometheus 설치 후 true로 변경
 
-# ArgoCD Notifications - Discord (선택사항)
+# ArgoCD Notifications - Discord
 notifications:
-  enabled: false
+  enabled: true
   discord:
     eso:
-      enabled: false
+      enabled: true
       secretManagerKey: staging/argocd/discord-webhook
