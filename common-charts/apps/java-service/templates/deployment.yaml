@@ -16,7 +16,7 @@ spec:
       annotations:
         sidecar.istio.io/inject: "{{ .Values.istio.sidecar }}"
       labels:
-        {{- include "java-service.selectorLabels" . | nindent 8 }}
+        {{- include "java-service.podLabels" . | nindent 8 }}
         {{- include "java-service.versionLabel" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
