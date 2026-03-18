@@ -91,18 +91,18 @@ spec:
             httpGet:
               path: {{ .Values.contextPath }}{{ .Values.livenessProbe.httpGet.path }}
               port: {{ .Values.livenessProbe.httpGet.port }}
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
-            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 90 }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5 }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold | default 3 }}
           readinessProbe:
             httpGet:
               path: {{ .Values.contextPath }}{{ .Values.readinessProbe.httpGet.path }}
               port: {{ .Values.readinessProbe.httpGet.port }}
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 45 }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds | default 5 }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 3 }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold | default 3 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- if .Values.otel.enabled }}
