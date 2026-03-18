@@ -90,6 +90,17 @@ ociCharts:
     syncWave: "-1"
     valueFiles:
       - $values/staging/values/values-istio.yaml
+    ignoreDifferences:
+      - group: ""
+        kind: ConfigMap
+        name: kiali
+        jsonPointers:
+          - /data/config.yaml
+      - group: apps
+        kind: Deployment
+        name: kiali
+        jsonPointers:
+          - /spec/template/metadata/annotations
 
   tigera-operator:
     enabled: false  # EKS는 VPC CNI 사용
@@ -278,6 +289,16 @@ ociCharts:
     syncWave: "1"
     valueFiles:
       - $values/staging/values/values-opentelemetry-collector.yaml
+
+  # Metrics Server - kubectl top nodes/pods
+  metrics-server:
+    enabled: true
+    repoURL: https://kubernetes-sigs.github.io/metrics-server/
+    chart: metrics-server
+    version: "3.12.0"
+    namespace: kube-system
+    syncWave: "-9"
+    valueFiles: []
 
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
