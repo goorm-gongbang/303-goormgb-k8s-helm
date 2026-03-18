@@ -1,6 +1,6 @@
 # auth-guard - Staging 환경
 fullnameOverride: "auth-guard"
-replicaCount: 2  # HA 구성
+replicaCount: 1  # 디버깅용 (원래 2)
 
 image:
   name: "staging/playball/web/auth-guard"

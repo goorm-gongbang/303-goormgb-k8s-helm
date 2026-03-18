@@ -1,6 +1,6 @@
 # api-gateway - Staging 환경
 fullnameOverride: "api-gateway"
-replicaCount: 2  # HA 구성
+replicaCount: 1  # 디버깅용 (원래 2)
 
 image:
   name: "staging/playball/web/api-gateway"
