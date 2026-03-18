@@ -30,8 +30,9 @@ nodePools:
     instanceSizes:
       - large
       - xlarge
+      - 2xlarge
 
-    # 리소스 제한 (인프라용) - 넉넉하게 시작, 모니터링 후 조절
+    # 리소스 제한 (인프라용)
     limits:
       cpu: 32
       memory: 64Gi
