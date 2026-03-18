@@ -79,8 +79,6 @@ env:
     value: "http://seat.staging-webs.svc.cluster.local:8082"
   - name: ORDER_CORE_URL
     value: "http://order-core.staging-webs.svc.cluster.local:8083"
-  - name: RECOMMENDATION_URL
-    value: "http://recommendation.staging-webs.svc.cluster.local:8084"
   - name: REDIS_HOST
     valueFrom:
       secretKeyRef:

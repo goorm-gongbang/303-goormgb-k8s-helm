@@ -53,7 +53,7 @@ nodePools:
 
   # -----------------------------------------------------------------------------
   # Workloads NodePool: 앱 서비스 전용 (spot 우선)
-  # api-gateway, auth-guard, order-core, queue, recommendation, seat
+  # api-gateway, auth-guard, order-core, queue, seat
   # -----------------------------------------------------------------------------
   workloads:
     enabled: true

@@ -10,7 +10,7 @@ additionalPrometheusRulesMap:
               sum by (service_name)(
                 increase(
                   http_server_request_duration_seconds_count{
-                    service_name=~"(java-cloud-gateway|dev-auth-guard|dev-order-core|dev-queue|dev-recommendation|dev-seat)",
+                    service_name=~"(java-cloud-gateway|dev-auth-guard|dev-order-core|dev-queue|dev-seat)",
                     http_response_status_code=~"5.."
                   }[5m]
                 )
@@ -31,8 +31,8 @@ alertRules:
     alertName: DevHttp5xxDetected
     environment: dev
     namespace: ""
-    serviceNameRegex: "(java-cloud-gateway|dev-auth-guard|dev-order-core|dev-queue|dev-recommendation|dev-seat)"
-    jobRegex: "(java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*recommendation.*|.*seat.*)"
+    serviceNameRegex: "(java-cloud-gateway|dev-auth-guard|dev-order-core|dev-queue|dev-seat)"
+    jobRegex: "(java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*)"
     lookback: 5m
     for: 1m
     threshold: 0
