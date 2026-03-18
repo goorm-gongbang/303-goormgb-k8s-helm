@@ -1,5 +1,6 @@
 # api-gateway - Dev 환경
 # Java Cloud Gateway (Spring Cloud Gateway)
+contextPath: ""  # api-gateway는 context path 없음
 fullnameOverride: "java-cloud-gateway"
 
 replicaCount: 1

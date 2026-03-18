@@ -1,5 +1,6 @@
 # queue - Staging 환경
 fullnameOverride: "queue"
+contextPath: "/queue"
 replicaCount: 1  # 디버깅용 (원래 2)
 
 image:

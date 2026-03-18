@@ -1,5 +1,6 @@
 # auth-guard - Staging 환경
 fullnameOverride: "auth-guard"
+contextPath: "/auth"
 replicaCount: 1  # 디버깅용 (원래 2)
 
 image:
