@@ -22,6 +22,10 @@ imagePullSecrets:
 nameOverride: ""
 fullnameOverride: ""
 
+# Spring Boot context path (예: /auth, /order, /queue, /seat)
+# 각 서비스 values에서 override
+contextPath: ""
+
 # Service
 service:
   type: ClusterIP
@@ -30,11 +34,11 @@ service:
 # Resources
 resources:
   requests:
-    cpu: 100m
-    memory: 256Mi
-  limits:
-    cpu: 500m
+    cpu: 200m
     memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
 
 # Node scheduling
 nodeSelector: {}
@@ -68,19 +72,19 @@ livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: 8080
-  initialDelaySeconds: 60
+  initialDelaySeconds: 180
   periodSeconds: 10
   timeoutSeconds: 5
-  failureThreshold: 3
+  failureThreshold: 6
 
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
     port: 8080
-  initialDelaySeconds: 30
+  initialDelaySeconds: 90
   periodSeconds: 5
   timeoutSeconds: 3
-  failureThreshold: 3
+  failureThreshold: 6
 
 # Graceful shutdown
 terminationGracePeriodSeconds: 30

@@ -1,5 +1,6 @@
 # api-gateway - Staging 환경
 fullnameOverride: "api-gateway"
+contextPath: ""  # api-gateway는 context path 없음
 replicaCount: 1  # 디버깅용 (원래 2)
 
 image:

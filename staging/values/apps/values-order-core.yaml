@@ -1,5 +1,6 @@
 # order-core - Staging 환경
 fullnameOverride: "order-core"
+contextPath: "/order"
 replicaCount: 1  # 디버깅용 (원래 2)
 
 image:
