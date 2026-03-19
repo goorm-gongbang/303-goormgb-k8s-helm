@@ -300,6 +300,12 @@ gitCharts:
     namespace: dev-webs
     syncWave: "-6"
 
+  ai-service-secrets:
+    enabled: true
+    path: dev/charts/security/ai-service-secrets
+    namespace: dev-ai
+    syncWave: "-6"
+
   oauth2-proxy:
     enabled: true
     path: dev/charts/security/oauth2-proxy

@@ -29,9 +29,20 @@ env:
     value: /app/src
   - name: APP_PORT
     value: "8000"
-  # 독립 배포된 AI 전용 Redis 연결
+  # Redis 연결 (Secrets Manager에서 가져옴)
+  - name: AI_REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_HOST
+  - name: AI_REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_PORT
+  # 런타임 캐시용 Redis URL (동적 파싱)
   - name: TM_REDIS_URL
-    value: "redis://redis-ai.data.svc.cluster.local:6379/1"
+    value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   # S3 아카이빙 비활성화 (로컬 파일 모드 - dev)
   - name: TM_S3_BUCKET
     value: ""
