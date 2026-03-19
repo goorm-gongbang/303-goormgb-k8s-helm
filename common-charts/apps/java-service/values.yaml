@@ -3,8 +3,16 @@
 
 replicaCount: 1
 
+# ECR 설정 (root values에서 상속)
+ecr:
+  accountId: ""
+  region: "ap-northeast-2"
+
 image:
-  repository: ""  # ECR 주소 (values에서 override)
+  # 이미지 경로 (예: dev/goormgb/api-gateway)
+  name: ""
+  # (deprecated) 전체 URL - ecr + name 방식 권장
+  repository: ""
   tag: "latest"
   pullPolicy: IfNotPresent
 
@@ -13,6 +21,10 @@ imagePullSecrets:
 
 nameOverride: ""
 fullnameOverride: ""
+
+# Spring Boot context path (예: /auth, /order, /queue, /seat)
+# 각 서비스 values에서 override
+contextPath: ""
 
 # Service
 service:
@@ -60,7 +72,7 @@ livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: 8080
-  initialDelaySeconds: 60
+  initialDelaySeconds: 90
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
@@ -69,7 +81,7 @@ readinessProbe:
   httpGet:
     path: /actuator/health/readiness
     port: 8080
-  initialDelaySeconds: 30
+  initialDelaySeconds: 45
   periodSeconds: 5
   timeoutSeconds: 3
   failureThreshold: 3

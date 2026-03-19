@@ -61,7 +61,7 @@ spec:
                   chmod +x kubectl
                   mv kubectl /usr/local/bin/
 
-                  # Create/update secret in each namespace
+                  # Create/update secret in each namespace (image pull)
                   for NS in $(echo $TARGET_NAMESPACES | tr ',' ' '); do
                     echo "Updating ECR secret in namespace: $NS"
 
@@ -79,4 +79,26 @@ spec:
                     echo "Done: $NS"
                   done
 
+                  # Update ArgoCD OCI repository credentials
+                  echo "Updating ArgoCD ECR OCI repository credentials..."
+
+                  kubectl apply -f - <<EOF
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                    name: ecr-helm-creds
+                    namespace: argocd
+                    labels:
+                      argocd.argoproj.io/secret-type: repo-creds
+                  type: Opaque
+                  stringData:
+                    type: helm
+                    name: ecr-helm
+                    enableOCI: "true"
+                    url: oci://${DOCKER_SERVER}
+                    username: AWS
+                    password: ${TOKEN}
+                  EOF
+
+                  echo "ArgoCD ECR credentials updated"
                   echo "ECR credentials refreshed successfully"

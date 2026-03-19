@@ -213,7 +213,10 @@ kube-prometheus-stack:
       passwordKey: admin-password
 
     # Google OAuth 설정
-    envFromSecret: google-oauth-credentials
+    envFrom:
+      - secretRef:
+          name: google-oauth-credentials
+          optional: false
 
     grafana.ini:
       server:
@@ -337,6 +340,7 @@ loki:
     persistence:
       enabled: true
       size: 20Gi
+      storageClassName: gp3
 
   # 불필요한 컴포넌트 비활성화 (SingleBinary 모드)
   backend:
@@ -410,3 +414,4 @@ tempo:
   persistence:
     enabled: true
     size: 20Gi
+    storageClassName: gp3

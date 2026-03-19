@@ -13,10 +13,11 @@ spec:
       {{- include "java-service.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "{{ .Values.istio.sidecar }}"
       labels:
         {{- include "java-service.selectorLabels" . | nindent 8 }}
         {{- include "java-service.versionLabel" . | nindent 8 }}
-        sidecar.istio.io/inject: "{{ .Values.istio.sidecar }}"
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -39,7 +40,11 @@ spec:
       {{- end }}
       containers:
         - name: {{ include "java-service.name" . }}
+          {{- if and .Values.ecr.accountId .Values.image.name }}
+          image: "{{ .Values.ecr.accountId }}.dkr.ecr.{{ .Values.ecr.region }}.amazonaws.com/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -83,9 +88,21 @@ spec:
               readOnly: true
           {{- end }}
           livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
+            httpGet:
+              path: {{ .Values.contextPath }}{{ .Values.livenessProbe.httpGet.path }}
+              port: {{ .Values.livenessProbe.httpGet.port }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 90 }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5 }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold | default 3 }}
           readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
+            httpGet:
+              path: {{ .Values.contextPath }}{{ .Values.readinessProbe.httpGet.path }}
+              port: {{ .Values.readinessProbe.httpGet.port }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 45 }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds | default 5 }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 3 }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold | default 3 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- if .Values.otel.enabled }}
