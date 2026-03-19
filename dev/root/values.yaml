@@ -427,6 +427,20 @@ gitCharts:
       maxDuration: "3m"
       factor: 2
 
+  redis-ai:
+    enabled: true
+    path: dev/charts/data/redis
+    namespace: data
+    syncWave: "-5"
+    releaseName: redis-ai
+    valueFiles:
+      - ../../../values/data/values-redis-ai.yaml
+    retry:
+      limit: 5
+      duration: "10s"
+      maxDuration: "3m"
+      factor: 2
+
   cloudbeaver:
     enabled: true
     path: dev/charts/data/cloudbeaver
