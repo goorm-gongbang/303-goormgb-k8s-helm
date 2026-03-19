@@ -27,6 +27,10 @@ vpcId: ""  # 자동 감지
 # 로그 레벨
 logLevel: info
 
+# 노드 배치
+nodeSelector:
+  role: infra
+
 # Webhook 인증서 자동 생성
 enableCertManager: false
 

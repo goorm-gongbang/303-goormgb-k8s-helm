@@ -65,16 +65,15 @@ nodePools:
       - on-demand
 
     # 인스턴스 설정 - arm64 (Graviton, 비용 효율)
-    # TODO: CI에서 multi-arch 이미지 빌드 필요
     arch: arm64
     instanceCategories:
       - t
       - m
       - c
-      - r
     instanceSizes:
-      - xlarge     # 4 vCPU, 16GB - 5개 서비스 세트용
-      - 2xlarge    # 8 vCPU, 32GB - 여유있게
+      - medium     # 2 vCPU - 소규모
+      - large      # 2 vCPU - 기본
+      - xlarge     # 4 vCPU - 버스트용
 
     # 리소스 제한 (앱용)
     limits:

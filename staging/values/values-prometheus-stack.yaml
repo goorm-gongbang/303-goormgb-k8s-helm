@@ -35,6 +35,8 @@ prometheusOperator:
     enabled: false
   tls:
     enabled: false
+  nodeSelector:
+    role: infra
   resources:
     requests:
       cpu: 100m
@@ -45,6 +47,8 @@ prometheusOperator:
 
 # kube-state-metrics
 kube-state-metrics:
+  nodeSelector:
+    role: infra
   resources:
     requests:
       cpu: 50m
@@ -75,6 +79,9 @@ prometheus:
 
     retention: 7d
     retentionSize: "20GB"
+
+    nodeSelector:
+      role: infra
 
     resources:
       requests:
@@ -267,6 +274,9 @@ grafana:
   persistence:
     enabled: false
 
+  nodeSelector:
+    role: infra
+
   resources:
     requests:
       cpu: 200m
@@ -313,6 +323,8 @@ grafana:
 
 alertmanager:
   alertmanagerSpec:
+    nodeSelector:
+      role: infra
     resources:
       requests:
         cpu: 50m

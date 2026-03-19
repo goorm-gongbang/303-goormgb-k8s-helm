@@ -3,6 +3,8 @@
 
 # istiod (Helm chart values)
 pilot:
+  nodeSelector:
+    role: infra
   resources:
     requests:
       cpu: 200m

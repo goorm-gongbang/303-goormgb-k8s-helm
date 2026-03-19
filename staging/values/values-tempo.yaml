@@ -2,6 +2,8 @@
 # 분산 추적 저장소
 
 tempo:
+  nodeSelector:
+    role: infra
   resources:
     requests:
       cpu: 50m

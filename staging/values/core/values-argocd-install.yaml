@@ -1,6 +1,15 @@
 # ArgoCD Installation Values (argo/argo-cd chart)
 # EKS Staging - ClusterIP (ALB Ingress로 노출)
 
+# Global 노드 배치 설정 (ArgoCD 전용 노드)
+global:
+  nodeSelector:
+    role: argocd
+  tolerations:
+    - key: role
+      value: argocd
+      effect: NoSchedule
+
 # Server 설정
 server:
   # Insecure 모드 (TLS는 ALB에서 처리)

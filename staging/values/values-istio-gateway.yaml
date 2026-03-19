@@ -18,6 +18,10 @@ service:
       port: 443
       targetPort: 8443
 
+# Infra 노드에 배치
+nodeSelector:
+  role: infra
+
 resources:
   requests:
     cpu: 100m
