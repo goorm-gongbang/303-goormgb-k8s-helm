@@ -29,6 +29,11 @@ env:
     value: /app/src
   - name: APP_PORT
     value: "8000"
+  # 런타임 상태 관리를 Redis로 명시 (인메모리 방지)
+  - name: TM_RUNTIME_STATE_BACKEND
+    value: "redis"
+  - name: TM_DEFENSE_POLICY_VERSION
+    value: "def-pol-2.0.0"
   # Redis 연결 (Secrets Manager에서 가져옴)
   - name: AI_REDIS_HOST
     valueFrom:
@@ -40,7 +45,7 @@ env:
       secretKeyRef:
         name: ai-service-config
         key: AI_REDIS_PORT
-  # 런타임 캐시용 Redis URL (동적 조합)
+  # 런타임 캐시용 Redis URL (동적 파싱)
   - name: TM_REDIS_URL
     value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   # S3 아카이빙 비활성화 (로컬 파일 모드 - dev)
