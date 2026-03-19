@@ -1,7 +1,7 @@
 # seat - Staging 환경
 fullnameOverride: "seat"
 contextPath: "/seat"
-replicaCount: 2
+replicaCount: 1
 
 image:
   name: "staging/playball/web/seat"
@@ -17,14 +17,16 @@ tolerations:
     value: "true"
     effect: "NoSchedule"
 
-# HA: 다른 노드에 분산 배치 (필수)
+# HA: 다른 노드에 분산 배치
 affinity:
   podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: seat
-        topologyKey: kubernetes.io/hostname
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: seat
+          topologyKey: kubernetes.io/hostname
 
 resources:
   requests:
