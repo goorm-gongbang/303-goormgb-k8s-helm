@@ -2,6 +2,10 @@
 # - VXLAN encapsulation
 # - mini-gmk 노드 기준 설정
 
+# FelixConfiguration - tigera-operator가 자동 생성하므로 비활성화
+felixConfiguration:
+  enabled: false
+
 # PodMonitor 설정 (Felix 메트릭 수집)
 metrics:
   enabled: true
@@ -30,10 +34,11 @@ tigera-operator:
           encapsulation: VXLANCrossSubnet
           natOutgoing: Enabled
           nodeSelector: all()
+      # WireGuard(wg0) IP 대신 실제 LAN IP 사용
       nodeAddressAutodetectionV4:
         firstFound: false
         cidrs:
-          - 192.168.45.0/24
+          - "192.168.45.0/24"
     # Felix 메트릭 활성화 (Prometheus 스크래핑용)
     nodeMetricsPort: 9091
 

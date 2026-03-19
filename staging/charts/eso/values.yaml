@@ -1,0 +1,21 @@
+# ClusterSecretStore for EKS staging
+# IRSA 기반 - ServiceAccount를 통해 IAM Role 인증
+
+clusterSecretStore:
+  enabled: true
+  name: aws-secrets-manager
+  region: ap-northeast-2
+  # ESO ServiceAccount (IRSA role이 연결된 SA)
+  serviceAccount:
+    name: external-secrets
+    namespace: external-secrets
+
+# Service Config - 앱 서비스용 환경변수
+# 시크릿 구조:
+#   - staging/services/db       : DB + Redis 연결정보
+#   - staging/services/jwt      : JWT 토큰 설정
+#   - staging/services/queue-jwt: Admission 토큰 설정
+serviceConfig:
+  enabled: true
+  namespace: staging-webs
+  secretManagerPrefix: staging/services

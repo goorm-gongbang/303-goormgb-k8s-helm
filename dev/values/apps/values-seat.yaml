@@ -1,11 +1,10 @@
 # seat - Dev 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/seat
-
+contextPath: "/seat"
 replicaCount: 2
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/seat
-  tag: "32b94f6"
+  name: "dev/goormgb/seat"
+  tag: "80fdd1d"
   pullPolicy: Always
 
 imagePullSecrets:
@@ -35,10 +34,10 @@ service:
   type: ClusterIP
   port: *port
 
-# Health checks (HTTP - context-path 반영)
+# Health checks (contextPath가 자동으로 추가됨)
 livenessProbe:
   httpGet:
-    path: /seat/actuator/health/liveness
+    path: /actuator/health/liveness
     port: *port
   initialDelaySeconds: 60
   periodSeconds: 10
@@ -46,7 +45,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /seat/actuator/health/readiness
+    path: /actuator/health/readiness
     port: *port
   initialDelaySeconds: 30
   periodSeconds: 5

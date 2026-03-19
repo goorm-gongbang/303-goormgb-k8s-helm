@@ -1,5 +1,4 @@
 # ai-defense - Dev 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/ai
 # Python FastAPI 기반 AI Defense API
 
 replicaCount: 1
@@ -21,6 +20,7 @@ args:
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/ai
   tag: "bb7a8fc"
+  name: "dev/goormgb/ai"
   pullPolicy: Always
 
 # Python 모듈 경로 설정 + AI Defense 환경변수

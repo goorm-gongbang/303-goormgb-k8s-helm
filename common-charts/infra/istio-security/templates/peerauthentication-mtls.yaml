@@ -1,0 +1,46 @@
+{{- if .Values.mtls.enabled }}
+# Mesh-wide mTLS 설정
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  mtls:
+    mode: {{ .Values.mtls.mode | default "STRICT" }}
+---
+# 각 네임스페이스별 mTLS (명시적 설정)
+{{- range $ns := .Values.mtls.namespaces | default (list "staging-webs" "monitoring") }}
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: {{ $ns }}
+spec:
+  mtls:
+    mode: {{ $.Values.mtls.mode | default "STRICT" }}
+---
+{{- end }}
+{{- end }}
+{{- if .Values.mtls.otelCollector.enabled }}
+# OTEL Collector - mTLS PERMISSIVE 설정
+# OTEL Java agent는 Istio sidecar를 거치지 않고 직접 연결하므로
+# plain HTTP 연결도 허용해야 함
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: otel-collector
+  namespace: {{ .Values.mtls.otelCollector.namespace | default "monitoring" }}
+spec:
+  selector:
+    matchLabels:
+      {{- toYaml .Values.mtls.otelCollector.selector | nindent 6 }}
+  mtls:
+    mode: PERMISSIVE
+  portLevelMtls:
+    4317:
+      mode: PERMISSIVE
+    4318:
+      mode: PERMISSIVE
+{{- end }}

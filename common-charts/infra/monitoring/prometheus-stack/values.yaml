@@ -135,7 +135,8 @@ alertRules:
     alertName: DevHttp5xxDetected
     environment: unknown
     namespace: ""
-    jobRegex: "(java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*recommendation.*|.*seat.*)"
+    serviceNameRegex: ""
+    jobRegex: "(java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*)"
     lookback: 5m
     for: 1m
     threshold: 0
