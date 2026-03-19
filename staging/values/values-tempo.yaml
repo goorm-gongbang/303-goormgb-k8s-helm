@@ -3,7 +3,7 @@
 
 tempo:
   nodeSelector:
-    role: infra
+    role: monitoring
   resources:
     requests:
       cpu: 50m

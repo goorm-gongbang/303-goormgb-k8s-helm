@@ -18,9 +18,13 @@ service:
       port: 443
       targetPort: 8443
 
-# Infra 노드에 배치
+# App 노드에 배치 (Karpenter workloads)
 nodeSelector:
-  role: infra
+  role: app
+tolerations:
+  - key: spot
+    value: "true"
+    effect: NoSchedule
 
 resources:
   requests:

@@ -5,9 +5,9 @@ fullnameOverride: otel-collector
 mode: deployment
 replicaCount: 1
 
-# Infra 노드에 배치
+# Monitoring 노드에 배치
 nodeSelector:
-  role: infra
+  role: monitoring
 
 resources:
   requests:
