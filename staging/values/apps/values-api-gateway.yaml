@@ -24,7 +24,7 @@ affinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       - labelSelector:
           matchLabels:
-            app.kubernetes.io/name: api-gateway
+            app: staging-api-gateway
         topologyKey: kubernetes.io/hostname
 
 resources:

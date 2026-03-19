@@ -23,7 +23,7 @@ affinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       - labelSelector:
           matchLabels:
-            app.kubernetes.io/name: auth-guard
+            app: staging-auth-guard
         topologyKey: kubernetes.io/hostname
 
 resources:
