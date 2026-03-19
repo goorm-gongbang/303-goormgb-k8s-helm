@@ -8,50 +8,11 @@ zones:
   - ap-northeast-2c
 
 # =============================================================================
-# NodePools - System (Infra) + Workloads (Apps)
+# NodePools - Workloads (Apps)
 # =============================================================================
+# 인프라는 EKS Managed Node Groups 사용 (argocd, infra, monitoring)
+# Karpenter는 앱 워크로드만 관리
 nodePools:
-  # -----------------------------------------------------------------------------
-  # System NodePool: 인프라 전용 (on-demand)
-  # ArgoCD, Istio, Prometheus, ESO, Karpenter 등
-  # -----------------------------------------------------------------------------
-  system:
-    enabled: true
-
-    # On-demand only (안정성 우선)
-    capacityTypes:
-      - on-demand
-
-    # 인스턴스 설정
-    arch: arm64
-    instanceCategories:
-      - t
-      - m
-    instanceSizes:
-      - medium
-      - large
-      - xlarge
-
-    # 리소스 제한 (인프라용)
-    limits:
-      cpu: 32
-      memory: 64Gi
-
-    # Taint 없음 - nodeSelector로 분리
-    # (Taint 쓰면 모든 인프라 차트에 toleration 추가해야 함)
-    # taints:
-    #   - key: "node-role"
-    #     value: "system"
-    #     effect: "NoSchedule"
-
-    # 높은 우선순위
-    weight: 100
-
-    # Disruption 설정
-    consolidationPolicy: WhenEmptyOrUnderutilized
-    consolidateAfter: 1m  # 5m → 1m (빠른 통합)
-    expireAfter: 720h
-
   # -----------------------------------------------------------------------------
   # Workloads NodePool: 앱 서비스 전용 (spot 우선)
   # api-gateway, auth-guard, order-core, queue, seat
