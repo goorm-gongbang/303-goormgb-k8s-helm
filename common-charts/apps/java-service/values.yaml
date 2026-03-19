@@ -55,6 +55,11 @@ affinity: {}
 # 서비스 그룹 (같은 노드에 묶일 서비스들)
 partOf: staging-webs
 
+# PodDisruptionBudget
+pdb:
+  enabled: false
+  minAvailable: 1
+
 # HPA
 autoscaling:
   enabled: false

@@ -1,7 +1,7 @@
 # auth-guard - Staging 환경
 fullnameOverride: "auth-guard"
 contextPath: "/auth"
-replicaCount: 1
+replicaCount: 2
 
 image:
   name: "staging/playball/web/auth-guard"
@@ -17,16 +17,14 @@ tolerations:
     value: "true"
     effect: "NoSchedule"
 
-# HA: 다른 노드에 분산 배치
+# HA: 다른 노드에 분산 배치 (필수)
 affinity:
   podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchLabels:
-              app: staging-auth-guard
-          topologyKey: kubernetes.io/hostname
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: staging-auth-guard
+        topologyKey: kubernetes.io/hostname
 
 resources:
   requests:
@@ -66,3 +64,8 @@ readinessProbe:
 
 otel:
   enabled: true
+
+# PodDisruptionBudget - 최소 1개 유지
+pdb:
+  enabled: true
+  minAvailable: 1
