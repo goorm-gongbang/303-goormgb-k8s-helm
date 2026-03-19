@@ -30,6 +30,10 @@ logLevel: info
 # Infra 노드에 배치
 nodeSelector:
   role: infra
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
 
 affinity: {}
 topologySpreadConstraints: []

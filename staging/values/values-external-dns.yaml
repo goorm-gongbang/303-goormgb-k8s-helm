@@ -29,6 +29,10 @@ logLevel: info
 # 노드 배치
 nodeSelector:
   role: infra
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
 
 # 리소스 설정
 resources:

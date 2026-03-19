@@ -31,11 +31,23 @@ installCRDs: true
 # Infra 노드에 배치
 nodeSelector:
   role: infra
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
 
 webhook:
   nodeSelector:
     role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule
 
 certController:
   nodeSelector:
     role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule

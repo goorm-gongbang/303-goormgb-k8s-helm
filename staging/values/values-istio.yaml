@@ -5,6 +5,10 @@
 pilot:
   nodeSelector:
     role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule
   resources:
     requests:
       cpu: 200m

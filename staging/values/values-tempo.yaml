@@ -4,6 +4,10 @@
 tempo:
   nodeSelector:
     role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   resources:
     requests:
       cpu: 50m

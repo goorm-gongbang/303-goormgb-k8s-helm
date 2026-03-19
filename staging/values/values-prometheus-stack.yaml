@@ -37,6 +37,10 @@ prometheusOperator:
     enabled: false
   nodeSelector:
     role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   resources:
     requests:
       cpu: 100m
@@ -49,6 +53,10 @@ prometheusOperator:
 kube-state-metrics:
   nodeSelector:
     role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   resources:
     requests:
       cpu: 50m
@@ -82,6 +90,10 @@ prometheus:
 
     nodeSelector:
       role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
 
     resources:
       requests:
@@ -276,6 +288,10 @@ grafana:
 
   nodeSelector:
     role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
 
   resources:
     requests:
@@ -325,6 +341,10 @@ alertmanager:
   alertmanagerSpec:
     nodeSelector:
       role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
     resources:
       requests:
         cpu: 50m

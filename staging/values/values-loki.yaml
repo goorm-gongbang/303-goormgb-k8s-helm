@@ -37,6 +37,10 @@ singleBinary:
       memory: 512Mi
   nodeSelector:
     role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   persistence:
     enabled: true
     size: 20Gi
