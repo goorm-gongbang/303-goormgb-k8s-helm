@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         {{- include "ai-service.selectorLabels" . | nindent 8 }}
+        {{- include "ai-service.versionLabel" . | nindent 8 }}
         sidecar.istio.io/inject: "{{ .Values.istio.sidecar }}"
       annotations:
         kiali.io/icon: microservice
