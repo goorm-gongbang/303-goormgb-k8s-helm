@@ -1,0 +1,39 @@
+# Karpenter Configuration - Staging
+# EKS Cluster: goormgb-staging-eks
+
+# Service Account with IRSA
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-karpenter-controller
+
+# Controller Settings
+settings:
+  clusterName: goormgb-staging-eks
+  interruptionQueue: goormgb-staging-karpenter-interruption
+
+# Controller Resources
+controller:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Replicas
+replicas: 1
+
+# Logging
+logLevel: info
+
+# Infra 노드에 배치
+nodeSelector:
+  role: infra
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+affinity: {}
+topologySpreadConstraints: []

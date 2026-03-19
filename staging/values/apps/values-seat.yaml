@@ -1,6 +1,7 @@
 # seat - Staging 환경
 fullnameOverride: "seat"
-replicaCount: 2  # HA 구성
+contextPath: "/seat"
+replicaCount: 2
 
 image:
   name: "staging/playball/web/seat"
@@ -10,26 +11,20 @@ image:
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
 imagePullSecrets: []
 
-# Workloads NodePool에 배치
-nodeSelector:
-  nodepool: workloads
-
 tolerations:
   - key: "spot"
     operator: "Equal"
     value: "true"
     effect: "NoSchedule"
 
-# HA: 다른 노드에 분산 배치
+# HA: 다른 노드에 분산 배치 (필수)
 affinity:
   podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: seat
-          topologyKey: kubernetes.io/hostname
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: staging-seat
+        topologyKey: kubernetes.io/hostname
 
 resources:
   requests:
@@ -55,15 +50,17 @@ livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: *port
-  initialDelaySeconds: 60
+  initialDelaySeconds: 120
   periodSeconds: 10
+  failureThreshold: 6
 
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
     port: *port
-  initialDelaySeconds: 30
+  initialDelaySeconds: 60
   periodSeconds: 5
+  failureThreshold: 6
 
 otel:
-  enabled: false
+  enabled: true

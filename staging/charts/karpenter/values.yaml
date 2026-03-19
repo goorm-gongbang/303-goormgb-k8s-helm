@@ -1,6 +1,6 @@
-# Karpenter Configuration - Staging
-clusterName: "ktcloud_team4_260204-goormgb-staging"
-nodeRole: "ktcloud_team4_260204-karpenter-node"
+# Karpenter Configuration - Staging (Main Account: 497012402578)
+clusterName: goormgb-staging-eks
+nodeRole: goormgb-staging-karpenter-node
 
 # 공통 Zone 설정
 zones:
@@ -28,10 +28,11 @@ nodePools:
       - t
       - m
     instanceSizes:
+      - medium
       - large
       - xlarge
 
-    # 리소스 제한 (인프라용) - 넉넉하게 시작, 모니터링 후 조절
+    # 리소스 제한 (인프라용)
     limits:
       cpu: 32
       memory: 64Gi
@@ -48,12 +49,12 @@ nodePools:
 
     # Disruption 설정
     consolidationPolicy: WhenEmptyOrUnderutilized
-    consolidateAfter: 5m
+    consolidateAfter: 1m  # 5m → 1m (빠른 통합)
     expireAfter: 720h
 
   # -----------------------------------------------------------------------------
   # Workloads NodePool: 앱 서비스 전용 (spot 우선)
-  # api-gateway, auth-guard, order-core, queue, recommendation, seat
+  # api-gateway, auth-guard, order-core, queue, seat
   # -----------------------------------------------------------------------------
   workloads:
     enabled: true
@@ -64,16 +65,15 @@ nodePools:
       - on-demand
 
     # 인스턴스 설정 - arm64 (Graviton, 비용 효율)
-    # TODO: CI에서 multi-arch 이미지 빌드 필요
     arch: arm64
     instanceCategories:
       - t
       - m
       - c
-      - r
     instanceSizes:
-      - large
-      - xlarge
+      - medium     # 2 vCPU - 소규모
+      - large      # 2 vCPU - 기본
+      - xlarge     # 4 vCPU - 버스트용
 
     # 리소스 제한 (앱용)
     limits:

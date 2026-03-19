@@ -36,7 +36,11 @@ prometheusOperator:
   tls:
     enabled: false
   nodeSelector:
-    nodepool: system
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   resources:
     requests:
       cpu: 100m
@@ -47,6 +51,12 @@ prometheusOperator:
 
 # kube-state-metrics
 kube-state-metrics:
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   resources:
     requests:
       cpu: 50m
@@ -79,7 +89,11 @@ prometheus:
     retentionSize: "20GB"
 
     nodeSelector:
-      nodepool: system
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
 
     resources:
       requests:
@@ -110,8 +124,10 @@ grafana:
 
   fullnameOverride: grafana
 
-  nodeSelector:
-    nodepool: system
+  # IRSA for CloudWatch Data Source
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-grafana-cloudwatch
 
   # init-chown-data 비활성화 (PVC 권한 문제 방지)
   initChownData:
@@ -270,6 +286,13 @@ grafana:
   persistence:
     enabled: false
 
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+
   resources:
     requests:
       cpu: 200m
@@ -278,10 +301,11 @@ grafana:
       cpu: 500m
       memory: 1Gi
 
-  # Loki + Tempo datasource
+  # Loki + Tempo + CloudWatch datasource
   additionalDataSources:
     - name: Loki
       type: loki
+      uid: loki
       access: proxy
       url: http://loki.monitoring.svc.cluster.local:3100
       isDefault: false
@@ -290,6 +314,7 @@ grafana:
 
     - name: Tempo
       type: tempo
+      uid: tempo
       access: proxy
       url: http://tempo.monitoring.svc.cluster.local:3100
       isDefault: false
@@ -301,10 +326,25 @@ grafana:
           filterByTraceID: true
           filterBySpanID: true
 
+    # CloudWatch Data Source (RDS, ElastiCache 메트릭)
+    - name: CloudWatch
+      type: cloudwatch
+      uid: cloudwatch
+      access: proxy
+      isDefault: false
+      editable: true
+      jsonData:
+        authType: default  # IRSA 사용
+        defaultRegion: ap-northeast-2
+
 alertmanager:
   alertmanagerSpec:
     nodeSelector:
-      nodepool: system
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
     resources:
       requests:
         cpu: 50m

@@ -6,7 +6,8 @@ serviceAccount:
   create: true
   name: external-secrets
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::274130523831:role/ktcloud_team4_260204-goormgb-staging-external-secrets
+    # Main account IRSA role (terraform output external_secrets_irsa_role_arn)
+    eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-external-secrets
 
 # Webhook ServiceAccount (같은 IRSA 사용)
 webhook:
@@ -14,7 +15,7 @@ webhook:
     create: true
     name: external-secrets-webhook
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::274130523831:role/ktcloud_team4_260204-goormgb-staging-external-secrets
+      eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-external-secrets
 
 # CertController ServiceAccount
 certController:
@@ -22,7 +23,31 @@ certController:
     create: true
     name: external-secrets-cert-controller
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::274130523831:role/ktcloud_team4_260204-goormgb-staging-external-secrets
+      eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-external-secrets
 
 # CRD 설치
 installCRDs: true
+
+# Infra 노드에 배치
+nodeSelector:
+  role: infra
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+webhook:
+  nodeSelector:
+    role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule
+
+certController:
+  nodeSelector:
+    role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule

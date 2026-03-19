@@ -24,7 +24,9 @@ spec:
     # Chart from ECR OCI or external Helm repo
     {{- if $chart.repoURL }}
     - repoURL: {{ $chart.repoURL }}
+      {{- if $chart.chart }}
       chart: {{ $chart.chart }}
+      {{- end }}
       targetRevision: {{ $chart.version }}
     {{- else }}
     - repoURL: {{ $ecrBase }}/{{ $chart.chart }}

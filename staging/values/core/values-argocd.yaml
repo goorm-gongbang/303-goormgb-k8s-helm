@@ -10,11 +10,14 @@ server:
   service:
     type: LoadBalancer
     annotations:
-      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
-      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:ap-northeast-2:274130523831:certificate/e2886626-a973-4451-a9fa-d4113da73284"
-      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+      # AWS Load Balancer Controller 사용 (external)
+      service.beta.kubernetes.io/aws-load-balancer-type: external
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      # TODO: ACM 인증서 생성 후 ARN 설정
+      # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:ap-northeast-2:497012402578:certificate/CERTIFICATE_ID"
+      # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+      # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
 
 # Istio Gateway 비활성화 (NLB 직접 노출)
 gateway:
@@ -35,7 +38,7 @@ oidc:
 # RBAC 설정 - ESO에서 허용된 사용자 목록 가져옴
 rbac:
   eso:
-    enabled: false  # TODO: Secrets Manager에 staging/oauth/rbac/argocd 생성 후 true
+    enabled: true
     secretManagerKey: staging/oauth/rbac/argocd
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
@@ -50,10 +53,10 @@ applications: []
 metrics:
   enabled: false  # TODO: Prometheus 설치 후 true로 변경
 
-# ArgoCD Notifications - Discord (선택사항)
+# ArgoCD Notifications - Discord
 notifications:
-  enabled: false
+  enabled: true
   discord:
     eso:
-      enabled: false
+      enabled: true
       secretManagerKey: staging/argocd/discord-webhook

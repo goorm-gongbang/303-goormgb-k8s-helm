@@ -29,6 +29,7 @@ spec:
       labels:
         ns: {{ $appSet.namespace }}
       annotations:
+        notifications.argoproj.io/subscribe.on-sync-running.discord-app: ""
         notifications.argoproj.io/subscribe.on-deployed.discord-app: ""
         notifications.argoproj.io/subscribe.on-deploy-failed.discord-app: ""
         notifications.argoproj.io/subscribe.on-health-degraded.discord-app: ""

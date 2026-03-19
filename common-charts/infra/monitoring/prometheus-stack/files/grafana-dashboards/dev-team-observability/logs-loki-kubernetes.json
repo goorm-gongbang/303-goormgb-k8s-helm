@@ -293,16 +293,11 @@
           },
           {
             "selected": false,
-            "text": "dev-recommendation",
-            "value": "dev-recommendation"
-          },
-          {
-            "selected": false,
             "text": "dev-seat",
             "value": "dev-seat"
           }
         ],
-        "query": "dev-api-gateway,dev-auth-guard,dev-order-core,dev-queue,dev-recommendation,dev-seat",
+        "query": "dev-api-gateway,dev-auth-guard,dev-order-core,dev-queue,dev-seat",
         "type": "custom"
       }
     ]

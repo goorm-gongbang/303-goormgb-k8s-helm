@@ -1,6 +1,7 @@
 # auth-guard - Staging 환경
 fullnameOverride: "auth-guard"
-replicaCount: 2  # HA 구성
+contextPath: "/auth"
+replicaCount: 1
 
 image:
   name: "staging/playball/web/auth-guard"
@@ -9,10 +10,6 @@ image:
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
 imagePullSecrets: []
-
-# Workloads NodePool에 배치
-nodeSelector:
-  nodepool: workloads
 
 tolerations:
   - key: "spot"
@@ -28,7 +25,7 @@ affinity:
         podAffinityTerm:
           labelSelector:
             matchLabels:
-              app.kubernetes.io/name: auth-guard
+              app: staging-auth-guard
           topologyKey: kubernetes.io/hostname
 
 resources:
@@ -55,15 +52,17 @@ livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: *port
-  initialDelaySeconds: 60
+  initialDelaySeconds: 120
   periodSeconds: 10
+  failureThreshold: 6
 
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
     port: *port
-  initialDelaySeconds: 30
+  initialDelaySeconds: 60
   periodSeconds: 5
+  failureThreshold: 6
 
 otel:
-  enabled: false
+  enabled: true

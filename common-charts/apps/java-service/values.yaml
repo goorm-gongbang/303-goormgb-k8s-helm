@@ -22,6 +22,10 @@ imagePullSecrets:
 nameOverride: ""
 fullnameOverride: ""
 
+# Spring Boot context path (예: /auth, /order, /queue, /seat)
+# 각 서비스 values에서 override
+contextPath: ""
+
 # Service
 service:
   type: ClusterIP
@@ -37,9 +41,19 @@ resources:
     memory: 512Mi
 
 # Node scheduling
-nodeSelector: {}
+nodeSelector:
+  role: app
+
 tolerations: []
+
+# Affinity는 deployment 템플릿에서 기본값 적용
+# - podAffinity: 같은 partOf 서비스들은 같은 노드 선호
+# - podAntiAffinity: 같은 서비스 레플리카는 다른 노드로 분산
+# 커스텀 설정 시 여기서 override
 affinity: {}
+
+# 서비스 그룹 (같은 노드에 묶일 서비스들)
+partOf: staging-webs
 
 # HPA
 autoscaling:
@@ -68,7 +82,7 @@ livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: 8080
-  initialDelaySeconds: 60
+  initialDelaySeconds: 90
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
@@ -77,7 +91,7 @@ readinessProbe:
   httpGet:
     path: /actuator/health/readiness
     port: 8080
-  initialDelaySeconds: 30
+  initialDelaySeconds: 45
   periodSeconds: 5
   timeoutSeconds: 3
   failureThreshold: 3

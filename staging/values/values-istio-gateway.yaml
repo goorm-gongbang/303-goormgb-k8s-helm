@@ -1,0 +1,41 @@
+# Istio IngressGateway - API
+# ALB Ingress에서 라우팅됨 (api.staging.playball.one)
+
+name: istio-ingressgateway
+
+# Labels for Gateway CRD selector
+labels:
+  istio: ingressgateway
+
+# ClusterIP - ALB Ingress에서 라우팅
+service:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
+
+# App 노드에 배치 (Karpenter workloads)
+nodeSelector:
+  role: app
+tolerations:
+  - key: spot
+    value: "true"
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80

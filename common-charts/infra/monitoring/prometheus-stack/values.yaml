@@ -119,15 +119,12 @@ gateway:
     enabled: false
     host: ""
 
-# Alert Rules (PrometheusRule CRD)
-alertRules:
-  enabled: true
-
 # Node placement
 nodeSelector: {}
 tolerations: []
 
-# Custom alert rules (wrapper chart)
+# Custom alert rules (wrapper chart - prometheus-rules.yaml 템플릿 사용)
+# 참고: additionalPrometheusRulesMap은 환경별 values에서 직접 설정 가능
 alertRules:
   enabled: false
   http5xxOnly:
@@ -135,15 +132,9 @@ alertRules:
     alertName: DevHttp5xxDetected
     environment: unknown
     namespace: ""
-    jobRegex: "(java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*recommendation.*|.*seat.*)"
+    serviceNameRegex: ""
+    jobRegex: "(java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*)"
     lookback: 5m
     for: 1m
     threshold: 0
     severity: critical
-
-# Alertmanager Discord webhook secret settings
-alertmanager:
-  discord:
-    eso:
-      enabled: false
-      secretManagerKey: ""  # 예: dev/monitoring/discord-webhook-alerts
