@@ -34,6 +34,13 @@ istiod:
     accessLogFile: /dev/stdout
 
   pilot:
+    # infra 노드에 배치
+    nodeSelector:
+      role: infra
+    tolerations:
+      - key: role
+        value: infra
+        effect: NoSchedule
     resources:
       requests:
         cpu: 100m
@@ -73,6 +80,13 @@ kiali-server:
     strategy: anonymous  # CloudFront + ACM 뒤에서 동작
 
   deployment:
+    # monitoring 노드에 배치
+    node_selector:
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
     resources:
       requests:
         cpu: 50m
