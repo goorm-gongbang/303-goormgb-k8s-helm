@@ -71,9 +71,8 @@ nodePools:
       - m
       - c
     instanceSizes:
-      - medium     # 2 vCPU - 소규모
-      - large      # 2 vCPU - 기본
-      - xlarge     # 4 vCPU - 버스트용
+      - large      # 2 vCPU, 8GB - 기본
+      - xlarge     # 4 vCPU, 16GB - 버스트용
 
     # 리소스 제한 (앱용)
     limits:
