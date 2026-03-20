@@ -46,5 +46,6 @@ tempo:
     size: 10Gi
 
 # Node placement
-nodeSelector: {}
+nodeSelector:
+  kubernetes.io/hostname: mini-gmk
 tolerations: []

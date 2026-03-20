@@ -14,6 +14,9 @@ kube-prometheus-stack:
       podMonitorSelectorNilUsesHelmValues: false
       ruleSelectorNilUsesHelmValues: false
 
+      nodeSelector:
+        kubernetes.io/hostname: mini-gmk
+
       retention: 15d
       retentionSize: "10GB"
 
@@ -37,6 +40,9 @@ kube-prometheus-stack:
   grafana:
     enabled: true
     # adminPassword는 existingSecret 사용 시 무시됨
+
+    nodeSelector:
+      kubernetes.io/hostname: mini-gmk
 
     # Sidecar 설정 - ConfigMap에서 대시보드 자동 로드
     sidecar:
@@ -72,6 +78,8 @@ kube-prometheus-stack:
   # AlertManager
   alertmanager:
     alertmanagerSpec:
+      nodeSelector:
+        kubernetes.io/hostname: mini-gmk
       resources:
         requests:
           cpu: 50m
