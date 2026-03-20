@@ -197,11 +197,17 @@ data:
             get_org_users(force_refresh=True)
             get_org_users_lookup(force_refresh=True)
         elif org_user.get("role") != org_role:
-            payload = {"role": org_role}
-            request("PATCH", f"/api/org/users/{user['id']}", payload=payload, expected={200})
-            log(f"Updated org role: {email} -> {org_role}")
-            get_org_users(force_refresh=True)
-            get_org_users_lookup(force_refresh=True)
+            if created_user:
+                payload = {"role": org_role}
+                request("PATCH", f"/api/org/users/{user['id']}", payload=payload, expected={200})
+                log(f"Updated org role: {email} -> {org_role}")
+                get_org_users(force_refresh=True)
+                get_org_users_lookup(force_refresh=True)
+            else:
+                log(
+                    f"Skipping org role update for existing user: "
+                    f"{email} (current={org_user.get('role')}, desired={org_role})"
+                )
 
         if created_user:
             request(
