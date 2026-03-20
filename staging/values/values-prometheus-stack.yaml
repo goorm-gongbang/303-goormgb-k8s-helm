@@ -35,6 +35,12 @@ prometheusOperator:
     enabled: false
   tls:
     enabled: false
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   resources:
     requests:
       cpu: 100m
@@ -45,6 +51,12 @@ prometheusOperator:
 
 # kube-state-metrics
 kube-state-metrics:
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   resources:
     requests:
       cpu: 50m
@@ -75,6 +87,13 @@ prometheus:
 
     retention: 7d
     retentionSize: "20GB"
+
+    nodeSelector:
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
 
     resources:
       requests:
@@ -267,6 +286,13 @@ grafana:
   persistence:
     enabled: false
 
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+
   resources:
     requests:
       cpu: 200m
@@ -279,6 +305,7 @@ grafana:
   additionalDataSources:
     - name: Loki
       type: loki
+      uid: loki
       access: proxy
       url: http://loki.monitoring.svc.cluster.local:3100
       isDefault: false
@@ -287,6 +314,7 @@ grafana:
 
     - name: Tempo
       type: tempo
+      uid: tempo
       access: proxy
       url: http://tempo.monitoring.svc.cluster.local:3100
       isDefault: false
@@ -301,6 +329,7 @@ grafana:
     # CloudWatch Data Source (RDS, ElastiCache 메트릭)
     - name: CloudWatch
       type: cloudwatch
+      uid: cloudwatch
       access: proxy
       isDefault: false
       editable: true
@@ -310,6 +339,12 @@ grafana:
 
 alertmanager:
   alertmanagerSpec:
+    nodeSelector:
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
     resources:
       requests:
         cpu: 50m

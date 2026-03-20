@@ -2,13 +2,19 @@
 # 분산 추적 저장소
 
 tempo:
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   resources:
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 50m
+      memory: 128Mi
     limits:
-      cpu: 500m
-      memory: 1Gi
+      cpu: 300m
+      memory: 512Mi
 
   # 트레이스 수신 설정
   receivers:

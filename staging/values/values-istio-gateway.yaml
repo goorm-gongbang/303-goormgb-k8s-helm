@@ -18,6 +18,14 @@ service:
       port: 443
       targetPort: 8443
 
+# App 노드에 배치 (Karpenter workloads)
+nodeSelector:
+  role: app
+tolerations:
+  - key: spot
+    value: "true"
+    effect: NoSchedule
+
 resources:
   requests:
     cpu: 100m

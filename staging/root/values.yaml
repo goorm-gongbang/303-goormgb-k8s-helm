@@ -90,6 +90,17 @@ ociCharts:
     syncWave: "-1"
     valueFiles:
       - $values/staging/values/values-istio.yaml
+    ignoreDifferences:
+      - group: ""
+        kind: ConfigMap
+        name: kiali
+        jsonPointers:
+          - /data/config.yaml
+      - group: apps
+        kind: Deployment
+        name: kiali
+        jsonPointers:
+          - /spec/template/metadata/annotations
 
   tigera-operator:
     enabled: false  # EKS는 VPC CNI 사용
@@ -100,6 +111,19 @@ ociCharts:
     syncWave: "-10"
     valueFiles: []
 
+  # Karpenter - Node Auto-scaling
+  karpenter:
+    enabled: true
+    repoURL: public.ecr.aws/karpenter
+    chart: karpenter
+    version: "1.9.0"
+    namespace: karpenter
+    syncWave: "-8"
+    valueFiles:
+      - $values/staging/values/values-karpenter.yaml
+    syncOptions:
+      - ServerSideApply=true
+
   loki:
     enabled: true
     repoURL: https://grafana.github.io/helm-charts
@@ -108,7 +132,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/values-monitoring.yaml
+      - $values/staging/values/values-loki.yaml
     syncOptions:
       - Replace=true
     ignoreDifferences:
@@ -124,9 +148,9 @@ ociCharts:
     chart: promtail
     version: "6.17.1"
     namespace: monitoring
-    syncWave: "0"
+    syncWave: "1"
     valueFiles:
-      - $values/staging/values/values-monitoring.yaml
+      - $values/staging/values/values-promtail.yaml
 
   kube-prometheus-stack:
     enabled: true
@@ -266,6 +290,16 @@ ociCharts:
     valueFiles:
       - $values/staging/values/values-opentelemetry-collector.yaml
 
+  # Metrics Server - kubectl top nodes/pods
+  metrics-server:
+    enabled: true
+    repoURL: https://kubernetes-sigs.github.io/metrics-server/
+    chart: metrics-server
+    version: "3.12.0"
+    namespace: kube-system
+    syncWave: "-9"
+    valueFiles: []
+
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
 # =============================================================================
@@ -299,7 +333,9 @@ gitCharts:
     enabled: true
     path: staging/charts/karpenter
     namespace: karpenter
-    syncWave: "-7"
+    syncWave: "-6"
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
 
   # === ALB Ingress (Host-based routing) ===
   alb-ingress:
@@ -373,11 +409,17 @@ applicationSets:
     chartPath: common-charts/apps/java-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
     services:
-      - name: api-gateway
+      # 순차 배포: auth-guard → 나머지 서비스 → api-gateway
       - name: auth-guard
-      - name: order-core
+        syncWave: "10"
       - name: queue
+        syncWave: "11"
       - name: seat
+        syncWave: "11"
+      - name: order-core
+        syncWave: "11"
+      - name: api-gateway
+        syncWave: "12"
 
   staging-ai-services:
     enabled: true

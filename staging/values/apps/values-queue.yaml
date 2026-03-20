@@ -1,7 +1,7 @@
 # queue - Staging 환경
 fullnameOverride: "queue"
 contextPath: "/queue"
-replicaCount: 1  # 디버깅용 (원래 2)
+replicaCount: 1
 
 image:
   name: "staging/playball/web/queue"
@@ -17,16 +17,14 @@ tolerations:
     value: "true"
     effect: "NoSchedule"
 
-# HA: 다른 노드에 분산 배치
+# HA: 다른 노드에 분산 배치 (필수)
 affinity:
   podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: queue
-          topologyKey: kubernetes.io/hostname
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: staging-queue
+        topologyKey: kubernetes.io/hostname
 
 resources:
   requests:
@@ -52,15 +50,22 @@ livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: *port
-  initialDelaySeconds: 60
+  initialDelaySeconds: 120
   periodSeconds: 10
+  failureThreshold: 6
 
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
     port: *port
-  initialDelaySeconds: 30
+  initialDelaySeconds: 60
   periodSeconds: 5
+  failureThreshold: 6
 
 otel:
   enabled: true
+
+# PodDisruptionBudget - 최소 1개 유지
+pdb:
+  enabled: true
+  minAvailable: 1
