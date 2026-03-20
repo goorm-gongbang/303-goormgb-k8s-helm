@@ -11,12 +11,7 @@ image:
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
 imagePullSecrets: []
 
-# Spot 노드 허용
-tolerations:
-  - key: "spot"
-    operator: "Equal"
-    value: "true"
-    effect: "NoSchedule"
+# apps 노드는 taint 없음 - tolerations 불필요
 
 # HA: 다른 노드에 분산 배치 (필수)
 affinity:

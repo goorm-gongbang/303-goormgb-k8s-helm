@@ -1,6 +1,6 @@
 # seat - Dev 환경
 contextPath: "/seat"
-replicaCount: 2
+replicaCount: 1
 
 image:
   name: "dev/goormgb/seat"
