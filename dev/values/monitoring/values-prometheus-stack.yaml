@@ -25,19 +25,11 @@ prometheusOperator:
   # CP 노드에 배치
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
 
 # kube-state-metrics: CP 노드에 배치
 kube-state-metrics:
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
 
 # kubeadm: 컨트롤 플레인 컴포넌트 모니터링 활성화
 kubeControllerManager:
@@ -95,10 +87,6 @@ prometheus:
     # CP 노드에 배치
     nodeSelector:
       kubernetes.io/hostname: mini-gmk
-    tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: "Exists"
-        effect: "NoSchedule"
 
     resources:
       requests:
@@ -574,10 +562,6 @@ grafana:
   # CP 노드에 배치
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
 
   persistence:
     enabled: true
@@ -618,10 +602,6 @@ alertmanager:
   alertmanagerSpec:
     nodeSelector:
       kubernetes.io/hostname: mini-gmk
-    tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: "Exists"
-        effect: "NoSchedule"
 
     resources:
       requests:
