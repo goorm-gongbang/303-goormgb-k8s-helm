@@ -19,6 +19,8 @@ loki:
 
 singleBinary:
   replicas: 1
+  nodeSelector:
+    kubernetes.io/hostname: mini-gmk
   persistence:
     size: 10Gi
 
@@ -31,3 +33,12 @@ write:
   replicas: 0
 backend:
   replicas: 0
+
+# Cache 컴포넌트 nodeSelector
+chunksCache:
+  nodeSelector:
+    kubernetes.io/hostname: mini-gmk
+
+resultsCache:
+  nodeSelector:
+    kubernetes.io/hostname: mini-gmk

@@ -24,10 +24,6 @@ tigera-operator:
     # Calico 컨트롤 플레인을 CP 노드에 배치 (typha, kube-controllers)
     controlPlaneNodeSelector:
       kubernetes.io/hostname: mini-gmk
-    controlPlaneTolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: "Exists"
-        effect: "NoSchedule"
     calicoNetwork:
       ipPools:
         - cidr: 10.244.0.0/16
@@ -51,7 +47,3 @@ tigera-operator:
     # Operator를 CP 노드에 배치
     nodeSelector:
       kubernetes.io/hostname: mini-gmk
-    tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: "Exists"
-        effect: "NoSchedule"
