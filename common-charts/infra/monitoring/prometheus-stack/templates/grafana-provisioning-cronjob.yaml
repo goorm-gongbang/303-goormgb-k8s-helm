@@ -7,17 +7,17 @@ metadata:
 spec:
   schedule: {{ .Values.grafana.provisioning.schedule | quote }}
   concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 10
   jobTemplate:
     spec:
-      ttlSecondsAfterFinished: 600
+      backoffLimit: 0
       template:
         metadata:
           annotations:
             sidecar.istio.io/inject: "false"
         spec:
-          restartPolicy: OnFailure
+          restartPolicy: Never
           {{- with .Values.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
