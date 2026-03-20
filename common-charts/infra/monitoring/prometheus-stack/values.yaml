@@ -103,6 +103,29 @@ grafana:
     secretManagerKey: ""  # 예: dev/monitoring/grafana
     oauthSecretManagerKey: ""  # 예: common/google-login/grafana
 
+  provisioning:
+    enabled: false
+    schedule: "*/5 * * * *"
+    grafanaUrl: "http://grafana.monitoring.svc.cluster.local"
+    orgId: 1
+    defaultOrgRole: Viewer
+    adminSecretName: grafana-admin-credentials
+    image:
+      repository: python
+      tag: "3.12-alpine"
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+    users: []
+    teams: []
+    folderPermissions: []
+    dashboardPermissions: []
+
 # Alertmanager Discord webhook ESO 설정
 alertmanager:
   discord:
