@@ -10,7 +10,6 @@ spec:
     metadata:
       labels:
         nodepool: {{ $name }}
-        node-role.kubernetes.io/{{ $name }}: ""
         {{- if eq $name "system" }}
         role: infra
         {{- else }}
