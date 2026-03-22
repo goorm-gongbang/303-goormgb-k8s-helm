@@ -8,7 +8,7 @@ metadata:
   namespace: istio-system
   labels:
     app: istio-proxy
-    release: prometheus
+    release: kube-prometheus-stack
 spec:
   selector:
     matchExpressions:

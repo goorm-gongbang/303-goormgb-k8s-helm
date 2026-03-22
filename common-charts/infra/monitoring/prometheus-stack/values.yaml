@@ -169,3 +169,10 @@ alertRules:
     for: 1m
     threshold: 0
     severity: critical
+
+# Dashboard 설정 (환경별로 제외할 대시보드 지정)
+dashboards:
+  infraTeam:
+    exclude: []  # 예: ["calico-felix.json", "karpenter.json"]
+  devTeam:
+    exclude: []  # 예: ["database-rds-postgresql.json", "cache-elasticache-redis.json"]

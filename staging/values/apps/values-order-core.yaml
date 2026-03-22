@@ -13,14 +13,29 @@ imagePullSecrets: []
 
 # apps 노드는 taint 없음 - tolerations 불필요
 
-# HA: 다른 노드에 분산 배치 (필수)
+# HA: 노드 분산 + Managed 노드 우선
 affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/nodepool
+              operator: DoesNotExist
+      - weight: 50
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/capacity-type
+              operator: In
+              values: ["on-demand"]
   podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app: staging-order-core
-        topologyKey: kubernetes.io/hostname
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: order-core
+          topologyKey: kubernetes.io/hostname
 
 resources:
   requests:

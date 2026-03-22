@@ -13,6 +13,14 @@ kiali-server:
       limits:
         cpu: 300m
         memory: 512Mi
+    # Node placement - monitoring node
+    node_selector:
+      role: monitoring
+    tolerations:
+      - key: "role"
+        value: "monitoring"
+        operator: "Equal"
+        effect: "NoSchedule"
 
   external_services:
     prometheus:
@@ -37,10 +45,6 @@ gateway:
   host: ""
   tls:
     credentialName: goormgb-tls
-
-# Node placement
-nodeSelector: {}
-tolerations: []
 
 # OIDC (Google OAuth)
 oidc:

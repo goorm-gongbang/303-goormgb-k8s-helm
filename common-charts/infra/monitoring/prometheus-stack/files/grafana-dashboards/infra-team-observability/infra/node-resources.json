@@ -7,12 +7,71 @@
   "id": null,
   "links": [],
   "panels": [
-    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }, "id": 100, "panels": [], "title": "시스템 개요 (System Overview)", "type": "row" },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }, "id": 105, "panels": [], "title": "노드 정보 (Node Info)", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "선택된 노드의 Kubernetes 레이블 정보입니다.",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] } },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 1 },
+      "id": 106,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^.*$/", "values": false },
+        "showPercentChange": false,
+        "textMode": "name",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "kube_node_labels{node=~\"$node\"} * 0 + 1",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ],
+      "title": "노드 레이블",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": { "mode": "columns" }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": { "Time": true, "Value": true, "__name__": true, "container": true, "endpoint": true, "instance": true, "job": true, "namespace": true, "pod": true, "service": true, "uid": true },
+            "indexByName": {},
+            "renameByName": {
+              "label_arch": "Arch",
+              "label_beta_kubernetes_io_arch": "Arch",
+              "label_beta_kubernetes_io_instance_type": "Instance Type",
+              "label_capacity_type": "Capacity Type",
+              "label_eks_amazonaws_com_capacityType": "Capacity Type",
+              "label_eks_amazonaws_com_nodegroup": "Node Group",
+              "label_node_kubernetes_io_instance_type": "Instance Type",
+              "label_role": "Role",
+              "label_topology_kubernetes_io_zone": "AZ",
+              "node": "Node"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 }, "id": 100, "panels": [], "title": "시스템 개요 (System Overview)", "type": "row" },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "## 가동 시간\n\n**이 지표가 뭐예요?**\n서버가 재부팅 없이 실행된 시간입니다.\n\n**왜 중요한가요?**\n- 서버 안정성 지표\n- 재시작 이력 추적\n- 커널 업데이트 적용 시점 파악\n\n**확인 명령어:**\n```bash\nuptime\ncat /proc/uptime\n```",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "yellow", "value": null }, { "color": "green", "value": 86400 }] }, "unit": "s" }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 }, "id": 1,
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 6 }, "id": 1,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "time() - node_boot_time_seconds{instance=~\"$instance\"}", "legendFormat": "가동시간", "refId": "A" }],
       "title": "가동 시간", "type": "stat"

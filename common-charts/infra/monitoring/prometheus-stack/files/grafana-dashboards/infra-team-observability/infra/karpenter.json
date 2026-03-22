@@ -1,0 +1,197 @@
+{
+  "annotations": { "list": [] },
+  "description": "Karpenter 노드 자동 프로비저닝 대시보드입니다. 노드 생성/삭제, 용량, 비용 효율성을 모니터링합니다.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }, "id": 100, "panels": [], "title": "Karpenter 개요", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 활성 노드 수\n\nKarpenter가 관리하는 현재 실행 중인 노드 수입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 }, "id": 1,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_node_info{node=~\"$node\"})", "legendFormat": "노드", "refId": "A" }],
+      "title": "선택된 노드 수", "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## NodePool별 노드 수\n\n각 NodePool에서 프로비저닝된 노드 수입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 5, "x": 4, "y": 1 }, "id": 2,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "horizontal", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "value_and_name" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (label_karpenter_sh_nodepool) (kube_node_labels{node=~\"$node\", label_karpenter_sh_nodepool!=\"\"})", "legendFormat": "{{label_karpenter_sh_nodepool}}", "refId": "A" }],
+      "title": "NodePool별 노드", "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## On-Demand vs Spot 노드\n\n비용 효율적인 Spot 인스턴스 사용 현황입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 6, "w": 5, "x": 9, "y": 1 }, "id": 3,
+      "options": { "legend": { "displayMode": "table", "placement": "right" }, "pieType": "pie", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (label_karpenter_sh_capacity_type) (kube_node_labels{node=~\"$node\", label_karpenter_sh_capacity_type!=\"\"})", "legendFormat": "{{label_karpenter_sh_capacity_type}}", "refId": "A" }],
+      "title": "용량 유형 (On-Demand vs Spot)", "type": "piechart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 인스턴스 타입 분포\n\n현재 사용 중인 EC2 인스턴스 타입입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 6, "w": 5, "x": 14, "y": 1 }, "id": 4,
+      "options": { "legend": { "displayMode": "table", "placement": "right" }, "pieType": "pie", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (label_node_kubernetes_io_instance_type) (kube_node_labels{node=~\"$node\", label_node_kubernetes_io_instance_type!=\"\"})", "legendFormat": "{{label_node_kubernetes_io_instance_type}}", "refId": "A" }],
+      "title": "인스턴스 타입 분포", "type": "piechart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## Pending Pod 수\n\n스케줄 대기 중인 Pod 수입니다. 높으면 노드 프로비저닝이 필요합니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 5 }, { "color": "red", "value": 10 }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 5, "x": 19, "y": 1 }, "id": 5,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_status_phase{phase=\"Pending\"}) or vector(0)", "legendFormat": "Pending", "refId": "A" }],
+      "title": "대기 중인 Pod", "type": "stat"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 }, "id": 101, "panels": [], "title": "노드 리소스 현황", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## CPU 요청량 vs 할당 가능량\n\n선택된 노드의 CPU 리소스 사용 현황입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 }, "id": 6,
+      "options": { "legend": { "calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_node_status_allocatable{resource=\"cpu\", node=~\"$node\"})", "legendFormat": "할당 가능", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\", node=~\"$node\"})", "legendFormat": "요청량", "refId": "B" }
+      ],
+      "title": "CPU 용량 (코어)", "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 메모리 요청량 vs 할당 가능량\n\n선택된 노드의 메모리 리소스 사용 현황입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "bytes" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 9 }, "id": 7,
+      "options": { "legend": { "calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_node_status_allocatable{resource=\"memory\", node=~\"$node\"})", "legendFormat": "할당 가능", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\", node=~\"$node\"})", "legendFormat": "요청량", "refId": "B" }
+      ],
+      "title": "메모리 용량", "type": "timeseries"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 }, "id": 102, "panels": [], "title": "노드 프로비저닝 이벤트", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 노드 프로비저닝 이력\n\n시간에 따른 노드 수 변화입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 18 }, "id": 8,
+      "options": { "legend": { "calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (label_karpenter_sh_nodepool) (kube_node_labels{node=~\"$node\", label_karpenter_sh_nodepool!=\"\"})", "legendFormat": "{{label_karpenter_sh_nodepool}}", "refId": "A" }
+      ],
+      "title": "NodePool별 노드 수 추이", "type": "timeseries"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 }, "id": 103, "panels": [], "title": "노드 목록", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 노드 목록\n\n선택된 노드들의 상세 정보입니다.",
+      "fieldConfig": {
+        "defaults": { "mappings": [], "unit": "short", "custom": { "align": "left", "displayMode": "auto" } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "노드명" }, "properties": [{ "id": "custom.width", "value": 280 }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 27 }, "id": 9,
+      "options": { "showHeader": true, "cellHeight": "sm", "footer": { "show": false } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_labels{node=~\"$node\"}", "format": "table", "instant": true, "refId": "A" }],
+      "title": "노드 목록", "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "cluster": true,
+              "container": true,
+              "endpoint": true,
+              "instance": true,
+              "job": true,
+              "namespace": true,
+              "pod": true,
+              "prometheus": true,
+              "service": true,
+              "uid": true
+            },
+            "indexByName": {
+              "node": 0,
+              "label_node_kubernetes_io_instance_type": 1,
+              "label_topology_kubernetes_io_zone": 2,
+              "label_karpenter_sh_nodepool": 3,
+              "label_karpenter_sh_capacity_type": 4,
+              "label_eks_amazonaws_com_nodegroup": 5,
+              "label_eks_amazonaws_com_capacityType": 6
+            },
+            "renameByName": {
+              "node": "노드명",
+              "label_karpenter_sh_nodepool": "NodePool",
+              "label_karpenter_sh_capacity_type": "Karpenter 용량",
+              "label_node_kubernetes_io_instance_type": "인스턴스 타입",
+              "label_topology_kubernetes_io_zone": "가용 영역",
+              "label_eks_amazonaws_com_capacityType": "EKS 용량",
+              "label_eks_amazonaws_com_nodegroup": "NodeGroup",
+              "label_kubernetes_io_arch": "아키텍처",
+              "label_kubernetes_io_os": "OS",
+              "label_node_kubernetes_io_role": "역할"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["karpenter", "eks", "infra", "korean"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": false, "text": "Prometheus", "value": "prometheus" },
+        "hide": 0,
+        "includeAll": false,
+        "label": "데이터소스",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(kube_node_info, node)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "노드",
+        "multi": true,
+        "name": "node",
+        "options": [],
+        "query": { "query": "label_values(kube_node_info, node)", "refId": "PrometheusVariableQueryEditor-VariableQuery" },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "Asia/Seoul",
+  "title": "Karpenter 노드 관리",
+  "uid": "karpenter-korean",
+  "version": 1,
+  "weekStart": ""
+}

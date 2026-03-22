@@ -186,23 +186,19 @@
         "type": "textbox"
       },
       {
-        "current": {
-          "text": "dev-webs",
-          "value": "dev-webs"
-        },
-        "hide": 2,
+        "current": {},
+        "datasource": { "type": "loki", "uid": "loki" },
+        "definition": "label_values(namespace)",
+        "hide": 0,
         "includeAll": false,
         "multi": false,
         "name": "namespace",
-        "options": [
-          {
-            "selected": true,
-            "text": "dev-webs",
-            "value": "dev-webs"
-          }
-        ],
-        "query": "dev-webs",
-        "type": "custom"
+        "options": [],
+        "query": "label_values(namespace)",
+        "refresh": 1,
+        "regex": ".*-webs$",
+        "sort": 1,
+        "type": "query"
       },
       {
         "allValue": ".+",
@@ -235,70 +231,38 @@
         "type": "custom"
       },
       {
-        "current": {
-          "text": "java-service",
-          "value": "java-service"
-        },
-        "hide": 2,
-        "includeAll": false,
+        "allValue": ".+",
+        "current": {},
+        "datasource": { "type": "loki", "uid": "loki" },
+        "definition": "label_values({namespace=~\"$namespace\"}, container)",
+        "hide": 0,
+        "includeAll": true,
         "label": "컨테이너",
-        "multi": false,
+        "multi": true,
         "name": "container",
-        "options": [
-          {
-            "selected": true,
-            "text": "java-service",
-            "value": "java-service"
-          }
-        ],
-        "query": "java-service",
-        "type": "custom"
+        "options": [],
+        "query": "label_values({namespace=~\"$namespace\"}, container)",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
       },
       {
-        "allValue": "dev-.*",
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        },
+        "allValue": ".+",
+        "current": {},
+        "datasource": { "type": "loki", "uid": "loki" },
+        "definition": "label_values({namespace=~\"$namespace\"}, instance)",
         "hide": 0,
         "includeAll": true,
         "label": "서비스",
         "multi": true,
         "name": "service",
-        "options": [
-          {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "dev-api-gateway",
-            "value": "dev-api-gateway"
-          },
-          {
-            "selected": false,
-            "text": "dev-auth-guard",
-            "value": "dev-auth-guard"
-          },
-          {
-            "selected": false,
-            "text": "dev-order-core",
-            "value": "dev-order-core"
-          },
-          {
-            "selected": false,
-            "text": "dev-queue",
-            "value": "dev-queue"
-          },
-          {
-            "selected": false,
-            "text": "dev-seat",
-            "value": "dev-seat"
-          }
-        ],
-        "query": "dev-api-gateway,dev-auth-guard,dev-order-core,dev-queue,dev-seat",
-        "type": "custom"
+        "options": [],
+        "query": "label_values({namespace=~\"$namespace\"}, instance)",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
