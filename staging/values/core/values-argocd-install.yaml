@@ -81,6 +81,11 @@ notifications:
 
 # Global 설정
 configs:
+  # RBAC은 ESO + sync-rbac.sh로 관리 (bootstrap repo)
+  # Helm에서 argocd-rbac-cm 생성하지 않음
+  rbac:
+    create: false
+
   cm:
     create: true
     url: https://argocd.staging.playball.one

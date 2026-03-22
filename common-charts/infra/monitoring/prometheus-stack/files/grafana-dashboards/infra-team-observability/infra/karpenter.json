@@ -23,7 +23,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 }, "id": 2,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (nodepool) (kube_node_labels{label_karpenter_sh_nodepool!=\"\"})", "legendFormat": "{{nodepool}}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (label_karpenter_sh_nodepool) (kube_node_labels{label_karpenter_sh_nodepool!=\"\"})", "legendFormat": "{{label_karpenter_sh_nodepool}}", "refId": "A" }],
       "title": "NodePool별 노드", "type": "stat"
     },
     {
@@ -86,7 +86,7 @@
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 18 }, "id": 8,
       "options": { "legend": { "calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (nodepool) (kube_node_labels{label_karpenter_sh_nodepool!=\"\"})", "legendFormat": "{{nodepool}}", "refId": "A" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (label_karpenter_sh_nodepool) (kube_node_labels{label_karpenter_sh_nodepool!=\"\"})", "legendFormat": "{{label_karpenter_sh_nodepool}}", "refId": "A" }
       ],
       "title": "NodePool별 노드 수 추이", "type": "timeseries"
     },
