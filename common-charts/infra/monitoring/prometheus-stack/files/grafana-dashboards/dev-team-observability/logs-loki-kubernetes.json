@@ -186,23 +186,19 @@
         "type": "textbox"
       },
       {
-        "current": {
-          "text": "dev-webs",
-          "value": "dev-webs"
-        },
-        "hide": 2,
+        "current": {},
+        "datasource": { "type": "loki", "uid": "loki" },
+        "definition": "label_values(namespace)",
+        "hide": 0,
         "includeAll": false,
         "multi": false,
         "name": "namespace",
-        "options": [
-          {
-            "selected": true,
-            "text": "dev-webs",
-            "value": "dev-webs"
-          }
-        ],
-        "query": "dev-webs",
-        "type": "custom"
+        "options": [],
+        "query": "label_values(namespace)",
+        "refresh": 1,
+        "regex": ".*-webs$",
+        "sort": 1,
+        "type": "query"
       },
       {
         "allValue": ".+",
