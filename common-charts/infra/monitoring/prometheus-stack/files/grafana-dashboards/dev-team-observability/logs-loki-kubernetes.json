@@ -109,7 +109,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${datasource}" },
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", instance=~\"$service\"} |= \"$query\" [$__interval]))",
+          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container=\"java-service\", instance=~\"$service\"} |= \"$query\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -148,7 +148,7 @@
         {
           "datasource": { "type": "loki", "uid": "${datasource}" },
           "editorMode": "code",
-          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", instance=~\"$service\"} |= \"$query\"",
+          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container=\"java-service\", instance=~\"$service\"} |= \"$query\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -244,23 +244,6 @@
         ],
         "query": "stdout,stderr",
         "type": "custom"
-      },
-      {
-        "allValue": ".+",
-        "current": {},
-        "datasource": { "type": "loki", "uid": "${datasource}" },
-        "definition": "label_values({namespace=~\"$namespace\"}, container)",
-        "hide": 0,
-        "includeAll": true,
-        "label": "컨테이너",
-        "multi": true,
-        "name": "container",
-        "options": [],
-        "query": "label_values({namespace=~\"$namespace\"}, container)",
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "type": "query"
       },
       {
         "allValue": ".+",
