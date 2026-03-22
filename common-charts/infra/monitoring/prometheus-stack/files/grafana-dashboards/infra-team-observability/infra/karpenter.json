@@ -50,7 +50,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 5 }, { "color": "red", "value": 10 }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 5, "x": 19, "y": 1 }, "id": 5,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_status_phase{phase=\"Pending\"}) or vector(0)", "legendFormat": "Pending", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_status_phase{phase=\"Pending\"}) or vector(0)", "legendFormat": "Pending", "refId": "A" }],
       "title": "대기 중인 Pod", "type": "stat"
     },
     { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 }, "id": 101, "panels": [], "title": "노드 리소스 현황", "type": "row" },
@@ -94,14 +94,58 @@
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "## 노드 목록\n\n선택된 노드들의 상세 정보입니다.",
-      "fieldConfig": { "defaults": { "mappings": [], "unit": "short" }, "overrides": [] },
+      "fieldConfig": {
+        "defaults": { "mappings": [], "unit": "short", "custom": { "align": "left", "displayMode": "auto" } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "노드명" }, "properties": [{ "id": "custom.width", "value": 280 }] }
+        ]
+      },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 27 }, "id": 9,
-      "options": {},
+      "options": { "showHeader": true, "cellHeight": "sm", "footer": { "show": false } },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_labels{node=~\"$node\"}", "format": "table", "instant": true, "refId": "A" }],
       "title": "노드 목록", "type": "table",
       "transformations": [
-        { "id": "filterFieldsByName", "options": { "include": { "names": ["node", "label_karpenter_sh_nodepool", "label_karpenter_sh_capacity_type", "label_node_kubernetes_io_instance_type", "label_topology_kubernetes_io_zone", "label_eks_amazonaws_com_capacityType", "label_eks_amazonaws_com_nodegroup"] } } },
-        { "id": "organize", "options": { "renameByName": { "node": "노드명", "label_karpenter_sh_nodepool": "NodePool", "label_karpenter_sh_capacity_type": "Karpenter 용량", "label_node_kubernetes_io_instance_type": "인스턴스 타입", "label_topology_kubernetes_io_zone": "가용 영역", "label_eks_amazonaws_com_capacityType": "EKS 용량", "label_eks_amazonaws_com_nodegroup": "NodeGroup" } } }
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "cluster": true,
+              "container": true,
+              "endpoint": true,
+              "instance": true,
+              "job": true,
+              "namespace": true,
+              "pod": true,
+              "prometheus": true,
+              "service": true,
+              "uid": true
+            },
+            "indexByName": {
+              "node": 0,
+              "label_node_kubernetes_io_instance_type": 1,
+              "label_topology_kubernetes_io_zone": 2,
+              "label_karpenter_sh_nodepool": 3,
+              "label_karpenter_sh_capacity_type": 4,
+              "label_eks_amazonaws_com_nodegroup": 5,
+              "label_eks_amazonaws_com_capacityType": 6
+            },
+            "renameByName": {
+              "node": "노드명",
+              "label_karpenter_sh_nodepool": "NodePool",
+              "label_karpenter_sh_capacity_type": "Karpenter 용량",
+              "label_node_kubernetes_io_instance_type": "인스턴스 타입",
+              "label_topology_kubernetes_io_zone": "가용 영역",
+              "label_eks_amazonaws_com_capacityType": "EKS 용량",
+              "label_eks_amazonaws_com_nodegroup": "NodeGroup",
+              "label_kubernetes_io_arch": "아키텍처",
+              "label_kubernetes_io_os": "OS",
+              "label_node_kubernetes_io_role": "역할"
+            }
+          }
+        }
       ]
     }
   ],
