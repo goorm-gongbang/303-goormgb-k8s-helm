@@ -19,6 +19,7 @@ extraArgs:
   - --txt-owner-id=goormgb-staging-eks
   # 관리할 도메인 필터
   - --domain-filter=playball.one
+  - --domain-filter=staging.playball.one
 
 # 정책: sync (레코드 삭제도 허용)
 policy: sync
