@@ -35,10 +35,10 @@ nodePools:
       - xlarge     # 4 vCPU, 16GB - 기본 (노드 개수 줄이기)
       - 2xlarge    # 8 vCPU, 32GB - 버스트용
 
-    # 리소스 제한 (앱용) - 0으로 설정하면 스케일링 비활성화
+    # 리소스 제한 (앱용)
     limits:
-      cpu: 0
-      memory: 0Gi
+      cpu: 100
+      memory: 200Gi
 
     # Taint 없음 (기본 워크로드용)
     # taints: []

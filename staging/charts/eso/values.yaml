@@ -13,8 +13,7 @@ clusterSecretStore:
 # Service Config - 앱 서비스용 환경변수
 # 시크릿 구조:
 #   - staging/services/db       : DB + Redis 연결정보
-#   - staging/services/jwt      : JWT 토큰 설정
-#   - staging/services/queue-jwt: Admission 토큰 설정
+#   - staging/services/jwt      : JWT + Admission 토큰 설정 (통합)
 serviceConfig:
   enabled: true
   namespace: staging-webs
