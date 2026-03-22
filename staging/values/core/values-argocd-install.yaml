@@ -82,6 +82,7 @@ notifications:
 # Global 설정
 configs:
   cm:
+    create: true
     url: https://argocd.staging.playball.one
     admin.enabled: "true"
     oidc.config: |
