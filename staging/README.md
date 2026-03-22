@@ -91,11 +91,11 @@ staging/
 ## 트래픽 흐름
 
 ```
-CloudFront → ALB → Istio IngressGateway → Services
-                           │
-              ┌────────────┴────────────┐
-              ▼                         ▼
-            RDS                    ElastiCache
+CloudFront → ALB → Istio IngressGateway → Services (Pods)
+                                              │
+                              ┌───────────────┴───────────────┐
+                              ▼                               ▼
+                        RDS PostgreSQL                  ElastiCache Redis
 ```
 
 ## 배포
