@@ -187,6 +187,163 @@
       ],
       "title": "Data Transfer",
       "type": "timeseries"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 32 }, "id": 104, "panels": [], "title": "RDS (PostgreSQL)", "type": "row" },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "RDS CPU 사용률",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] }, "unit": "percent" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 33 },
+      "id": 40,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "CPUUtilization", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "RDS CPU",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "활성 DB 연결 수",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 50 }, { "color": "red", "value": 100 }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 33 },
+      "id": 41,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "DatabaseConnections", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "DB Connections",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "RDS 사용 가능한 메모리",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 536870912 }, { "color": "green", "value": 1073741824 }] }, "unit": "bytes" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 33 },
+      "id": 42,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "FreeableMemory", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "Freeable Memory",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "RDS Read/Write IOPS",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "iops" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 33 },
+      "id": 43,
+      "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "ReadIOPS", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" },
+        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "WriteIOPS", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "B", "region": "ap-northeast-2", "statistic": "Average" }
+      ],
+      "title": "RDS IOPS",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "RDS Read/Write Latency",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "s" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 33 },
+      "id": 44,
+      "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "ReadLatency", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" },
+        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "WriteLatency", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "B", "region": "ap-northeast-2", "statistic": "Average" }
+      ],
+      "title": "RDS Latency",
+      "type": "timeseries"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 38 }, "id": 105, "panels": [], "title": "Redis (ElastiCache)", "type": "row" },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "Redis CPU 사용률",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] }, "unit": "percent" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 39 },
+      "id": 50,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "CPUUtilization", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "Redis CPU",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "Redis 현재 연결 수",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 100 }, { "color": "red", "value": 500 }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 39 },
+      "id": 51,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "CurrConnections", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "Connections",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "Redis 메모리 사용량",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1073741824 }, { "color": "red", "value": 2147483648 }] }, "unit": "bytes" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 39 },
+      "id": 52,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "BytesUsedForCache", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "Memory Used",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "Cache Hit/Miss 비율",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "CacheHits" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "CacheMisses" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 39 },
+      "id": 53,
+      "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "CacheHits", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Sum" },
+        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "CacheMisses", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "B", "region": "ap-northeast-2", "statistic": "Sum" }
+      ],
+      "title": "Cache Hits/Misses",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "Redis 네트워크 I/O",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "Bps" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 39 },
+      "id": 54,
+      "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "NetworkBytesIn", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" },
+        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "NetworkBytesOut", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "B", "region": "ap-northeast-2", "statistic": "Average" }
+      ],
+      "title": "Network I/O",
+      "type": "timeseries"
     }
   ],
   "refresh": "5s",
@@ -194,7 +351,9 @@
   "tags": ["k6", "load-testing", "performance"],
   "templating": {
     "list": [
-      { "current": { "selected": false, "text": "Prometheus", "value": "prometheus" }, "hide": 0, "includeAll": false, "label": "Datasource", "multi": false, "name": "datasource", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "skipUrlSync": false, "type": "datasource" }
+      { "current": { "selected": false, "text": "Prometheus", "value": "prometheus" }, "hide": 0, "includeAll": false, "label": "Datasource", "multi": false, "name": "datasource", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "skipUrlSync": false, "type": "datasource" },
+      { "current": { "selected": false, "text": "goormgb-staging-postgres", "value": "goormgb-staging-postgres" }, "hide": 0, "includeAll": false, "label": "RDS Instance", "multi": false, "name": "rds_instance", "options": [{ "selected": true, "text": "goormgb-staging-postgres", "value": "goormgb-staging-postgres" }], "query": "goormgb-staging-postgres", "skipUrlSync": false, "type": "textbox" },
+      { "current": { "selected": false, "text": "goormgb-staging-redis-001", "value": "goormgb-staging-redis-001" }, "hide": 0, "includeAll": false, "label": "Redis Cluster", "multi": false, "name": "redis_cluster", "options": [{ "selected": true, "text": "goormgb-staging-redis-001", "value": "goormgb-staging-redis-001" }], "query": "goormgb-staging-redis-001", "skipUrlSync": false, "type": "textbox" }
     ]
   },
   "time": { "from": "now-15m", "to": "now" },
