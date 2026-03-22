@@ -83,3 +83,23 @@ notifications:
 configs:
   cm:
     url: https://argocd.staging.playball.one
+    admin.enabled: "true"
+    oidc.config: |
+      name: Google
+      issuer: https://accounts.google.com
+      clientID: $argocd-google-oauth:clientId
+      clientSecret: $argocd-google-oauth:clientSecret
+      redirectURI: https://argocd.staging.playball.one/auth/callback
+      requestedScopes:
+        - openid
+        - profile
+        - email
+    # Calico 리소스 Healthy 처리 (EKS에서는 사용 안 함)
+    resource.customizations.health.operator.tigera.io_Installation: |
+      hs = {}
+      hs.status = "Healthy"
+      return hs
+    resource.customizations.health.operator.tigera.io_APIServer: |
+      hs = {}
+      hs.status = "Healthy"
+      return hs
