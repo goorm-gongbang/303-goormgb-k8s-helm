@@ -35,6 +35,12 @@ prometheusOperator:
     enabled: false
   tls:
     enabled: false
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   resources:
     requests:
       cpu: 100m
@@ -45,6 +51,12 @@ prometheusOperator:
 
 # kube-state-metrics
 kube-state-metrics:
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
   resources:
     requests:
       cpu: 50m
@@ -76,6 +88,13 @@ prometheus:
     retention: 7d
     retentionSize: "20GB"
 
+    nodeSelector:
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
+
     resources:
       requests:
         cpu: 200m
@@ -84,15 +103,17 @@ prometheus:
         cpu: 1000m
         memory: 3Gi
 
-    storageSpec:
-      volumeClaimTemplate:
-        metadata:
-          name: data
-        spec:
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 30Gi
+    # EBS CSI driver 미사용 - emptyDir 사용
+    # storageSpec:
+    #   volumeClaimTemplate:
+    #     metadata:
+    #       name: data
+    #     spec:
+    #       storageClassName: gp2
+    #       accessModes: ["ReadWriteOnce"]
+    #       resources:
+    #         requests:
+    #           storage: 30Gi
 
 grafana:
   # prometheus-extras용 ESO 설정
@@ -102,6 +123,11 @@ grafana:
     oauthSecretManagerKey: staging/infra/oauth/google
 
   fullnameOverride: grafana
+
+  # IRSA for CloudWatch Data Source
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-grafana-cloudwatch
 
   # init-chown-data 비활성화 (PVC 권한 문제 방지)
   initChownData:
@@ -224,9 +250,75 @@ grafana:
     passwordKey: admin-password
 
   # Google OAuth 설정 - Secret에서 환경변수 주입
-  envFromSecrets:
-    - name: google-oauth-credentials
-      optional: false
+  envFromSecret: google-oauth-credentials
+
+  provisioning:
+    enabled: true
+    users:
+      - email: 212clab@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: rhuba23@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: chamchi0129@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: jusanha17@gmail.com
+        orgRole: Viewer
+      - email: lab.jehyun@gmail.com
+        orgRole: Viewer
+      - email: wnconc@gmail.com
+        orgRole: Viewer
+      - email: jbyun1105@gmail.com
+        orgRole: Viewer
+      - email: sayiamseyoun9@gmail.com
+        orgRole: Viewer
+      - email: jminwook0120@gmail.com
+        orgRole: Viewer
+      - email: siyeon0713@gmail.com
+        orgRole: Viewer
+      - email: cdh4112618@gmail.com
+        orgRole: Viewer
+      - email: rhkdgur120@gmail.com
+        orgRole: Viewer
+      - email: wkdwlgus317@hanyang.ac.kr
+        orgRole: Viewer
+      - email: yuuijin863@gmail.com
+        orgRole: Viewer
+      - email: hs4734@gmail.com
+        orgRole: Viewer
+      - email: hejwien@gmail.com
+        orgRole: Viewer
+      - email: niceguy6112@gmail.com
+        orgRole: Viewer
+    teams:
+      - name: DEV
+        members:
+          - yuuijin863@gmail.com
+          - jusanha17@gmail.com
+          - rhkdgur120@gmail.com
+          - siyeon0713@gmail.com
+      - name: AI
+        members:
+          - wkdwlgus317@hanyang.ac.kr
+          - cdh4112618@gmail.com
+      - name: INFR
+        members:
+          - 212clab@gmail.com
+          - chamchi0129@gmail.com
+          - rhuba23@gmail.com
+      - name: SECU
+        members:
+          - wnconc@gmail.com
+          - hejwien@gmail.com
+          - jminwook0120@gmail.com
+      - name: MAN
+        members:
+          - lab.jehyun@gmail.com
+          - jbyun1105@gmail.com
+          - sayiamseyoun9@gmail.com
+          - hs4734@gmail.com
 
   grafana.ini:
     server:
@@ -249,8 +341,7 @@ grafana:
       # 이메일 기반 역할 할당
       role_attribute_path: >-
         contains(['212clab@gmail.com', 'rhuba23@gmail.com', 'chamchi0129@gmail.com'], email) && 'Admin' ||
-        contains(['jusanha17@gmail.com', 'yuuijin863@gmail.com', 'rhkdgur120@gmail.com', 'siyeon0713@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'cdh4112618@gmail.com'], email) && 'Editor' ||
-        contains(['lab.jehyun@gmail.com', 'hs4734@gmail.com', 'sayiamseyoun9@gmail.com', 'jbyun1105@gmail.com', 'jminwook0120@gmail.com', 'hejwien@gmail.com', 'wnconc@gmail.com', 'niceguy6112@gmail.com'], email) && 'Viewer' ||
+        contains(['jusanha17@gmail.com', 'lab.jehyun@gmail.com', 'wnconc@gmail.com', 'jbyun1105@gmail.com', 'sayiamseyoun9@gmail.com', 'jminwook0120@gmail.com', 'siyeon0713@gmail.com', 'cdh4112618@gmail.com', 'rhkdgur120@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'yuuijin863@gmail.com', 'hs4734@gmail.com', 'hejwien@gmail.com', 'niceguy6112@gmail.com'], email) && 'Viewer' ||
         ''
     users:
       auto_assign_org: true
@@ -258,9 +349,16 @@ grafana:
     auth:
       disable_login_form: false
 
+  # EBS CSI driver 미사용 - persistence 비활성화
   persistence:
-    enabled: true
-    size: 5Gi
+    enabled: false
+
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
 
   resources:
     requests:
@@ -270,10 +368,11 @@ grafana:
       cpu: 500m
       memory: 1Gi
 
-  # Loki + Tempo datasource
+  # Loki + Tempo + CloudWatch datasource
   additionalDataSources:
     - name: Loki
       type: loki
+      uid: loki
       access: proxy
       url: http://loki.monitoring.svc.cluster.local:3100
       isDefault: false
@@ -282,6 +381,7 @@ grafana:
 
     - name: Tempo
       type: tempo
+      uid: tempo
       access: proxy
       url: http://tempo.monitoring.svc.cluster.local:3100
       isDefault: false
@@ -293,8 +393,25 @@ grafana:
           filterByTraceID: true
           filterBySpanID: true
 
+    # CloudWatch Data Source (RDS, ElastiCache 메트릭)
+    - name: CloudWatch
+      type: cloudwatch
+      uid: cloudwatch
+      access: proxy
+      isDefault: false
+      editable: true
+      jsonData:
+        authType: default  # IRSA 사용
+        defaultRegion: ap-northeast-2
+
 alertmanager:
   alertmanagerSpec:
+    nodeSelector:
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
     resources:
       requests:
         cpu: 50m

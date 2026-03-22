@@ -1,10 +1,9 @@
 # queue - Dev 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/queue
-
-replicaCount: 2
+contextPath: "/queue"
+replicaCount: 1
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/queue
+  name: "dev/goormgb/queue"
   tag: "239ebbd"
   pullPolicy: Always
 
@@ -35,10 +34,10 @@ service:
   type: ClusterIP
   port: *port
 
-# Health checks (HTTP - context-path 반영)
+# Health checks (contextPath가 자동으로 추가됨)
 livenessProbe:
   httpGet:
-    path: /queue/actuator/health/liveness
+    path: /actuator/health/liveness
     port: *port
   initialDelaySeconds: 60
   periodSeconds: 10
@@ -46,11 +45,35 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /queue/actuator/health/readiness
+    path: /actuator/health/readiness
     port: *port
   initialDelaySeconds: 30
   periodSeconds: 5
   failureThreshold: 3
+
+# Environment variables - Redis Queue 매핑
+env:
+  - name: REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: REDIS_QUEUE_HOST
+  - name: REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: REDIS_QUEUE_PORT
+  # Spring Boot 자동 바인딩 덮어쓰기 (SPRING_DATA_REDIS_* 우선 적용 방지)
+  - name: SPRING_DATA_REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: REDIS_QUEUE_HOST
+  - name: SPRING_DATA_REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: REDIS_QUEUE_PORT
 
 # OpenTelemetry Java Agent
 otel:

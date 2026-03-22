@@ -1,7 +1,8 @@
 {{/*
-ApplicationSets - 서비스 배포용 ApplicationSet
+ApplicationSets - 서비스 배포용 ApplicationSet (multi-source)
 */}}
 {{- $git := .Values.git -}}
+{{- $ecr := .Values.ecr -}}
 {{- $project := .Values.project -}}
 {{- $destination := .Values.destination -}}
 
@@ -21,6 +22,7 @@ spec:
         elements:
           {{- range $appSet.services }}
           - name: {{ .name }}
+            syncWave: "{{ .syncWave | default $appSet.syncWave | default "10" }}"
           {{- end }}
   template:
     metadata:
@@ -28,18 +30,26 @@ spec:
       labels:
         ns: {{ $appSet.namespace }}
       annotations:
+        argocd.argoproj.io/sync-wave: '{{`{{syncWave}}`}}'
         notifications.argoproj.io/subscribe.on-deployed.discord-app: ""
         notifications.argoproj.io/subscribe.on-deploy-failed.discord-app: ""
         notifications.argoproj.io/subscribe.on-health-degraded.discord-app: ""
     spec:
       project: {{ $project }}
-      source:
-        repoURL: {{ $git.repoURL }}
-        targetRevision: {{ $git.targetRevision }}
-        path: {{ $appSet.chartPath }}
-        helm:
-          valueFiles:
-            - {{ $appSet.valueFilesPattern }}
+      sources:
+        - repoURL: {{ $git.repoURL }}
+          targetRevision: {{ $git.targetRevision }}
+          ref: values
+        - repoURL: {{ $git.repoURL }}
+          targetRevision: {{ $git.targetRevision }}
+          path: {{ $appSet.chartPath }}
+          helm:
+            valueFiles:
+              - $values/{{ $appSet.valueFilesPattern | replace "../../../" "" }}
+            valuesObject:
+              ecr:
+                accountId: "{{ $ecr.accountId }}"
+                region: "{{ $ecr.region }}"
       destination:
         server: {{ $destination.server }}
         namespace: {{ $appSet.namespace }}

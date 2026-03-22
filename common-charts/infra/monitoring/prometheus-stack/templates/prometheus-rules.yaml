@@ -14,13 +14,17 @@ spec:
       rules:
         - alert: {{ $cfg.alertName }}
           expr: |
-            sum(
+            sum by (service_name)(
               increase(
                 http_server_request_duration_seconds_count{
                   {{ if $cfg.namespace }}
                   namespace="{{ $cfg.namespace }}",
                   {{ end }}
+                  {{- if $cfg.serviceNameRegex }}
+                  service_name=~"{{ $cfg.serviceNameRegex }}",
+                  {{- else if $cfg.jobRegex }}
                   job=~"{{ $cfg.jobRegex }}",
+                  {{- end }}
                   http_response_status_code=~"5.."
                 }[{{ $cfg.lookback }}]
               )

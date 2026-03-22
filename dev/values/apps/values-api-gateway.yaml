@@ -1,13 +1,12 @@
 # api-gateway - Dev 환경
-# ECR: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/api-gateway
-
 # Java Cloud Gateway (Spring Cloud Gateway)
+contextPath: ""  # api-gateway는 context path 없음
 fullnameOverride: "java-cloud-gateway"
 
 replicaCount: 1
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/api-gateway
+  name: "dev/goormgb/api-gateway"
   tag: "32c4283"
   pullPolicy: Always
 
@@ -38,6 +37,7 @@ istio:
     enabled: true
     allowOrigins:
       - "https://dev.goormgb.space"
+      - "https://swagger.dev.goormgb.space"
       - "http://localhost:3000"
     allowMethods:
       - GET
@@ -60,7 +60,7 @@ service:
 # Environment variables - 백엔드 서비스 URL
 env:
   - name: ALLOWED_ORIGINS
-    value: "https://dev.goormgb.space,http://localhost:3000"
+    value: "https://dev.goormgb.space,https://swagger.dev.goormgb.space,http://localhost:3000"
   - name: AUTH_GUARD_URL
     value: "http://dev-auth-guard.dev-webs.svc.cluster.local:8080"
   - name: QUEUE_URL
@@ -69,8 +69,6 @@ env:
     value: "http://dev-seat.dev-webs.svc.cluster.local:8082"
   - name: ORDER_CORE_URL
     value: "http://dev-order-core.dev-webs.svc.cluster.local:8083"
-  - name: RECOMMENDATION_URL
-    value: "http://dev-recommendation.dev-webs.svc.cluster.local:8084"
   # Redis - API Gateway는 REDIS_HOST/PORT 사용
   - name: REDIS_HOST
     valueFrom:

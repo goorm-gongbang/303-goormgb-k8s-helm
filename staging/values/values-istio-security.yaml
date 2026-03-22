@@ -162,10 +162,30 @@ rateLimiting:
     - "/actuator/health"
 
 # ============================================================
+# mTLS 설정 (서비스 간 통신 암호화)
+# ============================================================
+mtls:
+  enabled: true
+  mode: STRICT  # STRICT: mTLS 필수, PERMISSIVE: 허용
+  namespaces:
+    - staging-webs
+    - monitoring
+    # - staging-ai  # AI 서비스 사용시 활성화
+
+  # OTEL Collector 예외 설정
+  # OTEL Java agent는 Istio sidecar를 거치지 않고 직접 연결하므로
+  # plain HTTP도 허용해야 함 (PERMISSIVE)
+  otelCollector:
+    enabled: true
+    namespace: monitoring
+    selector:
+      app.kubernetes.io/name: opentelemetry-collector
+
+# ============================================================
 # JWT 인증 설정
 # ============================================================
 jwtAuth:
-  enabled: true
+  enabled: false  # 우선 비활성화
 
   issuers:
     # Kakao OAuth

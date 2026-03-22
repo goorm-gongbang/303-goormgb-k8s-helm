@@ -32,7 +32,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 6379
+            - containerPort: {{ .Values.service.port }}
               name: redis
           command:
             - redis-server
@@ -48,6 +48,8 @@ spec:
             exec:
               command:
                 - redis-cli
+                - -p
+                - "{{ .Values.service.port }}"
                 - ping
             initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
@@ -55,6 +57,8 @@ spec:
             exec:
               command:
                 - redis-cli
+                - -p
+                - "{{ .Values.service.port }}"
                 - ping
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
@@ -67,7 +71,7 @@ spec:
               name: metrics
           env:
             - name: REDIS_ADDR
-              value: redis://127.0.0.1:6379
+              value: redis://127.0.0.1:{{ .Values.service.port }}
           resources:
             {{- toYaml .Values.exporter.resources | nindent 12 }}
         {{- end }}

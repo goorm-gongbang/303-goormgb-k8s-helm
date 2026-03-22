@@ -34,10 +34,10 @@ data:
               "color": 896234,
               "fields": [
                 {"name": "Application", "value": {{`{{.app.metadata.name | toJson}}`}}, "inline": true},
-                {"name": "Revision", "value": {{`{{.app.status.sync.revision | trunc 7 | toJson}}`}}, "inline": true},
+                {"name": "Revision", "value": {{`{{ if .app.status.sync.revision }}{{ .app.status.sync.revision | trunc 7 | toJson }}{{ else }}"unknown"{{ end }}`}}, "inline": true},
                 {"name": "Namespace", "value": {{`{{.app.spec.destination.namespace | toJson}}`}}, "inline": true}
               ],
-              "timestamp": {{`{{.app.status.operationState.startedAt | toJson}}`}}
+              "timestamp": {{`{{.app.status.operationState.startedAt | default "" | toJson}}`}}
             }]
           }
       discord-infra:
@@ -50,10 +50,10 @@ data:
               "color": 896234,
               "fields": [
                 {"name": "Application", "value": {{`{{.app.metadata.name | toJson}}`}}, "inline": true},
-                {"name": "Revision", "value": {{`{{.app.status.sync.revision | trunc 7 | toJson}}`}}, "inline": true},
+                {"name": "Revision", "value": {{`{{ if .app.status.sync.revision }}{{ .app.status.sync.revision | trunc 7 | toJson }}{{ else }}"unknown"{{ end }}`}}, "inline": true},
                 {"name": "Namespace", "value": {{`{{.app.spec.destination.namespace | toJson}}`}}, "inline": true}
               ],
-              "timestamp": {{`{{.app.status.operationState.startedAt | toJson}}`}}
+              "timestamp": {{`{{.app.status.operationState.startedAt | default "" | toJson}}`}}
             }]
           }
 
@@ -69,10 +69,10 @@ data:
               "color": 1621586,
               "fields": [
                 {"name": "Application", "value": {{`{{.app.metadata.name | toJson}}`}}, "inline": true},
-                {"name": "Revision", "value": {{`{{.app.status.sync.revision | trunc 7 | toJson}}`}}, "inline": true},
+                {"name": "Revision", "value": {{`{{ if .app.status.sync.revision }}{{ .app.status.sync.revision | trunc 7 | toJson }}{{ else }}"unknown"{{ end }}`}}, "inline": true},
                 {"name": "Namespace", "value": {{`{{.app.spec.destination.namespace | toJson}}`}}, "inline": true}
               ],
-              "timestamp": {{`{{.app.status.operationState.finishedAt | toJson}}`}}
+              "timestamp": {{`{{.app.status.operationState.finishedAt | default "" | toJson}}`}}
             }]
           }
       discord-infra:
@@ -85,10 +85,10 @@ data:
               "color": 1621586,
               "fields": [
                 {"name": "Application", "value": {{`{{.app.metadata.name | toJson}}`}}, "inline": true},
-                {"name": "Revision", "value": {{`{{.app.status.sync.revision | trunc 7 | toJson}}`}}, "inline": true},
+                {"name": "Revision", "value": {{`{{ if .app.status.sync.revision }}{{ .app.status.sync.revision | trunc 7 | toJson }}{{ else }}"unknown"{{ end }}`}}, "inline": true},
                 {"name": "Namespace", "value": {{`{{.app.spec.destination.namespace | toJson}}`}}, "inline": true}
               ],
-              "timestamp": {{`{{.app.status.operationState.finishedAt | toJson}}`}}
+              "timestamp": {{`{{.app.status.operationState.finishedAt | default "" | toJson}}`}}
             }]
           }
 
@@ -105,9 +105,9 @@ data:
               "fields": [
                 {"name": "Application", "value": {{`{{.app.metadata.name | toJson}}`}}, "inline": true},
                 {"name": "Namespace", "value": {{`{{.app.spec.destination.namespace | toJson}}`}}, "inline": true},
-                {"name": "Error", "value": {{`{{.app.status.operationState.message | trunc 500 | toJson}}`}}, "inline": false}
+                {"name": "Error", "value": {{`{{.app.status.operationState.message | default "No message" | trunc 500 | toJson}}`}}, "inline": false}
               ],
-              "timestamp": {{`{{.app.status.operationState.finishedAt | toJson}}`}}
+              "timestamp": {{`{{.app.status.operationState.finishedAt | default "" | toJson}}`}}
             }]
           }
       discord-infra:
@@ -121,9 +121,9 @@ data:
               "fields": [
                 {"name": "Application", "value": {{`{{.app.metadata.name | toJson}}`}}, "inline": true},
                 {"name": "Namespace", "value": {{`{{.app.spec.destination.namespace | toJson}}`}}, "inline": true},
-                {"name": "Error", "value": {{`{{.app.status.operationState.message | trunc 500 | toJson}}`}}, "inline": false}
+                {"name": "Error", "value": {{`{{.app.status.operationState.message | default "No message" | trunc 500 | toJson}}`}}, "inline": false}
               ],
-              "timestamp": {{`{{.app.status.operationState.finishedAt | toJson}}`}}
+              "timestamp": {{`{{.app.status.operationState.finishedAt | default "" | toJson}}`}}
             }]
           }
 

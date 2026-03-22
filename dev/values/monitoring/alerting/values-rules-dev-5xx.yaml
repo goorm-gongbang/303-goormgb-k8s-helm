@@ -1,5 +1,29 @@
 # Alert rule set (dev, temporary)
 
+additionalPrometheusRulesMap:
+  dev-http-5xx:
+    groups:
+      - name: custom.http5xx.rules
+        rules:
+          - alert: DevHttp5xxDetected
+            expr: |
+              sum by (service_name)(
+                increase(
+                  http_server_request_duration_seconds_count{
+                    service_name=~"(java-cloud-gateway|dev-auth-guard|dev-order-core|dev-queue|dev-seat)",
+                    http_response_status_code=~"5.."
+                  }[5m]
+                )
+              ) > 0
+            for: 0m
+            labels:
+              severity: critical
+              environment: dev
+              team: dev
+            annotations:
+              summary: "dev 환경 5xx 에러 감지"
+              description: "최근 5m 동안 dev 웹 서비스에서 5xx 응답이 발생했습니다."
+
 alertRules:
   enabled: true
   http5xxOnly:
@@ -7,8 +31,9 @@ alertRules:
     alertName: DevHttp5xxDetected
     environment: dev
     namespace: ""
-    jobRegex: "(java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*recommendation.*|.*seat.*)"
+    serviceNameRegex: "(java-cloud-gateway|dev-auth-guard|dev-order-core|dev-queue|dev-seat)"
+    jobRegex: "(java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*)"
     lookback: 5m
-    for: 1m
+    for: 0m
     threshold: 0
     severity: critical

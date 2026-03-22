@@ -2,5 +2,11 @@
 # Istio sidecar injection 활성화
 
 namespaces:
-  - name: staging
+  - name: staging-webs
     istio: true
+  - name: monitoring
+    istio: false  # 모니터링은 sidecar 불필요
+  - name: external-dns
+    istio: false  # ExternalDNS는 sidecar 불필요
+  # - name: staging-ai  # AI 서비스 사용시 활성화
+  #   istio: true

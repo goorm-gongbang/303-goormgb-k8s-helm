@@ -1,14 +1,53 @@
 # EKS Staging - External Secrets Operator Configuration
 # AWS Secrets Manager 연동 (IRSA 사용)
 
-# ClusterSecretStore 설정
-clusterSecretStore:
-  enabled: true
-  name: aws-secrets-manager
-  region: ap-northeast-2
-
+# ServiceAccount with IRSA annotation
 serviceAccount:
-  # IRSA를 통한 인증 (EKS)
-  # IAM Role은 Terraform에서 생성됨
-  name: external-secrets-sa
-  namespace: external-secrets
+  create: true
+  name: external-secrets
+  annotations:
+    # Main account IRSA role (terraform output external_secrets_irsa_role_arn)
+    eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-external-secrets-irsa
+
+# Webhook ServiceAccount (같은 IRSA 사용)
+webhook:
+  serviceAccount:
+    create: true
+    name: external-secrets-webhook
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-external-secrets-irsa
+
+# CertController ServiceAccount
+certController:
+  serviceAccount:
+    create: true
+    name: external-secrets-cert-controller
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-external-secrets-irsa
+
+# CRD 설치
+installCRDs: true
+
+# Infra 노드에 배치
+nodeSelector:
+  role: infra
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+webhook:
+  nodeSelector:
+    role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule
+
+certController:
+  nodeSelector:
+    role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule
