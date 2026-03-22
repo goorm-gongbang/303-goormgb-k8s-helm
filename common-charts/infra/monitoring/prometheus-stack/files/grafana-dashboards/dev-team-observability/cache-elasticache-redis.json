@@ -531,8 +531,8 @@
           "refId": "CloudWatchVariableQueryEditor-VariableQuery",
           "region": "ap-northeast-2"
         },
-        "refresh": 1,
-        "regex": "",
+        "refresh": 2,
+        "regex": "goormgb-.*",
         "skipUrlSync": false,
         "sort": 1,
         "type": "query"
