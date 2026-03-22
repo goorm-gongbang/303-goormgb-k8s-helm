@@ -11,12 +11,17 @@ gateway:
     tls:
       credentialName: goormgb-tls
 
-# Dashboard 설정 (kubeadm 환경: EKS 전용 대시보드 제외)
+# Dashboard 설정 (kubeadm 환경: EKS/CloudWatch 전용 대시보드 제외)
 dashboards:
   infraTeam:
     exclude:
       - "karpenter.json"
       - "eks-cluster-overview.json"
+  devTeam:
+    exclude:
+      # CloudWatch 기반 대시보드 제외 (Dev는 로컬 exporter 사용)
+      - "database-rds-postgresql.json"
+      - "cache-elasticache-redis.json"
 
 # ===== kube-prometheus-stack용 설정 =====
 # Pod 이름 단순화 (prometheus-stack-xxx → prom-xxx)
