@@ -14,16 +14,16 @@ zones:
 # Karpenter는 앱 워크로드만 관리
 nodePools:
   # -----------------------------------------------------------------------------
-  # Workloads NodePool: 앱 서비스 전용 (spot 우선)
+  # Workloads NodePool: 앱 서비스 전용 (on-demand 우선, 안정성)
   # api-gateway, auth-guard, order-core, queue, seat
   # -----------------------------------------------------------------------------
   workloads:
     enabled: true
 
-    # Spot 우선, On-demand fallback
+    # On-demand 우선 (staging 안정성), Spot fallback
     capacityTypes:
-      - spot
       - on-demand
+      - spot
 
     # 인스턴스 설정 - arm64 (Graviton, 비용 효율)
     arch: arm64
