@@ -29,25 +29,25 @@ server:
       cpu: 200m
       memory: 256Mi
 
-# Controller 설정
+# Controller 설정 (25+ apps reconcile로 메모리 증가 필요)
 controller:
   resources:
     requests:
       cpu: 50m
-      memory: 128Mi
+      memory: 512Mi
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 1Gi
 
 # Repo Server 설정
 repoServer:
   resources:
     requests:
       cpu: 50m
-      memory: 128Mi
+      memory: 256Mi
     limits:
       cpu: 200m
-      memory: 256Mi
+      memory: 1Gi
 
 # Redis 설정 (내장 Redis 사용)
 redis:
