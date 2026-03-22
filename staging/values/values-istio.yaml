@@ -47,3 +47,33 @@ apiGatewayConfig:
   selector: ingressgateway
   hosts:
     - "api.staging.playball.one"
+
+# =============================================================================
+# Kiali - Service Mesh Observability
+# =============================================================================
+deployment:
+  node_selector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
+
+external_services:
+  prometheus:
+    url: "http://prom-prometheus.monitoring.svc.cluster.local:9090"
+  grafana:
+    enabled: true
+    in_cluster_url: "http://grafana.monitoring.svc.cluster.local:80"
+  tracing:
+    enabled: true
+    provider: "tempo"
+    in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3200"
+    use_grpc: false
