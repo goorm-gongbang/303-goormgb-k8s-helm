@@ -125,9 +125,10 @@ grafana:
   fullnameOverride: grafana
 
   # IRSA for CloudWatch Data Source
+  # Role created by Terraform: terraform output grafana_cloudwatch_irsa_role_arn
   serviceAccount:
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-grafana-cloudwatch
+      eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-grafana-cloudwatch
 
   # init-chown-data 비활성화 (PVC 권한 문제 방지)
   initChownData:
@@ -215,9 +216,26 @@ grafana:
           - name: DS_PROMETHEUS
             value: Prometheus
 
-      platform-network-overview:
-        gnetId: 14314
-        revision: 2
+      # EKS Karpenter Dashboard
+      platform-karpenter:
+        gnetId: 20398
+        revision: 1
+        datasource:
+          - name: DS_PROMETHEUS
+            value: Prometheus
+
+      # Kubernetes Views - Global
+      platform-k8s-views-global:
+        gnetId: 15757
+        revision: 37
+        datasource:
+          - name: DS_PROMETHEUS
+            value: Prometheus
+
+      # Kubernetes Views - Namespaces
+      platform-k8s-views-namespaces:
+        gnetId: 15758
+        revision: 34
         datasource:
           - name: DS_PROMETHEUS
             value: Prometheus
