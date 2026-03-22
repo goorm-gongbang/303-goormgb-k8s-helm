@@ -25,6 +25,12 @@ gateway:
     host: "grafana.staging.playball.one"
     # EKS: TLS는 CloudFront + ACM에서 처리
 
+# Dashboard 설정 (EKS 환경: Calico 제외)
+dashboards:
+  infraTeam:
+    exclude:
+      - "calico-felix.json"
+
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
 fullnameOverride: prom
 cleanPrometheusOperatorObjectNames: true
