@@ -27,6 +27,12 @@ replicas: 1
 # Logging
 logLevel: info
 
+# Prometheus ServiceMonitor
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: prom
+
 # Infra 노드에 배치
 nodeSelector:
   role: infra

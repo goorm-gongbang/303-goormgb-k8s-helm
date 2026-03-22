@@ -1,0 +1,35 @@
+{{- if .Values.metrics.enabled }}
+# Spring Boot Actuator Prometheus 메트릭 수집
+# /actuator/prometheus 엔드포인트에서 Micrometer 메트릭 수집
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ include "java-service.fullname" . }}
+  labels:
+    {{- include "java-service.labels" . | nindent 4 }}
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      {{- include "java-service.selectorLabels" . | nindent 6 }}
+  podMetricsEndpoints:
+    - port: {{ .Values.metrics.portName | default "http" }}
+      path: {{ .Values.metrics.path | default "/actuator/prometheus" }}
+      interval: {{ .Values.metrics.interval | default "30s" }}
+      {{- if .Values.metrics.relabelings }}
+      relabelings:
+        {{- toYaml .Values.metrics.relabelings | nindent 8 }}
+      {{- else }}
+      relabelings:
+        # Pod 정보 라벨 추가
+        - sourceLabels: [__meta_kubernetes_pod_name]
+          targetLabel: pod
+        - sourceLabels: [__meta_kubernetes_namespace]
+          targetLabel: namespace
+        - sourceLabels: [__meta_kubernetes_pod_label_app]
+          targetLabel: app
+      {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}
