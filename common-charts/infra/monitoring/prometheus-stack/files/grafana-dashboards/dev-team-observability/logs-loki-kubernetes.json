@@ -29,7 +29,7 @@
   "links": [],
   "panels": [
     {
-      "datasource": "Loki",
+      "datasource": { "type": "loki", "uid": "${datasource}" },
       "description": "시간대별 로그 발생 건수입니다.",
       "fieldConfig": {
         "defaults": {
@@ -108,7 +108,7 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
-          "datasource": "Loki",
+          "datasource": { "type": "loki", "uid": "${datasource}" },
           "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", instance=~\"$service\"} |= \"$query\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
@@ -120,7 +120,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Loki",
+      "datasource": { "type": "loki", "uid": "${datasource}" },
       "description": "Logs from services running in Kubernetes",
       "fieldConfig": {
         "defaults": {},
@@ -146,7 +146,7 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
-          "datasource": "Loki",
+          "datasource": { "type": "loki", "uid": "${datasource}" },
           "editorMode": "code",
           "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container=~\"$container\", instance=~\"$service\"} |= \"$query\"",
           "queryType": "range",
@@ -168,6 +168,20 @@
   "templating": {
     "list": [
       {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "데이터소스",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
         "current": {
           "text": "",
           "value": ""
@@ -187,10 +201,11 @@
       },
       {
         "current": {},
-        "datasource": { "type": "loki", "uid": "loki" },
+        "datasource": { "type": "loki", "uid": "${datasource}" },
         "definition": "label_values(namespace)",
         "hide": 0,
         "includeAll": false,
+        "label": "네임스페이스",
         "multi": false,
         "name": "namespace",
         "options": [],
@@ -233,7 +248,7 @@
       {
         "allValue": ".+",
         "current": {},
-        "datasource": { "type": "loki", "uid": "loki" },
+        "datasource": { "type": "loki", "uid": "${datasource}" },
         "definition": "label_values({namespace=~\"$namespace\"}, container)",
         "hide": 0,
         "includeAll": true,
@@ -250,7 +265,7 @@
       {
         "allValue": ".+",
         "current": {},
-        "datasource": { "type": "loki", "uid": "loki" },
+        "datasource": { "type": "loki", "uid": "${datasource}" },
         "definition": "label_values({namespace=~\"$namespace\"}, instance)",
         "hide": 0,
         "includeAll": true,
@@ -274,6 +289,6 @@
   "timezone": "",
   "title": "로그 확인(Loki Kubernetes Logs)",
   "uid": "cfevec81ezw8wc",
-  "version": 12,
+  "version": 13,
   "weekStart": ""
 }
