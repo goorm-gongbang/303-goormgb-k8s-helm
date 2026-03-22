@@ -3,11 +3,6 @@
 
 name: istio-ingressgateway
 
-# Istio proxy image
-image:
-  repository: docker.io/istio/proxyv2
-  tag: "1.29.1"
-
 # Labels for Gateway CRD selector
 labels:
   istio: ingressgateway
