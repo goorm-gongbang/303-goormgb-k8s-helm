@@ -17,6 +17,7 @@ dashboards:
     exclude:
       - "karpenter.json"
       - "eks-cluster-overview.json"
+      - "vpc-cni.json"
   devTeam:
     exclude:
       # CloudWatch 기반 대시보드 제외 (Dev는 로컬 exporter 사용)
