@@ -11,21 +11,30 @@ image:
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
 imagePullSecrets: []
 
-tolerations:
-  - key: "spot"
-    operator: "Equal"
-    value: "true"
-    effect: "NoSchedule"
+# apps 노드는 taint 없음 - tolerations 불필요
 
-# HA: 다른 노드에 분산 배치
+# HA: 노드 분산 + Managed 노드 우선
 affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/nodepool
+              operator: DoesNotExist
+      - weight: 50
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/capacity-type
+              operator: In
+              values: ["on-demand"]
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
         podAffinityTerm:
           labelSelector:
             matchLabels:
-              app.kubernetes.io/name: order-core
+              app: order-core
           topologyKey: kubernetes.io/hostname
 
 resources:
@@ -66,3 +75,8 @@ readinessProbe:
 
 otel:
   enabled: true
+
+# PodDisruptionBudget - 최소 1개 유지
+pdb:
+  enabled: true
+  minAvailable: 1

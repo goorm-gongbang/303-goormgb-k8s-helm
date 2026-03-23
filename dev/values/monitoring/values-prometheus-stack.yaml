@@ -11,6 +11,19 @@ gateway:
     tls:
       credentialName: goormgb-tls
 
+# Dashboard 설정 (kubeadm 환경: EKS/CloudWatch 전용 대시보드 제외)
+dashboards:
+  infraTeam:
+    exclude:
+      - "karpenter.json"
+      - "eks-cluster-overview.json"
+      - "vpc-cni.json"
+  devTeam:
+    exclude:
+      # CloudWatch 기반 대시보드 제외 (Dev는 로컬 exporter 사용)
+      - "database-rds-postgresql.json"
+      - "cache-elasticache-redis.json"
+
 # ===== kube-prometheus-stack용 설정 =====
 # Pod 이름 단순화 (prometheus-stack-xxx → prom-xxx)
 fullnameOverride: prom
@@ -25,19 +38,11 @@ prometheusOperator:
   # CP 노드에 배치
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
 
 # kube-state-metrics: CP 노드에 배치
 kube-state-metrics:
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
 
 # kubeadm: 컨트롤 플레인 컴포넌트 모니터링 활성화
 kubeControllerManager:
@@ -95,10 +100,6 @@ prometheus:
     # CP 노드에 배치
     nodeSelector:
       kubernetes.io/hostname: mini-gmk
-    tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: "Exists"
-        effect: "NoSchedule"
 
     resources:
       requests:
@@ -540,6 +541,74 @@ grafana:
   # Google OAuth 설정 - Secret에서 환경변수 주입
   envFromSecret: google-oauth-credentials
 
+  provisioning:
+    enabled: true
+    users:
+      - email: 212clab@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: rhuba23@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: chamchi0129@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: jusanha17@gmail.com
+        orgRole: Viewer
+      - email: lab.jehyun@gmail.com
+        orgRole: Viewer
+      - email: wnconc@gmail.com
+        orgRole: Viewer
+      - email: jbyun1105@gmail.com
+        orgRole: Viewer
+      - email: sayiamseyoun9@gmail.com
+        orgRole: Viewer
+      - email: jminwook0120@gmail.com
+        orgRole: Viewer
+      - email: siyeon0713@gmail.com
+        orgRole: Viewer
+      - email: cdh4112618@gmail.com
+        orgRole: Viewer
+      - email: rhkdgur120@gmail.com
+        orgRole: Viewer
+      - email: wkdwlgus317@hanyang.ac.kr
+        orgRole: Viewer
+      - email: yuuijin863@gmail.com
+        orgRole: Viewer
+      - email: hs4734@gmail.com
+        orgRole: Viewer
+      - email: hejwien@gmail.com
+        orgRole: Viewer
+      - email: niceguy6112@gmail.com
+        orgRole: Viewer
+    teams:
+      - name: DEV
+        members:
+          - yuuijin863@gmail.com
+          - jusanha17@gmail.com
+          - rhkdgur120@gmail.com
+          - siyeon0713@gmail.com
+      - name: AI
+        members:
+          - wkdwlgus317@hanyang.ac.kr
+          - cdh4112618@gmail.com
+      - name: INFR
+        members:
+          - 212clab@gmail.com
+          - chamchi0129@gmail.com
+          - rhuba23@gmail.com
+      - name: SECU
+        members:
+          - wnconc@gmail.com
+          - hejwien@gmail.com
+          - jminwook0120@gmail.com
+      - name: MAN
+        members:
+          - lab.jehyun@gmail.com
+          - jbyun1105@gmail.com
+          - sayiamseyoun9@gmail.com
+          - hs4734@gmail.com
+
   grafana.ini:
     server:
       root_url: https://grafana.goormgb.space
@@ -562,8 +631,7 @@ grafana:
       # 이메일 기반 역할 할당
       role_attribute_path: >-
         contains(['212clab@gmail.com', 'rhuba23@gmail.com', 'chamchi0129@gmail.com'], email) && 'Admin' ||
-        contains(['jusanha17@gmail.com', 'yuuijin863@gmail.com', 'rhkdgur120@gmail.com', 'siyeon0713@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'cdh4112618@gmail.com'], email) && 'Editor' ||
-        contains(['lab.jehyun@gmail.com', 'hs4734@gmail.com', 'sayiamseyoun9@gmail.com', 'jbyun1105@gmail.com', 'jminwook0120@gmail.com', 'hejwien@gmail.com', 'wnconc@gmail.com', 'niceguy6112@gmail.com'], email) && 'Viewer' ||
+        contains(['jusanha17@gmail.com', 'lab.jehyun@gmail.com', 'wnconc@gmail.com', 'jbyun1105@gmail.com', 'sayiamseyoun9@gmail.com', 'jminwook0120@gmail.com', 'siyeon0713@gmail.com', 'cdh4112618@gmail.com', 'rhkdgur120@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'yuuijin863@gmail.com', 'hs4734@gmail.com', 'hejwien@gmail.com', 'niceguy6112@gmail.com'], email) && 'Viewer' ||
         ''
     users:
       auto_assign_org: true
@@ -574,10 +642,6 @@ grafana:
   # CP 노드에 배치
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
 
   persistence:
     enabled: true
@@ -618,10 +682,6 @@ alertmanager:
   alertmanagerSpec:
     nodeSelector:
       kubernetes.io/hostname: mini-gmk
-    tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: "Exists"
-        effect: "NoSchedule"
 
     resources:
       requests:

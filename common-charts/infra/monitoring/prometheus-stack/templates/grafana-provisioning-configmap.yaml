@@ -1,0 +1,408 @@
+{{- if .Values.grafana.provisioning.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning
+  namespace: {{ .Release.Namespace }}
+data:
+  state.json: |
+    {{- .Values.grafana.provisioning | toPrettyJson | nindent 4 }}
+  reconcile.py: |
+    import base64
+    import json
+    import os
+    import secrets
+    import sys
+    import time
+    import urllib.error
+    import urllib.parse
+    import urllib.request
+
+
+    STATE_PATH = "/etc/grafana-provisioning/state.json"
+
+
+    with open(STATE_PATH, "r", encoding="utf-8") as fp:
+        STATE = json.load(fp)
+
+
+    BASE_URL = STATE["grafanaUrl"].rstrip("/")
+    ORG_ID = STATE.get("orgId", 1)
+    DEFAULT_ORG_ROLE = STATE.get("defaultOrgRole", "Viewer")
+
+    ADMIN_USER = os.environ["GRAFANA_ADMIN_USER"]
+    ADMIN_PASSWORD = os.environ["GRAFANA_ADMIN_PASSWORD"]
+    AUTH_HEADER = "Basic " + base64.b64encode(
+        f"{ADMIN_USER}:{ADMIN_PASSWORD}".encode("utf-8")
+    ).decode("ascii")
+
+    USER_CACHE = {}
+    TEAM_CACHE = {}
+    ORG_USERS_CACHE = None
+    ORG_USERS_LOOKUP_CACHE = None
+
+    ORG_ROLES = {"Viewer", "Editor", "Admin"}
+    PERMISSIONS = {
+        "View": 1,
+        "Viewer": 1,
+        "Edit": 2,
+        "Editor": 2,
+        "Admin": 4,
+        1: 1,
+        2: 2,
+        4: 4,
+    }
+
+
+    def log(message):
+        print(message, flush=True)
+
+
+    def fail(message):
+        raise RuntimeError(message)
+
+
+    def request(method, path, payload=None, expected=None):
+        if expected is None:
+            expected = {200}
+        url = f"{BASE_URL}{path}"
+        headers = {
+            "Authorization": AUTH_HEADER,
+            "Accept": "application/json",
+            "X-Grafana-Org-Id": str(ORG_ID),
+        }
+        data = None
+        if payload is not None:
+            data = json.dumps(payload).encode("utf-8")
+            headers["Content-Type"] = "application/json"
+
+        req = urllib.request.Request(url, data=data, headers=headers, method=method)
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                body = resp.read().decode("utf-8")
+                if resp.status not in expected:
+                    fail(f"Unexpected status {resp.status} for {method} {path}: {body}")
+                if not body:
+                    return resp.status, None
+                return resp.status, json.loads(body)
+        except urllib.error.HTTPError as err:
+            body = err.read().decode("utf-8")
+            if err.code in expected:
+                if not body:
+                    return err.code, None
+                return err.code, json.loads(body)
+            fail(f"HTTP {err.code} for {method} {path}: {body}")
+
+
+    def wait_for_grafana():
+        retries = 60
+        delay_seconds = 5
+        for attempt in range(1, retries + 1):
+            try:
+                _, body = request("GET", "/api/health", expected={200})
+                log(f"Grafana is ready: {body.get('version', 'unknown version')}")
+                return
+            except Exception as exc:
+                if attempt == retries:
+                    raise
+                log(f"Waiting for Grafana ({attempt}/{retries}): {exc}")
+                time.sleep(delay_seconds)
+
+
+    def ensure_role(value):
+        if value not in ORG_ROLES:
+            fail(f"Unsupported org role: {value}")
+        return value
+
+
+    def ensure_permission(value):
+        if value not in PERMISSIONS:
+            fail(f"Unsupported permission: {value}")
+        return PERMISSIONS[value]
+
+
+    def default_login(email):
+        return email.split("@", 1)[0]
+
+
+    def default_name(email):
+        return email.split("@", 1)[0]
+
+
+    def lookup_user(email_or_login):
+        encoded = urllib.parse.quote(email_or_login, safe="")
+        status, body = request(
+            "GET",
+            f"/api/users/lookup?loginOrEmail={encoded}",
+            expected={200, 404},
+        )
+        if status == 404:
+            return None
+        return body
+
+
+    def get_org_users(force_refresh=False):
+        global ORG_USERS_CACHE
+        if force_refresh or ORG_USERS_CACHE is None:
+            _, body = request("GET", "/api/org/users", expected={200})
+            ORG_USERS_CACHE = body
+        return ORG_USERS_CACHE
+
+
+    def get_org_users_lookup(force_refresh=False):
+        global ORG_USERS_LOOKUP_CACHE
+        if force_refresh or ORG_USERS_LOOKUP_CACHE is None:
+            _, body = request("GET", "/api/org/users/lookup", expected={200})
+            ORG_USERS_LOOKUP_CACHE = body
+        return ORG_USERS_LOOKUP_CACHE
+
+
+    def ensure_user(spec):
+        email = spec["email"].strip().lower()
+        if not email:
+            fail("User email is required")
+
+        if email in USER_CACHE:
+            return USER_CACHE[email]
+
+        login = spec.get("login") or default_login(email)
+        name = spec.get("name") or default_name(email)
+        org_role = ensure_role(spec.get("orgRole", DEFAULT_ORG_ROLE))
+        is_grafana_admin = bool(spec.get("isGrafanaAdmin", False))
+
+        user = lookup_user(email) or lookup_user(login)
+        created_user = False
+        if user is None:
+            payload = {
+                "name": name,
+                "email": email,
+                "login": login,
+                "password": secrets.token_urlsafe(24),
+                "OrgId": ORG_ID,
+            }
+            _, body = request("POST", "/api/admin/users", payload=payload, expected={200})
+            user_id = body["id"]
+            log(f"Created Grafana user: {email} (id={user_id})")
+            user = {"id": user_id, "email": email, "login": login, "name": name}
+            created_user = True
+        else:
+            log(f"Found existing Grafana user: {email} (id={user['id']})")
+
+        org_users = get_org_users(force_refresh=True)
+        org_user = next((item for item in org_users if item.get("userId") == user["id"]), None)
+        if org_user is None:
+            payload = {"loginOrEmail": email, "role": org_role}
+            _, body = request("POST", "/api/org/users", payload=payload, expected={200})
+            log(f"Added user to org {ORG_ID}: {email} as {org_role} (userId={body['userId']})")
+            get_org_users(force_refresh=True)
+            get_org_users_lookup(force_refresh=True)
+        elif org_user.get("role") != org_role:
+            if created_user:
+                payload = {"role": org_role}
+                request("PATCH", f"/api/org/users/{user['id']}", payload=payload, expected={200})
+                log(f"Updated org role: {email} -> {org_role}")
+                get_org_users(force_refresh=True)
+                get_org_users_lookup(force_refresh=True)
+            else:
+                log(
+                    f"Skipping org role update for existing user: "
+                    f"{email} (current={org_user.get('role')}, desired={org_role})"
+                )
+
+        if created_user:
+            request(
+                "PUT",
+                f"/api/admin/users/{user['id']}/permissions",
+                payload={"isGrafanaAdmin": is_grafana_admin},
+                expected={200},
+            )
+        else:
+            log(
+                f"Skipping Grafana admin permission update for existing user: "
+                f"{email} (isGrafanaAdmin={is_grafana_admin})"
+            )
+
+        org_lookup = get_org_users_lookup(force_refresh=True)
+        org_lookup_user = next(
+            (
+                item
+                for item in org_lookup
+                if item.get("userId") == user["id"]
+                or item.get("login", "").lower() == login.lower()
+            ),
+            None,
+        )
+        if org_lookup_user is None:
+            fail(f"Unable to resolve org user lookup for {email}")
+
+        resolved = {
+            "id": user["id"],
+            "email": email,
+            "login": login,
+            "name": name,
+            "orgRole": org_role,
+            "lookup": org_lookup_user,
+        }
+        USER_CACHE[email] = resolved
+        USER_CACHE[login.lower()] = resolved
+        return resolved
+
+
+    def ensure_team(spec):
+        name = spec["name"].strip()
+        if not name:
+            fail("Team name is required")
+
+        if name in TEAM_CACHE:
+            return TEAM_CACHE[name]
+
+        encoded = urllib.parse.quote(name, safe="")
+        _, body = request("GET", f"/api/teams/search?name={encoded}", expected={200})
+        teams = body.get("teams", [])
+        team = next((item for item in teams if item.get("name") == name), None)
+
+        team_email = spec.get("email", "")
+        if team is None:
+            _, create_body = request(
+                "POST",
+                "/api/teams",
+                payload={"name": name, "email": team_email},
+                expected={200},
+            )
+            team = {"id": create_body["teamId"], "name": name, "email": team_email}
+            log(f"Created team: {name} (id={team['id']})")
+        else:
+            request(
+                "PUT",
+                f"/api/teams/{team['id']}",
+                payload={"name": name, "email": team_email},
+                expected={200},
+            )
+            log(f"Updated team metadata: {name} (id={team['id']})")
+
+        member_emails = []
+        admin_emails = []
+        for email in spec.get("members", []):
+            member_emails.append(ensure_user({"email": email}).get("email"))
+        for email in spec.get("admins", []):
+            admin_emails.append(ensure_user({"email": email, "orgRole": spec.get("adminOrgRole", DEFAULT_ORG_ROLE)}).get("email"))
+
+        request(
+            "PUT",
+            f"/api/teams/{team['id']}/members",
+            payload={"members": sorted(set(member_emails)), "admins": sorted(set(admin_emails))},
+            expected={200},
+        )
+        log(
+            f"Reconciled team members: {name} "
+            f"(members={len(set(member_emails))}, admins={len(set(admin_emails))})"
+        )
+
+        resolved = {"id": team["id"], "name": name}
+        TEAM_CACHE[name] = resolved
+        return resolved
+
+
+    def permission_items(items):
+        resolved_items = []
+        for item in items:
+            entry = {"permission": ensure_permission(item["permission"])}
+            if "team" in item:
+                entry["teamId"] = ensure_team({"name": item["team"]})["id"]
+            elif "userEmail" in item:
+                entry["userId"] = ensure_user({"email": item["userEmail"]})["id"]
+            elif "role" in item:
+                role = ensure_role(item["role"])
+                if role == "Admin":
+                    fail("Built-in Admin role permissions are not configurable")
+                entry["role"] = role
+            else:
+                fail("Permission item must contain one of: team, userEmail, role")
+            resolved_items.append(entry)
+        return resolved_items
+
+
+    def reconcile_folder_permissions(spec):
+        folder_uid = spec["folderUid"]
+        items = permission_items(spec.get("items", []))
+        if not items:
+            log(f"Skipping folder permissions for {folder_uid}: no items defined")
+            return
+        payload = {"items": items}
+        request(
+            "POST",
+            f"/api/folders/{urllib.parse.quote(folder_uid, safe='')}/permissions",
+            payload=payload,
+            expected={200},
+        )
+        log(f"Reconciled folder permissions: {folder_uid}")
+
+
+    def reconcile_dashboard_permissions(spec):
+        dashboard_uid = spec["dashboardUid"]
+        items = permission_items(spec.get("items", []))
+        if not items:
+            log(f"Skipping dashboard permissions for {dashboard_uid}: no items defined")
+            return
+        payload = {"items": items}
+        request(
+            "POST",
+            f"/api/dashboards/uid/{urllib.parse.quote(dashboard_uid, safe='')}/permissions",
+            payload=payload,
+            expected={200},
+        )
+        log(f"Reconciled dashboard permissions: {dashboard_uid}")
+
+
+    def collect_user_specs():
+        users = {}
+        for spec in STATE.get("users", []):
+            email = spec["email"].strip().lower()
+            users[email] = spec
+
+        for team in STATE.get("teams", []):
+            for email in team.get("members", []):
+                users.setdefault(email.strip().lower(), {"email": email, "orgRole": DEFAULT_ORG_ROLE})
+            for email in team.get("admins", []):
+                users.setdefault(email.strip().lower(), {"email": email, "orgRole": DEFAULT_ORG_ROLE})
+
+        for permissions in STATE.get("folderPermissions", []):
+            for item in permissions.get("items", []):
+                if "userEmail" in item:
+                    email = item["userEmail"].strip().lower()
+                    users.setdefault(email, {"email": item["userEmail"], "orgRole": DEFAULT_ORG_ROLE})
+
+        for permissions in STATE.get("dashboardPermissions", []):
+            for item in permissions.get("items", []):
+                if "userEmail" in item:
+                    email = item["userEmail"].strip().lower()
+                    users.setdefault(email, {"email": item["userEmail"], "orgRole": DEFAULT_ORG_ROLE})
+
+        return list(users.values())
+
+
+    def main():
+        wait_for_grafana()
+
+        for user_spec in collect_user_specs():
+            ensure_user(user_spec)
+
+        for team_spec in STATE.get("teams", []):
+            ensure_team(team_spec)
+
+        for folder_spec in STATE.get("folderPermissions", []):
+            reconcile_folder_permissions(folder_spec)
+
+        for dashboard_spec in STATE.get("dashboardPermissions", []):
+            reconcile_dashboard_permissions(dashboard_spec)
+
+        log("Grafana provisioning reconciliation completed successfully")
+
+
+    if __name__ == "__main__":
+        try:
+            main()
+        except Exception as exc:
+            log(f"ERROR: {exc}")
+            sys.exit(1)
+{{- end }}

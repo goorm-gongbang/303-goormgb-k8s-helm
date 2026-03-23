@@ -36,6 +36,8 @@ loki:
   # Single Binary 설정
   singleBinary:
     replicas: 1
+    nodeSelector:
+      kubernetes.io/hostname: mini-gmk
     resources:
       requests:
         cpu: 100m

@@ -1,7 +1,7 @@
 # api-gateway - Staging 환경
 fullnameOverride: "api-gateway"
 contextPath: ""  # api-gateway는 context path 없음
-replicaCount: 2
+replicaCount: 1
 
 image:
   name: "staging/playball/web/api-gateway"
@@ -11,21 +11,33 @@ image:
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
 imagePullSecrets: []
 
-# Spot 노드 허용
-tolerations:
-  - key: "spot"
-    operator: "Equal"
-    value: "true"
-    effect: "NoSchedule"
+# apps 노드는 taint 없음 - tolerations 불필요
 
-# HA: 다른 노드에 분산 배치 (필수)
+# HA: 노드 분산 + Managed 노드 우선
 affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      # Managed node (on-demand) 우선
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/nodepool
+              operator: DoesNotExist
+      # Karpenter on-demand 차선
+      - weight: 50
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/capacity-type
+              operator: In
+              values: ["on-demand"]
   podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app: staging-api-gateway
-        topologyKey: kubernetes.io/hostname
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: api-gateway
+          topologyKey: kubernetes.io/hostname
 
 resources:
   requests:
@@ -110,3 +122,8 @@ readinessProbe:
 
 otel:
   enabled: true
+
+# PodDisruptionBudget - 최소 1개 유지
+pdb:
+  enabled: true
+  minAvailable: 1

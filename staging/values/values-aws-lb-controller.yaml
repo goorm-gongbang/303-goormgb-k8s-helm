@@ -9,7 +9,7 @@ serviceAccount:
   annotations:
     # Main account IRSA role (terraform apply 후 업데이트 필요)
     # terraform output aws_lb_controller_role_arn
-    eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-aws-lb-controller"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-staging-aws-lb-controller"
 
 # 리소스 제한
 resources:

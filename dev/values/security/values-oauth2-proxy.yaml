@@ -7,11 +7,6 @@ replicaCount: 1
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
 
-tolerations:
-  - key: "node-role.kubernetes.io/control-plane"
-    operator: "Exists"
-    effect: "NoSchedule"
-
 # Google OAuth 설정
 config:
   cookieSecure: true

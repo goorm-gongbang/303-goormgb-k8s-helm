@@ -8,7 +8,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: argocd
-    release: prometheus-stack
+    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
@@ -29,7 +29,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: argocd
-    release: prometheus-stack
+    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
@@ -50,7 +50,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: argocd
-    release: prometheus-stack
+    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:

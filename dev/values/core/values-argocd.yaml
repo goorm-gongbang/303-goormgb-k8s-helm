@@ -10,11 +10,6 @@ ecr:
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
 
-tolerations:
-  - key: "node-role.kubernetes.io/control-plane"
-    operator: "Exists"
-    effect: "NoSchedule"
-
 gateway:
   enabled: true
   host: "argocd.goormgb.space"
@@ -42,38 +37,8 @@ rbac:
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
 
-applications:
-  # === AI Service ===
-  # 1. AI Service Secrets (ExternalSecret → ai-service-config secret 생성)
-  - name: ai-service-secrets
-    namespace: dev-ai
-    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
-    targetRevision: argocd-sync/dev
-    path: dev/charts/security/ai-service-secrets
-    valuesFile: values.yaml
-    enabled: true
-
-  # 2. Redis AI (AI Defense 세션 저장용)
-  - name: redis-ai
-    namespace: data
-    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
-    targetRevision: argocd-sync/dev
-    path: dev/charts/data/redis-ai
-    valuesFile: values.yaml
-    enabled: true
-
-  # 3. AI Defense → ApplicationSet(dev-ai-services)으로 이동
-  # - name: ai-defense
-  #   enabled: false
-
-  # === Sample (비활성화) ===
-  - name: dev-sample
-    namespace: dev-webs
-    repoURL: "git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git"
-    targetRevision: argocd-sync/dev
-    path: common-charts/apps/java-service
-    valuesFile: ../../../dev/values/values-sample.yaml
-    enabled: false
+# Applications - root-dev에서 관리하므로 여기서는 비활성화
+applications: []
 
 # Prometheus 메트릭 수집
 metrics:

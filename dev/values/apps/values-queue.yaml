@@ -1,6 +1,6 @@
 # queue - Dev 환경
 contextPath: "/queue"
-replicaCount: 2
+replicaCount: 1
 
 image:
   name: "dev/goormgb/queue"

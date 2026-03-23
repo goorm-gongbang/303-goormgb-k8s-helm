@@ -55,6 +55,11 @@ affinity: {}
 # 서비스 그룹 (같은 노드에 묶일 서비스들)
 partOf: staging-webs
 
+# PodDisruptionBudget
+pdb:
+  enabled: false
+  minAvailable: 1
+
 # HPA
 autoscaling:
   enabled: false
@@ -119,3 +124,15 @@ otel:
   enabled: false
   agentVersion: "2.11.0"
   collectorEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"
+
+# Prometheus 메트릭 수집 (Spring Boot Actuator)
+# PodMonitor로 /actuator/prometheus 엔드포인트 스크레이핑
+# 기본 비활성화 - 환경별 values에서 활성화
+metrics:
+  enabled: false
+  # Service port name (deployment에서 정의한 포트명)
+  portName: http
+  # Actuator prometheus 엔드포인트
+  path: /actuator/prometheus
+  # 스크레이핑 주기
+  interval: 30s

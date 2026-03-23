@@ -1,0 +1,57 @@
+{{- if .Values.grafana.provisioning.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: grafana-provisioning-reconcile
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.grafana.provisioning.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          restartPolicy: Never
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: reconcile
+              image: "{{ .Values.grafana.provisioning.image.repository }}:{{ .Values.grafana.provisioning.image.tag }}"
+              imagePullPolicy: {{ .Values.grafana.provisioning.image.pullPolicy }}
+              command:
+                - python
+                - /etc/grafana-provisioning/reconcile.py
+              env:
+                - name: GRAFANA_ADMIN_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.grafana.provisioning.adminSecretName }}
+                      key: admin-user
+                - name: GRAFANA_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.grafana.provisioning.adminSecretName }}
+                      key: admin-password
+              volumeMounts:
+                - name: grafana-provisioning
+                  mountPath: /etc/grafana-provisioning
+                  readOnly: true
+              resources:
+                {{- toYaml .Values.grafana.provisioning.resources | nindent 16 }}
+          volumes:
+            - name: grafana-provisioning
+              configMap:
+                name: grafana-provisioning
+{{- end }}

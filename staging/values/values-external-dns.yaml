@@ -6,7 +6,7 @@ serviceAccount:
   create: true
   name: external-dns
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-external-dns
+    eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-external-dns
 
 # AWS Provider 설정
 provider: aws
@@ -19,6 +19,7 @@ extraArgs:
   - --txt-owner-id=goormgb-staging-eks
   # 관리할 도메인 필터
   - --domain-filter=playball.one
+  - --domain-filter=staging.playball.one
 
 # 정책: sync (레코드 삭제도 허용)
 policy: sync

@@ -25,7 +25,7 @@ spec:
           serviceAccountName: logs-backup-sa
           containers:
             - name: backup
-              image: alpine/k8s:1.31.4
+              image: alpine/k8s:1.32.0
               env:
                 - name: AWS_ACCESS_KEY_ID
                   valueFrom:
