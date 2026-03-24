@@ -1,8 +1,12 @@
 {{- if .Values.istio.gateway.enabled }}
+{{- $gatewayName := .Values.istio.gateway.name | default (printf "%s-gw" (include "ai-service.fullname" .)) }}
+{{- $gatewayRef := .Values.istio.gateway.externalRef | default $gatewayName }}
+{{- $contextPath := .Values.istio.gateway.contextPath | default "/" }}
+{{- if not .Values.istio.gateway.externalRef }}
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
-  name: {{ include "ai-service.fullname" . }}-gateway
+  name: {{ $gatewayName }}
   labels:
     {{- include "ai-service.labels" . | nindent 4 }}
 spec:
@@ -27,6 +31,7 @@ spec:
       tls:
         httpsRedirect: true
 ---
+{{- end }}
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
@@ -37,11 +42,30 @@ spec:
   hosts:
     - {{ .Values.istio.gateway.host | quote }}
   gateways:
-    - {{ include "ai-service.fullname" . }}-gateway
+    - {{ $gatewayRef }}
   http:
     - match:
         - uri:
-            prefix: /
+            prefix: {{ $contextPath }}
+      {{- if .Values.istio.cors }}
+      {{- if .Values.istio.cors.enabled }}
+      corsPolicy:
+        allowOrigins:
+          {{- range .Values.istio.cors.allowOrigins }}
+          - exact: {{ . | quote }}
+          {{- end }}
+        allowMethods:
+          {{- range .Values.istio.cors.allowMethods | default (list "GET" "POST" "PUT" "DELETE" "OPTIONS") }}
+          - {{ . }}
+          {{- end }}
+        allowHeaders:
+          {{- range .Values.istio.cors.allowHeaders | default (list "*") }}
+          - {{ . | quote }}
+          {{- end }}
+        allowCredentials: {{ .Values.istio.cors.allowCredentials | default true }}
+        maxAge: {{ .Values.istio.cors.maxAge | default "24h" | quote }}
+      {{- end }}
+      {{- end }}
       route:
         - destination:
             host: {{ include "ai-service.fullname" . }}
