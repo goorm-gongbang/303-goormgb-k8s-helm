@@ -54,9 +54,27 @@ istio:
   gateway:
     enabled: false
     host: ""
+    # 외부 Gateway 참조 (Gateway CRD 생성 안 함)
+    externalRef: ""  # e.g., "istio-system/api-gateway"
+    # Context path (prefix matching)
+    contextPath: ""  # e.g., "/ai"
     tls:
       enabled: true
       credentialName: goormgb-tls
+  # CORS 설정
+  cors:
+    enabled: false
+    allowOrigins: []
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allowHeaders:
+      - "*"
+    allowCredentials: true
+    maxAge: "24h"
 
 # FastAPI health checks
 livenessProbe:

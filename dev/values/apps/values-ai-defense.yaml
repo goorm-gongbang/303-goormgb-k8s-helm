@@ -63,10 +63,11 @@ resources:
     memory: 512Mi
 
 # Istio
+# /ai/* 라우팅은 rawManifests의 ai-defense-route VirtualService에서 처리
 istio:
   sidecar: true
   gateway:
-    enabled: false  # api.dev.goormgb.space/ai/* 경로로 접근
+    enabled: false  # rawManifests.aiDefenseRoute 사용
 
 # Service
 service:
