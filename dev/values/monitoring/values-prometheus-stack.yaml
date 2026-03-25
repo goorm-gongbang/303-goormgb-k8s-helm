@@ -112,8 +112,13 @@ prometheus:
 
 # Grafana는 별도 Application으로 분리 (ociCharts.grafana)
 # values-grafana.yaml 참조
+# ESO는 prometheus-extras에서 생성
 grafana:
   enabled: false
+  eso:
+    enabled: true
+    secretManagerKey: dev/infra/grafana
+    oauthSecretManagerKey: dev/infra/oauth/google
 
 alertmanager:
   alertmanagerSpec:
