@@ -1,4 +1,4 @@
-{{- if and .Values.enabled .Values.rateLimiting.local.enabled }}
+{{- if and .Values.enabled .Values.rateLimiting .Values.rateLimiting.local .Values.rateLimiting.local.enabled }}
 # ============================================================
 # Local Rate Limit (Envoy 내장)
 # - Pod별 개별 카운트 (분산 환경에서 정확하지 않음)

@@ -1,4 +1,4 @@
-{{- if .Values.extAuthz.enabled }}
+{{- if and .Values.extAuthz .Values.extAuthz.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
