@@ -27,11 +27,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Selector labels
+Selector labels (immutable - 변경 금지)
 */}}
 {{- define "ai-service.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "ai-service.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Version label (Istio 트래픽 관리용)
+*/}}
+{{- define "ai-service.versionLabel" -}}
 version: {{ .Values.image.tag | default "latest" | quote }}
 {{- end }}
