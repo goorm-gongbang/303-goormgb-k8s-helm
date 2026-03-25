@@ -1,7 +1,9 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/infra-team-observability/infra/*.json" -}}
 {{- $excludeList := list -}}
+{{- $folderName := "DEV 플랫폼 관측(인프라)" -}}
 {{- if and .Values.dashboards .Values.dashboards.infraTeam -}}
 {{- $excludeList = .Values.dashboards.infraTeam.exclude | default list -}}
+{{- $folderName = .Values.dashboards.infraTeam.folderName | default "DEV 플랫폼 관측(인프라)" -}}
 {{- end -}}
 {{- if gt (len $dashboardFiles) 0 }}
 apiVersion: v1
@@ -14,7 +16,7 @@ metadata:
     app.kubernetes.io/part-of: monitoring
     grafana_dashboard: "1"
   annotations:
-    grafana_folder: "플랫폼 관측 (인프라)"
+    grafana_folder: {{ $folderName | quote }}
 data:
 {{- range $path, $_ := $dashboardFiles }}
 {{- $filename := base $path -}}

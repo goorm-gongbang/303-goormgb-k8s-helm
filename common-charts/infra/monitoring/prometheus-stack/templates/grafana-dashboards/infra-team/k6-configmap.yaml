@@ -1,4 +1,8 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/infra-team-observability/k6/*.json" -}}
+{{- $folderName := "DEV 부하 테스트(k6)" -}}
+{{- if and .Values.dashboards .Values.dashboards.infraTeam .Values.dashboards.infraTeam.k6FolderName -}}
+{{- $folderName = .Values.dashboards.infraTeam.k6FolderName -}}
+{{- end -}}
 {{- if gt (len $dashboardFiles) 0 }}
 apiVersion: v1
 kind: ConfigMap
@@ -10,7 +14,7 @@ metadata:
     app.kubernetes.io/part-of: monitoring
     grafana_dashboard: "1"
   annotations:
-    grafana_folder: "부하 테스트 (k6)"
+    grafana_folder: {{ $folderName | quote }}
 data:
 {{- range $path, $_ := $dashboardFiles }}
   {{ base $path }}: |-
