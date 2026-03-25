@@ -159,6 +159,7 @@ ociCharts:
     version: "82.13.6"
     namespace: monitoring
     syncWave: "-1"
+    skipCrds: true  # CRD는 bootstrap에서 설치 (make install-prometheus-crds)
     valueFiles:
       - $values/dev/values/monitoring/values-prometheus-stack.yaml
       - $values/dev/values/monitoring/alerting/values-alertmanager-dev.yaml

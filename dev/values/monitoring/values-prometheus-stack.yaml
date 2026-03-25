@@ -28,6 +28,9 @@ dashboards:
       - "cache-elasticache-redis.json"
 
 # ===== kube-prometheus-stack용 설정 =====
+# CRDs는 bootstrap에서 설치 (make install-prometheus-crds)
+# ArgoCD Application에서 skipCrds: true 설정됨
+
 # Pod 이름 단순화 (prometheus-stack-xxx → prom-xxx)
 fullnameOverride: prom
 cleanPrometheusOperatorObjectNames: true
