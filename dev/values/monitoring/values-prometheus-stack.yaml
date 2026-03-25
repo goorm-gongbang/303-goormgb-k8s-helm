@@ -117,7 +117,7 @@ grafana:
   enabled: false
   eso:
     enabled: true
-    secretManagerKey: dev/infra/grafana
+    secretManagerKey: dev/monitoring/grafana
     oauthSecretManagerKey: dev/infra/oauth/google
 
 alertmanager:
