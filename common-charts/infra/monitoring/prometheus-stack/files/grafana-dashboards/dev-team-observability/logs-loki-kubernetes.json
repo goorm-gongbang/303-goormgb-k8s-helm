@@ -202,7 +202,7 @@
         "type": "query"
       },
       {
-        "allValue": ".*gateway.*|.*auth.*|.*order.*|.*queue.*|.*seat.*",
+        "allValue": "queue|seat|order|gateway|auth",
         "current": {
           "selected": true,
           "text": ["All"],
@@ -218,7 +218,7 @@
         "options": [],
         "query": "label_values({namespace=\"$namespace\"}, app)",
         "refresh": 1,
-        "regex": ".*gateway.*|.*auth.*|.*order.*|.*queue.*|.*seat.*",
+        "regex": "queue|seat|order|gateway|auth",
         "sort": 1,
         "type": "query"
       },

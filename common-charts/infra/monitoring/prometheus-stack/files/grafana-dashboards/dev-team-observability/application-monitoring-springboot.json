@@ -476,7 +476,7 @@
         "type": "custom"
       },
       {
-        "allValue": ".*gateway.*|.*auth.*|.*order.*|.*queue.*|.*seat.*",
+        "allValue": "queue|seat|order|gateway|auth",
         "current": {"selected": true, "text": ["All"], "value": ["$__all"]},
         "datasource": {"type": "prometheus", "uid": "${datasource}"},
         "definition": "label_values(http_server_requests_seconds_count{namespace=\"$namespace\"}, app)",
@@ -488,7 +488,7 @@
         "options": [],
         "query": "label_values(http_server_requests_seconds_count{namespace=\"$namespace\"}, app)",
         "refresh": 1,
-        "regex": ".*gateway.*|.*auth.*|.*order.*|.*queue.*|.*seat.*",
+        "regex": "queue|seat|order|gateway|auth",
         "sort": 1,
         "type": "query"
       }
