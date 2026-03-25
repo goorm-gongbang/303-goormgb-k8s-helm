@@ -2,3 +2,9 @@
 config:
   clients:
     - url: http://loki:3100/loki/api/v1/push
+
+# CP 노드에서도 실행 (DaemonSet)
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"

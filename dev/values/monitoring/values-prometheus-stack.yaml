@@ -77,9 +77,9 @@ prometheus:
     # OTel Collector에서 메트릭 수신 (remote write)
     enableRemoteWriteReceiver: true
 
-    # etcd TLS 인증서 마운트
-    secrets:
-      - etcd-client-cert
+    # etcd TLS 인증서 마운트 (kubeEtcd disabled이므로 불필요)
+    # secrets:
+    #   - etcd-client-cert
 
     retention: 3d
     retentionSize: "5GB"
