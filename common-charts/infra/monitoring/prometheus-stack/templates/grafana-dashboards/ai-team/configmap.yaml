@@ -4,7 +4,10 @@
   Part 2: ai-telemetry, realtime-polling, logs, authz-adapter (~90KB)
 */}}
 
-{{- $aiNamespace := .Values.dashboards.aiTeam.aiNamespace | default "dev-ai" -}}
+{{- $aiNamespace := "dev-ai" -}}
+{{- if and .Values.dashboards .Values.dashboards.aiTeam .Values.dashboards.aiTeam.aiNamespace -}}
+{{- $aiNamespace = .Values.dashboards.aiTeam.aiNamespace -}}
+{{- end -}}
 
 {{/* Part 1: Large dashboards */}}
 {{- $part1Files := list
