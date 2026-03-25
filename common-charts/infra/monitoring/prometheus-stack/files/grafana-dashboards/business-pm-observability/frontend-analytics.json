@@ -11,10 +11,28 @@
   "description": "프론트엔드 사용자 행동과 화면 전환 흐름을 확인하기 위한 PM용 대시보드입니다. 유입, 주요 클릭, 온보딩, API 오류를 함께 보며 사용자 경험을 파악합니다.",
   "panels": [
     {
+      "type": "text",
+      "title": "No data 확인 가이드",
+      "description": "사용자 행동 분석 패널이 비어 있을 때 Faro 연동 상태와 실제 이벤트 부재를 구분하기 위한 안내 패널입니다.",
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "id": 100,
+      "mode": "markdown",
+      "options": {
+        "content": "이 보드는 프론트엔드 사용자 행동 분석용입니다.\\n\\nNo data가 보일 때는 아래를 먼저 확인하세요.\\n\\n- 모든 패널이 비면: Faro SDK 초기화, `NEXT_PUBLIC_FARO_URL`, `/faro` 수집 경로, 프론트 staging 배포 상태를 먼저 확인하세요.\\n- page_view만 보이고 다른 이벤트가 비면: 프론트에서 `trackAction` 계측이 아직 붙지 않았을 가능성이 큽니다.\\n- 최근 24h 패널이 비면: staging 실제 사용 트래픽이 거의 없었을 수 있습니다.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.4.0",
+      "content": "이 보드는 프론트엔드 사용자 행동 분석용입니다.\\n\\nNo data가 보일 때는 아래를 먼저 확인하세요.\\n\\n- 모든 패널이 비면: Faro SDK 초기화, `NEXT_PUBLIC_FARO_URL`, `/faro` 수집 경로, 프론트 staging 배포 상태를 먼저 확인하세요.\\n- page_view만 보이고 다른 이벤트가 비면: 프론트에서 `trackAction` 계측이 아직 붙지 않았을 가능성이 큽니다.\\n- 최근 24h 패널이 비면: staging 실제 사용 트래픽이 거의 없었을 수 있습니다."
+    },
+    {
       "type": "stat",
       "description": "최근 24시간 전체 페이지뷰 수입니다. 기본 유입 규모를 빠르게 확인할 때 사용합니다.",
       "title": "전체 페이지뷰 (24h)",
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 4 },
       "datasource": "Loki",
       "targets": [
         {
@@ -38,7 +56,7 @@
       "type": "stat",
       "description": "최근 24시간 동안 관측된 세션 수입니다. 반복 조회와 실제 사용자 흐름을 구분할 때 참고합니다.",
       "title": "세션 수 (24h)",
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 4 },
       "datasource": "Loki",
       "targets": [
         {
@@ -62,7 +80,7 @@
       "type": "stat",
       "description": "최근 24시간 경기 또는 매치 클릭 수입니다. 상세 페이지 진입 관심도를 확인할 수 있습니다.",
       "title": "매치 클릭 수 (24h)",
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 4 },
       "datasource": "Loki",
       "targets": [
         {
@@ -86,7 +104,7 @@
       "type": "stat",
       "description": "최근 24시간 체크아웃 시작 수입니다. 결제 단계 진입 볼륨을 빠르게 보여줍니다.",
       "title": "체크아웃 시작 수 (24h)",
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 4 },
       "datasource": "Loki",
       "targets": [
         {
@@ -110,7 +128,7 @@
       "type": "timeseries",
       "description": "시간대별 페이지뷰 추이입니다. 특정 시간 구간의 유입 증가나 이벤트 영향 여부를 확인합니다.",
       "title": "페이지뷰 추이",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
       "datasource": "Loki",
       "targets": [
         {
@@ -132,7 +150,7 @@
       "type": "timeseries",
       "description": "사용자 주요 행동의 시간대별 추이입니다. 클릭과 체크아웃 시작이 어떻게 변하는지 비교할 수 있습니다.",
       "title": "사용자 행동 추이",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
       "datasource": "Loki",
       "targets": [
         {
@@ -164,7 +182,7 @@
       "type": "piechart",
       "description": "기기 유형 분포입니다. 모바일과 데스크톱 사용 비중을 확인할 수 있습니다.",
       "title": "기기 유형 분포",
-      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 12 },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 16 },
       "datasource": "Loki",
       "targets": [
         {
@@ -187,7 +205,7 @@
       "type": "piechart",
       "description": "로그인 여부 분포입니다. 로그인 사용자의 행동과 비로그인 사용자의 행동 차이를 파악할 때 참고합니다.",
       "title": "로그인 여부 분포",
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 12 },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 16 },
       "datasource": "Loki",
       "targets": [
         {
@@ -210,7 +228,7 @@
       "type": "bargauge",
       "description": "가장 많이 조회된 상위 페이지 목록입니다. 어떤 화면에 사용자가 많이 몰리는지 확인할 수 있습니다.",
       "title": "상위 페이지",
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 12 },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 16 },
       "datasource": "Loki",
       "targets": [
         {
@@ -233,7 +251,7 @@
       "type": "timeseries",
       "description": "온보딩 시작부터 완료까지 단계별 추이입니다. 어느 단계에서 이탈이 발생하는지 파악할 때 사용합니다.",
       "title": "온보딩 퍼널",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
       "datasource": "Loki",
       "targets": [
         {
@@ -265,7 +283,7 @@
       "type": "timeseries",
       "description": "프론트엔드에서 관측한 API 오류 추이입니다. 사용자 행동 이상이 백엔드 오류와 같이 움직이는지 볼 수 있습니다.",
       "title": "API 오류 추이",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
       "datasource": "Loki",
       "targets": [
         {
@@ -287,7 +305,7 @@
       "type": "logs",
       "description": "최근 수집된 프론트엔드 이벤트 로그입니다. 이상 구간의 실제 이벤트를 빠르게 확인할 수 있습니다.",
       "title": "최근 이벤트 로그",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 28 },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 32 },
       "datasource": "Loki",
       "targets": [
         {
@@ -320,5 +338,5 @@
   "timezone": "Asia/Seoul",
   "title": "사용자 행동 분석 (PM)",
   "uid": "frontend-analytics-pm",
-  "version": 1
+  "version": 2
 }
