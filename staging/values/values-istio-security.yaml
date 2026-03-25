@@ -93,9 +93,62 @@ denyPaths:
     - "/livez*"
     - "/actuator/health*"
 
-# External Authorization (AI Defense) - 비활성화
+# External Authorization (AI Defense) - gRPC Adapter
 extAuthz:
-  enabled: false
+  enabled: true
+
+  # gRPC authz adapter 연결 설정 (202-goormgb-authz-adapter)
+  service:
+    host: authz-adapter.dev-ai.svc.cluster.local
+    port: 9001
+
+  # 타임아웃 설정
+  connectTimeout: "0.5s"
+  timeout: "0.8s"
+
+  # AI 서버 장애 시 통과 허용 (fail-open)
+  failOpen: true
+
+  # ext_authz 제외 경로 (AI direct routes, health checks)
+  excludePaths:
+    - "/ai/"
+    - "/health"
+    - "/healthz"
+    - "/ready"
+    - "/metrics"
+    - "/actuator/"
+
+  # ext_authz 적용 대상 API (Critical APIs)
+  includePaths:
+    # Queue 서비스
+    - method: POST
+      pattern: "^/queue/matches/[0-9]+/enter$"
+      eventType: QUEUE_ENTER
+
+    # Seat 서비스 - 추천 블럭 조회
+    - method: GET
+      pattern: "^/seat/matches/[0-9]+/recommendations/blocks$"
+      eventType: RECOMMENDATION_BLOCKS
+
+    # Seat 서비스 - 좌석 자동 배정
+    - method: POST
+      pattern: "^/seat/matches/[0-9]+/recommendations/blocks/[0-9]+/assign$"
+      eventType: ASSIGN_HOLD
+
+    # Seat 서비스 - 구역 리스트 조회
+    - method: GET
+      pattern: "^/seat/matches/[0-9]+/seat-groups$"
+      eventType: SEAT_ENTRY
+
+    # Seat 서비스 - 블럭별 포도알 조회
+    - method: GET
+      pattern: "^/seat/matches/[0-9]+/sections/[0-9]+/blocks$"
+      eventType: SECTION_BLOCKS
+
+    # Seat 서비스 - Hold 생성
+    - method: POST
+      pattern: "^/seat/matches/[0-9]+/seat-holds$"
+      eventType: SEAT_HOLDS
 
 # ============================================================
 # Rate Limiting 설정
@@ -103,7 +156,7 @@ extAuthz:
 rateLimiting:
   # --- Local Rate Limit (Envoy 내장) ---
   local:
-    enabled: true
+    enabled: false  # 부하 테스트를 위해 비활성화 (테스트 후 true로 복원 필요)
 
     # 기본 설정 (전체 경로에 적용)
     default:

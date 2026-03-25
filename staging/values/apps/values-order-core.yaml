@@ -76,6 +76,12 @@ readinessProbe:
 otel:
   enabled: true
 
+# Prometheus metrics (PodMonitor)
+metrics:
+  enabled: true
+  path: /actuator/prometheus
+  interval: 30s
+
 # PodDisruptionBudget - 최소 1개 유지
 pdb:
   enabled: true
