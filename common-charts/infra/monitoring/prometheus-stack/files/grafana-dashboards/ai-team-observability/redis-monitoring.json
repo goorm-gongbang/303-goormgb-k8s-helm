@@ -1368,6 +1368,20 @@
   "templating": {
     "list": [
       {
+        "current": {},
+        "hide": 2,
+        "includeAll": false,
+        "label": "네임스페이스",
+        "multi": false,
+        "name": "namespace",
+        "options": [
+          {"selected": true, "text": "__AI_NAMESPACE__", "value": "__AI_NAMESPACE__"}
+        ],
+        "query": "__AI_NAMESPACE__",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
         "current": {
           "text": "redis-ai",
           "value": "redis-ai"

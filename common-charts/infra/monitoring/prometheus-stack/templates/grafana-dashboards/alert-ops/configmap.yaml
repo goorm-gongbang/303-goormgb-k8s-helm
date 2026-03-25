@@ -1,5 +1,9 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/alert-ops/*.json" -}}
-{{- if and .Values.dashboards.alertOps.enabled (gt (len $dashboardFiles) 0) }}
+{{- $enabled := false -}}
+{{- if and .Values.dashboards .Values.dashboards.alertOps -}}
+{{- $enabled = .Values.dashboards.alertOps.enabled | default false -}}
+{{- end -}}
+{{- if and $enabled (gt (len $dashboardFiles) 0) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

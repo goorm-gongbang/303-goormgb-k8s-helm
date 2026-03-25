@@ -1,10 +1,13 @@
 {{/*
   Split dashboards into two ConfigMaps to avoid 262144 bytes limit
   Part 1: database, application, redis (large dashboards ~156KB)
-  Part 2: ai-telemetry, realtime-polling, logs, authz-adapter (~90KB)
+  Part 2: ai-telemetry (통합), realtime-polling, logs (~90KB)
 */}}
 
-{{- $aiNamespace := .Values.dashboards.aiTeam.aiNamespace | default "dev-ai" -}}
+{{- $aiNamespace := "dev-ai" -}}
+{{- if and .Values.dashboards .Values.dashboards.aiTeam .Values.dashboards.aiTeam.aiNamespace -}}
+{{- $aiNamespace = .Values.dashboards.aiTeam.aiNamespace -}}
+{{- end -}}
 
 {{/* Part 1: Large dashboards */}}
 {{- $part1Files := list
@@ -31,12 +34,11 @@ data:
 {{- end }}
 {{- end }}
 ---
-{{/* Part 2: Smaller dashboards */}}
+{{/* Part 2: Smaller dashboards (authz-adapter는 ai-telemetry-overview에 통합됨) */}}
 {{- $part2Files := list
   "files/grafana-dashboards/ai-team-observability/ai-telemetry-overview.json"
   "files/grafana-dashboards/ai-team-observability/realtime-polling-monitoring.json"
   "files/grafana-dashboards/ai-team-observability/logs-loki-kubernetes.json"
-  "files/grafana-dashboards/ai-team-observability/authz-adapter-monitoring.json"
 -}}
 apiVersion: v1
 kind: ConfigMap
