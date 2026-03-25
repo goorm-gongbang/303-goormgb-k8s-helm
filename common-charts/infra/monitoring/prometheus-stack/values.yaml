@@ -149,6 +149,7 @@ gateway:
   prometheus:
     enabled: false
     host: ""
+    gatewayRef: "istio-system/goormgb-gateway"
 
 # Node placement
 nodeSelector: {}

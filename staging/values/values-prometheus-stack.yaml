@@ -24,6 +24,10 @@ gateway:
     enabled: true
     host: "grafana.staging.playball.one"
     # EKS: TLS는 CloudFront + ACM에서 처리
+  prometheus:
+    enabled: true
+    host: "prometheus.staging.playball.one"
+    gatewayRef: "istio-system/api-gateway"
 
 # Dashboard 설정 (EKS 환경: Calico, 로컬 exporter 대시보드 제외)
 dashboards:

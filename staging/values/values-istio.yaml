@@ -47,6 +47,7 @@ apiGatewayConfig:
   selector: ingressgateway
   hosts:
     - "api.staging.playball.one"
+    - "prometheus.staging.playball.one"
 
 # =============================================================================
 # Kiali - Service Mesh Observability
