@@ -322,15 +322,6 @@ gitCharts:
     valueFiles:
       - ../../../values/security/values-oauth2-proxy.yaml
 
-  # === AI ===
-  authz-adapter:
-    enabled: true
-    path: dev/charts/ai/authz-adapter
-    namespace: dev-ai
-    syncWave: "-4"
-    valueFiles:
-      - ../../../values/ai/values-authz-adapter.yaml
-
   # === Istio ===
   istio-gateway:
     enabled: true
@@ -503,6 +494,7 @@ applicationSets:
     valueFilesPattern: ../../../dev/values/apps/values-{{name}}.yaml
     services:
       - name: ai-defense
+      - name: authz-adapter
 
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)

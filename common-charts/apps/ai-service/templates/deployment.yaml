@@ -45,6 +45,11 @@ spec:
             - name: {{ .Values.service.portName | default "http" }}
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if and .Values.service.grpc .Values.service.grpc.enabled }}
+            - name: {{ .Values.service.grpc.portName | default "grpc" }}
+              containerPort: {{ .Values.service.grpc.port }}
+              protocol: TCP
+            {{- end }}
             {{- if and .Values.metrics.enabled (ne (int .Values.metrics.port) (int .Values.service.port)) }}
             - name: {{ .Values.metrics.portName | default "metrics" }}
               containerPort: {{ .Values.metrics.port | default 9090 }}
@@ -64,6 +69,18 @@ spec:
               value: "otlp"
             - name: OTEL_LOGS_EXPORTER
               value: "otlp"
+            {{- end }}
+            {{- if and .Values.authzAdapter .Values.authzAdapter.enabled }}
+            - name: GRPC_PORT
+              value: {{ .Values.service.grpc.port | quote }}
+            - name: METRICS_PORT
+              value: {{ .Values.metrics.port | quote }}
+            - name: AI_DEFENSE_URL
+              value: {{ .Values.authzAdapter.aiDefenseUrl | quote }}
+            - name: AI_DEFENSE_TIMEOUT_MS
+              value: {{ .Values.authzAdapter.aiDefenseTimeoutMs | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.authzAdapter.logLevel | quote }}
             {{- end }}
             {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}

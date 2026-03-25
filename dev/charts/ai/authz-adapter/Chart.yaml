@@ -1,6 +1,0 @@
-apiVersion: v2
-name: authz-adapter
-description: Envoy ext_authz gRPC adapter for AI Defense
-type: application
-version: 0.1.0
-appVersion: "1.0.0"
