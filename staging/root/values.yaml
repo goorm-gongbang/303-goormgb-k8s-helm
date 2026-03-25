@@ -165,6 +165,11 @@ ociCharts:
       - SkipDryRunOnMissingResource=true
       - PruneLast=true
       - RespectIgnoreDifferences=true
+    retry:
+      limit: 5
+      duration: "15s"
+      maxDuration: "5m"
+      factor: 2
     ignoreDifferences:
       - group: ""
         kind: PersistentVolumeClaim
@@ -281,6 +286,17 @@ ociCharts:
         jsonPointers:
           - /spec/volumeName
           - /spec/storageClassName
+
+  # Grafana (kube-prometheus-stack에서 분리)
+  grafana:
+    enabled: true
+    repoURL: https://grafana.github.io/helm-charts
+    chart: grafana
+    version: "8.14.0"
+    namespace: monitoring
+    syncWave: "0"
+    valueFiles:
+      - $values/staging/values/values-grafana.yaml
 
   opentelemetry-collector:
     enabled: true
