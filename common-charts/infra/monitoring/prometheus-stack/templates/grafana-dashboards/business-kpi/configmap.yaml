@@ -1,5 +1,9 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/business-kpi/*.json" -}}
-{{- if and (dig "dashboards" "businessKpi" "enabled" false .Values) (gt (len $dashboardFiles) 0) }}
+{{- $enabled := false -}}
+{{- if and .Values.dashboards .Values.dashboards.businessKpi -}}
+{{- $enabled = .Values.dashboards.businessKpi.enabled | default false -}}
+{{- end -}}
+{{- if and $enabled (gt (len $dashboardFiles) 0) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

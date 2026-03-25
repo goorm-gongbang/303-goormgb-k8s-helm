@@ -1,5 +1,9 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/security-ops/*.json" -}}
-{{- if and (dig "dashboards" "securityOps" "enabled" false .Values) (gt (len $dashboardFiles) 0) }}
+{{- $enabled := false -}}
+{{- if and .Values.dashboards .Values.dashboards.securityOps -}}
+{{- $enabled = .Values.dashboards.securityOps.enabled | default false -}}
+{{- end -}}
+{{- if and $enabled (gt (len $dashboardFiles) 0) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
