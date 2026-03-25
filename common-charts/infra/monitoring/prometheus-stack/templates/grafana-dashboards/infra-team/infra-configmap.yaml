@@ -1,5 +1,5 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/infra-team-observability/infra/*.json" -}}
-{{- $excludeList := .Values.dashboards.infraTeam.exclude | default list -}}
+{{- $excludeList := dig "dashboards" "infraTeam" "exclude" list .Values -}}
 {{- if gt (len $dashboardFiles) 0 }}
 apiVersion: v1
 kind: ConfigMap
