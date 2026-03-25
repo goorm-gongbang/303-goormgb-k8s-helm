@@ -9,10 +9,7 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "Envoy ext_authz에서 authz-adapter로 들어오는 인증 검사 요청의 초당 처리량입니다.",
       "fieldConfig": {
         "defaults": {
@@ -33,7 +30,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"dev-ai\"}[1m])) by (grpc_code)",
+          "expr": "sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"$namespace\"}[1m])) by (grpc_code)",
           "legendFormat": "{{grpc_code}}",
           "refId": "A"
         }
@@ -42,10 +39,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "인증 검사 요청의 응답 지연시간입니다. p95, p99 백분위수를 표시합니다.",
       "fieldConfig": {
         "defaults": {
@@ -66,12 +60,12 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"dev-ai\"}[5m])) by (le)) * 1000",
+          "expr": "histogram_quantile(0.95, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"$namespace\"}[5m])) by (le)) * 1000",
           "legendFormat": "p95 지연시간",
           "refId": "A"
         },
         {
-          "expr": "histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"dev-ai\"}[5m])) by (le)) * 1000",
+          "expr": "histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"$namespace\"}[5m])) by (le)) * 1000",
           "legendFormat": "p99 지연시간",
           "refId": "B"
         }
@@ -80,10 +74,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "인증 검사 요청 중 성공(OK)한 비율입니다.",
       "fieldConfig": {
         "defaults": {
@@ -112,7 +103,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", grpc_code=\"OK\", namespace=\"dev-ai\"}[5m])) / sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"dev-ai\"}[5m]))",
+          "expr": "sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", grpc_code=\"OK\", namespace=\"$namespace\"}[5m])) / sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"$namespace\"}[5m]))",
           "legendFormat": "",
           "refId": "A"
         }
@@ -121,10 +112,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "현재 실행 중인 authz-adapter 인스턴스 수입니다.",
       "fieldConfig": {
         "defaults": {
@@ -152,7 +140,7 @@
       },
       "targets": [
         {
-          "expr": "sum(up{job=~\".*authz-adapter.*\", namespace=\"dev-ai\"})",
+          "expr": "sum(up{job=~\".*authz-adapter.*\", namespace=\"$namespace\"})",
           "legendFormat": "",
           "refId": "A"
         }
@@ -161,10 +149,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "AI Defense API 호출의 초당 처리량입니다. 상태별로 구분됩니다.",
       "fieldConfig": {
         "defaults": {
@@ -185,7 +170,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(authz_adapter_ai_defense_requests_total{namespace=\"dev-ai\"}[1m])) by (status)",
+          "expr": "sum(rate(authz_adapter_ai_defense_requests_total{namespace=\"$namespace\"}[1m])) by (status)",
           "legendFormat": "AI Defense {{status}}",
           "refId": "A"
         }
@@ -194,10 +179,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "AI Defense API 호출의 응답 지연시간입니다.",
       "fieldConfig": {
         "defaults": {
@@ -218,7 +200,7 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(authz_adapter_ai_defense_duration_seconds_bucket{namespace=\"dev-ai\"}[5m])) by (le)) * 1000",
+          "expr": "histogram_quantile(0.95, sum(rate(authz_adapter_ai_defense_duration_seconds_bucket{namespace=\"$namespace\"}[5m])) by (le)) * 1000",
           "legendFormat": "p95",
           "refId": "A"
         }
@@ -244,7 +226,7 @@
       "targets": [
         {
           "datasource": "Loki",
-          "expr": "{namespace=\"dev-ai\", app=\"authz-adapter\", container!=\"istio-proxy\"}",
+          "expr": "{namespace=\"$namespace\", app=\"authz-adapter\", container!=\"istio-proxy\"}",
           "legendFormat": "",
           "refId": "A"
         }
@@ -258,7 +240,37 @@
   "style": "dark",
   "tags": ["ai", "authz", "ext_authz", "security"],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {"selected": false, "text": "Prometheus", "value": "prometheus"},
+        "hide": 0,
+        "includeAll": false,
+        "label": "데이터소스",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {"selected": true, "text": "dev-ai", "value": "dev-ai"},
+        "hide": 0,
+        "includeAll": false,
+        "label": "네임스페이스",
+        "multi": false,
+        "name": "namespace",
+        "options": [
+          {"selected": true, "text": "dev-ai", "value": "dev-ai"},
+          {"selected": false, "text": "staging-ai", "value": "staging-ai"}
+        ],
+        "query": "dev-ai,staging-ai",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
   },
   "time": {
     "from": "now-1h",

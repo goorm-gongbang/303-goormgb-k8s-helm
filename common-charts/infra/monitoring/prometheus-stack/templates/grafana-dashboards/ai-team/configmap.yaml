@@ -1,8 +1,10 @@
 {{/*
   Split dashboards into two ConfigMaps to avoid 262144 bytes limit
   Part 1: database, application, redis (large dashboards ~156KB)
-  Part 2: ai-telemetry, realtime-polling, http-status, logs, authz-adapter (~100KB)
+  Part 2: ai-telemetry, realtime-polling, logs, authz-adapter (~90KB)
 */}}
+
+{{- $aiNamespace := .Values.dashboards.aiTeam.aiNamespace | default "dev-ai" -}}
 
 {{/* Part 1: Large dashboards */}}
 {{- $part1Files := list
@@ -25,7 +27,7 @@ data:
 {{- range $path := $part1Files }}
 {{- if $.Files.Get $path }}
   {{ base $path }}: |-
-{{ $.Files.Get $path | nindent 4 }}
+{{ $.Files.Get $path | replace "__AI_NAMESPACE__" $aiNamespace | nindent 4 }}
 {{- end }}
 {{- end }}
 ---
@@ -33,7 +35,6 @@ data:
 {{- $part2Files := list
   "files/grafana-dashboards/ai-team-observability/ai-telemetry-overview.json"
   "files/grafana-dashboards/ai-team-observability/realtime-polling-monitoring.json"
-  "files/grafana-dashboards/ai-team-observability/http-status-analysis.json"
   "files/grafana-dashboards/ai-team-observability/logs-loki-kubernetes.json"
   "files/grafana-dashboards/ai-team-observability/authz-adapter-monitoring.json"
 -}}
@@ -52,6 +53,6 @@ data:
 {{- range $path := $part2Files }}
 {{- if $.Files.Get $path }}
   {{ base $path }}: |-
-{{ $.Files.Get $path | nindent 4 }}
+{{ $.Files.Get $path | replace "__AI_NAMESPACE__" $aiNamespace | nindent 4 }}
 {{- end }}
 {{- end }}

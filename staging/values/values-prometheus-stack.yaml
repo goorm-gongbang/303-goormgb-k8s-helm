@@ -35,10 +35,13 @@ dashboards:
     exclude:
       - "calico-felix.json"
   devTeam:
+    namespacePattern: "staging-webs"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
       - "cache-redis-local.json"
+  aiTeam:
+    aiNamespace: "staging-ai"
   alertOps:
     enabled: true
   businessKpi:
