@@ -1473,7 +1473,7 @@
         {
           "datasource": "Loki",
           "editorMode": "code",
-          "expr": "{namespace=~\"$namespace\", container=~\"ai.*|authz.*\"} |~ \"$log_level\" |= \"$query\"",
+          "expr": "{namespace=\"__AI_NAMESPACE__\"} |~ \"$log_level\" |= \"$query\" | label_format app=`{{.container}}`",
           "queryType": "range",
           "refId": "A"
         }
