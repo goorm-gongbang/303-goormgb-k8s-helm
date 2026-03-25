@@ -112,9 +112,9 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 13,
+        "w": 7,
         "x": 0,
-        "y": 4
+        "y": 23
       },
       "id": 20,
       "options": {
@@ -679,9 +679,9 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 7,
+        "w": 13,
         "x": 0,
-        "y": 23
+        "y": 4
       },
       "id": 4,
       "options": {
@@ -990,6 +990,6 @@
   "timezone": "",
   "title": "애플리케이션 모니터링(Spring Boot)",
   "uid": "dLsDQIUnzb",
-  "version": 41,
+  "version": 42,
   "weekStart": ""
 }
