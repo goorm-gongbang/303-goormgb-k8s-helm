@@ -71,7 +71,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\", http_response_status_code=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\"}[5m])), 1)",
+          "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\", http_response_status_code=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])), 1)",
           "legendFormat": "5xx 비율",
           "refId": "A"
         }
@@ -81,7 +81,7 @@
     },
     {
       "datasource": "Prometheus",
-      "description": "최근 5분 기준 요청 지연 P99입니다. 전체 요청 중 99%가 이 시간 안에 끝나는지를 보여주며, 사용자 체감 지연을 판단하는 핵심 지표입니다.",
+      "description": "최근 5분 기준 요청 지연 P99입니다. 전체 요청 중 99%가 이 시간 안에 끝나는지를 보여주며, 사용자 체감 지연을 판단하는 핵심 지표입니다. 요청이 거의 없는 시간대에는 값이 비어 보일 수 있습니다.",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -113,7 +113,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])))",
           "legendFormat": "P99",
           "refId": "A"
         }
@@ -153,7 +153,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\"}[5m]))",
+          "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m]))",
           "legendFormat": "RPS",
           "refId": "A"
         }
@@ -204,7 +204,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "count(kube_pod_container_status_waiting_reason{namespace=\"staging\", reason=\"CrashLoopBackOff\"}) or vector(0)",
+          "expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"staging-webs\"}[10m])) or vector(0)",
           "legendFormat": "CrashLoop",
           "refId": "A"
         }
@@ -245,7 +245,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "sum(kube_node_status_condition{condition=\"Ready\", status=\"false\"}) or vector(0)",
+          "expr": "sum(kube_node_status_condition{condition=\"Ready\", status=\"true\"} == bool 0) or vector(0)",
           "legendFormat": "NotReady",
           "refId": "A"
         }
@@ -546,7 +546,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\", http_response_status_code=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\"}[5m])), 1)",
+          "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\", http_response_status_code=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])), 1)",
           "legendFormat": "5xx 비율",
           "refId": "A"
         }
@@ -602,7 +602,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])))",
           "legendFormat": "P99",
           "refId": "A"
         }
@@ -634,9 +634,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
+          "selected": true,
+          "text": "goormgb-staging-postgresql",
+          "value": "goormgb-staging-postgresql"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -659,13 +659,14 @@
           "region": "ap-northeast-2"
         },
         "refresh": 1,
+        "regex": "goormgb-staging-postgresql",
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
+          "selected": true,
+          "text": "goormgb-staging-redis-001",
+          "value": "goormgb-staging-redis-001"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -688,6 +689,7 @@
           "region": "ap-northeast-2"
         },
         "refresh": 1,
+        "regex": "goormgb-staging-redis-001",
         "type": "query"
       }
     ]

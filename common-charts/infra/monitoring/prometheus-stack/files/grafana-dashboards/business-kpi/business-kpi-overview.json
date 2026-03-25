@@ -21,7 +21,7 @@
       }
     ]
   },
-  "description": "비즈니스 KPI는 Warning 또는 Critical 알람 기준이 아니라, 운영 효과와 전환 흐름을 확인하기 위한 Info 전용 대시보드입니다. 집계 기준은 애플리케이션 로그가 아니라 Prometheus 메트릭입니다.",
+  "description": "비즈니스 KPI는 Warning 또는 Critical 알람 기준이 아니라, 운영 효과와 전환 흐름을 확인하기 위한 Info 전용 대시보드입니다. 집계 기준은 애플리케이션 로그가 아니라 Prometheus 메트릭입니다. 관련 ticketing_* 메트릭이 아직 배포되지 않은 환경에서는 값이 비어 보일 수 있습니다.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
