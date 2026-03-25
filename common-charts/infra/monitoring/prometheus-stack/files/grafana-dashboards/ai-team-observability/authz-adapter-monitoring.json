@@ -13,17 +13,14 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "Envoy ext_authz에서 authz-adapter로 들어오는 인증 검사 요청의 초당 처리량입니다.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": {"mode": "palette-classic"},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [
-              {"color": "green", "value": null}
-            ]
+            "steps": [{"color": "green", "value": null}]
           },
           "unit": "reqps"
         }
@@ -41,7 +38,7 @@
           "refId": "A"
         }
       ],
-      "title": "ext_authz Check Requests/sec",
+      "title": "인증 검사 요청량 (req/s)",
       "type": "timeseries"
     },
     {
@@ -49,6 +46,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "인증 검사 요청의 응답 지연시간입니다. p95, p99 백분위수를 표시합니다.",
       "fieldConfig": {
         "defaults": {
           "color": {"mode": "palette-classic"},
@@ -69,16 +67,16 @@
       "targets": [
         {
           "expr": "histogram_quantile(0.95, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"dev-ai\"}[5m])) by (le)) * 1000",
-          "legendFormat": "p95 latency",
+          "legendFormat": "p95 지연시간",
           "refId": "A"
         },
         {
           "expr": "histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"dev-ai\"}[5m])) by (le)) * 1000",
-          "legendFormat": "p99 latency",
+          "legendFormat": "p99 지연시간",
           "refId": "B"
         }
       ],
-      "title": "Check Request Latency (ms)",
+      "title": "인증 검사 지연시간 (ms)",
       "type": "timeseries"
     },
     {
@@ -86,6 +84,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "인증 검사 요청 중 성공(OK)한 비율입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {"mode": "thresholds"},
@@ -93,15 +92,15 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"color": "green", "value": null},
-              {"color": "yellow", "value": 0.99},
-              {"color": "red", "value": 0.95}
+              {"color": "red", "value": null},
+              {"color": "yellow", "value": 0.95},
+              {"color": "green", "value": 0.99}
             ]
           },
           "unit": "percentunit"
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 8},
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 8},
       "id": 3,
       "options": {
         "colorMode": "value",
@@ -118,7 +117,7 @@
           "refId": "A"
         }
       ],
-      "title": "Success Rate",
+      "title": "성공률",
       "type": "stat"
     },
     {
@@ -126,18 +125,22 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "현재 실행 중인 authz-adapter 인스턴스 수입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {"mode": "thresholds"},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [{"color": "green", "value": null}]
+            "steps": [
+              {"color": "red", "value": null},
+              {"color": "green", "value": 1}
+            ]
           },
           "unit": "short"
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 8},
+      "gridPos": {"h": 4, "w": 4, "x": 4, "y": 8},
       "id": 4,
       "options": {
         "colorMode": "value",
@@ -154,7 +157,7 @@
           "refId": "A"
         }
       ],
-      "title": "Running Instances",
+      "title": "실행 인스턴스",
       "type": "stat"
     },
     {
@@ -162,6 +165,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "AI Defense API 호출의 초당 처리량입니다. 상태별로 구분됩니다.",
       "fieldConfig": {
         "defaults": {
           "color": {"mode": "palette-classic"},
@@ -173,7 +177,7 @@
           "unit": "reqps"
         }
       },
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 8},
       "id": 5,
       "options": {
         "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom"},
@@ -186,7 +190,7 @@
           "refId": "A"
         }
       ],
-      "title": "AI Defense API Calls",
+      "title": "AI Defense API 호출량",
       "type": "timeseries"
     },
     {
@@ -194,6 +198,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "AI Defense API 호출의 응답 지연시간입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {"mode": "palette-classic"},
@@ -205,7 +210,7 @@
           "unit": "ms"
         }
       },
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 8},
       "id": 6,
       "options": {
         "legend": {"calcs": ["mean", "p95", "max"], "displayMode": "table", "placement": "bottom"},
@@ -218,34 +223,33 @@
           "refId": "A"
         }
       ],
-      "title": "AI Defense API Latency (ms)",
+      "title": "AI Defense API 지연시간 (ms)",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
-      "gridPos": {"h": 10, "w": 24, "x": 0, "y": 20},
+      "datasource": "Loki",
+      "description": "authz-adapter 서비스의 실시간 로그입니다.",
+      "gridPos": {"h": 10, "w": 24, "x": 0, "y": 16},
       "id": 7,
       "options": {
         "dedupStrategy": "none",
         "enableLogDetails": true,
-        "prettifyLogMessage": false,
+        "prettifyLogMessage": true,
         "showCommonLabels": false,
-        "showLabels": false,
+        "showLabels": true,
         "showTime": true,
         "sortOrder": "Descending",
-        "wrapLogMessage": false
+        "wrapLogMessage": true
       },
       "targets": [
         {
-          "expr": "{namespace=\"dev-ai\", app=\"authz-adapter\"} |= ``",
+          "datasource": "Loki",
+          "expr": "{namespace=\"dev-ai\", app=\"authz-adapter\", container!=\"istio-proxy\"}",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "title": "authz-adapter Logs",
+      "title": "authz-adapter 로그",
       "type": "logs"
     }
   ],
@@ -262,7 +266,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "AI - Authz Adapter",
+  "title": "[AI] 인증 어댑터 모니터링",
   "uid": "authz-adapter-monitoring",
   "version": 1
 }
