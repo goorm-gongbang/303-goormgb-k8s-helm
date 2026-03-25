@@ -1,0 +1,69 @@
+# authz-adapter - Dev 환경
+# Go 기반 gRPC ext_authz 서비스
+
+replicaCount: 2
+
+# ECR 설정은 ApplicationSet에서 자동 주입됨 (dev/root/values.yaml의 ecr 설정)
+
+image:
+  name: "dev/goormgb/authz-adapter"
+  tag: "67a1d53"
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: ecr-pull-secret
+
+# gRPC 메인 포트를 service.port로 사용
+service:
+  type: ClusterIP
+  port: 9001
+  portName: grpc
+  grpc:
+    enabled: false  # 메인 포트가 이미 gRPC
+
+# Prometheus Metrics
+metrics:
+  enabled: true
+  port: 9090
+  portName: metrics
+  path: /metrics
+  interval: 15s
+
+# authz-adapter 전용 설정
+authzAdapter:
+  enabled: true
+  aiDefenseUrl: "http://dev-ai-defense.dev-ai.svc.cluster.local:8000/ai/evaluate"
+  aiDefenseTimeoutMs: 800
+  logLevel: info
+
+# OpenTelemetry
+otel:
+  enabled: true
+  collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"
+
+# Health checks (Go HTTP 서버)
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 9090
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: 9090
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+# Istio sidecar 비활성화 (ext_authz는 sidecar 없이 동작)
+istio:
+  sidecar: false

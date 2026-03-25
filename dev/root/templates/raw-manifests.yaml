@@ -154,6 +154,7 @@ spec:
 ---
 # AI Defense 서비스 라우팅
 # api.dev.goormgb.space/ai/* -> ai-defense 서비스
+# 주의: AI Defense 엔드포인트가 /ai/* prefix를 포함하므로 rewrite 없이 전달
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
@@ -165,12 +166,10 @@ spec:
   gateways:
     - istio-system/api-gateway
   http:
-    # /ai/* 경로 라우팅 (Swagger UI 포함)
+    # /ai/* 경로 라우팅 (rewrite 없음 - AI Defense가 /ai/* prefix 사용)
     - match:
         - uri:
             prefix: /ai/
-      rewrite:
-        uri: /
       route:
         - destination:
             host: dev-ai-defense.dev-ai.svc.cluster.local

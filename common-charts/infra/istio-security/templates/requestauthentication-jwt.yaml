@@ -1,4 +1,4 @@
-{{- if and .Values.enabled .Values.jwtAuth.enabled }}
+{{- if and .Values.enabled .Values.jwtAuth .Values.jwtAuth.enabled }}
 # ============================================================
 # RequestAuthentication - JWT 검증 규칙
 # ============================================================

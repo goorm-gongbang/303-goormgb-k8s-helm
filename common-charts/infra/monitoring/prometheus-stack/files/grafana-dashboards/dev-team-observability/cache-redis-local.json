@@ -194,22 +194,25 @@
         "type": "datasource"
       },
       {
-        "allValue": ".*",
-        "current": {},
-        "datasource": { "type": "prometheus", "uid": "${datasource}" },
-        "definition": "label_values(redis_up, job)",
+        "allValue": "redis-cache|redis-queue",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
         "hide": 0,
         "includeAll": true,
-        "label": "Job",
-        "multi": false,
+        "label": "Redis 인스턴스",
+        "multi": true,
         "name": "job",
-        "options": [],
-        "query": { "query": "label_values(redis_up, job)", "refId": "PrometheusVariableQueryEditor-VariableQuery" },
-        "refresh": 2,
-        "regex": "",
+        "options": [
+          { "selected": true, "text": "All", "value": "$__all" },
+          { "selected": false, "text": "redis-cache", "value": "redis-cache" },
+          { "selected": false, "text": "redis-queue", "value": "redis-queue" }
+        ],
+        "query": "redis-cache,redis-queue",
         "skipUrlSync": false,
-        "sort": 1,
-        "type": "query"
+        "type": "custom"
       }
     ]
   },

@@ -109,7 +109,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${datasource}" },
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", app=~\"$app\"} |= \"$query\" [$__interval]))",
+          "expr": "sum(count_over_time({namespace=\"$namespace\", stream=~\"$stream\"} |= \"$query\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -148,7 +148,7 @@
         {
           "datasource": { "type": "loki", "uid": "${datasource}" },
           "editorMode": "code",
-          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", app=~\"$app\"} |= \"$query\"",
+          "expr": "{namespace=\"$namespace\", stream=~\"$stream\"} |= \"$query\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -200,18 +200,22 @@
         "type": "textbox"
       },
       {
-        "current": {},
+        "current": {
+          "selected": true,
+          "text": "dev-webs",
+          "value": "dev-webs"
+        },
         "datasource": { "type": "loki", "uid": "${datasource}" },
         "definition": "label_values(namespace)",
         "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "label": "네임스페이스",
-        "multi": true,
+        "multi": false,
         "name": "namespace",
         "options": [],
         "query": "label_values(namespace)",
         "refresh": 1,
-        "regex": "",
+        "regex": "/(dev-webs|staging-webs)/",
         "sort": 1,
         "type": "query"
       },
@@ -244,23 +248,6 @@
         ],
         "query": "stdout,stderr",
         "type": "custom"
-      },
-      {
-        "allValue": ".+",
-        "current": {},
-        "datasource": { "type": "loki", "uid": "${datasource}" },
-        "definition": "label_values({namespace=~\"$namespace\"}, app)",
-        "hide": 0,
-        "includeAll": true,
-        "label": "애플리케이션",
-        "multi": true,
-        "name": "app",
-        "options": [],
-        "query": "label_values({namespace=~\"$namespace\"}, app)",
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "type": "query"
       }
     ]
   },

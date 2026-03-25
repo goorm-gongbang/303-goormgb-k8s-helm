@@ -21,6 +21,10 @@ singleBinary:
   replicas: 1
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
   persistence:
     size: 10Gi
 
@@ -38,7 +42,15 @@ backend:
 chunksCache:
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
 
 resultsCache:
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"

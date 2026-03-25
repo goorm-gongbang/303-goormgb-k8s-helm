@@ -1,5 +1,11 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/security-ops/*.json" -}}
-{{- if and .Values.dashboards.securityOps.enabled (gt (len $dashboardFiles) 0) }}
+{{- $enabled := false -}}
+{{- $folderName := "DEV 보안 모니터링" -}}
+{{- if and .Values.dashboards .Values.dashboards.securityOps -}}
+{{- $enabled = .Values.dashboards.securityOps.enabled | default false -}}
+{{- $folderName = .Values.dashboards.securityOps.folderName | default "DEV 보안 모니터링" -}}
+{{- end -}}
+{{- if and $enabled (gt (len $dashboardFiles) 0) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,7 +16,7 @@ metadata:
     app.kubernetes.io/part-of: monitoring
     grafana_dashboard: "1"
   annotations:
-    grafana_folder: "알람 현황판"
+    grafana_folder: {{ $folderName | quote }}
 data:
 {{- range $path, $_ := $dashboardFiles }}
   {{ base $path }}: |-
