@@ -29,17 +29,17 @@
   "links": [],
   "panels": [
     {
-      "content": "이 보드는 보안 이상 징후의 1차 판단용입니다. No data가 보일 때는 아래를 먼저 확인하세요. - 매크로/인증 패널이 모두 비면: 앱 보안 메트릭(`ticketing_security_*`, `ticketing_auth_*`)이 아직 계측되지 않았거나 최근 이벤트가 없을 수 있습니다. - WAF 패널만 비면: `waf_blocked_requests_total` 수집이 아직 연결되지 않았을 가능성이 큽니다. - 최근 5분 패널만 비면: 해당 시간대에 실제 탐지/차단 이벤트가 없어서 정상적으로 비어 있을 수 있습니다.",
+      "content": "이 보드는 보안 이상 징후의 1차 판단용입니다. No data가 보일 때는 아래를 먼저 확인하세요. - 매크로/인증 패널이 모두 비면: 앱 보안 메트릭(`ticketing_security_*`, `ticketing_auth_*`)이 아직 계측되지 않았거나 최근 이벤트가 없을 수 있습니다. - WAF 패널만 비면: `waf_blocked_requests_total` 수집이 아직 연결되지 않았을 가능성이 큽니다. - 최근 5분 패널만 비면: 해당 시간대에 실제 탐지/차단 이벤트가 없어서 정상적으로 비어 있을 수 있습니다. - 매크로/봇 탐지와 차단 IP가 급증하면 `Lua WAF 보안 정책`, `Rate Limit 모니터링`, `Istio WAF 모니터링`으로 이동하세요. - 인증 실패율이 급증하면 `로그 확인(Loki Kubernetes Logs)`에서 IP/계정 단위 상세를 먼저 확인하세요. - CloudTrail/EventBridge 기반 감사 이벤트는 Grafana가 아니라 별도 알림 채널과 Athena 조회를 기준으로 운영합니다.",
       "datasource": {
         "type": "datasource",
         "uid": "grafana"
       },
       "description": "보안 알람 패널이 비어 있을 때 수집 미연결과 실제 이벤트 부재를 구분하기 위한 안내 패널입니다.",
-      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 0 },
       "id": 100,
       "mode": "markdown",
       "options": {
-        "content": "이 보드는 보안 이상 징후의 1차 판단용입니다. No data가 보일 때는 아래를 먼저 확인하세요. - 매크로/인증 패널이 모두 비면: 앱 보안 메트릭(`ticketing_security_*`, `ticketing_auth_*`)이 아직 계측되지 않았거나 최근 이벤트가 없을 수 있습니다. - WAF 패널만 비면: `waf_blocked_requests_total` 수집이 아직 연결되지 않았을 가능성이 큽니다. - 최근 5분 패널만 비면: 해당 시간대에 실제 탐지/차단 이벤트가 없어서 정상적으로 비어 있을 수 있습니다.",
+        "content": "이 보드는 보안 이상 징후의 1차 판단용입니다. No data가 보일 때는 아래를 먼저 확인하세요. - 매크로/인증 패널이 모두 비면: 앱 보안 메트릭(`ticketing_security_*`, `ticketing_auth_*`)이 아직 계측되지 않았거나 최근 이벤트가 없을 수 있습니다. - WAF 패널만 비면: `waf_blocked_requests_total` 수집이 아직 연결되지 않았을 가능성이 큽니다. - 최근 5분 패널만 비면: 해당 시간대에 실제 탐지/차단 이벤트가 없어서 정상적으로 비어 있을 수 있습니다. - 매크로/봇 탐지와 차단 IP가 급증하면 `Lua WAF 보안 정책`, `Rate Limit 모니터링`, `Istio WAF 모니터링`으로 이동하세요. - 인증 실패율이 급증하면 `로그 확인(Loki Kubernetes Logs)`에서 IP/계정 단위 상세를 먼저 확인하세요. - CloudTrail/EventBridge 기반 감사 이벤트는 Grafana가 아니라 별도 알림 채널과 Athena 조회를 기준으로 운영합니다.",
         "mode": "markdown"
       },
       "pluginVersion": "11.4.0",
@@ -48,7 +48,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 4 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 6 },
       "id": 1,
       "panels": [],
       "description": "즉시 확인이 필요한 보안 핵심 수치를 한 화면에서 보기 위한 구간입니다.",
@@ -74,7 +74,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 5 },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 7 },
       "id": 2,
       "options": {
         "colorMode": "value",
@@ -115,7 +115,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 5 },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 7 },
       "id": 3,
       "options": {
         "colorMode": "value",
@@ -156,7 +156,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 5 },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 7 },
       "id": 4,
       "options": {
         "colorMode": "value",
@@ -190,7 +190,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 5 },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 7 },
       "id": 5,
       "options": {
         "colorMode": "value",
@@ -214,7 +214,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 10 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 12 },
       "id": 6,
       "panels": [],
       "description": "단건 수치뿐 아니라 시간 흐름에 따른 보안 지표 변화 추세를 확인하기 위한 구간입니다.",
@@ -231,7 +231,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 11 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 13 },
       "id": 7,
       "options": {
         "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
@@ -275,7 +275,7 @@
           }
         ]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 11 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 13 },
       "id": 8,
       "options": {
         "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
@@ -299,33 +299,6 @@
       ],
       "title": "인증 실패율 / WAF 차단 추세",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 19 },
-      "id": 9,
-      "panels": [],
-      "description": "운영자가 이 보드를 볼 때 함께 참고해야 할 대응 기준과 후속 확인 경로를 정리한 구간입니다.",
-      "title": "운영 메모",
-      "type": "row"
-    },
-    {
-      "content": "이 대시보드는 보안 이상 징후의 1차 판단용입니다.\\n\\n- 매크로/봇 탐지와 차단 IP 급증 시 `Lua WAF 보안 정책`, `Rate Limit 모니터링`, `Istio WAF 모니터링`으로 이동\\n- 인증 실패율 급증 시 `로그 확인(Loki Kubernetes Logs)`에서 IP/계정 단위 상세 확인\\n- CloudTrail/EventBridge 기반 감사 이벤트는 Grafana가 아니라 별도 알림 채널과 Athena 조회를 기준으로 운영",
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 20 },
-      "id": 10,
-      "mode": "markdown",
-      "options": {
-        "content": "이 대시보드는 보안 이상 징후의 1차 판단용입니다.\\n\\n- 매크로/봇 탐지와 차단 IP 급증 시 `Lua WAF 보안 정책`, `Rate Limit 모니터링`, `Istio WAF 모니터링`으로 이동\\n- 인증 실패율 급증 시 `로그 확인(Loki Kubernetes Logs)`에서 IP/계정 단위 상세 확인\\n- CloudTrail/EventBridge 기반 감사 이벤트는 Grafana가 아니라 별도 알림 채널과 Athena 조회를 기준으로 운영",
-        "mode": "markdown"
-      },
-      "pluginVersion": "11.4.0",
-      "description": "보안 이상 징후 발생 시 어떤 상세 대시보드와 로그를 추가로 확인해야 하는지 정리한 안내 패널입니다.",
-      "title": "대응 가이드",
-      "type": "text"
     }
   ],
   "refresh": "1m",
