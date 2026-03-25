@@ -118,6 +118,7 @@ prometheus:
 # ESO는 prometheus-extras에서 생성
 grafana:
   enabled: false
+  fullnameOverride: grafana  # VirtualService destination용
   eso:
     enabled: true
     secretManagerKey: dev/monitoring/grafana
