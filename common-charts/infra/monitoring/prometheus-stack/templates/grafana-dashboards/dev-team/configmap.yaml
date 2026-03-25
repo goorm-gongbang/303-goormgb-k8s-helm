@@ -1,5 +1,6 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/dev-team-observability/*.json" -}}
 {{- $excludeList := .Values.dashboards.devTeam.exclude | default list -}}
+{{- $namespacePattern := .Values.dashboards.devTeam.namespacePattern | default "dev-webs" -}}
 {{- if gt (len $dashboardFiles) 0 }}
 apiVersion: v1
 kind: ConfigMap
@@ -17,7 +18,7 @@ data:
 {{- $filename := base $path -}}
 {{- if not (has $filename $excludeList) }}
   {{ $filename }}: |-
-{{ $.Files.Get $path | nindent 4 }}
+{{ $.Files.Get $path | replace "__NAMESPACE_PATTERN__" $namespacePattern | nindent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}

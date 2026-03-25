@@ -281,20 +281,18 @@
         "type": "datasource"
       },
       {
-        "current": {"selected": true, "text": "dev-ai", "value": "dev-ai"},
-        "datasource": {"type": "prometheus", "uid": "${datasource}"},
-        "definition": "label_values(http_server_request_duration_seconds_count, namespace)",
+        "current": {},
         "hide": 0,
         "includeAll": false,
         "label": "네임스페이스",
         "multi": false,
         "name": "namespace",
-        "options": [],
-        "query": "label_values(http_server_request_duration_seconds_count, namespace)",
-        "refresh": 1,
-        "regex": "/(dev-ai|staging-ai)/",
-        "sort": 1,
-        "type": "query"
+        "options": [
+          {"selected": true, "text": "__AI_NAMESPACE__", "value": "__AI_NAMESPACE__"}
+        ],
+        "query": "__AI_NAMESPACE__",
+        "skipUrlSync": false,
+        "type": "custom"
       },
       {
         "allValue": ".*",
