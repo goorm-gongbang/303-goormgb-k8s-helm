@@ -16,7 +16,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "선택 기간 동안 처리한 전체 HTTP 요청 수입니다.",
       "fieldConfig": {
         "defaults": {
@@ -51,7 +51,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "초당 요청 처리량(RPS)입니다. 모든 HTTP 요청을 포함합니다.",
       "fieldConfig": {
         "defaults": {
@@ -86,7 +86,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "초당 성공 트랜잭션 수(TPS)입니다. 2xx 응답만 집계합니다.",
       "fieldConfig": {
         "defaults": {
@@ -129,7 +129,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "시간대별 RPS/TPS 추이입니다.",
       "fieldConfig": {
         "defaults": {
@@ -191,7 +191,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "HTTP 상태코드별 요청 추이입니다.",
       "fieldConfig": {
         "defaults": {
@@ -248,7 +248,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "응답 시간 백분위수 추이입니다. P50(중앙값), P95, P99를 함께 비교합니다.",
       "fieldConfig": {
         "defaults": {
@@ -300,7 +300,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "경로별 평균 응답 시간입니다. 느린 API 엔드포인트를 식별합니다.",
       "fieldConfig": {
         "defaults": {
@@ -350,7 +350,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "에러율 추이입니다. 배포 전후 에러 증가 여부를 확인합니다.",
       "fieldConfig": {
         "defaults": {
@@ -400,7 +400,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
       "description": "5xx 에러가 많이 발생하는 경로입니다.",
       "fieldConfig": {
         "defaults": {
@@ -451,20 +451,30 @@
   "templating": {
     "list": [
       {
+        "current": {"selected": false, "text": "Prometheus", "value": "prometheus"},
+        "hide": 0,
+        "includeAll": false,
+        "label": "데이터소스",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
         "allValue": ".*",
         "current": {"text": ["All"], "value": ["$__all"]},
-        "datasource": "Prometheus",
+        "datasource": {"type": "prometheus", "uid": "${datasource}"},
         "definition": "label_values(http_server_requests_seconds_count{namespace=~\"dev-webs|staging-webs\"}, application)",
         "includeAll": true,
         "label": "애플리케이션",
         "multi": true,
         "name": "app_name",
         "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(http_server_requests_seconds_count{namespace=~\"dev-webs|staging-webs\"}, application)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
+        "query": "label_values(http_server_requests_seconds_count{namespace=~\"dev-webs|staging-webs\"}, application)",
         "refresh": 1,
         "regex": "",
         "sort": 1,
@@ -473,20 +483,16 @@
       {
         "allValue": ".*",
         "current": {"text": ["dev-webs"], "value": ["dev-webs"]},
-        "datasource": "Prometheus",
+        "datasource": {"type": "prometheus", "uid": "${datasource}"},
         "definition": "label_values(http_server_requests_seconds_count, namespace)",
         "includeAll": true,
         "label": "네임스페이스",
         "multi": true,
         "name": "namespace",
         "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(http_server_requests_seconds_count, namespace)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
+        "query": "label_values(http_server_requests_seconds_count, namespace)",
         "refresh": 1,
-        "regex": "dev-webs|staging-webs",
+        "regex": "/(dev-webs|staging-webs)/",
         "sort": 1,
         "type": "query"
       }
