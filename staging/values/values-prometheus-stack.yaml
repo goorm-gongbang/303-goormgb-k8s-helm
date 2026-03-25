@@ -35,6 +35,12 @@ dashboards:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
       - "cache-redis-local.json"
+  alertOps:
+    enabled: true
+  businessKpi:
+    enabled: true
+  securityOps:
+    enabled: true
 
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
 fullnameOverride: prom
