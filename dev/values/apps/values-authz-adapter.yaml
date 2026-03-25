@@ -3,14 +3,11 @@
 
 replicaCount: 2
 
-# ECR 설정
-ecr:
-  accountId: "497012402578"
-  region: "ap-northeast-2"
+# ECR 설정은 ApplicationSet에서 자동 주입됨 (dev/root/values.yaml의 ecr 설정)
 
 image:
   name: "dev/goormgb/authz-adapter"
-  tag: "latest"
+  tag: "67a1d53"
   pullPolicy: Always
 
 imagePullSecrets:
