@@ -93,7 +93,7 @@
         "type": "custom"
       },
       {
-        "allValue": "ai-service|authz-adapter",
+        "allValue": "dev-.*|staging-.*|prod-.*",
         "current": {"selected": true, "text": ["All"], "value": ["$__all"]},
         "datasource": {"type": "loki", "uid": "loki"},
         "definition": "label_values({namespace=\"__AI_NAMESPACE__\"}, app)",
@@ -105,7 +105,7 @@
         "options": [],
         "query": "label_values({namespace=\"__AI_NAMESPACE__\"}, app)",
         "refresh": 1,
-        "regex": "ai-service|authz-adapter",
+        "regex": "dev-.*|staging-.*|prod-.*",
         "sort": 1,
         "type": "query"
       },

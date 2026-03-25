@@ -1507,7 +1507,7 @@
         "type": "custom"
       },
       {
-        "allValue": ".*ai-defense.*|.*authz-adapter.*",
+        "allValue": "dev-.*|staging-.*|prod-.*",
         "current": {"text": ["All"], "value": ["$__all"]},
         "datasource": "Prometheus",
         "definition": "label_values(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\"}, destination_workload)",
@@ -1518,7 +1518,7 @@
         "options": [],
         "query": "label_values(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\"}, destination_workload)",
         "refresh": 1,
-        "regex": ".*ai-defense.*|.*authz-adapter.*",
+        "regex": "dev-.*|staging-.*|prod-.*",
         "sort": 1,
         "type": "query"
       },
