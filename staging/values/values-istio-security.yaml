@@ -103,7 +103,7 @@ extAuthz:
 rateLimiting:
   # --- Local Rate Limit (Envoy 내장) ---
   local:
-    enabled: true
+    enabled: false  # 부하 테스트를 위해 비활성화 (테스트 후 true로 복원 필요)
 
     # 기본 설정 (전체 경로에 적용)
     default:
