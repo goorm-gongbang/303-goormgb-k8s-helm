@@ -28,7 +28,7 @@
   "links": [],
   "panels": [
     {
-      "content": "이 대시보드는 Spring Boot 애플리케이션 메트릭 확인용입니다.\\nNo data가 보일 때는 아래를 먼저 확인하세요.\\n- 모든 패널이 비면: Prometheus target down, actuator 경로 차단, scrape 설정 오류 가능성이 큽니다.\\n- 5xx/4xx만 비면: 최근 선택한 시간 범위에 해당 상태코드가 없을 수 있습니다.\\n- P95/P99가 비면: `http_server_requests_seconds_bucket` 메트릭이 아직 없거나 트래픽이 너무 적을 수 있습니다.\\n- URI별 패널이 비면: 최근 요청이 적거나 `uri` 라벨이 기대와 다르게 수집되는 상태일 수 있습니다.",
+      "content": "이 대시보드는 Spring Boot 애플리케이션 메트릭 확인용입니다. No data가 보일 때는 아래를 먼저 확인하세요. - 모든 패널이 비면: Prometheus target down, actuator 경로 차단, scrape 설정 오류 가능성이 큽니다. - 5xx/4xx만 비면: 최근 선택한 시간 범위에 해당 상태코드가 없을 수 있습니다. - P95/P99가 비면: `http_server_requests_seconds_bucket` 메트릭이 아직 없거나 트래픽이 너무 적을 수 있습니다. - URI별 패널이 비면: 최근 요청이 적거나 `uri` 라벨이 기대와 다르게 수집되는 상태일 수 있습니다.",
       "datasource": {
         "type": "datasource",
         "uid": "grafana"
@@ -43,7 +43,7 @@
       "id": 101,
       "mode": "markdown",
       "options": {
-        "content": "이 대시보드는 Spring Boot 애플리케이션 메트릭 확인용입니다.\\nNo data가 보일 때는 아래를 먼저 확인하세요.\\n- 모든 패널이 비면: Prometheus target down, actuator 경로 차단, scrape 설정 오류 가능성이 큽니다.\\n- 5xx/4xx만 비면: 최근 선택한 시간 범위에 해당 상태코드가 없을 수 있습니다.\\n- P95/P99가 비면: `http_server_requests_seconds_bucket` 메트릭이 아직 없거나 트래픽이 너무 적을 수 있습니다.\\n- URI별 패널이 비면: 최근 요청이 적거나 `uri` 라벨이 기대와 다르게 수집되는 상태일 수 있습니다.",
+        "content": "이 대시보드는 Spring Boot 애플리케이션 메트릭 확인용입니다. No data가 보일 때는 아래를 먼저 확인하세요. - 모든 패널이 비면: Prometheus target down, actuator 경로 차단, scrape 설정 오류 가능성이 큽니다. - 5xx/4xx만 비면: 최근 선택한 시간 범위에 해당 상태코드가 없을 수 있습니다. - P95/P99가 비면: `http_server_requests_seconds_bucket` 메트릭이 아직 없거나 트래픽이 너무 적을 수 있습니다. - URI별 패널이 비면: 최근 요청이 적거나 `uri` 라벨이 기대와 다르게 수집되는 상태일 수 있습니다.",
         "mode": "markdown"
       },
       "pluginVersion": "11.4.0",

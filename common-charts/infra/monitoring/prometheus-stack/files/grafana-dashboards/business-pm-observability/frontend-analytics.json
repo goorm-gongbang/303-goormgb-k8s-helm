@@ -22,11 +22,11 @@
       "id": 100,
       "mode": "markdown",
       "options": {
-        "content": "이 보드는 프론트엔드 사용자 행동 분석용입니다.\\nNo data가 보일 때는 아래를 먼저 확인하세요.\\n- 모든 패널이 비면: Faro SDK 초기화, `NEXT_PUBLIC_FARO_URL`, `/faro` 수집 경로, 프론트 staging 배포 상태를 먼저 확인하세요.\\n- page_view만 보이고 다른 이벤트가 비면: 프론트에서 `trackAction` 계측이 아직 붙지 않았을 가능성이 큽니다.\\n- 최근 24h 패널이 비면: staging 실제 사용 트래픽이 거의 없었을 수 있습니다.",
+        "content": "이 보드는 프론트엔드 사용자 행동 분석용입니다. No data가 보일 때는 아래를 먼저 확인하세요. - 모든 패널이 비면: Faro SDK 초기화, `NEXT_PUBLIC_FARO_URL`, `/faro` 수집 경로, 프론트 staging 배포 상태를 먼저 확인하세요. - page_view만 보이고 다른 이벤트가 비면: 프론트에서 `trackAction` 계측이 아직 붙지 않았을 가능성이 큽니다. - 최근 24h 패널이 비면: staging 실제 사용 트래픽이 거의 없었을 수 있습니다.",
         "mode": "markdown"
       },
       "pluginVersion": "11.4.0",
-      "content": "이 보드는 프론트엔드 사용자 행동 분석용입니다.\\nNo data가 보일 때는 아래를 먼저 확인하세요.\\n- 모든 패널이 비면: Faro SDK 초기화, `NEXT_PUBLIC_FARO_URL`, `/faro` 수집 경로, 프론트 staging 배포 상태를 먼저 확인하세요.\\n- page_view만 보이고 다른 이벤트가 비면: 프론트에서 `trackAction` 계측이 아직 붙지 않았을 가능성이 큽니다.\\n- 최근 24h 패널이 비면: staging 실제 사용 트래픽이 거의 없었을 수 있습니다."
+      "content": "이 보드는 프론트엔드 사용자 행동 분석용입니다. No data가 보일 때는 아래를 먼저 확인하세요. - 모든 패널이 비면: Faro SDK 초기화, `NEXT_PUBLIC_FARO_URL`, `/faro` 수집 경로, 프론트 staging 배포 상태를 먼저 확인하세요. - page_view만 보이고 다른 이벤트가 비면: 프론트에서 `trackAction` 계측이 아직 붙지 않았을 가능성이 큽니다. - 최근 24h 패널이 비면: staging 실제 사용 트래픽이 거의 없었을 수 있습니다."
     },
     {
       "type": "stat",
