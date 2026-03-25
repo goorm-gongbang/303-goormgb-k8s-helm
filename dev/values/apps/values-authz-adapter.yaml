@@ -3,6 +3,11 @@
 
 replicaCount: 2
 
+# ECR 설정
+ecr:
+  accountId: "497012402578"
+  region: "ap-northeast-2"
+
 image:
   name: "dev/goormgb/authz-adapter"
   tag: "latest"

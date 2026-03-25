@@ -905,20 +905,22 @@
   "templating": {
     "list": [
       {
-        "allValue": "staging-app|dev-app",
+        "allValue": "dev-webs|staging-webs",
         "current": {
-          "text": "staging-app",
-          "value": "staging-app"
+          "selected": true,
+          "text": "dev-webs",
+          "value": "dev-webs"
         },
         "datasource": "Prometheus",
         "definition": "label_values(istio_requests_total, namespace)",
-        "includeAll": true,
+        "includeAll": false,
+        "label": "네임스페이스",
         "multi": false,
         "name": "namespace",
         "options": [],
         "query": "label_values(istio_requests_total, namespace)",
         "refresh": 1,
-        "regex": "staging-app|dev-app",
+        "regex": "/(dev-webs|staging-webs)/",
         "type": "query"
       },
       {
