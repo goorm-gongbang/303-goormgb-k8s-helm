@@ -164,10 +164,9 @@ ociCharts:
       - $values/dev/values/monitoring/alerting/values-alertmanager-dev.yaml
       - $values/dev/values/monitoring/alerting/values-rules-dev-5xx.yaml
     syncOptions:
-      - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
       - PruneLast=true
-      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
     ignoreDifferences:
       - group: ""
         kind: PersistentVolumeClaim
@@ -310,12 +309,6 @@ gitCharts:
     namespace: dev-webs
     syncWave: "-6"
 
-  ai-service-secrets:
-    enabled: true
-    path: dev/charts/security/ai-service-secrets
-    namespace: dev-ai
-    syncWave: "-6"
-
   oauth2-proxy:
     enabled: true
     path: dev/charts/security/oauth2-proxy
@@ -437,20 +430,6 @@ gitCharts:
     releaseName: redis-queue
     valueFiles:
       - ../../../values/data/values-redis-queue.yaml
-    retry:
-      limit: 5
-      duration: "10s"
-      maxDuration: "3m"
-      factor: 2
-
-  redis-ai:
-    enabled: true
-    path: dev/charts/data/redis
-    namespace: data
-    syncWave: "-5"
-    releaseName: redis-ai
-    valueFiles:
-      - ../../../values/data/values-redis-ai.yaml
     retry:
       limit: 5
       duration: "10s"

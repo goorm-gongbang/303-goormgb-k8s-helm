@@ -162,10 +162,9 @@ ociCharts:
     valueFiles:
       - $values/staging/values/values-prometheus-stack.yaml
     syncOptions:
-      - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
       - PruneLast=true
-      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
     ignoreDifferences:
       - group: ""
         kind: PersistentVolumeClaim
