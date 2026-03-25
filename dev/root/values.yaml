@@ -293,14 +293,14 @@ gitCharts:
   ddns-cloudflare:
     enabled: true
     path: dev/charts/core/ddns
-    namespace: infra
+    namespace: istio-system
     valueFiles:
       - ../../../values/core/values-ddns.yaml
 
   ecr-creds:
     enabled: true
     path: dev/charts/core/ecr-creds
-    namespace: infra
+    namespace: istio-system
     syncWave: "-8"
     valueFiles:
       - ../../../values/core/values-ecr-creds.yaml
