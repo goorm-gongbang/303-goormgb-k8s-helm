@@ -225,22 +225,22 @@
         "type": "query"
       },
       {
-        "allValue": "(?!istio-proxy).+",
+        "allValue": ".+",
         "current": {
           "text": "All",
           "value": "$__all"
         },
         "datasource": "Loki",
-        "definition": "label_values({namespace=\"dev-ai\"}, container)",
+        "definition": "label_values({namespace=\"dev-ai\", container!=\"istio-proxy\"}, container)",
         "hide": 0,
         "includeAll": true,
         "label": "Container",
         "multi": true,
         "name": "container",
         "options": [],
-        "query": "label_values({namespace=\"dev-ai\"}, container)",
+        "query": "label_values({namespace=\"dev-ai\", container!=\"istio-proxy\"}, container)",
         "refresh": 1,
-        "regex": "^(?!istio-proxy).*$",
+        "regex": "",
         "sort": 1,
         "type": "query"
       },

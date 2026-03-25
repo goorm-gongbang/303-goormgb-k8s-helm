@@ -1637,24 +1637,27 @@
   "templating": {
     "list": [
       {
-        "allValue": "dev-ai-.*",
+        "allValue": ".*",
         "current": {
-          "text": ["ai-defense"],
-          "value": ["dev-ai-defense"]
+          "text": ["All"],
+          "value": ["$__all"]
         },
+        "datasource": "Prometheus",
+        "definition": "label_values(http_server_request_duration_seconds_count{service_name=~\".*ai.*|.*authz.*\"}, service_name)",
         "includeAll": true,
         "label": "애플리케이션",
         "multi": true,
         "name": "app_name",
-        "options": [
-          {
-            "selected": true,
-            "text": "ai-defense",
-            "value": "dev-ai-defense"
-          }
-        ],
-        "query": "ai-defense : dev-ai-defense",
-        "type": "custom"
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(http_server_request_duration_seconds_count{service_name=~\".*ai.*|.*authz.*\"}, service_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
