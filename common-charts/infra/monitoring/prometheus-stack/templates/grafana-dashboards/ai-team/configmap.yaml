@@ -5,8 +5,10 @@
 */}}
 
 {{- $aiNamespace := "dev-ai" -}}
-{{- if and .Values.dashboards .Values.dashboards.aiTeam .Values.dashboards.aiTeam.aiNamespace -}}
-{{- $aiNamespace = .Values.dashboards.aiTeam.aiNamespace -}}
+{{- $folderName := "DEV 서비스 관측(AI)" -}}
+{{- if and .Values.dashboards .Values.dashboards.aiTeam -}}
+{{- $aiNamespace = .Values.dashboards.aiTeam.aiNamespace | default "dev-ai" -}}
+{{- $folderName = .Values.dashboards.aiTeam.folderName | default "DEV 서비스 관측(AI)" -}}
 {{- end -}}
 
 {{/* Part 1: Large dashboards */}}
@@ -25,7 +27,7 @@ metadata:
     app.kubernetes.io/part-of: monitoring
     grafana_dashboard: "1"
   annotations:
-    grafana_folder: "서비스 관측 (AI)"
+    grafana_folder: {{ $folderName | quote }}
 data:
 {{- range $path := $part1Files }}
 {{- if $.Files.Get $path }}
@@ -50,7 +52,7 @@ metadata:
     app.kubernetes.io/part-of: monitoring
     grafana_dashboard: "1"
   annotations:
-    grafana_folder: "서비스 관측 (AI)"
+    grafana_folder: {{ $folderName | quote }}
 data:
 {{- range $path := $part2Files }}
 {{- if $.Files.Get $path }}

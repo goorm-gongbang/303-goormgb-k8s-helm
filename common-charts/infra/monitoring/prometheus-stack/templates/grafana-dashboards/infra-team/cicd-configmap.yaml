@@ -1,3 +1,7 @@
+{{- $folderName := "DEV CICD 모니터링" -}}
+{{- if and .Values.dashboards .Values.dashboards.infraTeam .Values.dashboards.infraTeam.cicdFolderName -}}
+{{- $folderName = .Values.dashboards.infraTeam.cicdFolderName -}}
+{{- end -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,7 +12,7 @@ metadata:
     release: {{ .Release.Name }}
     grafana_dashboard: "1"
   annotations:
-    grafana_folder: "인프라팀/CICD모니터링"
+    grafana_folder: {{ $folderName | quote }}
 data:
   {{- $files := .Files.Glob "files/grafana-dashboards/infra-team-observability/cicd/*.json" }}
   {{- range $path, $_ := $files }}

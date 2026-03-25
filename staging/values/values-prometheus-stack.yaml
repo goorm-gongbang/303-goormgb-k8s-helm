@@ -32,22 +32,33 @@ gateway:
 # Dashboard 설정 (EKS 환경: Calico, 로컬 exporter 대시보드 제외)
 dashboards:
   infraTeam:
+    folderName: "STAGING 플랫폼 관측(인프라)"
+    k6FolderName: "STAGING 부하 테스트(k6)"
+    wafFolderName: "STAGING WAF 모니터링"
+    cicdFolderName: "STAGING CICD 모니터링"
     exclude:
       - "calico-felix.json"
   devTeam:
+    folderName: "STAGING 서비스 관측(개발)"
     namespacePattern: "staging-webs"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
       - "cache-redis-local.json"
   aiTeam:
+    folderName: "STAGING 서비스 관측(AI)"
     aiNamespace: "staging-ai"
   alertOps:
     enabled: true
+    folderName: "STAGING 알람 현황판"
   businessKpi:
     enabled: true
+    folderName: "STAGING 비즈니스 KPI"
+  businessPm:
+    folderName: "STAGING 사용자 행동 분석(PM)"
   securityOps:
     enabled: true
+    folderName: "STAGING 보안 모니터링"
 
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
 fullnameOverride: prom

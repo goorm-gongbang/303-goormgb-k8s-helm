@@ -1,4 +1,8 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/business-pm-observability/*.json" -}}
+{{- $folderName := "DEV 사용자 행동 분석(PM)" -}}
+{{- if and .Values.dashboards .Values.dashboards.businessPm .Values.dashboards.businessPm.folderName -}}
+{{- $folderName = .Values.dashboards.businessPm.folderName -}}
+{{- end -}}
 {{- if gt (len $dashboardFiles) 0 }}
 apiVersion: v1
 kind: ConfigMap
@@ -10,7 +14,7 @@ metadata:
     app.kubernetes.io/part-of: monitoring
     grafana_dashboard: "1"
   annotations:
-    grafana_folder: "사용자 행동 분석 (PM)"
+    grafana_folder: {{ $folderName | quote }}
 data:
 {{- range $path, $_ := $dashboardFiles }}
   {{ base $path }}: |-
