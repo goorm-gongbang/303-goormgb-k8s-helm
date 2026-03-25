@@ -29,7 +29,7 @@
   "links": [],
   "panels": [
     {
-      "content": "이 보드는 staging 운영자가 즉시 확인할 Warning/Critical 지표만 모아둔 화면입니다.\\n\\nNo data가 보일 때는 아래를 먼저 구분해서 보세요.\\n\\n- 서비스 HTTP 패널이 모두 비면: Prometheus target down, actuator scrape 실패, 메트릭 이름 불일치 가능성이 큽니다.\\n- 5xx 패널만 비면: 최근 시간대에 5xx 응답이 없어서 정상적으로 비어 있을 수 있습니다.\\n- P99가 비면: `http_server_requests_seconds_bucket` 메트릭이 아직 없거나 트래픽이 매우 적을 수 있습니다.\\n- RDS/Redis 패널이 비면: CloudWatch exporter, 변수(`db_instance`, `cache_cluster`) 또는 AWS 지표 연결 상태를 확인하세요.",
+      "content": "이 보드는 staging 운영자가 즉시 확인할 Warning/Critical 지표만 모아둔 화면입니다.\\nNo data가 보일 때는 아래를 먼저 구분해서 보세요.\\n- 서비스 HTTP 패널이 모두 비면: Prometheus target down, actuator scrape 실패, 메트릭 이름 불일치 가능성이 큽니다.\\n- 5xx 패널만 비면: 최근 시간대에 5xx 응답이 없어서 정상적으로 비어 있을 수 있습니다.\\n- P99가 비면: `http_server_requests_seconds_bucket` 메트릭이 아직 없거나 트래픽이 매우 적을 수 있습니다.\\n- RDS/Redis 패널이 비면: CloudWatch exporter, 변수(`db_instance`, `cache_cluster`) 또는 AWS 지표 연결 상태를 확인하세요.",
       "datasource": {
         "type": "datasource",
         "uid": "grafana"
@@ -39,7 +39,7 @@
       "id": 100,
       "mode": "markdown",
       "options": {
-        "content": "이 보드는 staging 운영자가 즉시 확인할 Warning/Critical 지표만 모아둔 화면입니다.\\n\\nNo data가 보일 때는 아래를 먼저 구분해서 보세요.\\n\\n- 서비스 HTTP 패널이 모두 비면: Prometheus target down, actuator scrape 실패, 메트릭 이름 불일치 가능성이 큽니다.\\n- 5xx 패널만 비면: 최근 시간대에 5xx 응답이 없어서 정상적으로 비어 있을 수 있습니다.\\n- P99가 비면: `http_server_requests_seconds_bucket` 메트릭이 아직 없거나 트래픽이 매우 적을 수 있습니다.\\n- RDS/Redis 패널이 비면: CloudWatch exporter, 변수(`db_instance`, `cache_cluster`) 또는 AWS 지표 연결 상태를 확인하세요.",
+        "content": "이 보드는 staging 운영자가 즉시 확인할 Warning/Critical 지표만 모아둔 화면입니다.\\nNo data가 보일 때는 아래를 먼저 구분해서 보세요.\\n- 서비스 HTTP 패널이 모두 비면: Prometheus target down, actuator scrape 실패, 메트릭 이름 불일치 가능성이 큽니다.\\n- 5xx 패널만 비면: 최근 시간대에 5xx 응답이 없어서 정상적으로 비어 있을 수 있습니다.\\n- P99가 비면: `http_server_requests_seconds_bucket` 메트릭이 아직 없거나 트래픽이 매우 적을 수 있습니다.\\n- RDS/Redis 패널이 비면: CloudWatch exporter, 변수(`db_instance`, `cache_cluster`) 또는 AWS 지표 연결 상태를 확인하세요.",
         "mode": "markdown"
       },
       "pluginVersion": "11.4.0",
