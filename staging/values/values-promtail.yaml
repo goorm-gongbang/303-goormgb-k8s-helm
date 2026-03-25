@@ -7,6 +7,13 @@ config:
   snippets:
     pipelineStages:
       - cri: {}
+    # Pod의 'app' 라벨을 Loki 'app' 라벨로 설정 (Prometheus와 통일)
+    extraRelabelConfigs:
+      - source_labels:
+          - __meta_kubernetes_pod_label_app
+        target_label: app
+        regex: (.+)
+        action: replace
 
 resources:
   requests:
