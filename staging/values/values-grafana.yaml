@@ -3,6 +3,11 @@
 
 fullnameOverride: grafana
 
+# Pod/Service label 일치 (app.kubernetes.io/instance)
+# Service selector가 'grafana'를 찾도록 설정
+podLabels:
+  app.kubernetes.io/instance: grafana
+
 # IRSA for CloudWatch Data Source
 serviceAccount:
   annotations:
