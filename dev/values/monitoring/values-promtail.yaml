@@ -3,6 +3,16 @@ config:
   clients:
     - url: http://loki:3100/loki/api/v1/push
 
+  snippets:
+    # Pod의 'app' 라벨을 Loki 'app' 라벨로 설정 (Prometheus와 통일)
+    # 예: app=dev-auth-guard, app=dev-seat 등
+    extraRelabelConfigs:
+      - source_labels:
+          - __meta_kubernetes_pod_label_app
+        target_label: app
+        regex: (.+)
+        action: replace
+
 # CP 노드에서도 실행 (DaemonSet)
 tolerations:
   - key: "node-role.kubernetes.io/control-plane"
