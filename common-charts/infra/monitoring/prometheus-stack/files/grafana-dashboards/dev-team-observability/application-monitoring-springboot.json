@@ -1,972 +1,501 @@
 {
   "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
-        "type": "dashboard"
-      }
-    ]
+    "list": []
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
-  "id": null,
+  "graphTooltip": 1,
   "links": [],
   "panels": [
     {
-      "datasource": "Prometheus",
-      "description": "전체 요청 중 서버 오류(5xx) 비율입니다. 장애/회귀 탐지 핵심 지표입니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "axisSoftMax": 1,
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "area"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 0.1
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 7,
-        "x": 0,
-        "y": 19
-      },
-      "id": 20,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "100 *\nsum(rate(http_server_requests_seconds_count{job=~\"${app_name:regex}\", status=~\"5..\"}[$__rate_interval]))\n/\nclamp_min(sum(rate(http_server_requests_seconds_count{job=~\"${app_name:regex}\"}[$__rate_interval])), 1)\n",
-          "interval": "",
-          "legendFormat": "{{uri}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "5xx 요청 비율",
-      "type": "timeseries"
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+      "id": 100,
+      "panels": [],
+      "title": "핵심 지표",
+      "type": "row"
     },
     {
       "datasource": "Prometheus",
-      "description": "초당 요청 처리량(RPS)입니다. 트래픽 변화와 배포 영향 확인에 사용합니다.",
+      "description": "선택 기간 동안 처리한 전체 HTTP 요청 수입니다.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
+          "color": {"mode": "thresholds"},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
+            "steps": [{"color": "blue", "value": null}]
           },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 11,
-        "x": 13,
-        "y": 0
-      },
-      "id": 12,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
+          "unit": "short"
         }
       },
-      "pluginVersion": "11.4.0",
+      "gridPos": {"h": 5, "w": 8, "x": 0, "y": 1},
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "showPercentChange": true,
+        "textMode": "auto"
+      },
       "targets": [
         {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "sum(rate(http_server_requests_seconds_count{job=~\"${app_name:regex}\"}[$__rate_interval]))\n",
-          "interval": "",
-          "legendFormat": "{{uri}}",
-          "range": true,
+          "expr": "sum(increase(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\"}[$__range]))",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "총 요청 수",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "초당 요청 처리량(RPS)입니다. 모든 HTTP 요청을 포함합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{"color": "green", "value": null}]
+          },
+          "unit": "reqps"
+        }
+      },
+      "gridPos": {"h": 5, "w": 8, "x": 8, "y": 1},
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "showPercentChange": true,
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\"}[$__rate_interval]))",
+          "legendFormat": "RPS",
           "refId": "A"
         }
       ],
       "title": "초당 요청 수 (RPS)",
-      "type": "timeseries"
+      "type": "stat"
     },
     {
       "datasource": "Prometheus",
-      "description": "요청의 95%가 이 시간 이내에 처리됩니다. 체감 성능 지표로 가장 자주 봅니다.",
+      "description": "초당 성공 트랜잭션 수(TPS)입니다. 2xx 응답만 집계합니다.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{"color": "super-light-green", "value": null}]
           },
+          "unit": "short"
+        }
+      },
+      "gridPos": {"h": 5, "w": 8, "x": 16, "y": 1},
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "showPercentChange": true,
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\", status=~\"2..\"}[$__rate_interval]))",
+          "legendFormat": "TPS",
+          "refId": "A"
+        }
+      ],
+      "title": "초당 성공 트랜잭션 (TPS)",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 6},
+      "id": 101,
+      "panels": [],
+      "title": "트래픽 추이",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "시간대별 RPS/TPS 추이입니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "stacking": {"group": "A", "mode": "none"},
+            "thresholdsStyle": {"mode": "off"}
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
+            "steps": [{"color": "green", "value": null}]
           },
-          "unit": "s"
+          "unit": "reqps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {"id": "byName", "options": "TPS (2xx)"},
+            "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}]
+          },
+          {
+            "matcher": {"id": "byName", "options": "RPS (전체)"},
+            "properties": [{"id": "color", "value": {"fixedColor": "blue", "mode": "fixed"}}]
+          }
+        ]
       },
-      "gridPos": {
-        "h": 6,
-        "w": 13,
-        "x": 0,
-        "y": 6
-      },
-      "id": 23,
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 7},
+      "id": 10,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
+        "legend": {"calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "multi", "sort": "desc"}
       },
-      "pluginVersion": "11.4.0",
       "targets": [
         {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{job=~\"${app_name:regex}\"}[$__rate_interval])))\n",
-          "interval": "",
-          "legendFormat": "{{uri}}",
-          "range": true,
+          "expr": "sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\"}[$__rate_interval]))",
+          "legendFormat": "RPS (전체)",
           "refId": "A"
+        },
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\", status=~\"2..\"}[$__rate_interval]))",
+          "legendFormat": "TPS (2xx)",
+          "refId": "B"
         }
       ],
-      "title": "요청 지연시간 (p95)",
+      "title": "RPS / TPS 추이",
       "type": "timeseries"
     },
     {
       "datasource": "Prometheus",
-      "description": "요청의 99%가 이 시간 이내에 처리됩니다. 꼬리 지연(느린 소수 요청) 확인용입니다.",
+      "description": "HTTP 상태코드별 요청 추이입니다.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": {"mode": "palette-classic"},
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "stacking": {"group": "A", "mode": "none"},
+            "thresholdsStyle": {"mode": "off"}
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
+            "steps": [{"color": "green", "value": null}]
           },
-          "unit": "s"
+          "unit": "reqps"
         },
-        "overrides": []
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "2xx"}, "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "4xx"}, "properties": [{"id": "color", "value": {"fixedColor": "orange", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "5xx"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}
+        ]
       },
-      "gridPos": {
-        "h": 6,
-        "w": 11,
-        "x": 13,
-        "y": 6
-      },
-      "id": 8,
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 7},
+      "id": 11,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
+        "legend": {"calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "multi", "sort": "desc"}
       },
-      "pluginVersion": "11.4.0",
       "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{job=~\"${app_name:regex}\"}[$__rate_interval])))\n",
-          "interval": "",
-          "legendFormat": "{{uri}}",
-          "range": true,
-          "refId": "A"
-        }
+        {"expr": "sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\", status=~\"2..\"}[$__rate_interval]))", "legendFormat": "2xx", "refId": "A"},
+        {"expr": "sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\", status=~\"4..\"}[$__rate_interval]))", "legendFormat": "4xx", "refId": "B"},
+        {"expr": "sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\", status=~\"5..\"}[$__rate_interval]))", "legendFormat": "5xx", "refId": "C"}
       ],
-      "title": "요청 지연시간 (p99)",
+      "title": "상태코드별 요청 추이",
       "type": "timeseries"
     },
     {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 15},
+      "id": 102,
+      "panels": [],
+      "title": "응답 시간",
+      "type": "row"
+    },
+    {
       "datasource": "Prometheus",
-      "description": "전체 요청 대비 4xx(클라이언트 오류) 비율입니다. 인증/인가 실패, 잘못된 요청, 존재하지 않는 경로 증가를 빠르게 감지할 때 사용합니다. 값이 급증하면 최근 배포, API 스펙 변경, 프론트 요청 파라미터/토큰 만료 여부를 우선 확인하세요.",
+      "description": "응답 시간 백분위수 추이입니다. P50(중앙값), P95, P99를 함께 비교합니다.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": {"mode": "palette-classic"},
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
-            "axisSoftMax": 1,
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "area"
-            }
+            "stacking": {"group": "A", "mode": "none"},
+            "thresholdsStyle": {"mode": "line"}
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 0.8
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 10,
-        "x": 0,
-        "y": 12
-      },
-      "id": 18,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "100 *\nsum(rate(http_server_requests_seconds_count{job=~\"${app_name:regex}\", status=~\"4..\"}[$__rate_interval]))\n/\nclamp_min(sum(rate(http_server_requests_seconds_count{job=~\"${app_name:regex}\"}[$__rate_interval])), 1)\n",
-          "interval": "",
-          "legendFormat": "{{uri}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "4xx 요청 비율",
-      "type": "timeseries"
-    },
-    {
-      "datasource": "Prometheus",
-      "description": "평균 응답 시간(초)입니다. 평균값이므로 일부 느린 요청은 P95/P99에서 함께 확인합니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
+              {"color": "green", "value": null},
+              {"color": "red", "value": 1}
             ]
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "P50"}, "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "P95"}, "properties": [{"id": "color", "value": {"fixedColor": "yellow", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "P99"}, "properties": [{"id": "color", "value": {"fixedColor": "orange", "mode": "fixed"}}]}
+        ]
       },
-      "gridPos": {
-        "h": 7,
-        "w": 7,
-        "x": 10,
-        "y": 12
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+      "id": 20,
+      "options": {
+        "legend": {"calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "multi", "sort": "desc"}
       },
-      "id": 6,
+      "targets": [
+        {"expr": "histogram_quantile(0.50, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=~\"$namespace\", application=~\"$app_name\"}[$__rate_interval])))", "legendFormat": "P50", "refId": "A"},
+        {"expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=~\"$namespace\", application=~\"$app_name\"}[$__rate_interval])))", "legendFormat": "P95", "refId": "B"},
+        {"expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=~\"$namespace\", application=~\"$app_name\"}[$__rate_interval])))", "legendFormat": "P99", "refId": "C"}
+      ],
+      "title": "응답시간 백분위수 (P50/P95/P99)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "경로별 평균 응답 시간입니다. 느린 API 엔드포인트를 식별합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "continuous-GrYlRd"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 0.3},
+              {"color": "red", "value": 1}
+            ]
+          },
+          "unit": "s"
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+      "id": 21,
       "options": {
         "displayMode": "lcd",
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
         "maxVizHeight": 300,
-        "minVizHeight": 10,
-        "minVizWidth": 0,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
         "namePlacement": "auto",
         "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
         "showUnfilled": true,
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.4.0",
       "targets": [
         {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "sum(rate(http_server_requests_seconds_sum{job=~\"${app_name:regex}\"}[$__rate_interval]))\n/\nclamp_min(sum(rate(http_server_requests_seconds_count{job=~\"${app_name:regex}\"}[$__rate_interval])), 1)\n",
-          "interval": "",
-          "legendFormat": "{{method}} {{uri}}",
-          "range": true,
+          "expr": "topk(10, sum by (uri) (rate(http_server_requests_seconds_sum{namespace=~\"$namespace\", application=~\"$app_name\"}[$__rate_interval])) / clamp_min(sum by (uri) (rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\"}[$__rate_interval])), 1))",
+          "legendFormat": "{{uri}}",
           "refId": "A"
         }
       ],
-      "title": "평균 요청 지연시간",
+      "title": "느린 엔드포인트 TOP 10",
       "type": "bargauge"
     },
     {
-      "datasource": "Prometheus",
-      "description": "조회 구간 내 서버 오류(5xx) 총 건수입니다. 장애성 오류 규모를 확인합니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 0,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 7,
-        "x": 17,
-        "y": 12
-      },
-      "id": 22,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "sum(increase(http_server_requests_seconds_count{job=~\"${app_name:regex}\", status=~\"5..\"}[$__range]))",
-          "interval": "",
-          "legendFormat": "",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "timeFrom": "24h",
-      "title": "예외 발생 수",
-      "type": "stat"
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 24},
+      "id": 103,
+      "panels": [],
+      "title": "에러 분석",
+      "type": "row"
     },
     {
       "datasource": "Prometheus",
-      "description": "해당 기간동안 처리한 전체 HTTP 요청 수입니다. 급증/급감 여부를 먼저 확인합니다.",
+      "description": "에러율 추이입니다. 배포 전후 에러 증가 여부를 확인합니다.",
       "fieldConfig": {
         "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 13,
-        "x": 0,
-        "y": 0
-      },
-      "id": 4,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "sum(increase(http_server_requests_seconds_count{job=~\"${app_name:regex}\"}[$__range]))",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "timeFrom": "24h",
-      "title": "총 요청 수",
-      "transformations": [
-        {
-          "id": "seriesToRows",
-          "options": {}
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [
-              {
-                "field": "Time"
-              }
-            ]
-          }
-        }
-      ],
-      "type": "stat"
-    },
-    {
-      "datasource": "Prometheus",
-      "description": "경로별 요청률입니다. 어떤 API 경로에 트래픽이 집중되는지 확인합니다.",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 7,
-        "y": 19
-      },
-      "id": 16,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "value_and_name",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "topk(20, (sum by (uri) (rate(http_server_requests_seconds_sum{job=~\"${app_name:regex}\"}[$__rate_interval])) / clamp_min(sum by (uri) (rate(http_server_requests_seconds_count{job=~\"${app_name:regex}\"}[$__rate_interval])), 1)))",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "timeFrom": "24h",
-      "title": "요청 건수",
-      "transformations": [
-        {
-          "id": "seriesToRows",
-          "options": {}
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [
-              {
-                "field": "Time"
-              }
-            ]
-          }
-        },
-        {
-          "id": "partitionByValues",
-          "options": {
-            "fields": ["Metric"]
-          }
-        }
-      ],
-      "type": "stat"
-    },
-    {
-      "datasource": "Prometheus",
-      "description": "전체 요청 중 정상 응답(2xx) 비율입니다. 성공률 관점의 기본 지표입니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": {"mode": "palette-classic"},
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
-            "axisSoftMax": 1,
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "area"
-            }
+            "stacking": {"group": "A", "mode": "none"},
+            "thresholdsStyle": {"mode": "line"}
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 0.8
-              }
+              {"color": "green", "value": null},
+              {"color": "red", "value": 5}
             ]
           },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "5xx 에러율"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "4xx 에러율"}, "properties": [{"id": "color", "value": {"fixedColor": "orange", "mode": "fixed"}}]}
+        ]
       },
-      "gridPos": {
-        "h": 6,
-        "w": 9,
-        "x": 15,
-        "y": 19
-      },
-      "id": 24,
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 25},
+      "id": 30,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
+        "legend": {"calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "multi", "sort": "desc"}
+      },
+      "targets": [
+        {"expr": "100 * sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\", status=~\"5..\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\"}[$__rate_interval])), 1)", "legendFormat": "5xx 에러율", "refId": "A"},
+        {"expr": "100 * sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\", status=~\"4..\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\"}[$__rate_interval])), 1)", "legendFormat": "4xx 에러율", "refId": "B"}
+      ],
+      "title": "에러율 추이",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "5xx 에러가 많이 발생하는 경로입니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"fixedColor": "red", "mode": "fixed"},
+          "custom": {
+            "axisBorderShow": false,
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "lineWidth": 1,
+            "scaleDistribution": {"type": "linear"},
+            "thresholdsStyle": {"mode": "off"}
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{"color": "red", "value": null}]
+          }
         }
       },
-      "pluginVersion": "11.4.0",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 25},
+      "id": 31,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.9,
+        "groupWidth": 0.7,
+        "legend": {"displayMode": "list", "placement": "bottom", "showLegend": false},
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": {"mode": "single", "sort": "none"}
+      },
       "targets": [
         {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "100 *\nsum(rate(http_server_requests_seconds_count{job=~\"${app_name:regex}\", status=~\"2..\"}[$__rate_interval]))\n/\nclamp_min(sum(rate(http_server_requests_seconds_count{job=~\"${app_name:regex}\"}[$__rate_interval])), 1)\n",
-          "interval": "",
+          "expr": "topk(10, sum by (uri) (increase(http_server_requests_seconds_count{namespace=~\"$namespace\", application=~\"$app_name\", status=~\"5..\"}[$__range])))",
           "legendFormat": "{{uri}}",
-          "range": true,
           "refId": "A"
         }
       ],
-      "title": "2xx 요청 비율",
-      "type": "timeseries"
+      "title": "5xx 에러 경로 TOP 10",
+      "type": "barchart"
     }
   ],
   "preload": false,
-  "refresh": "10s",
+  "refresh": "30s",
   "schemaVersion": 40,
-  "tags": ["app", "springboot", "metrics"],
+  "tags": ["app", "springboot", "java", "dev"],
   "templating": {
     "list": [
       {
         "allValue": ".*",
-        "current": {
-          "text": ["$__all"],
-          "value": ["$__all"]
-        },
+        "current": {"text": ["All"], "value": ["$__all"]},
+        "datasource": "Prometheus",
+        "definition": "label_values(http_server_requests_seconds_count{namespace=~\"dev-webs|staging-webs\"}, application)",
         "includeAll": true,
-        "label": "Application Name",
+        "label": "애플리케이션",
         "multi": true,
         "name": "app_name",
-        "options": [
-          {
-            "selected": false,
-            "text": "api-gateway",
-            "value": "(java-cloud-gateway|.*api-gateway.*)"
-          },
-          {
-            "selected": false,
-            "text": "auth-guard",
-            "value": ".*auth-guard.*"
-          },
-          {
-            "selected": false,
-            "text": "order-core",
-            "value": ".*order-core.*"
-          },
-          {
-            "selected": false,
-            "text": "queue",
-            "value": ".*queue.*"
-          },
-          {
-            "selected": false,
-            "text": "seat",
-            "value": ".*seat.*"
-          }
-        ],
-        "query": "api-gateway : staging-webs/api-gateway,auth-guard : staging-webs/auth-guard,order-core : staging-webs/order-core,queue : staging-webs/queue,seat : staging-webs/seat",
-        "type": "custom"
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(http_server_requests_seconds_count{namespace=~\"dev-webs|staging-webs\"}, application)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
       },
       {
-        "current": {
-          "text": ["All"],
-          "value": ["$__all"]
-        },
-        "definition": "label_values(namespace)",
-        "hide": 2,
+        "allValue": ".*",
+        "current": {"text": ["dev-webs"], "value": ["dev-webs"]},
+        "datasource": "Prometheus",
+        "definition": "label_values(http_server_requests_seconds_count, namespace)",
         "includeAll": true,
-        "label": "Namespace",
+        "label": "네임스페이스",
         "multi": true,
         "name": "namespace",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(namespace)",
+          "query": "label_values(http_server_requests_seconds_count, namespace)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
-        "regex": "",
-        "type": "query",
-        "allValue": ".*"
+        "regex": "dev-webs|staging-webs",
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
-  "time": {
-    "from": "now-15m",
-    "to": "now"
-  },
+  "time": {"from": "now-15m", "to": "now"},
   "timepicker": {},
-  "timezone": "",
+  "timezone": "browser",
   "title": "애플리케이션 모니터링(Spring Boot)",
-  "uid": "dLsDQIUnzb",
-  "version": 42,
-  "weekStart": ""
+  "uid": "springboot-monitoring",
+  "version": 1
 }
