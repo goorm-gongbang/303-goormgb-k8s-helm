@@ -164,8 +164,9 @@ ociCharts:
       - $values/dev/values/monitoring/alerting/values-alertmanager-dev.yaml
       - $values/dev/values/monitoring/alerting/values-rules-dev-5xx.yaml
     syncOptions:
-      - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
+      - PruneLast=true
+      - RespectIgnoreDifferences=true
     ignoreDifferences:
       - group: ""
         kind: PersistentVolumeClaim

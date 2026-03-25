@@ -96,7 +96,7 @@ config:
     pipelines:
       traces:
         receivers: [otlp]
-        processors: [batch, tail_sampling]
+        processors: [tail_sampling, batch]  # tail_sampling이 먼저 (완전한 trace 수집 후 샘플링)
         exporters: [otlp/tempo, logging]
       metrics:
         receivers: [otlp]
