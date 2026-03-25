@@ -1,0 +1,705 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "staging 운영자가 즉시 확인해야 할 Warning 및 Critical 대상 지표만 모아둔 대시보드입니다. 장애 인지 직후 이 화면에서 상태를 보고, 원인 분석은 기존 앱, DB, Redis, 로그 상세 대시보드로 이어서 확인합니다.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "panels": [],
+      "description": "서비스 상태 이상을 가장 먼저 감지하기 위한 핵심 애플리케이션 지표 구간입니다.",
+      "title": "서비스 알람 지표",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "최근 5분 기준 전체 요청 중 서버 오류(5xx)가 차지하는 비율입니다. 문서 기준으로 Warning 1%, Critical 3%를 참고합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 3 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 1 },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "editorMode": "code",
+          "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\", http_response_status_code=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\"}[5m])), 1)",
+          "legendFormat": "5xx 비율",
+          "refId": "A"
+        }
+      ],
+      "title": "5xx 에러율",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "최근 5분 기준 요청 지연 P99입니다. 전체 요청 중 99%가 이 시간 안에 끝나는지를 보여주며, 사용자 체감 지연을 판단하는 핵심 지표입니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 3 },
+              { "color": "red", "value": 5 }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 1 },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\"}[5m])))",
+          "legendFormat": "P99",
+          "refId": "A"
+        }
+      ],
+      "title": "응답 지연 (P99)",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "최근 5분 기준 전체 RPS입니다. 에러율이나 지연과 함께 보면서 트래픽 영향 여부를 판단합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 1 },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\"}[5m]))",
+          "legendFormat": "RPS",
+          "refId": "A"
+        }
+      ],
+      "title": "전체 RPS",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 6 },
+      "id": 5,
+      "panels": [],
+      "description": "클러스터와 워크로드 상태를 즉시 파악하기 위한 플랫폼 지표 구간입니다.",
+      "title": "플랫폼 알람 지표",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "CrashLoopBackOff 상태의 컨테이너 수입니다. 반복 재시작은 배포 오류, 설정 오류, OOM 문제를 빠르게 드러냅니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 3 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 7 },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "editorMode": "code",
+          "expr": "count(kube_pod_container_status_waiting_reason{namespace=\"staging\", reason=\"CrashLoopBackOff\"}) or vector(0)",
+          "legendFormat": "CrashLoop",
+          "refId": "A"
+        }
+      ],
+      "title": "Pod CrashLoop",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Ready가 아닌 노드 수입니다. 노드 장애나 AZ 단위 이상 징후를 빠르게 확인하는 데 사용합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 7 },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "editorMode": "code",
+          "expr": "sum(kube_node_status_condition{condition=\"Ready\", status=\"false\"}) or vector(0)",
+          "legendFormat": "NotReady",
+          "refId": "A"
+        }
+      ],
+      "title": "Node NotReady",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "클러스터 전체 CPU 사용률입니다. 문서 기준 Warning 65%, Critical 80% 수준을 참고합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 65 },
+              { "color": "red", "value": 80 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 7 },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "editorMode": "code",
+          "expr": "100 * sum(rate(container_cpu_usage_seconds_total{container!=\"\", container!=\"POD\"}[5m])) / sum(kube_node_status_allocatable{resource=\"cpu\"})",
+          "legendFormat": "Cluster CPU",
+          "refId": "A"
+        }
+      ],
+      "title": "클러스터 CPU",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "클러스터 전체 메모리 사용률입니다. 문서 기준 Warning 70%, Critical 90% 수준을 참고합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 7 },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "editorMode": "code",
+          "expr": "100 * sum(container_memory_working_set_bytes{container!=\"\", container!=\"POD\"}) / sum(kube_node_status_allocatable{resource=\"memory\"})",
+          "legendFormat": "Cluster Memory",
+          "refId": "A"
+        }
+      ],
+      "title": "클러스터 메모리",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 12 },
+      "id": 10,
+      "panels": [],
+      "description": "RDS와 Redis 상태를 빠르게 점검하기 위한 데이터 계층 지표 구간입니다.",
+      "title": "데이터 계층 알람 지표",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "RDS DatabaseConnections 지표입니다. 현재는 연결 포화율 메트릭 도입 전까지 운영 참고용으로 사용하며, 증가 추세와 급격한 변동 여부를 우선 봅니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 13 },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "alias": "Connections",
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "dimensions": { "DBInstanceIdentifier": "$db_instance" },
+          "matchExact": true,
+          "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "statistic": "Average"
+        }
+      ],
+      "title": "RDS 연결 수",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "ElastiCache DatabaseMemoryUsagePercentage 지표입니다. 문서 기준 Warning 80%, Critical 90% 수준을 참고합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 80 },
+              { "color": "red", "value": 90 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 13 },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "alias": "Memory",
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "dimensions": { "CacheClusterId": "$cache_cluster" },
+          "matchExact": true,
+          "metricName": "DatabaseMemoryUsagePercentage",
+          "metricQueryType": 0,
+          "namespace": "AWS/ElastiCache",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "statistic": "Average"
+        }
+      ],
+      "title": "Redis 메모리 사용률",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "ElastiCache CurrConnections 지표입니다. 연결 수 급변이나 비정상적인 상승 여부를 빠르게 보기 위한 참고 지표입니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 13 },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "alias": "Connections",
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "dimensions": { "CacheClusterId": "$cache_cluster" },
+          "matchExact": true,
+          "metricName": "CurrConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/ElastiCache",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "statistic": "Average"
+        }
+      ],
+      "title": "Redis 연결 수",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
+      "id": 14,
+      "panels": [],
+      "description": "단일 시점 수치만이 아니라 최근 변화 흐름을 함께 확인하기 위한 추세 구간입니다.",
+      "title": "추세 확인",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "최근 5xx 비율 추이입니다. 일시적인 스파이크인지, 지속적인 오류 증가인지 구분할 때 사용합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 3,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "line" }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 3 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 19 },
+      "id": 15,
+      "options": {
+        "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "editorMode": "code",
+          "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\", http_response_status_code=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\"}[5m])), 1)",
+          "legendFormat": "5xx 비율",
+          "refId": "A"
+        }
+      ],
+      "title": "5xx 에러율 추이",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "최근 P99 응답시간 추이입니다. 장애 징후가 순간적인지 지속적인지 판단하는 데 사용합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 3,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "line" }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 3 },
+              { "color": "red", "value": 5 }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 19 },
+      "id": 16,
+      "options": {
+        "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"staging\", job=~\"java-cloud-gateway|.*api-gateway.*|.*auth-guard.*|.*order-core.*|.*queue.*|.*seat.*\"}[5m])))",
+          "legendFormat": "P99",
+          "refId": "A"
+        }
+      ],
+      "title": "P99 추이",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["ops", "alerts", "staging"],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Prometheus",
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "datasource": {
+          "type": "cloudwatch",
+          "uid": "cloudwatch"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "RDS 인스턴스",
+        "multi": false,
+        "name": "db_instance",
+        "options": [],
+        "query": {
+          "dimensionFilters": {},
+          "dimensionKey": "DBInstanceIdentifier",
+          "metricName": "CPUUtilization",
+          "namespace": "AWS/RDS",
+          "queryType": "dimensionValues",
+          "refId": "CloudWatchVariableQueryEditor-VariableQuery",
+          "region": "ap-northeast-2"
+        },
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "datasource": {
+          "type": "cloudwatch",
+          "uid": "cloudwatch"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Redis 클러스터",
+        "multi": false,
+        "name": "cache_cluster",
+        "options": [],
+        "query": {
+          "dimensionFilters": {},
+          "dimensionKey": "CacheClusterId",
+          "metricName": "CPUUtilization",
+          "namespace": "AWS/ElastiCache",
+          "queryType": "dimensionValues",
+          "refId": "CloudWatchVariableQueryEditor-VariableQuery",
+          "region": "ap-northeast-2"
+        },
+        "refresh": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "1. 운영 알람 (Ops)",
+  "uid": "ops-alert-overview",
+  "version": 1,
+  "weekStart": ""
+}

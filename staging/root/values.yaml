@@ -247,13 +247,14 @@ ociCharts:
       - $values/staging/values/values-external-dns.yaml
 
   alloy:
-    enabled: false
+    enabled: true
     repoURL: https://grafana.github.io/helm-charts
     chart: alloy
     version: "1.6.2"
     namespace: monitoring
     syncWave: "0"
-    valueFiles: []
+    valueFiles:
+      - $values/staging/values/monitoring/values-alloy.yaml
 
   k6-operator:
     enabled: false
@@ -381,6 +382,15 @@ gitCharts:
     syncWave: "0"
     valueFiles:
       - ../../../../staging/values/values-prometheus-stack.yaml
+
+  alloy-config:
+    enabled: true
+    path: common-charts/infra/monitoring/alloy
+    releaseName: alloy
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - ../../../../staging/values/monitoring/values-alloy.yaml
 
   loki-backup:
     enabled: false  # staging에서 필요시 활성화

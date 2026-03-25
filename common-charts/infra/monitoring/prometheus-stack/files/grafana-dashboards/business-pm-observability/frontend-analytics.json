@@ -8,10 +8,12 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
+  "description": "프론트엔드 사용자 행동과 화면 전환 흐름을 확인하기 위한 PM용 대시보드입니다. 유입, 주요 클릭, 온보딩, API 오류를 함께 보며 사용자 경험을 파악합니다.",
   "panels": [
     {
       "type": "stat",
-      "title": "Total Page Views (24h)",
+      "description": "최근 24시간 전체 페이지뷰 수입니다. 기본 유입 규모를 빠르게 확인할 때 사용합니다.",
+      "title": "전체 페이지뷰 (24h)",
       "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
       "datasource": "Loki",
       "targets": [
@@ -34,7 +36,8 @@
     },
     {
       "type": "stat",
-      "title": "Unique Sessions (24h)",
+      "description": "최근 24시간 동안 관측된 세션 수입니다. 반복 조회와 실제 사용자 흐름을 구분할 때 참고합니다.",
+      "title": "세션 수 (24h)",
       "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
       "datasource": "Loki",
       "targets": [
@@ -57,7 +60,8 @@
     },
     {
       "type": "stat",
-      "title": "Match Clicks (24h)",
+      "description": "최근 24시간 경기 또는 매치 클릭 수입니다. 상세 페이지 진입 관심도를 확인할 수 있습니다.",
+      "title": "매치 클릭 수 (24h)",
       "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
       "datasource": "Loki",
       "targets": [
@@ -80,7 +84,8 @@
     },
     {
       "type": "stat",
-      "title": "Checkout Starts (24h)",
+      "description": "최근 24시간 체크아웃 시작 수입니다. 결제 단계 진입 볼륨을 빠르게 보여줍니다.",
+      "title": "체크아웃 시작 수 (24h)",
       "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
       "datasource": "Loki",
       "targets": [
@@ -103,7 +108,8 @@
     },
     {
       "type": "timeseries",
-      "title": "Page Views Over Time",
+      "description": "시간대별 페이지뷰 추이입니다. 특정 시간 구간의 유입 증가나 이벤트 영향 여부를 확인합니다.",
+      "title": "페이지뷰 추이",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
       "datasource": "Loki",
       "targets": [
@@ -124,7 +130,8 @@
     },
     {
       "type": "timeseries",
-      "title": "User Actions Over Time",
+      "description": "사용자 주요 행동의 시간대별 추이입니다. 클릭과 체크아웃 시작이 어떻게 변하는지 비교할 수 있습니다.",
+      "title": "사용자 행동 추이",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
       "datasource": "Loki",
       "targets": [
@@ -155,7 +162,8 @@
     },
     {
       "type": "piechart",
-      "title": "Device Type Distribution",
+      "description": "기기 유형 분포입니다. 모바일과 데스크톱 사용 비중을 확인할 수 있습니다.",
+      "title": "기기 유형 분포",
       "gridPos": { "h": 8, "w": 8, "x": 0, "y": 12 },
       "datasource": "Loki",
       "targets": [
@@ -177,7 +185,8 @@
     },
     {
       "type": "piechart",
-      "title": "Login Status",
+      "description": "로그인 여부 분포입니다. 로그인 사용자의 행동과 비로그인 사용자의 행동 차이를 파악할 때 참고합니다.",
+      "title": "로그인 여부 분포",
       "gridPos": { "h": 8, "w": 8, "x": 8, "y": 12 },
       "datasource": "Loki",
       "targets": [
@@ -199,7 +208,8 @@
     },
     {
       "type": "bargauge",
-      "title": "Top Pages",
+      "description": "가장 많이 조회된 상위 페이지 목록입니다. 어떤 화면에 사용자가 많이 몰리는지 확인할 수 있습니다.",
+      "title": "상위 페이지",
       "gridPos": { "h": 8, "w": 8, "x": 16, "y": 12 },
       "datasource": "Loki",
       "targets": [
@@ -221,7 +231,8 @@
     },
     {
       "type": "timeseries",
-      "title": "Onboarding Funnel",
+      "description": "온보딩 시작부터 완료까지 단계별 추이입니다. 어느 단계에서 이탈이 발생하는지 파악할 때 사용합니다.",
+      "title": "온보딩 퍼널",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
       "datasource": "Loki",
       "targets": [
@@ -252,7 +263,8 @@
     },
     {
       "type": "timeseries",
-      "title": "API Errors",
+      "description": "프론트엔드에서 관측한 API 오류 추이입니다. 사용자 행동 이상이 백엔드 오류와 같이 움직이는지 볼 수 있습니다.",
+      "title": "API 오류 추이",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
       "datasource": "Loki",
       "targets": [
@@ -273,7 +285,8 @@
     },
     {
       "type": "logs",
-      "title": "Recent Events",
+      "description": "최근 수집된 프론트엔드 이벤트 로그입니다. 이상 구간의 실제 이벤트를 빠르게 확인할 수 있습니다.",
+      "title": "최근 이벤트 로그",
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 28 },
       "datasource": "Loki",
       "targets": [
@@ -305,7 +318,7 @@
   },
   "timepicker": {},
   "timezone": "Asia/Seoul",
-  "title": "Frontend Analytics (PM)",
+  "title": "사용자 행동 분석 (PM)",
   "uid": "frontend-analytics-pm",
   "version": 1
 }

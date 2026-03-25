@@ -300,6 +300,14 @@ gateway:
     host: "grafana.staging.playball.one"
     # EKS: TLS는 CloudFront + ACM에서 처리
 
+dashboards:
+  alertOps:
+    enabled: true
+  businessKpi:
+    enabled: true
+  securityOps:
+    enabled: true
+
 # ===== Loki =====
 loki:
   deploymentMode: SingleBinary

@@ -176,3 +176,9 @@ dashboards:
     exclude: []  # 예: ["calico-felix.json", "karpenter.json"]
   devTeam:
     exclude: []  # 예: ["database-rds-postgresql.json", "cache-elasticache-redis.json"]
+  alertOps:
+    enabled: false
+  businessKpi:
+    enabled: false
+  securityOps:
+    enabled: false
