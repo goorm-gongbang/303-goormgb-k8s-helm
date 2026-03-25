@@ -66,6 +66,11 @@ grafana.ini:
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
 
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
 persistence:
   enabled: true
   size: 5Gi
