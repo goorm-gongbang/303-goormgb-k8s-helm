@@ -308,6 +308,15 @@ gitCharts:
     valueFiles:
       - ../../../values/security/values-oauth2-proxy.yaml
 
+  # === AI ===
+  authz-adapter:
+    enabled: true
+    path: dev/charts/ai/authz-adapter
+    namespace: dev-ai
+    syncWave: "-4"
+    valueFiles:
+      - ../../../values/ai/values-authz-adapter.yaml
+
   # === Istio ===
   istio-gateway:
     enabled: true
