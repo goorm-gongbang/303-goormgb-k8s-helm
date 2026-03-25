@@ -105,6 +105,12 @@ readinessProbe:
   periodSeconds: 5
   failureThreshold: 3
 
+# Prometheus Metrics (Spring Boot Actuator)
+metrics:
+  enabled: true
+  path: /actuator/prometheus
+  interval: 15s
+
 # OpenTelemetry Java Agent
 otel:
   enabled: true
