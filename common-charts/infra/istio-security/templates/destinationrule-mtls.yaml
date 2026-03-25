@@ -1,4 +1,4 @@
-{{- if .Values.mtls.enabled }}
+{{- if and .Values.mtls .Values.mtls.enabled }}
 # Mesh-wide DestinationRule for mTLS
 apiVersion: networking.istio.io/v1
 kind: DestinationRule
