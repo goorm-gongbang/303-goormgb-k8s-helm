@@ -295,7 +295,7 @@
         "type": "custom"
       },
       {
-        "allValue": "ai-defense|authz-adapter",
+        "allValue": ".*ai-defense.*|.*authz-adapter.*",
         "current": {"text": ["All"], "value": ["$__all"]},
         "datasource": {"type": "prometheus", "uid": "${datasource}"},
         "definition": "label_values(http_server_request_duration_seconds_count{namespace=\"$namespace\"}, service_name)",
@@ -306,7 +306,7 @@
         "options": [],
         "query": "label_values(http_server_request_duration_seconds_count{namespace=\"$namespace\"}, service_name)",
         "refresh": 1,
-        "regex": "ai-defense|authz-adapter",
+        "regex": ".*ai-defense.*|.*authz-adapter.*",
         "sort": 1,
         "type": "query"
       }

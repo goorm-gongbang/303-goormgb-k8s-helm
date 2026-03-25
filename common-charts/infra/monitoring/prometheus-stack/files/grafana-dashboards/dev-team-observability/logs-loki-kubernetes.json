@@ -109,7 +109,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${datasource}" },
-          "expr": "sum(count_over_time({namespace=\"$namespace\", stream=~\"$stream\"} |= \"$query\" [$__interval]))",
+          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} |= \"$query\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -148,7 +148,7 @@
         {
           "datasource": { "type": "loki", "uid": "${datasource}" },
           "editorMode": "code",
-          "expr": "{namespace=\"$namespace\", stream=~\"$stream\"} |= \"$query\"",
+          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} |= \"$query\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -183,24 +183,6 @@
       },
       {
         "current": {
-          "text": "",
-          "value": ""
-        },
-        "description": "검색어 (ERROR, WARN 등 로그 레벨 포함)",
-        "label": "검색어",
-        "name": "query",
-        "options": [
-          {
-            "selected": true,
-            "text": "",
-            "value": ""
-          }
-        ],
-        "query": "",
-        "type": "textbox"
-      },
-      {
-        "current": {
           "selected": true,
           "text": "dev-webs",
           "value": "dev-webs"
@@ -218,6 +200,45 @@
         "regex": "/(dev-webs|staging-webs)/",
         "sort": 1,
         "type": "query"
+      },
+      {
+        "allValue": "api-gateway|auth-guard|order-core|queue|seat",
+        "current": {
+          "selected": true,
+          "text": ["All"],
+          "value": ["$__all"]
+        },
+        "datasource": { "type": "loki", "uid": "${datasource}" },
+        "definition": "label_values({namespace=\"$namespace\"}, app)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "애플리케이션",
+        "multi": true,
+        "name": "app",
+        "options": [],
+        "query": "label_values({namespace=\"$namespace\"}, app)",
+        "refresh": 1,
+        "regex": "api-gateway|auth-guard|order-core|queue|seat",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "description": "검색어 (ERROR, WARN 등 로그 레벨 포함)",
+        "label": "검색어",
+        "name": "query",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "type": "textbox"
       },
       {
         "allValue": ".+",

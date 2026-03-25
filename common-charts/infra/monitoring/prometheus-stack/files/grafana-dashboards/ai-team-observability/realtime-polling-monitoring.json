@@ -919,7 +919,7 @@
         "type": "custom"
       },
       {
-        "allValue": "ai-defense|authz-adapter",
+        "allValue": ".*ai-defense.*|.*authz-adapter.*",
         "current": {"text": ["All"], "value": ["$__all"]},
         "datasource": "Prometheus",
         "definition": "label_values(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\"}, destination_workload)",
@@ -930,7 +930,7 @@
         "options": [],
         "query": "label_values(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\"}, destination_workload)",
         "refresh": 1,
-        "regex": "ai-defense|authz-adapter",
+        "regex": ".*ai-defense.*|.*authz-adapter.*",
         "sort": 1,
         "type": "query"
       },
