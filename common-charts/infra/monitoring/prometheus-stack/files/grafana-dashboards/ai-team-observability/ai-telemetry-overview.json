@@ -1296,11 +1296,8 @@
   "templating": {
     "list": [
       {
-        "allValue": "staging-ai|staging-app|dev-ai|dev-app",
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        },
+        "allValue": "__AI_NAMESPACE__",
+        "current": {},
         "datasource": "Prometheus",
         "definition": "label_values(istio_requests_total, namespace)",
         "includeAll": true,
@@ -1309,7 +1306,7 @@
         "options": [],
         "query": "label_values(istio_requests_total, namespace)",
         "refresh": 1,
-        "regex": "staging-ai|staging-app|dev-ai|dev-app",
+        "regex": "__AI_NAMESPACE__",
         "type": "query"
       },
       {
