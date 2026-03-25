@@ -28,29 +28,6 @@
   "links": [],
   "panels": [
     {
-      "content": "이 대시보드는 Spring Boot 애플리케이션 메트릭 확인용입니다. No data가 보일 때는 아래를 먼저 확인하세요. - 모든 패널이 비면: Prometheus target down, actuator 경로 차단, scrape 설정 오류 가능성이 큽니다. - 5xx/4xx만 비면: 최근 선택한 시간 범위에 해당 상태코드가 없을 수 있습니다. - P95/P99가 비면: `http_server_requests_seconds_bucket` 메트릭이 아직 없거나 트래픽이 너무 적을 수 있습니다. - URI별 패널이 비면: 최근 요청이 적거나 `uri` 라벨이 기대와 다르게 수집되는 상태일 수 있습니다.",
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
-      "description": "패널이 비어 보일 때 연결 문제와 정상적인 빈 상태를 구분하기 위한 안내 패널입니다.",
-      "gridPos": {
-        "h": 4,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 101,
-      "mode": "markdown",
-      "options": {
-        "content": "이 대시보드는 Spring Boot 애플리케이션 메트릭 확인용입니다. No data가 보일 때는 아래를 먼저 확인하세요. - 모든 패널이 비면: Prometheus target down, actuator 경로 차단, scrape 설정 오류 가능성이 큽니다. - 5xx/4xx만 비면: 최근 선택한 시간 범위에 해당 상태코드가 없을 수 있습니다. - P95/P99가 비면: `http_server_requests_seconds_bucket` 메트릭이 아직 없거나 트래픽이 너무 적을 수 있습니다. - URI별 패널이 비면: 최근 요청이 적거나 `uri` 라벨이 기대와 다르게 수집되는 상태일 수 있습니다.",
-        "mode": "markdown"
-      },
-      "pluginVersion": "11.4.0",
-      "title": "No data 확인 가이드",
-      "type": "text"
-    },
-    {
       "datasource": "Prometheus",
       "description": "전체 요청 중 서버 오류(5xx) 비율입니다. 장애/회귀 탐지 핵심 지표입니다.",
       "fieldConfig": {
@@ -114,7 +91,7 @@
         "h": 6,
         "w": 7,
         "x": 0,
-        "y": 23
+        "y": 19
       },
       "id": 20,
       "options": {
@@ -208,7 +185,7 @@
         "h": 6,
         "w": 11,
         "x": 13,
-        "y": 4
+        "y": 0
       },
       "id": 12,
       "options": {
@@ -302,7 +279,7 @@
         "h": 6,
         "w": 13,
         "x": 0,
-        "y": 10
+        "y": 6
       },
       "id": 23,
       "options": {
@@ -396,7 +373,7 @@
         "h": 6,
         "w": 11,
         "x": 13,
-        "y": 10
+        "y": 6
       },
       "id": 8,
       "options": {
@@ -491,7 +468,7 @@
         "h": 7,
         "w": 10,
         "x": 0,
-        "y": 16
+        "y": 12
       },
       "id": 18,
       "options": {
@@ -552,7 +529,7 @@
         "h": 7,
         "w": 7,
         "x": 10,
-        "y": 16
+        "y": 12
       },
       "id": 6,
       "options": {
@@ -623,7 +600,7 @@
         "h": 7,
         "w": 7,
         "x": 17,
-        "y": 16
+        "y": 12
       },
       "id": 22,
       "options": {
@@ -681,7 +658,7 @@
         "h": 6,
         "w": 13,
         "x": 0,
-        "y": 4
+        "y": 0
       },
       "id": 4,
       "options": {
@@ -757,7 +734,7 @@
         "h": 6,
         "w": 8,
         "x": 7,
-        "y": 23
+        "y": 19
       },
       "id": 16,
       "options": {
@@ -880,7 +857,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 23
+        "y": 19
       },
       "id": 24,
       "options": {
