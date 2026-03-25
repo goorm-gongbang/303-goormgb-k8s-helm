@@ -182,7 +182,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
       "id": 21,
       "options": { "displayMode": "lcd", "maxVizHeight": 300, "minVizHeight": 16, "minVizWidth": 8, "namePlacement": "auto", "orientation": "horizontal", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showUnfilled": true, "sizing": "auto", "valueMode": "color" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "topk(10, sum by (uri) (rate(http_server_requests_seconds_sum{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval])) / clamp_min(sum by (uri) (rate(http_server_requests_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval])), 1) * 1000)", "legendFormat": "{{uri}}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "topk(10, sum by (uri) (rate(http_server_requests_seconds_sum{namespace=\"$namespace\", app=~\"$app\", uri!~\"/actuator.*|/swagger.*|/v3/api-docs.*|NOT_FOUND|UNKNOWN|/health.*|/ready.*|/metrics.*\"}[$__rate_interval])) / clamp_min(sum by (uri) (rate(http_server_requests_seconds_count{namespace=\"$namespace\", app=~\"$app\", uri!~\"/actuator.*|/swagger.*|/v3/api-docs.*|NOT_FOUND|UNKNOWN|/health.*|/ready.*|/metrics.*\"}[$__rate_interval])), 1) * 1000)", "legendFormat": "{{uri}}", "refId": "A" }],
       "title": "느린 엔드포인트 TOP 10",
       "type": "bargauge"
     },
