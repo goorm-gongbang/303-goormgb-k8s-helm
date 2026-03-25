@@ -382,6 +382,8 @@ gitCharts:
     syncWave: "0"
     valueFiles:
       - ../../../../staging/values/values-prometheus-stack.yaml
+    syncOptions:
+      - Replace=true
 
   alloy-config:
     enabled: true
