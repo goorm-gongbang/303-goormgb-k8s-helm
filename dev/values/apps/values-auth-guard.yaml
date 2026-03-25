@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   name: "dev/goormgb/auth-guard"
-  tag: "7d2d47f"
+  tag: "ea8b1f7"
   pullPolicy: Always
 
 imagePullSecrets:
