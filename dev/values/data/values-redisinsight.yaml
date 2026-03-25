@@ -27,6 +27,7 @@ resources:
 
 persistence:
   enabled: true
+  storageClass: local-path
   size: 1Gi
 
 # Istio VirtualService
