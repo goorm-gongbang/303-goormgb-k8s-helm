@@ -32,7 +32,7 @@ spec:
         maxAge: "24h"
       route:
         - destination:
-            host: {{ .Release.Name }}-alloy.{{ .Release.Namespace }}.svc.cluster.local
+            host: {{ .Values.faro.virtualService.destinationHost | default "alloy" }}.{{ .Release.Namespace }}.svc.cluster.local
             port:
               number: 12347
 {{- end }}

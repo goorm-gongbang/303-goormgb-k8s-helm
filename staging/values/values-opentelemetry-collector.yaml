@@ -39,12 +39,16 @@ config:
       timeout: 5s
       send_batch_size: 1024
 
-    # service.name → service_name 라벨 변환 (OTel 대시보드 호환)
+    # OTel → Prometheus 라벨 변환 (대시보드 호환)
     transform:
       metric_statements:
         - context: datapoint
           statements:
+            # Resource attributes → metric labels
             - set(attributes["service_name"], resource.attributes["service.name"])
+            - set(attributes["namespace"], resource.attributes["service.namespace"])
+            # app 라벨 설정 (Promtail/Loki와 통일, 대시보드 호환)
+            - set(attributes["app"], resource.attributes["service.name"])
 
     # Tail-based Sampling
     tail_sampling:

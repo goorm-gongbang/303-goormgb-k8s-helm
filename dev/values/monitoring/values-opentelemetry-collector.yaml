@@ -49,6 +49,8 @@ config:
             # Resource attributes → metric labels
             - set(attributes["service_name"], resource.attributes["service.name"])
             - set(attributes["namespace"], resource.attributes["service.namespace"])
+            # app 라벨 설정 (Promtail/Loki와 통일, 대시보드 호환)
+            - set(attributes["app"], resource.attributes["service.name"])
             # HTTP semantic convention 라벨 변환 (OTEL dots → Prometheus underscores)
             - set(attributes["http_route"], attributes["http.route"]) where attributes["http.route"] != nil
             - set(attributes["http_response_status_code"], attributes["http.response.status_code"]) where attributes["http.response.status_code"] != nil

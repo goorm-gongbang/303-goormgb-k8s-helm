@@ -14,48 +14,54 @@ faro:
 
 # Alloy Helm Chart 설정
 alloy:
-  alloy:
-    # CP 노드에 배치 (모니터링 스택과 동일)
-    nodeSelector:
-      kubernetes.io/hostname: mini-gmk
+  # CP 노드에 배치 (모니터링 스택과 동일)
+  nodeSelector:
+    kubernetes.io/hostname: mini-gmk
 
-    configMap:
-      content: |
-        // ===== Faro Receiver =====
-        faro.receiver "frontend" {
-          server {
-            listen_address = "0.0.0.0"
-            listen_port = 12347
-            cors_allowed_origins = [
-              "https://dev.goormgb.space",
-              "http://localhost:3000",
-            ]
-          }
-
-          sourcemaps {}
-
-          output {
-            logs   = [loki.write.faro.receiver]
-            traces = [otelcol.exporter.otlp.tempo.input]
-          }
+  configMap:
+    content: |
+      // ===== Faro Receiver =====
+      faro.receiver "frontend" {
+        server {
+          listen_address = "0.0.0.0"
+          listen_port = 12347
+          cors_allowed_origins = [
+            "https://dev.goormgb.space",
+            "http://localhost:3000",
+          ]
         }
 
-        // ===== Loki Exporter =====
-        loki.write "faro" {
-          endpoint {
-            url = "http://loki-gateway.monitoring.svc.cluster.local:80/loki/api/v1/push"
-          }
-        }
+        sourcemaps {}
 
-        // ===== Tempo Exporter =====
-        otelcol.exporter.otlp "tempo" {
-          client {
-            endpoint = "tempo.monitoring.svc.cluster.local:4317"
-            tls {
-              insecure = true
-            }
+        output {
+          logs   = [loki.write.faro.receiver]
+          traces = [otelcol.exporter.otlp.tempo.input]
+        }
+      }
+
+      // ===== Loki Exporter =====
+      loki.write "faro" {
+        endpoint {
+          url = "http://loki-gateway.monitoring.svc.cluster.local:80/loki/api/v1/push"
+        }
+      }
+
+      // ===== Tempo Exporter =====
+      otelcol.exporter.otlp "tempo" {
+        client {
+          endpoint = "tempo.monitoring.svc.cluster.local:4317"
+          tls {
+            insecure = true
           }
         }
+      }
+
+  # Faro 포트 노출
+  extraPorts:
+    - name: faro
+      port: 12347
+      targetPort: 12347
+      protocol: TCP
 
   # Dev 환경 리소스 (최소화)
   resources:
