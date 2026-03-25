@@ -257,6 +257,14 @@ gitCharts:
     namespace: argocd
     valueFiles:
       - ../../../dev/values/core/values-argocd.yaml
+    syncOptions:
+      - RespectIgnoreDifferences=true
+    ignoreDifferences:
+      - group: ""
+        kind: ConfigMap
+        name: argocd-cm
+        jsonPointers:
+          - /data
 
   ddns-cloudflare:
     enabled: true
