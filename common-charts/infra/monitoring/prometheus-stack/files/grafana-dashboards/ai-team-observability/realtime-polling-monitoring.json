@@ -905,8 +905,8 @@
   "templating": {
     "list": [
       {
-        "current": {},
-        "hide": 0,
+        "current": {"selected": true, "text": "__AI_NAMESPACE__", "value": "__AI_NAMESPACE__"},
+        "hide": 2,
         "includeAll": false,
         "label": "네임스페이스",
         "multi": false,
@@ -919,20 +919,27 @@
         "type": "custom"
       },
       {
-        "current": {
-          "text": "",
-          "value": ""
-        },
+        "allValue": "ai-defense|authz-adapter",
+        "current": {"text": ["All"], "value": ["$__all"]},
+        "datasource": "Prometheus",
+        "definition": "label_values(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\"}, destination_workload)",
+        "includeAll": true,
+        "label": "애플리케이션",
+        "multi": true,
+        "name": "app",
+        "options": [],
+        "query": "label_values(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\"}, destination_workload)",
+        "refresh": 1,
+        "regex": "ai-defense|authz-adapter",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {"text": "", "value": ""},
         "description": "로그 검색 키워드",
         "label": "검색어",
         "name": "query",
-        "options": [
-          {
-            "selected": true,
-            "text": "",
-            "value": ""
-          }
-        ],
+        "options": [{"selected": true, "text": "", "value": ""}],
         "query": "",
         "type": "textbox"
       }

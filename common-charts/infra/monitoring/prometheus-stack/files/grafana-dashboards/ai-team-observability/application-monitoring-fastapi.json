@@ -35,7 +35,7 @@
         "showPercentChange": false,
         "textMode": "auto"
       },
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(increase(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\"}[$__range]))", "legendFormat": "", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(increase(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\"}[$__range]))", "legendFormat": "", "refId": "A"}],
       "title": "총 요청 수",
       "type": "stat"
     },
@@ -61,7 +61,7 @@
         "showPercentChange": false,
         "textMode": "auto"
       },
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\"}[$__rate_interval]))", "legendFormat": "RPS", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\"}[$__rate_interval]))", "legendFormat": "RPS", "refId": "A"}],
       "title": "초당 요청 수 (RPS)",
       "type": "stat"
     },
@@ -87,7 +87,7 @@
         "showPercentChange": false,
         "textMode": "auto"
       },
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\", http_response_status_code=~\"2..\"}[$__rate_interval]))", "legendFormat": "TPS", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\", http_response_status_code=~\"2..\"}[$__rate_interval]))", "legendFormat": "TPS", "refId": "A"}],
       "title": "초당 성공 트랜잭션 (TPS)",
       "type": "stat"
     },
@@ -119,8 +119,8 @@
       "id": 10,
       "options": {"legend": {"calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
       "targets": [
-        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\"}[$__rate_interval]))", "legendFormat": "RPS (전체)", "refId": "A"},
-        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\", http_response_status_code=~\"2..\"}[$__rate_interval]))", "legendFormat": "TPS (2xx)", "refId": "B"}
+        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\"}[$__rate_interval]))", "legendFormat": "RPS (전체)", "refId": "A"},
+        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\", http_response_status_code=~\"2..\"}[$__rate_interval]))", "legendFormat": "TPS (2xx)", "refId": "B"}
       ],
       "title": "RPS / TPS 추이",
       "type": "timeseries"
@@ -146,9 +146,9 @@
       "id": 11,
       "options": {"legend": {"calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
       "targets": [
-        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\", http_response_status_code=~\"2..\"}[$__rate_interval]))", "legendFormat": "2xx", "refId": "A"},
-        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\", http_response_status_code=~\"4..\"}[$__rate_interval]))", "legendFormat": "4xx", "refId": "B"},
-        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\", http_response_status_code=~\"5..\"}[$__rate_interval]))", "legendFormat": "5xx", "refId": "C"}
+        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\", http_response_status_code=~\"2..\"}[$__rate_interval]))", "legendFormat": "2xx", "refId": "A"},
+        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\", http_response_status_code=~\"4..\"}[$__rate_interval]))", "legendFormat": "4xx", "refId": "B"},
+        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\", http_response_status_code=~\"5..\"}[$__rate_interval]))", "legendFormat": "5xx", "refId": "C"}
       ],
       "title": "상태코드별 요청 추이",
       "type": "timeseries"
@@ -182,9 +182,9 @@
       "id": 20,
       "options": {"legend": {"calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
       "targets": [
-        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "histogram_quantile(0.50, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", service_name=~\"$app_name\"}[$__rate_interval])))", "legendFormat": "P50", "refId": "A"},
-        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", service_name=~\"$app_name\"}[$__rate_interval])))", "legendFormat": "P95", "refId": "B"},
-        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", service_name=~\"$app_name\"}[$__rate_interval])))", "legendFormat": "P99", "refId": "C"}
+        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "histogram_quantile(0.50, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", service_name=~\"$app\"}[$__rate_interval])))", "legendFormat": "P50", "refId": "A"},
+        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", service_name=~\"$app\"}[$__rate_interval])))", "legendFormat": "P95", "refId": "B"},
+        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", service_name=~\"$app\"}[$__rate_interval])))", "legendFormat": "P99", "refId": "C"}
       ],
       "title": "응답시간 백분위수 (P50/P95/P99)",
       "type": "timeseries"
@@ -203,7 +203,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
       "id": 21,
       "options": {"displayMode": "lcd", "maxVizHeight": 300, "minVizHeight": 16, "minVizWidth": 8, "namePlacement": "auto", "orientation": "horizontal", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showUnfilled": true, "sizing": "auto", "valueMode": "color"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "topk(10, sum by (http_route) (rate(http_server_request_duration_seconds_sum{namespace=\"$namespace\", service_name=~\"$app_name\"}[$__rate_interval])) / clamp_min(sum by (http_route) (rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\"}[$__rate_interval])), 1))", "legendFormat": "{{http_route}}", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "topk(10, sum by (http_route) (rate(http_server_request_duration_seconds_sum{namespace=\"$namespace\", service_name=~\"$app\"}[$__rate_interval])) / clamp_min(sum by (http_route) (rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\"}[$__rate_interval])), 1))", "legendFormat": "{{http_route}}", "refId": "A"}],
       "title": "느린 엔드포인트 TOP 10",
       "type": "bargauge"
     },
@@ -235,8 +235,8 @@
       "id": 30,
       "options": {"legend": {"calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
       "targets": [
-        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\", http_response_status_code=~\"5..\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\"}[$__rate_interval])), 1)", "legendFormat": "5xx 에러율", "refId": "A"},
-        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\", http_response_status_code=~\"4..\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\"}[$__rate_interval])), 1)", "legendFormat": "4xx 에러율", "refId": "B"}
+        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\", http_response_status_code=~\"5..\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\"}[$__rate_interval])), 1)", "legendFormat": "5xx 에러율", "refId": "A"},
+        {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\", http_response_status_code=~\"4..\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\"}[$__rate_interval])), 1)", "legendFormat": "4xx 에러율", "refId": "B"}
       ],
       "title": "에러율 추이",
       "type": "timeseries"
@@ -255,7 +255,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 25},
       "id": 31,
       "options": {"barRadius": 0, "barWidth": 0.9, "groupWidth": 0.7, "legend": {"displayMode": "list", "placement": "bottom", "showLegend": false}, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": {"mode": "single", "sort": "none"}},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "topk(10, sum by (http_route) (increase(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app_name\", http_response_status_code=~\"5..\"}[$__range])))", "legendFormat": "{{http_route}}", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "topk(10, sum by (http_route) (increase(http_server_request_duration_seconds_count{namespace=\"$namespace\", service_name=~\"$app\", http_response_status_code=~\"5..\"}[$__range])))", "legendFormat": "{{http_route}}", "refId": "A"}],
       "title": "5xx 에러 경로 TOP 10",
       "type": "barchart"
     }
@@ -281,8 +281,8 @@
         "type": "datasource"
       },
       {
-        "current": {},
-        "hide": 0,
+        "current": {"selected": true, "text": "__AI_NAMESPACE__", "value": "__AI_NAMESPACE__"},
+        "hide": 2,
         "includeAll": false,
         "label": "네임스페이스",
         "multi": false,
@@ -295,18 +295,18 @@
         "type": "custom"
       },
       {
-        "allValue": ".*",
+        "allValue": "ai-defense|authz-adapter",
         "current": {"text": ["All"], "value": ["$__all"]},
         "datasource": {"type": "prometheus", "uid": "${datasource}"},
         "definition": "label_values(http_server_request_duration_seconds_count{namespace=\"$namespace\"}, service_name)",
         "includeAll": true,
         "label": "애플리케이션",
         "multi": true,
-        "name": "app_name",
+        "name": "app",
         "options": [],
         "query": "label_values(http_server_request_duration_seconds_count{namespace=\"$namespace\"}, service_name)",
         "refresh": 1,
-        "regex": "",
+        "regex": "ai-defense|authz-adapter",
         "sort": 1,
         "type": "query"
       }
