@@ -84,7 +84,7 @@ config:
       tls:
         insecure: true
 
-    logging:
+    debug:
       verbosity: basic
 
   extensions:
@@ -97,12 +97,12 @@ config:
       traces:
         receivers: [otlp]
         processors: [tail_sampling, batch]  # tail_sampling이 먼저 (완전한 trace 수집 후 샘플링)
-        exporters: [otlp/tempo, logging]
+        exporters: [otlp/tempo, debug]
       metrics:
         receivers: [otlp]
         processors: [transform, batch]
-        exporters: [prometheusremotewrite, logging]
+        exporters: [prometheusremotewrite, debug]
       logs:
         receivers: [otlp]
         processors: [batch]
-        exporters: [otlphttp/loki, logging]
+        exporters: [otlphttp/loki, debug]
