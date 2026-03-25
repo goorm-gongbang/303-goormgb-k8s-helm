@@ -4,7 +4,7 @@ replicaCount: 2
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/authz-adapter
-  tag: latest
+  tag: "67a1d53"
   pullPolicy: Always
 
 service:
