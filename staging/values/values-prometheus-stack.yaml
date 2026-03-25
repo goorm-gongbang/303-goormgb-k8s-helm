@@ -154,6 +154,11 @@ prometheus:
 # values-grafana.yaml 참조
 grafana:
   enabled: false
+  # ExternalSecret은 prometheus-extras에서 생성 (common-charts 템플릿 사용)
+  eso:
+    enabled: true
+    secretManagerKey: staging/monitoring/grafana
+    oauthSecretManagerKey: staging/infra/oauth/google
 
 # VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
 prometheus:
