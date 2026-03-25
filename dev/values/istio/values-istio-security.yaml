@@ -45,6 +45,9 @@ excludePaths:
   # Grafana 내부 API (Loki 쿼리 등 - SQL Injection 오탐 방지)
   - "/api/datasources/"
 
+  # Socket.IO (실시간 폴링 - sid 패턴이 SQL 주석으로 오탐됨)
+  - "/socket.io/"
+
   # Health checks
   - "/health"
   - "/healthz"
