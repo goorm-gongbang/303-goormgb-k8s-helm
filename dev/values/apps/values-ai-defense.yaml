@@ -19,7 +19,7 @@ args:
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/ai
-  tag: "4d6b788"
+  tag: "6c384ab"
   name: "dev/goormgb/ai"
   pullPolicy: Always
 
