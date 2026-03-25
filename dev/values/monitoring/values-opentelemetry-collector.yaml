@@ -6,6 +6,10 @@ fullnameOverride: otel-collector  # 서비스명 단순화
 mode: deployment
 replicaCount: 1
 
+# 0.147.1 버전부터 필수
+image:
+  repository: otel/opentelemetry-collector-contrib
+
 # CP 노드에 배치
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
