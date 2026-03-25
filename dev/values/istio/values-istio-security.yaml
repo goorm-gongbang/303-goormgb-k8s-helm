@@ -153,6 +153,26 @@ extAuthz:
       pattern: "^/seat/matches/[0-9]+/seat-holds$"
       eventType: SEAT_HOLDS
 
+# Rate Limiting - Dev 환경 제외 경로 추가
+rateLimiting:
+  excludePaths:
+    # 기본 헬스체크
+    - "/health"
+    - "/healthz"
+    - "/ready"
+    - "/metrics"
+    - "/actuator/health"
+    # 내부 도구 (정적 파일 다수 로드)
+    - ".js"
+    - ".css"
+    - ".woff"
+    - ".woff2"
+    - ".ttf"
+    - ".png"
+    - ".jpg"
+    - ".svg"
+    - ".ico"
+
 # JWT 인증 - 비활성화
 # auth-guard가 JWKS 엔드포인트(/.well-known/jwks.json)를 제공하지 않아
 # Istio에서 JWT 검증 불가 → 백엔드(Spring Cloud Gateway)에서 자체 처리
