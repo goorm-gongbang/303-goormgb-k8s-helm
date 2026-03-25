@@ -41,11 +41,19 @@ prometheusOperator:
   # CP 노드에 배치
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
 
 # kube-state-metrics: CP 노드에 배치
 kube-state-metrics:
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
 
 # kubeadm: 컨트롤 플레인 컴포넌트 모니터링
 # NOTE: ArgoCD sync 이슈로 인해 비활성화 (ServerSideApply 충돌)
@@ -79,6 +87,10 @@ prometheus:
     # CP 노드에 배치
     nodeSelector:
       kubernetes.io/hostname: mini-gmk
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
 
     resources:
       requests:
@@ -107,6 +119,10 @@ alertmanager:
   alertmanagerSpec:
     nodeSelector:
       kubernetes.io/hostname: mini-gmk
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
 
     resources:
       requests:
