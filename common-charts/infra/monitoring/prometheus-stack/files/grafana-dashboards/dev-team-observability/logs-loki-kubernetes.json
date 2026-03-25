@@ -211,7 +211,7 @@
         "options": [],
         "query": "label_values(namespace)",
         "refresh": 1,
-        "regex": "",
+        "regex": "/(dev-webs|staging-webs)/",
         "sort": 1,
         "type": "query"
       },
@@ -258,7 +258,7 @@
         "options": [],
         "query": "label_values({namespace=~\"$namespace\"}, app)",
         "refresh": 1,
-        "regex": "",
+        "regex": "/(api-gateway|auth-guard|order-core|queue|seat)/",
         "sort": 1,
         "type": "query"
       }
