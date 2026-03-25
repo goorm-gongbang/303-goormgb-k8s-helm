@@ -16,7 +16,7 @@ config:
   aiDefenseUrl: "http://dev-ai-defense.dev-ai.svc.cluster.local:8000/ai/evaluate"
   aiDefenseTimeoutMs: 800
   logLevel: info
-  otelEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"
+  otelEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"
   serviceName: authz-adapter
 
 resources:
