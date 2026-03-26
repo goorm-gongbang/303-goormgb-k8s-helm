@@ -41,6 +41,13 @@ config:
       timeout: 5s
       send_batch_size: 512
 
+    # Trace service.name 변환 (Kiali 호환: <name>.<namespace>)
+    transform/traces:
+      trace_statements:
+        - context: resource
+          statements:
+            - set(attributes["service.name"], Concat([attributes["service.name"], attributes["service.namespace"]], ".")) where attributes["service.namespace"] != nil
+
     # OTel → Prometheus 라벨 변환 (대시보드 호환)
     transform:
       metric_statements:
@@ -109,7 +116,7 @@ config:
     pipelines:
       traces:
         receivers: [otlp]
-        processors: [tail_sampling, batch]  # tail_sampling이 먼저 (완전한 trace 수집 후 샘플링)
+        processors: [transform/traces, tail_sampling, batch]  # transform으로 service.name 변환, tail_sampling 후 batch
         exporters: [otlp/tempo, debug]
       metrics:
         receivers: [otlp]
