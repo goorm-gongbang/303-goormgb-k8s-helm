@@ -1,6 +1,9 @@
 # Kiali Server values (OCI chart)
 # https://github.com/kiali/helm-charts
 
+auth:
+  strategy: anonymous
+
 server:
   web_root: /kiali
 
