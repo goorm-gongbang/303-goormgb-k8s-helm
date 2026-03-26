@@ -58,6 +58,8 @@ spec:
               value: "-javaagent:/otel/opentelemetry-javaagent.jar"
             - name: OTEL_SERVICE_NAME
               value: {{ include "java-service.fullname" . }}
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.namespace={{ .Release.Namespace }}"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: {{ .Values.otel.collectorEndpoint | quote }}
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
