@@ -39,6 +39,7 @@ istio:
       - "https://dev.goormgb.space"
       - "https://swagger.dev.goormgb.space"
       - "http://localhost:3000"
+      - "http://localhost:6060"  # k6-controller 로컬 개발용
     allowMethods:
       - GET
       - POST
