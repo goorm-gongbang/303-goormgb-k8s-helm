@@ -79,6 +79,11 @@ kiali-server:
   auth:
     strategy: anonymous  # CloudFront + ACM 뒤에서 동작
 
+  # Istio 라벨 설정 - app 라벨 사용 (app.kubernetes.io/name 대신)
+  istio_labels:
+    app_label_name: app
+    version_label_name: version
+
   deployment:
     # monitoring 노드에 배치
     node_selector:
