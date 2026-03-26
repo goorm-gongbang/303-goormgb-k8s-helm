@@ -1,5 +1,5 @@
 # CloudBeaver - Staging 환경 (부하테스트용 DB 관리)
-# Domain: db.staging.playball.one
+# Domain: cloudbeaver.staging.playball.one
 
 replicaCount: 1
 
@@ -24,7 +24,7 @@ persistence:
 # Istio VirtualService
 virtualService:
   enabled: true
-  host: "db.staging.playball.one"
+  host: "cloudbeaver.staging.playball.one"
   gateway: "istio-system/api-gateway"
 
 # RDS 연결 정보 (CloudBeaver UI에서 직접 연결 설정)

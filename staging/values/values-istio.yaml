@@ -48,6 +48,7 @@ apiGatewayConfig:
   hosts:
     - "api.staging.playball.one"
     - "prometheus.staging.playball.one"
+    - "cloudbeaver.staging.playball.one"
 
 # =============================================================================
 # Kiali - Service Mesh Observability
