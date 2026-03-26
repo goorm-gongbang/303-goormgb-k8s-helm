@@ -506,10 +506,10 @@
       "datasource": { "type": "loki", "uid": "${loki}" },
       "description": "Java 서비스의 Hibernate SQL 쿼리 로그",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 25 },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 25 },
       "id": 21,
       "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
-      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"staging-webs\"} |~ `Hibernate:`", "queryType": "range", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"staging-webs\", app=~\"$log_app\"} |~ `Hibernate:`", "queryType": "range", "refId": "A" }],
       "title": "서비스 DB 로그 (Hibernate)",
       "type": "logs"
     },
@@ -517,7 +517,7 @@
       "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "description": "RDS PostgreSQL 서버 로그 (CloudWatch Logs)",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 25 },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 35 },
       "id": 22,
       "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
       "targets": [{
@@ -551,6 +551,28 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "allValue": ".+",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": { "type": "loki", "uid": "${loki}" },
+        "definition": "label_values({namespace=\"staging-webs\"}, app)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "서비스 (로그)",
+        "multi": true,
+        "name": "log_app",
+        "options": [],
+        "query": "label_values({namespace=\"staging-webs\"}, app)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       },
       {
         "current": {},
