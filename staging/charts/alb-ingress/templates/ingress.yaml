@@ -1,11 +1,12 @@
 {{- if .Values.ingress.enabled }}
-# ALB Ingress - 각 namespace별로 생성 (group.name으로 동일 ALB 공유)
+# ALB Ingress - 각 호스트별로 생성 (group.name으로 동일 ALB 공유)
 {{- range .Values.ingress.rules }}
+{{- $hostPrefix := .host | replace ".staging.playball.one" "" }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: alb-{{ .service.name }}
+  name: alb-{{ $hostPrefix }}
   namespace: {{ .service.namespace }}
   annotations:
     alb.ingress.kubernetes.io/group.name: staging-alb
