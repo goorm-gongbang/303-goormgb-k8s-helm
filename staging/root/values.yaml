@@ -432,6 +432,15 @@ gitCharts:
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
 
+  # CloudBeaver (DB 관리 - 부하테스트용)
+  cloudbeaver:
+    enabled: true
+    path: staging/charts/monitoring/cloudbeaver
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../staging/values/monitoring/values-cloudbeaver.yaml
+
 # =============================================================================
 # ApplicationSets
 # =============================================================================
