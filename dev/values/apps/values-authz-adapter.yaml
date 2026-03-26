@@ -58,11 +58,11 @@ readinessProbe:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
     cpu: 500m
-    memory: 256Mi
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 # Istio sidecar 비활성화 (ext_authz는 sidecar 없이 동작)
 istio:
