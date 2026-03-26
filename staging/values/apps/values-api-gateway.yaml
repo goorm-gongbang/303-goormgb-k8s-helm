@@ -102,6 +102,8 @@ env:
         key: SPRING_DATA_REDIS_PORT
 
 envFrom:
+  - configMapRef:
+      name: service-config
   - secretRef:
       name: service-config
 

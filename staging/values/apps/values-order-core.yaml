@@ -54,6 +54,8 @@ service:
   port: *port
 
 envFrom:
+  - configMapRef:
+      name: service-config
   - secretRef:
       name: service-config
 
