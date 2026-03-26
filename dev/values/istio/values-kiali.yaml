@@ -1,6 +1,10 @@
 # Kiali Server values (OCI chart)
 # https://github.com/kiali/helm-charts
 
+deployment:
+  logger:
+    log_level: debug
+
 auth:
   strategy: anonymous
 
