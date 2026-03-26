@@ -3,6 +3,14 @@
 
 replicaCount: 1
 
+nodeSelector:
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
 image:
   repository: dbeaver/cloudbeaver
   tag: "24.0.0"
