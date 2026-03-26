@@ -41,6 +41,7 @@ dashboards:
   devTeam:
     folderName: "STAGING 서비스 관측(개발)"
     namespacePattern: "staging-webs"
+    redisClusterPattern: "goormgb-staging-.*"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
@@ -150,18 +151,7 @@ prometheus:
     #         requests:
     #           storage: 30Gi
 
-# Grafana는 별도 Application으로 분리 (ociCharts.grafana)
-# values-grafana.yaml 참조
-grafana:
-  enabled: false
-  # ExternalSecret은 prometheus-extras에서 생성 (common-charts 템플릿 사용)
-  eso:
-    enabled: true
-    secretManagerKey: staging/monitoring/grafana
-    oauthSecretManagerKey: staging/infra/oauth/google
-
-# VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
-prometheus:
+  # VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
   additionalServiceMonitors:
     - name: aws-vpc-cni
       jobLabel: k8s-app
@@ -175,6 +165,16 @@ prometheus:
         - port: metrics
           interval: 30s
           path: /metrics
+
+# Grafana는 별도 Application으로 분리 (ociCharts.grafana)
+# values-grafana.yaml 참조
+grafana:
+  enabled: false
+  # ExternalSecret은 prometheus-extras에서 생성 (common-charts 템플릿 사용)
+  eso:
+    enabled: true
+    secretManagerKey: staging/monitoring/grafana
+    oauthSecretManagerKey: staging/infra/oauth/google
 
 alertmanager:
   alertmanagerSpec:
