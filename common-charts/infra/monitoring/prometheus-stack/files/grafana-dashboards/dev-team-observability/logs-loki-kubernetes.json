@@ -109,7 +109,7 @@
       "targets": [
         {
           "datasource": { "type": "loki", "uid": "${datasource}" },
-          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} |= \"$query\" [$__interval]))",
+          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -148,7 +148,7 @@
         {
           "datasource": { "type": "loki", "uid": "${datasource}" },
           "editorMode": "code",
-          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} |= \"$query\"",
+          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -239,6 +239,38 @@
         ],
         "query": "",
         "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "전체",
+          "value": ""
+        },
+        "description": "로그 유형 필터링 (애플리케이션 로그 vs Hibernate SQL 쿼리)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "로그 유형",
+        "multi": false,
+        "name": "log_type",
+        "options": [
+          {
+            "selected": true,
+            "text": "전체",
+            "value": ""
+          },
+          {
+            "selected": false,
+            "text": "애플리케이션 로그",
+            "value": "!~ `Hibernate:`"
+          },
+          {
+            "selected": false,
+            "text": "SQL 쿼리 (Hibernate)",
+            "value": "|~ `Hibernate:`"
+          }
+        ],
+        "query": ",!~ `Hibernate:`,|~ `Hibernate:`",
+        "type": "custom"
       },
       {
         "allValue": ".+",
