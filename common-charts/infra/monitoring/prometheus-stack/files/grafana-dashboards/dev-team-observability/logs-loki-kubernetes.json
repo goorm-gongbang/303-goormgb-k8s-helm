@@ -244,9 +244,9 @@
         "current": {
           "selected": true,
           "text": "전체",
-          "value": ""
+          "value": "|~ `.+`"
         },
-        "description": "로그 유형 필터링 (애플리케이션 로그 vs Hibernate SQL 쿼리)",
+        "description": "로그 유형 필터링",
         "hide": 0,
         "includeAll": false,
         "label": "로그 유형",
@@ -256,20 +256,25 @@
           {
             "selected": true,
             "text": "전체",
-            "value": ""
+            "value": "|~ `.+`"
           },
           {
             "selected": false,
-            "text": "애플리케이션 로그",
-            "value": "!~ `Hibernate:`"
+            "text": "비즈니스 로그",
+            "value": "!~ `Hibernate:` !~ `kube-probe`"
           },
           {
             "selected": false,
             "text": "SQL 쿼리 (Hibernate)",
             "value": "|~ `Hibernate:`"
+          },
+          {
+            "selected": false,
+            "text": "Health Check 제외",
+            "value": "!~ `kube-probe`"
           }
         ],
-        "query": ",!~ `Hibernate:`,|~ `Hibernate:`",
+        "query": "전체 : |~ `.+`,비즈니스 로그 : !~ `Hibernate:` !~ `kube-probe`,SQL 쿼리 (Hibernate) : |~ `Hibernate:`,Health Check 제외 : !~ `kube-probe`",
         "type": "custom"
       },
       {
