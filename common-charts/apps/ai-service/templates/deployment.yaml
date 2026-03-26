@@ -58,7 +58,7 @@ spec:
           env:
             {{- if .Values.otel.enabled }}
             - name: OTEL_SERVICE_NAME
-              value: {{ include "ai-service.fullname" . }}
+              value: {{ .Release.Name }}
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "service.namespace={{ .Release.Namespace }}"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
