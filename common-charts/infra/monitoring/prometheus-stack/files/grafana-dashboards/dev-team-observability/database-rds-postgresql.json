@@ -493,12 +493,65 @@
       ],
       "title": "DB 연결 수 추이",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 24 },
+      "id": 20,
+      "panels": [],
+      "title": "PostgreSQL 로그",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "${loki}" },
+      "description": "Java 서비스의 Hibernate SQL 쿼리 로그",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 25 },
+      "id": 21,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"staging-webs\"} |~ `Hibernate:`", "queryType": "range", "refId": "A" }],
+      "title": "서비스 DB 로그 (Hibernate)",
+      "type": "logs"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "RDS PostgreSQL 서버 로그 (CloudWatch Logs)",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 25 },
+      "id": 22,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{
+        "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+        "expression": "fields @timestamp, @message | sort @timestamp desc | limit 100",
+        "id": "",
+        "logGroupNames": ["/aws/rds/instance/$db_instance/postgresql"],
+        "queryMode": "Logs",
+        "refId": "A",
+        "region": "ap-northeast-2",
+        "statsGroups": []
+      }],
+      "title": "RDS PostgreSQL 서버 로그",
+      "type": "logs"
     }
   ],
   "schemaVersion": 39,
   "tags": ["rds", "postgresql", "cloudwatch", "database"],
   "templating": {
     "list": [
+      {
+        "current": {},
+        "hide": 2,
+        "includeAll": false,
+        "label": "Loki",
+        "multi": false,
+        "name": "loki",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
       {
         "current": {},
         "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
