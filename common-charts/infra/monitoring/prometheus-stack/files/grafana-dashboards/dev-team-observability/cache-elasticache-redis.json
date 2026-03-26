@@ -600,7 +600,7 @@
       "id": 22,
       "options": {
         "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
-        "content": "## ElastiCache 서버 로그\n\nElastiCache Redis는 CloudWatch Logs를 직접 지원하지 않습니다.\n\n**Slow Log 확인 방법:**\n```bash\nredis-cli SLOWLOG GET 10\n```\n\n**Engine Log:**\n- AWS 콘솔 > ElastiCache > Logs 탭에서 확인\n- S3로 Export 가능",
+        "content": "## ElastiCache 서버 로그\n\nCloudWatch Logs로 내보내려면 Terraform 설정 필요 (Redis 6.0+)\n\n**Terraform 설정:**\n```hcl\n# modules/elasticache/main.tf\nlog_delivery_configuration {\n  destination      = aws_cloudwatch_log_group.redis.name\n  destination_type = \"cloudwatch-logs\"\n  log_format       = \"json\"\n  log_type         = \"slow-log\"  # 또는 \"engine-log\"\n}\n```\n\n**수동 확인:**\n```bash\nredis-cli SLOWLOG GET 10\n```",
         "mode": "markdown"
       },
       "title": "ElastiCache 서버 로그 안내",
@@ -674,7 +674,7 @@
       }
     ]
   },
-  "time": { "from": "now-6h", "to": "now" },
+  "time": { "from": "now-30m", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
   "title": "Cache & Queue - ElastiCache Redis",
