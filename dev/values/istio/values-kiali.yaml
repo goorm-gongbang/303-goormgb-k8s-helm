@@ -16,7 +16,9 @@ external_services:
     url: https://grafana.goormgb.space
   tracing:
     enabled: true
+    provider: tempo
     in_cluster_url: http://tempo.monitoring.svc.cluster.local:3200
+    use_grpc: false
 
 # kiali-config (Git chart) values
 kialiVirtualService:
