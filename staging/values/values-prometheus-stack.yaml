@@ -41,6 +41,7 @@ dashboards:
   devTeam:
     folderName: "STAGING 서비스 관측(개발)"
     namespacePattern: "staging-webs"
+    redisClusterPattern: "goormgb-staging-.*"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"

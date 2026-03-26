@@ -1,10 +1,12 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/dev-team-observability/*.json" -}}
 {{- $excludeList := list -}}
 {{- $namespacePattern := "dev-webs" -}}
+{{- $redisClusterPattern := "goormgb-.*" -}}
 {{- $folderName := "DEV 서비스 관측(개발)" -}}
 {{- if and .Values.dashboards .Values.dashboards.devTeam -}}
 {{- $excludeList = .Values.dashboards.devTeam.exclude | default list -}}
 {{- $namespacePattern = .Values.dashboards.devTeam.namespacePattern | default "dev-webs" -}}
+{{- $redisClusterPattern = .Values.dashboards.devTeam.redisClusterPattern | default "goormgb-.*" -}}
 {{- $folderName = .Values.dashboards.devTeam.folderName | default "DEV 서비스 관측(개발)" -}}
 {{- end -}}
 {{- if gt (len $dashboardFiles) 0 }}
@@ -24,7 +26,7 @@ data:
 {{- $filename := base $path -}}
 {{- if not (has $filename $excludeList) }}
   {{ $filename }}: |-
-{{ $.Files.Get $path | replace "__NAMESPACE_PATTERN__" $namespacePattern | nindent 4 }}
+{{ $.Files.Get $path | replace "__NAMESPACE_PATTERN__" $namespacePattern | replace "__REDIS_CLUSTER_PATTERN__" $redisClusterPattern | nindent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}

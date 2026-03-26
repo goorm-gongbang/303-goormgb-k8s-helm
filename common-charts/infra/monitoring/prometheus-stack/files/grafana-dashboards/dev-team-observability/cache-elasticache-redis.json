@@ -599,7 +599,7 @@
           "region": "ap-northeast-2"
         },
         "refresh": 2,
-        "regex": "goormgb-.*",
+        "regex": "__REDIS_CLUSTER_PATTERN__",
         "skipUrlSync": false,
         "sort": 1,
         "type": "query"
