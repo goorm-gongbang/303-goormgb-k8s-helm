@@ -18,7 +18,7 @@ spec:
         retryOn: connect-failure,refused-stream,503,reset
       route:
         - destination:
-            host: cloudbeaver
+            host: cloudbeaver.monitoring.svc.cluster.local
             port:
               number: {{ .Values.service.port }}
 {{- end }}
