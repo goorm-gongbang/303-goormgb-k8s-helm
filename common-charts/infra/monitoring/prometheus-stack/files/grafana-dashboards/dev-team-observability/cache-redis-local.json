@@ -179,10 +179,10 @@
       "datasource": { "type": "loki", "uid": "${loki}" },
       "description": "Java 서비스의 Redis 클라이언트 로그 (Lettuce/Spring Data Redis)",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 33 },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 33 },
       "id": 41,
       "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
-      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=~\"dev-webs|staging-webs\"} |~ `(?i)redis|lettuce`", "queryType": "range", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"dev-webs\", app=~\"$log_app\"} |~ `(?i)redis|lettuce`", "queryType": "range", "refId": "A" }],
       "title": "서비스 Redis 로그",
       "type": "logs"
     },
@@ -190,7 +190,7 @@
       "datasource": { "type": "loki", "uid": "${loki}" },
       "description": "Redis 서버 로그 (data 네임스페이스)",
       "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 33 },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 43 },
       "id": 42,
       "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
       "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"data\", app=~\"redis.*\"}", "queryType": "range", "refId": "A" }],
@@ -229,6 +229,28 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "allValue": ".+",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": { "type": "loki", "uid": "${loki}" },
+        "definition": "label_values({namespace=\"dev-webs\"}, app)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "서비스 (로그)",
+        "multi": true,
+        "name": "log_app",
+        "options": [],
+        "query": "label_values({namespace=\"dev-webs\"}, app)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       },
       {
         "allValue": "redis-cache|redis-queue",
