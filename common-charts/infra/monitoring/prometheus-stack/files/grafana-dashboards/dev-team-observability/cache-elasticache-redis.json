@@ -573,12 +573,58 @@
       ],
       "title": "현재 저장된 아이템 수",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
+      "id": 20,
+      "panels": [],
+      "title": "Redis 로그",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "${loki}" },
+      "description": "Java 서비스의 Redis 클라이언트 로그 (Lettuce/Spring Data Redis)",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 34 },
+      "id": 21,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"staging-webs\"} |~ `(?i)redis|lettuce`", "queryType": "range", "refId": "A" }],
+      "title": "서비스 Redis 로그",
+      "type": "logs"
+    },
+    {
+      "datasource": { "type": "datasource", "uid": "grafana" },
+      "description": "",
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 34 },
+      "id": 22,
+      "options": {
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
+        "content": "## ElastiCache 서버 로그\n\nElastiCache Redis는 CloudWatch Logs를 직접 지원하지 않습니다.\n\n**Slow Log 확인 방법:**\n```bash\nredis-cli SLOWLOG GET 10\n```\n\n**Engine Log:**\n- AWS 콘솔 > ElastiCache > Logs 탭에서 확인\n- S3로 Export 가능",
+        "mode": "markdown"
+      },
+      "title": "ElastiCache 서버 로그 안내",
+      "type": "text"
     }
   ],
   "schemaVersion": 39,
   "tags": ["elasticache", "redis", "cloudwatch", "cache", "queue"],
   "templating": {
     "list": [
+      {
+        "current": {},
+        "hide": 2,
+        "includeAll": false,
+        "label": "Loki",
+        "multi": false,
+        "name": "loki",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
       {
         "current": {},
         "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },

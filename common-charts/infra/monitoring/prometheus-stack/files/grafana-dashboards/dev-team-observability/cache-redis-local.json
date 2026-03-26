@@ -173,6 +173,29 @@
       ],
       "title": "네트워크 I/O",
       "type": "timeseries"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 32 }, "id": 40, "panels": [], "title": "Redis 로그", "type": "row" },
+    {
+      "datasource": { "type": "loki", "uid": "${loki}" },
+      "description": "Java 서비스의 Redis 클라이언트 로그 (Lettuce/Spring Data Redis)",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 33 },
+      "id": 41,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=~\"dev-webs|staging-webs\"} |~ `(?i)redis|lettuce`", "queryType": "range", "refId": "A" }],
+      "title": "서비스 Redis 로그",
+      "type": "logs"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "${loki}" },
+      "description": "Redis 서버 로그 (data 네임스페이스)",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 33 },
+      "id": 42,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"data\", app=~\"redis.*\"}", "queryType": "range", "refId": "A" }],
+      "title": "Redis 서버 로그",
+      "type": "logs"
     }
   ],
   "schemaVersion": 39,
@@ -188,6 +211,20 @@
         "name": "datasource",
         "options": [],
         "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "hide": 2,
+        "includeAll": false,
+        "label": "Loki",
+        "multi": false,
+        "name": "loki",
+        "options": [],
+        "query": "loki",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
