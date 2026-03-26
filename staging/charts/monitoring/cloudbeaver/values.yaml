@@ -1,0 +1,30 @@
+# CloudBeaver defaults for staging
+replicaCount: 1
+
+image:
+  repository: dbeaver/cloudbeaver
+  tag: "24.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8978
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1536Mi
+
+persistence:
+  enabled: true
+  size: 2Gi
+  storageClass: gp3
+
+# Istio VirtualService
+virtualService:
+  enabled: false
+  host: ""
+  gateway: "istio-system/api-gateway"
