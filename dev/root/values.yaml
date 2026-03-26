@@ -79,19 +79,6 @@ ociCharts:
     syncWave: "-1"
     valueFiles:
       - $values/dev/values/istio/values-kiali.yaml
-    syncOptions:
-      - RespectIgnoreDifferences=true
-    ignoreDifferences:
-      - group: ""
-        kind: ConfigMap
-        name: kiali
-        jsonPointers:
-          - /data
-      - group: apps
-        kind: Deployment
-        name: kiali
-        jsonPointers:
-          - /spec/template/metadata/annotations
 
   tigera-operator:
     enabled: true
