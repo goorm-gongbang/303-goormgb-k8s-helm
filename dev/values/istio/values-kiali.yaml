@@ -19,6 +19,10 @@ external_services:
     provider: tempo
     in_cluster_url: http://tempo.monitoring.svc.cluster.local:3200
     use_grpc: false
+    tempo_config:
+      org_id: "1"
+      cache_enabled: true
+      cache_capacity: 200
 
 # kiali-config (Git chart) values
 kialiVirtualService:
