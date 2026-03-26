@@ -1,4 +1,4 @@
-{{- if .Values.extAuthz.enabled }}
+{{- if and .Values.extAuthz .Values.extAuthz.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
@@ -65,11 +65,8 @@ spec:
                 cluster_name: ext_authz_cluster
               timeout: {{ .Values.extAuthz.timeout | default "0.8s" }}
             failure_mode_allow: {{ .Values.extAuthz.failOpen | default true }}
-            # Adapter에 전달할 요청 컨텍스트
+            # Adapter에 전달할 요청 컨텍스트 (헤더만 전달, body 불필요)
             include_peer_certificate: false
-            with_request_body:
-              max_request_bytes: 0
-              allow_partial_message: true
             # 에러 시 응답 코드
             status_on_error:
               code: 503

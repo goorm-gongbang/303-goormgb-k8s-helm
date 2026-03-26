@@ -2935,22 +2935,18 @@
         "type": "interval"
       },
       {
-        "current": {
-          "text": "data",
-          "value": "data"
-        },
-        "datasource": "Prometheus",
-        "definition": "",
+        "current": {},
         "hide": 2,
         "includeAll": false,
-        "label": "Namespace",
+        "label": "네임스페이스",
+        "multi": false,
         "name": "namespace",
-        "options": [],
-        "query": "query_result(pg_exporter_last_scrape_duration_seconds)",
-        "refresh": 2,
-        "regex": "/.*kubernetes_namespace=\"([^\"]+).*/",
-        "sort": 1,
-        "type": "query"
+        "options": [
+          {"selected": true, "text": "__AI_NAMESPACE__", "value": "__AI_NAMESPACE__"}
+        ],
+        "query": "__AI_NAMESPACE__",
+        "skipUrlSync": false,
+        "type": "custom"
       },
       {
         "current": {

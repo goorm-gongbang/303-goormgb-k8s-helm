@@ -11,5 +11,17 @@ spec:
       targetPort: {{ .Values.service.portName | default "http" }}
       protocol: TCP
       name: {{ .Values.service.portName | default "http" }}
+    {{- if and .Values.service.grpc .Values.service.grpc.enabled }}
+    - port: {{ .Values.service.grpc.port }}
+      targetPort: {{ .Values.service.grpc.portName | default "grpc" }}
+      protocol: TCP
+      name: {{ .Values.service.grpc.portName | default "grpc" }}
+    {{- end }}
+    {{- if and .Values.metrics.enabled (ne (int .Values.metrics.port) (int .Values.service.port)) }}
+    - port: {{ .Values.metrics.port }}
+      targetPort: {{ .Values.metrics.portName | default "metrics" }}
+      protocol: TCP
+      name: {{ .Values.metrics.portName | default "metrics" }}
+    {{- end }}
   selector:
     {{- include "ai-service.selectorLabels" . | nindent 4 }}

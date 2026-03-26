@@ -1,0 +1,49 @@
+# Redis - AI Defense 세션 및 런타임 상태 저장용
+# 서비스명: redis-ai.data.svc.cluster.local
+
+image:
+  repository: redis
+  tag: "7-alpine"
+  pullPolicy: IfNotPresent
+
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 2Gi
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+service:
+  port: 6379
+
+exporter:
+  enabled: true
+
+config:
+  maxmemory: 200mb
+  maxmemoryPolicy: volatile-lru  # 만료 시간이 설정된 키(세션 등)에 대해 LRU 적용
+  appendonly: "no"
+
+backup:
+  enabled: false  # 런타임 캐시/세션이므로 백업 불필요
+
+nodeSelector:
+  kubernetes.io/hostname: mini-gmk
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+probes:
+  liveness:
+    initialDelaySeconds: 15
+    periodSeconds: 5
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 5

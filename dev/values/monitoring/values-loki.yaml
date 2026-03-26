@@ -21,6 +21,10 @@ singleBinary:
   replicas: 1
   nodeSelector:
     kubernetes.io/hostname: mini-gmk
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
   persistence:
     size: 10Gi
 
@@ -34,11 +38,9 @@ write:
 backend:
   replicas: 0
 
-# Cache 컴포넌트 nodeSelector
+# Cache 비활성화 (dev 환경에서는 불필요)
 chunksCache:
-  nodeSelector:
-    kubernetes.io/hostname: mini-gmk
+  enabled: false
 
 resultsCache:
-  nodeSelector:
-    kubernetes.io/hostname: mini-gmk
+  enabled: false

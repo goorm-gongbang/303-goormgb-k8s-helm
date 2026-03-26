@@ -1,19 +1,32 @@
 # Kiali Server values (OCI chart)
 # https://github.com/kiali/helm-charts
 
+deployment:
+  logger:
+    log_level: debug
+
+auth:
+  strategy: anonymous
+
 server:
   web_root: /kiali
 
 external_services:
   prometheus:
-    url: http://kube-prometheus-stack-prometheus.monitoring:9090
+    url: http://prom-prometheus.monitoring.svc.cluster.local:9090
   grafana:
     enabled: true
-    in_cluster_url: http://kube-prometheus-stack-grafana.monitoring:80
+    in_cluster_url: http://grafana.monitoring.svc.cluster.local:80
     url: https://grafana.goormgb.space
   tracing:
     enabled: true
-    in_cluster_url: http://tempo.monitoring:3100
+    provider: tempo
+    in_cluster_url: http://tempo.monitoring.svc.cluster.local:3200
+    use_grpc: false
+    tempo_config:
+      org_id: "1"
+      cache_enabled: true
+      cache_capacity: 200
 
 # kiali-config (Git chart) values
 kialiVirtualService:

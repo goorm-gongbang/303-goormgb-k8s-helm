@@ -42,8 +42,14 @@ patterns:
 
 # 제외 경로 (health check, metrics, 내부 서비스 등)
 excludePaths:
+  # Faro RUM (프론트엔드 텔레메트리)
+  - "/faro/"
+
   # Grafana 내부 API (Loki 쿼리 등 - SQL Injection 오탐 방지)
   - "/api/datasources/"
+
+  # Socket.IO (실시간 폴링 - sid 패턴이 SQL 주입으로 오탐됨)
+  - "/socket.io/"
 
   # Health checks
   - "/health"
@@ -149,6 +155,36 @@ extAuthz:
     - method: POST
       pattern: "^/seat/matches/[0-9]+/seat-holds$"
       eventType: SEAT_HOLDS
+
+# Rate Limiting - Dev 환경에서는 비활성화 (부하테스트용)
+rateLimiting:
+  local:
+    enabled: false  # Dev 환경에서 rate limiting 비활성화
+    default:
+      enabled: false
+    perClient:
+      enabled: false
+    perRoute:
+      enabled: false
+  global:
+    enabled: false
+  excludePaths:
+    # 기본 헬스체크
+    - "/health"
+    - "/healthz"
+    - "/ready"
+    - "/metrics"
+    - "/actuator/health"
+    # 내부 도구 (정적 파일 다수 로드)
+    - ".js"
+    - ".css"
+    - ".woff"
+    - ".woff2"
+    - ".ttf"
+    - ".png"
+    - ".jpg"
+    - ".svg"
+    - ".ico"
 
 # JWT 인증 - 비활성화
 # auth-guard가 JWKS 엔드포인트(/.well-known/jwks.json)를 제공하지 않아

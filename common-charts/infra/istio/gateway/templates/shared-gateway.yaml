@@ -31,7 +31,7 @@ spec:
         httpsRedirect: {{ .Values.sharedGateway.httpsRedirect | default true }}
 {{- end }}
 ---
-{{- if .Values.apiGatewayConfig.enabled }}
+{{- if and .Values.apiGatewayConfig .Values.apiGatewayConfig.enabled }}
 # API Gateway - ALB → Istio IngressGateway → VirtualService
 apiVersion: networking.istio.io/v1
 kind: Gateway

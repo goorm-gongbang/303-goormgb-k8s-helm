@@ -83,5 +83,13 @@ spec:
       - {{ . }}
       {{- end }}
       {{- end }}
+    {{- if $chart.retry }}
+    retry:
+      limit: {{ $chart.retry.limit | default 5 }}
+      backoff:
+        duration: {{ $chart.retry.duration | default "10s" }}
+        maxDuration: {{ $chart.retry.maxDuration | default "3m" }}
+        factor: {{ $chart.retry.factor | default 2 }}
+    {{- end }}
 {{- end }}
 {{- end }}

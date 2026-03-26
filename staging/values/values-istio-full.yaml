@@ -107,8 +107,12 @@ kiali-server:
     tracing:
       enabled: true
       provider: tempo
-      in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3100"
+      in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3200"
       use_grpc: false
+      tempo_config:
+        org_id: "1"
+        cache_enabled: true
+        cache_capacity: 200
 
 # Kiali VirtualService (공용 Gateway 사용)
 kialiVirtualService:

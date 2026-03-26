@@ -3,11 +3,11 @@
 contextPath: ""  # api-gateway는 context path 없음
 fullnameOverride: "java-cloud-gateway"
 
-replicaCount: 1
+replicaCount: 2
 
 image:
   name: "dev/goormgb/api-gateway"
-  tag: "32c4283"
+  tag: "8608193"
   pullPolicy: Always
 
 imagePullSecrets:
@@ -19,11 +19,11 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 100m
+    cpu: 500m
     memory: 512Mi
   limits:
-    cpu: 500m
-    memory: 1Gi
+    cpu: "2"
+    memory: 2Gi
 
 # Istio - 공통 Gateway(istio-system/api-gateway) 사용
 istio:
@@ -39,6 +39,7 @@ istio:
       - "https://dev.goormgb.space"
       - "https://swagger.dev.goormgb.space"
       - "http://localhost:3000"
+      - "http://localhost:6060"  # k6-controller 로컬 개발용
     allowMethods:
       - GET
       - POST
@@ -104,6 +105,12 @@ readinessProbe:
   initialDelaySeconds: 30
   periodSeconds: 5
   failureThreshold: 3
+
+# Prometheus Metrics (Spring Boot Actuator)
+metrics:
+  enabled: true
+  path: /actuator/prometheus
+  interval: 15s
 
 # OpenTelemetry Java Agent
 otel:

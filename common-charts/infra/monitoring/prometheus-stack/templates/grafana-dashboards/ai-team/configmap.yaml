@@ -1,0 +1,62 @@
+{{/*
+  Split dashboards into two ConfigMaps to avoid 262144 bytes limit
+  Part 1: database, application, redis (large dashboards ~156KB)
+  Part 2: ai-telemetry (통합), realtime-polling, logs (~90KB)
+*/}}
+
+{{- $aiNamespace := "dev-ai" -}}
+{{- $folderName := "DEV 서비스 관측(AI)" -}}
+{{- if and .Values.dashboards .Values.dashboards.aiTeam -}}
+{{- $aiNamespace = .Values.dashboards.aiTeam.aiNamespace | default "dev-ai" -}}
+{{- $folderName = .Values.dashboards.aiTeam.folderName | default "DEV 서비스 관측(AI)" -}}
+{{- end -}}
+
+{{/* Part 1: Large dashboards */}}
+{{- $part1Files := list
+  "files/grafana-dashboards/ai-team-observability/database-monitoring-postgresql.json"
+  "files/grafana-dashboards/ai-team-observability/application-monitoring-fastapi.json"
+  "files/grafana-dashboards/ai-team-observability/redis-monitoring.json"
+-}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-ai-team-1
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: monitoring
+    grafana_dashboard: "1"
+  annotations:
+    grafana_folder: {{ $folderName | quote }}
+data:
+{{- range $path := $part1Files }}
+{{- if $.Files.Get $path }}
+  {{ base $path }}: |-
+{{ $.Files.Get $path | replace "__AI_NAMESPACE__" $aiNamespace | nindent 4 }}
+{{- end }}
+{{- end }}
+---
+{{/* Part 2: Smaller dashboards (authz-adapter는 ai-telemetry-overview에 통합됨) */}}
+{{- $part2Files := list
+  "files/grafana-dashboards/ai-team-observability/ai-telemetry-overview.json"
+  "files/grafana-dashboards/ai-team-observability/realtime-polling-monitoring.json"
+  "files/grafana-dashboards/ai-team-observability/logs-loki-kubernetes.json"
+-}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-ai-team-2
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: monitoring
+    grafana_dashboard: "1"
+  annotations:
+    grafana_folder: {{ $folderName | quote }}
+data:
+{{- range $path := $part2Files }}
+{{- if $.Files.Get $path }}
+  {{ base $path }}: |-
+{{ $.Files.Get $path | replace "__AI_NAMESPACE__" $aiNamespace | nindent 4 }}
+{{- end }}
+{{- end }}

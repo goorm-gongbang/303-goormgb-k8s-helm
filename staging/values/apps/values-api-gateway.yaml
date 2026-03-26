@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/api-gateway"
-  tag: "08a50e4"
+  tag: "de7ce81.11"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -41,11 +41,11 @@ affinity:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 256Mi
-  limits:
-    cpu: 500m
+    cpu: 200m
     memory: 512Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
 
 # Istio
 istio:
@@ -58,6 +58,7 @@ istio:
     enabled: true
     allowOrigins:
       - "https://staging.playball.one"
+      - "https://swagger.staging.playball.one"
       - "http://localhost:3000"
     allowMethods:
       - GET
@@ -80,7 +81,7 @@ service:
 # Environment variables
 env:
   - name: ALLOWED_ORIGINS
-    value: "https://staging.playball.one,http://localhost:3000"
+    value: "https://staging.playball.one,https://swagger.staging.playball.one,http://localhost:3000"
   - name: AUTH_GUARD_URL
     value: "http://auth-guard.staging-webs.svc.cluster.local:8080"
   - name: QUEUE_URL
@@ -101,6 +102,8 @@ env:
         key: SPRING_DATA_REDIS_PORT
 
 envFrom:
+  - configMapRef:
+      name: service-config
   - secretRef:
       name: service-config
 

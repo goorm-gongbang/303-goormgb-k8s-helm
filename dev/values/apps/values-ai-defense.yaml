@@ -18,19 +18,18 @@ args:
   - "/ai"
 
 image:
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/ai
+  tag: "af5a835"
   name: "dev/goormgb/ai"
-  tag: "de7a2ad"
   pullPolicy: Always
 
 # Python 모듈 경로 설정 + AI Defense 환경변수
 env:
   - name: PYTHONPATH
     value: /app/src
-  # AI Defense 설정
-  - name: TM_AI_DEFENSE_HOST
-    value: "0.0.0.0"
-  - name: TM_AI_DEFENSE_PORT
+  - name: APP_PORT
     value: "8000"
+  # 런타임 상태 관리를 Redis로 명시 (인메모리 방지)
   - name: TM_RUNTIME_STATE_BACKEND
     value: "redis"
   - name: TM_DEFENSE_POLICY_VERSION
@@ -46,6 +45,17 @@ env:
       secretKeyRef:
         name: ai-service-config
         key: AI_REDIS_PORT
+  # 런타임 캐시용 Redis URL (동적 파싱)
+  - name: TM_REDIS_URL
+    value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+  # S3 아카이빙 비활성화 (로컬 파일 모드 - dev)
+  - name: TM_S3_BUCKET
+    value: ""
+  # ClickHouse/PostgreSQL 비활성화 (MVP/dev)
+  - name: TM_CLICKHOUSE_URL
+    value: ""
+  - name: TM_PG_URL
+    value: ""
 
 imagePullSecrets:
   - name: ecr-pull-secret
@@ -56,11 +66,11 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
     cpu: 500m
     memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 # Istio
 # /ai/* 라우팅은 rawManifests의 ai-defense-route VirtualService에서 처리

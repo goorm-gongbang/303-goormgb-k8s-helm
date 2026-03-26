@@ -10,5 +10,3 @@ namespaces:
     istio: true   # PostgreSQL, Redis - Kiali에서 트래픽 모니터링
   - name: monitoring
     istio: false  # Prometheus, Grafana - Istio 불필요
-  - name: infra
-    istio: false  # 인프라 CronJobs - Istio 불필요
