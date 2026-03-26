@@ -333,7 +333,7 @@
       },
       "targets": [
         {
-          "expr": "topk(10, sum by (http_route) (rate(http_server_request_duration_seconds_sum{namespace=~\"$namespace\", app=~\"$app_name\", http_route!~\".*actuator.*|.*swagger.*|.*api-docs.*|NOT_FOUND|UNKNOWN|.*health.*|.*ready.*|.*metrics.*\"}[$__rate_interval])) / clamp_min(sum by (http_route) (rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_route!~\".*actuator.*|.*swagger.*|.*api-docs.*|NOT_FOUND|UNKNOWN|.*health.*|.*ready.*|.*metrics.*\"}[$__rate_interval])), 1))",
+          "expr": "topk(10, sum by (http_route) (rate(http_server_request_duration_seconds_sum{namespace=~\"$namespace\", app=~\"$app_name\", http_route=~\"/.+\", http_route!~\".*actuator.*|.*swagger.*|.*api-docs.*|.*health.*|.*ready.*|.*metrics.*\"}[$__rate_interval])) / clamp_min(sum by (http_route) (rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_route=~\"/.+\", http_route!~\".*actuator.*|.*swagger.*|.*api-docs.*|.*health.*|.*ready.*|.*metrics.*\"}[$__rate_interval])), 1))",
           "legendFormat": "{{http_route}}",
           "refId": "A"
         }
