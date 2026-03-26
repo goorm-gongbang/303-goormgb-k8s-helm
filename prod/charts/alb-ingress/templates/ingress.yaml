@@ -1,0 +1,37 @@
+{{- if .Values.ingress.enabled }}
+# ALB Ingress - 각 namespace별로 생성 (group.name으로 동일 ALB 공유)
+{{- range .Values.ingress.rules }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alb-{{ .service.name }}
+  namespace: {{ .service.namespace }}
+  annotations:
+    alb.ingress.kubernetes.io/group.name: prod-alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-path: {{ .service.healthCheckPath | default "/" }}
+    alb.ingress.kubernetes.io/success-codes: "200,301,302"
+    {{- if $.Values.ingress.certificateArn }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ $.Values.ingress.certificateArn | quote }}
+    {{- end }}
+    external-dns.alpha.kubernetes.io/hostname: {{ .host }}
+spec:
+  ingressClassName: alb
+  rules:
+    - host: {{ .host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .service.name }}
+                port:
+                  number: {{ .service.port }}
+{{- end }}
+{{- end }}
