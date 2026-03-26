@@ -197,7 +197,7 @@
       "gridPos": { "h": 5, "w": 6, "x": 0, "y": 24 },
       "id": 40,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(pg_stat_activity_count{namespace=\"data\", datname!=\"\"})", "legendFormat": "Connections", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(pg_stat_activity_count{namespace=\"data\"})", "legendFormat": "Connections", "refId": "A" }],
       "title": "Active Connections",
       "type": "stat"
     },
