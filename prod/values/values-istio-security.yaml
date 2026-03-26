@@ -249,7 +249,7 @@ jwtAuth:
         - name: Authorization
           prefix: "Bearer "
 
-    # 자체 Auth 서비스 (staging 네임스페이스)
+    # 자체 Auth 서비스 (prod 네임스페이스)
     - name: goormgb-auth
       issuer: "https://auth.goormgb.com"
       jwksUri: "http://auth-guard.prod-webs.svc.cluster.local:8080/.well-known/jwks.json"

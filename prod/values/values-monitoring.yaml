@@ -21,8 +21,8 @@
 grafana:
   eso:
     enabled: true
-    secretManagerKey: staging/monitoring/grafana
-    oauthSecretManagerKey: staging/infra/oauth/google
+    secretManagerKey: prod/monitoring/grafana
+    oauthSecretManagerKey: prod/infra/oauth/google
 
 # ===== Prometheus Stack =====
 kube-prometheus-stack:
@@ -391,9 +391,9 @@ backup:
   enabled: true
   schedule: "0 4 * * *"  # 매일 오전 4시 (UTC)
   s3Bucket: goormgb-backup
-  s3Prefix: staging/logs
+  s3Prefix: prod/logs
   externalSecret:
-    remoteRef: staging/infra/s3-backup
+    remoteRef: prod/infra/s3-backup
 
 # ===== Tempo =====
 tempo:

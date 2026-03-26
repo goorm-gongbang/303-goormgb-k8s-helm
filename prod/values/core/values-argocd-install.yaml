@@ -20,7 +20,7 @@ server:
   service:
     type: ClusterIP
 
-  # 리소스 제한 (staging 환경)
+  # 리소스 제한 (prod 환경)
   resources:
     requests:
       cpu: 50m

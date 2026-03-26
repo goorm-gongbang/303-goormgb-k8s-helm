@@ -26,7 +26,7 @@ istiod:
     enableTracing: true
     defaultConfig:
       tracing:
-        sampling: 50 # 50% 샘플링 (staging 환경)
+        sampling: 50 # 50% 샘플링 (prod 환경)
         zipkin:
           address: "tempo.monitoring.svc.cluster.local:9411"
 

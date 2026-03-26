@@ -140,8 +140,8 @@ grafana:
   # prometheus-extras용 ESO 설정
   eso:
     enabled: true
-    secretManagerKey: staging/monitoring/grafana
-    oauthSecretManagerKey: staging/infra/oauth/google
+    secretManagerKey: prod/monitoring/grafana
+    oauthSecretManagerKey: prod/infra/oauth/google
 
   fullnameOverride: grafana
 
@@ -149,7 +149,7 @@ grafana:
   # Role created by Terraform: terraform output grafana_cloudwatch_irsa_role_arn
   serviceAccount:
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-grafana-cloudwatch
+      eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-prod-grafana-cloudwatch
 
   # init-chown-data 비활성화 (PVC 권한 문제 방지)
   initChownData:
