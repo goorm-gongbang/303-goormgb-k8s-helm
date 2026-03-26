@@ -156,8 +156,18 @@ extAuthz:
       pattern: "^/seat/matches/[0-9]+/seat-holds$"
       eventType: SEAT_HOLDS
 
-# Rate Limiting - Dev 환경 제외 경로 추가
+# Rate Limiting - Dev 환경에서는 비활성화 (부하테스트용)
 rateLimiting:
+  local:
+    enabled: false  # Dev 환경에서 rate limiting 비활성화
+    default:
+      enabled: false
+    perClient:
+      enabled: false
+    perRoute:
+      enabled: false
+  global:
+    enabled: false
   excludePaths:
     # 기본 헬스체크
     - "/health"
