@@ -58,6 +58,7 @@ istio:
     enabled: true
     allowOrigins:
       - "https://staging.playball.one"
+      - "https://swagger.staging.playball.one"
       - "http://localhost:3000"
     allowMethods:
       - GET
@@ -80,7 +81,7 @@ service:
 # Environment variables
 env:
   - name: ALLOWED_ORIGINS
-    value: "https://staging.playball.one,http://localhost:3000"
+    value: "https://staging.playball.one,https://swagger.staging.playball.one,http://localhost:3000"
   - name: AUTH_GUARD_URL
     value: "http://auth-guard.staging-webs.svc.cluster.local:8080"
   - name: QUEUE_URL
