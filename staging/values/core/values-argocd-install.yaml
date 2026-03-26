@@ -39,15 +39,15 @@ controller:
       cpu: 500m
       memory: 1Gi
 
-# Repo Server 설정
+# Repo Server 설정 (helm template 렌더링 시 메모리 급증)
 repoServer:
   resources:
     requests:
       cpu: 50m
-      memory: 256Mi
+      memory: 512Mi
     limits:
-      cpu: 200m
-      memory: 1Gi
+      cpu: 500m
+      memory: 2Gi
 
 # Redis 설정 (내장 Redis 사용)
 redis:
