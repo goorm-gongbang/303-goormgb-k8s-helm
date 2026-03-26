@@ -3,7 +3,7 @@
 contextPath: ""  # api-gateway는 context path 없음
 fullnameOverride: "java-cloud-gateway"
 
-replicaCount: 1
+replicaCount: 2
 
 image:
   name: "dev/goormgb/api-gateway"
@@ -19,11 +19,11 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 100m
+    cpu: 500m
     memory: 512Mi
   limits:
-    cpu: 500m
-    memory: 1Gi
+    cpu: "2"
+    memory: 2Gi
 
 # Istio - 공통 Gateway(istio-system/api-gateway) 사용
 istio:
