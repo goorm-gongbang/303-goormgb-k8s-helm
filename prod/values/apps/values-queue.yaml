@@ -4,7 +4,7 @@ contextPath: "/queue"
 replicaCount: 1
 
 image:
-  name: "prod/playball/web/queue"
+  name: "playball/web/queue"
   tag: "08a50e4"
   pullPolicy: Always
 

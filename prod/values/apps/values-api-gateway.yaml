@@ -4,7 +4,7 @@ contextPath: ""  # api-gateway는 context path 없음
 replicaCount: 1
 
 image:
-  name: "prod/playball/web/api-gateway"
+  name: "playball/web/api-gateway"
   tag: "08a50e4"
   pullPolicy: Always
 
