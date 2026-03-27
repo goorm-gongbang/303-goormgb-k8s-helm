@@ -29,7 +29,10 @@
   "links": [],
   "panels": [
     {
-      "datasource": { "type": "loki", "uid": "${datasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${datasource}"
+      },
       "description": "시간대별 로그 발생 건수입니다.",
       "fieldConfig": {
         "defaults": {
@@ -108,8 +111,11 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${datasource}" },
-          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" [$__interval]))",
+          "datasource": {
+            "type": "loki",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" | json | __error__=\"\" | level=~\"$log_level\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -120,7 +126,10 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "loki", "uid": "${datasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${datasource}"
+      },
       "description": "Logs from services running in Kubernetes",
       "fieldConfig": {
         "defaults": {},
@@ -146,9 +155,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${datasource}" },
+          "datasource": {
+            "type": "loki",
+            "uid": "${datasource}"
+          },
           "editorMode": "code",
-          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\"",
+          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" | json | __error__=\"\" | level=~\"$log_level\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -187,7 +199,10 @@
           "text": "dev-webs",
           "value": "dev-webs"
         },
-        "datasource": { "type": "loki", "uid": "${datasource}" },
+        "datasource": {
+          "type": "loki",
+          "uid": "${datasource}"
+        },
         "definition": "label_values(namespace)",
         "hide": 0,
         "includeAll": false,
@@ -205,10 +220,17 @@
         "allValue": ".+",
         "current": {
           "selected": true,
-          "text": ["All"],
-          "value": ["$__all"]
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
-        "datasource": { "type": "loki", "uid": "${datasource}" },
+        "datasource": {
+          "type": "loki",
+          "uid": "${datasource}"
+        },
         "definition": "label_values({namespace=\"$namespace\"}, app)",
         "hide": 0,
         "includeAll": true,
@@ -244,7 +266,7 @@
         "current": {
           "selected": true,
           "text": "전체",
-          "value": "|~ `.+`"
+          "value": ""
         },
         "description": "로그 유형 필터링",
         "hide": 0,
@@ -256,7 +278,7 @@
           {
             "selected": true,
             "text": "전체",
-            "value": "|~ `.+`"
+            "value": ""
           },
           {
             "selected": false,
@@ -274,7 +296,7 @@
             "value": "!~ `kube-probe`"
           }
         ],
-        "query": "전체 : |~ `.+`,비즈니스 로그 : !~ `Hibernate:` !~ `kube-probe`,SQL 쿼리 (Hibernate) : |~ `Hibernate:`,Health Check 제외 : !~ `kube-probe`",
+        "query": "전체 :,비즈니스 로그 : !~ `Hibernate:` !~ `kube-probe`,SQL 쿼리 (Hibernate) : |~ `Hibernate:`,Health Check 제외 : !~ `kube-probe`",
         "type": "custom"
       },
       {
@@ -306,6 +328,53 @@
         ],
         "query": "stdout,stderr",
         "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "전체",
+          "value": ".+"
+        },
+        "description": "애플리케이션 로그 레벨 필터링",
+        "hide": 0,
+        "includeAll": false,
+        "label": "로그 레벨",
+        "multi": false,
+        "name": "log_level",
+        "options": [
+          {
+            "selected": true,
+            "text": "전체",
+            "value": ".+"
+          },
+          {
+            "selected": false,
+            "text": "TRACE",
+            "value": "TRACE"
+          },
+          {
+            "selected": false,
+            "text": "DEBUG",
+            "value": "DEBUG"
+          },
+          {
+            "selected": false,
+            "text": "INFO",
+            "value": "INFO"
+          },
+          {
+            "selected": false,
+            "text": "WARN",
+            "value": "WARN"
+          },
+          {
+            "selected": false,
+            "text": "ERROR",
+            "value": "ERROR"
+          }
+        ],
+        "query": "전체 : .+,TRACE : TRACE,DEBUG : DEBUG,INFO : INFO,WARN : WARN,ERROR : ERROR",
+        "type": "custom"
       }
     ]
   },
@@ -317,6 +386,6 @@
   "timezone": "",
   "title": "로그 확인(Loki Kubernetes Logs)",
   "uid": "cfevec81ezw8wc",
-  "version": 13,
+  "version": 14,
   "weekStart": ""
 }
