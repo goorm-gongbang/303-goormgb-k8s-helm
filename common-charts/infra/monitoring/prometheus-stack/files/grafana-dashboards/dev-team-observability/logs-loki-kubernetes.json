@@ -115,7 +115,7 @@
             "type": "loki",
             "uid": "${datasource}"
           },
-          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" |~ `\\\"level\\\"\\s*:\\s*\\\"$log_level\\\"` [$__interval]))",
+          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" $log_level [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -160,7 +160,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" |~ `\\\"level\\\"\\s*:\\s*\\\"$log_level\\\"`",
+          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" $log_level",
           "queryType": "range",
           "refId": "A"
         }
@@ -247,7 +247,7 @@
       {
         "current": {
           "text": "",
-          "value": ""
+          "value": "|= ``"
         },
         "description": "검색어 (ERROR, WARN 등 로그 레벨 포함)",
         "label": "검색어",
@@ -256,7 +256,7 @@
           {
             "selected": true,
             "text": "",
-            "value": ""
+            "value": "|= ``"
           }
         ],
         "query": "",
@@ -266,7 +266,7 @@
         "current": {
           "selected": true,
           "text": "전체",
-          "value": ""
+          "value": "|= ``"
         },
         "description": "로그 유형 필터링",
         "hide": 0,
@@ -296,7 +296,7 @@
             "value": "!~ `kube-probe`"
           }
         ],
-        "query": "전체 :,비즈니스 로그 : !~ `Hibernate:` !~ `kube-probe`,SQL 쿼리 (Hibernate) : |~ `Hibernate:`,Health Check 제외 : !~ `kube-probe`",
+        "query": "전체 : |= ``,비즈니스 로그 : !~ `Hibernate:` !~ `kube-probe`,SQL 쿼리 (Hibernate) : |~ `Hibernate:`,Health Check 제외 : !~ `kube-probe`",
         "type": "custom"
       },
       {
@@ -333,7 +333,7 @@
         "current": {
           "selected": true,
           "text": "전체",
-          "value": ".+"
+          "value": "|= ``"
         },
         "description": "애플리케이션 로그 레벨 필터링",
         "hide": 0,
@@ -345,35 +345,35 @@
           {
             "selected": true,
             "text": "전체",
-            "value": ".+"
+            "value": "|= ``"
           },
           {
             "selected": false,
             "text": "TRACE",
-            "value": "TRACE"
+            "value": "|~ `\"level\": ?\"TRACE\"`"
           },
           {
             "selected": false,
             "text": "DEBUG",
-            "value": "DEBUG"
+            "value": "|~ `\"level\": ?\"DEBUG\"`"
           },
           {
             "selected": false,
             "text": "INFO",
-            "value": "INFO"
+            "value": "|~ `\"level\": ?\"INFO\"`"
           },
           {
             "selected": false,
             "text": "WARN",
-            "value": "WARN"
+            "value": "|~ `\"level\": ?\"WARN\"`"
           },
           {
             "selected": false,
             "text": "ERROR",
-            "value": "ERROR"
+            "value": "|~ `\"level\": ?\"ERROR\"`"
           }
         ],
-        "query": "전체 : .+,TRACE : TRACE,DEBUG : DEBUG,INFO : INFO,WARN : WARN,ERROR : ERROR",
+        "query": "전체 : |= ``,TRACE : |~ `\"level\": ?\"TRACE\"`,DEBUG : |~ `\"level\": ?\"DEBUG\"`,INFO : |~ `\"level\": ?\"INFO\"`,WARN : |~ `\"level\": ?\"WARN\"`,ERROR : |~ `\"level\": ?\"ERROR\"`",
         "type": "custom"
       }
     ]
