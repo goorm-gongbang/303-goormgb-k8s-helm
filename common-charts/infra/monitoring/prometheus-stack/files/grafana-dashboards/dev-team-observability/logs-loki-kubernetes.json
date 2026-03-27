@@ -115,7 +115,7 @@
             "type": "loki",
             "uid": "${datasource}"
           },
-          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" | json | __error__ = \"\" | level =~ \"$log_level\" [$__interval]))",
+          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" |~ `\\\"level\\\"\\s*:\\s*\\\"$log_level\\\"` [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -160,7 +160,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" | json | __error__ = \"\" | level =~ \"$log_level\"",
+          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" |~ `\\\"level\\\"\\s*:\\s*\\\"$log_level\\\"`",
           "queryType": "range",
           "refId": "A"
         }
