@@ -30,6 +30,12 @@ global:
 
 meshConfig:
   accessLogFile: /dev/stdout
+  enableTracing: true
+  defaultConfig:
+    tracing:
+      sampling: 100  # staging은 100% 샘플링
+      zipkin:
+        address: "tempo.monitoring.svc.cluster.local:9411"
 
 # Legacy gateways 비활성화 (ALB Ingress 사용)
 sharedGateway:

@@ -573,12 +573,80 @@
       ],
       "title": "현재 저장된 아이템 수",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
+      "id": 20,
+      "panels": [],
+      "title": "Redis 로그",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "${loki}" },
+      "description": "Java 서비스의 Redis 클라이언트 로그 (Lettuce/Spring Data Redis)",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 34 },
+      "id": 21,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"staging-webs\", app=~\"$log_app\"} |~ `(?i)redis|lettuce`", "queryType": "range", "refId": "A" }],
+      "title": "서비스 Redis 로그",
+      "type": "logs"
+    },
+    {
+      "datasource": { "type": "datasource", "uid": "grafana" },
+      "description": "",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 44 },
+      "id": 22,
+      "options": {
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
+        "content": "## ElastiCache 서버 로그\n\nCloudWatch Logs로 내보내려면 Terraform 설정 필요 (Redis 6.0+)\n\n**Terraform 설정:**\n```hcl\n# modules/elasticache/main.tf\n# ⚠️ 추가 비용 발생 (수집: $0.76/GB, 저장: $0.03/GB/월)\nlog_delivery_configuration {\n  destination      = aws_cloudwatch_log_group.redis.name\n  destination_type = \"cloudwatch-logs\"\n  log_format       = \"json\"\n  log_type         = \"slow-log\"  # 또는 \"engine-log\"\n}\n```\n\n**수동 확인:**\n```bash\nredis-cli SLOWLOG GET 10\n```",
+        "mode": "markdown"
+      },
+      "title": "ElastiCache 서버 로그 안내",
+      "type": "text"
     }
   ],
   "schemaVersion": 39,
   "tags": ["elasticache", "redis", "cloudwatch", "cache", "queue"],
   "templating": {
     "list": [
+      {
+        "current": {},
+        "hide": 2,
+        "includeAll": false,
+        "label": "Loki",
+        "multi": false,
+        "name": "loki",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "allValue": ".+",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": { "type": "loki", "uid": "${loki}" },
+        "definition": "label_values({namespace=\"staging-webs\"}, app)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "서비스 (로그)",
+        "multi": true,
+        "name": "log_app",
+        "options": [],
+        "query": "label_values({namespace=\"staging-webs\"}, app)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
       {
         "current": {},
         "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
@@ -606,7 +674,7 @@
       }
     ]
   },
-  "time": { "from": "now-6h", "to": "now" },
+  "time": { "from": "now-30m", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
   "title": "Cache & Queue - ElastiCache Redis",
