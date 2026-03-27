@@ -54,12 +54,12 @@ dashboards:
     folderName: "STAGING 알람 현황판"
   businessKpi:
     enabled: true
-    folderName: "STAGING 비즈니스 KPI"
+    folderName: "STAGING 알람 현황판"
   businessPm:
     folderName: "STAGING 사용자 행동 분석(PM)"
   securityOps:
     enabled: true
-    folderName: "STAGING 보안 모니터링"
+    folderName: "STAGING 알람 현황판"
 
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
 fullnameOverride: prom
