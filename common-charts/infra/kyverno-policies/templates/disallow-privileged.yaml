@@ -1,0 +1,43 @@
+{{- if .Values.policies.disallowPrivileged.enabled }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-privileged-containers
+  annotations:
+    policies.kyverno.io/title: Disallow Privileged Containers
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      privileged 모드로 실행되는 컨테이너를 차단합니다.
+      privileged 컨테이너는 호스트의 모든 장치에 접근할 수 있어 보안 위험이 있습니다.
+spec:
+  validationFailureAction: {{ .Values.validationFailureAction }}
+  background: true
+  rules:
+    - name: deny-privileged
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      exclude:
+        any:
+          {{- range .Values.excludeNamespaces }}
+          - resources:
+              namespaces:
+                - {{ . }}
+          {{- end }}
+      validate:
+        message: "Privileged 컨테이너는 허용되지 않습니다."
+        pattern:
+          spec:
+            containers:
+              - securityContext:
+                  privileged: "false"
+            =(initContainers):
+              - securityContext:
+                  privileged: "false"
+            =(ephemeralContainers):
+              - securityContext:
+                  privileged: "false"
+{{- end }}

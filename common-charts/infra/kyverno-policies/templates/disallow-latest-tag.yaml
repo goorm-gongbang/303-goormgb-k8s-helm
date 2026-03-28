@@ -1,0 +1,38 @@
+{{- if .Values.policies.disallowLatestTag.enabled }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-latest-tag
+  annotations:
+    policies.kyverno.io/title: Disallow Latest Tag
+    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      컨테이너 이미지에 'latest' 태그 사용을 금지합니다.
+      명시적인 버전 태그를 사용하면 배포 재현성과 롤백이 용이합니다.
+spec:
+  validationFailureAction: {{ .Values.validationFailureAction }}
+  background: true
+  rules:
+    - name: disallow-latest
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      exclude:
+        any:
+          {{- range .Values.excludeNamespaces }}
+          - resources:
+              namespaces:
+                - {{ . }}
+          {{- end }}
+      validate:
+        message: "이미지 태그 ':latest'는 허용되지 않습니다. 명시적인 버전 태그를 사용하세요."
+        pattern:
+          spec:
+            containers:
+              - image: "!*:latest"
+            =(initContainers):
+              - image: "!*:latest"
+{{- end }}

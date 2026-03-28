@@ -1,0 +1,34 @@
+# Kyverno Policies for Staging
+
+# Staging 환경에서는 Audit 모드 (위반 로깅만, 배포 허용)
+validationFailureAction: Audit
+
+policies:
+  requireLabels:
+    enabled: true
+    requiredLabels:
+      - app
+      - version
+
+  disallowPrivileged:
+    enabled: true
+
+  disallowLatestTag:
+    enabled: true
+
+  requireResourceLimits:
+    enabled: true
+
+  requireProbes:
+    enabled: false  # staging에서는 비활성화
+
+excludeNamespaces:
+  - kube-system
+  - kube-public
+  - kube-node-lease
+  - kyverno
+  - argocd
+  - istio-system
+  - monitoring
+  - external-secrets
+  - karpenter
