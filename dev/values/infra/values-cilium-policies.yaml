@@ -1,0 +1,61 @@
+# CiliumNetworkPolicy - Dev 환경 설정
+# Phase 1: Audit 모드 (현재)
+# Phase 2: 점진적 적용 (auditMode: false 후 allowServices 하나씩 활성화)
+
+# 전체 정책 활성화
+enabled: true
+
+# ===== Phase 1: Audit 모드 =====
+# 트래픽 차단 없이 Hubble에서 관측만
+auditMode: true
+
+# ===== Phase 2: Default Deny + Allow Policies =====
+# Phase 2로 전환 시: auditMode: false
+
+defaultDeny:
+  enabled: false
+  namespaces:
+    - dev-webs
+    - dev-ai
+    - data
+
+allowDns:
+  enabled: false
+
+allowServices:
+  enabled: false
+
+  # dev-webs namespace 정책
+  devWebs:
+    allowInternal: true
+    allowFromIngress: true
+    allowToData: true
+    allowToAi: true
+
+  # dev-ai namespace 정책
+  devAi:
+    allowInternal: true
+    allowFromWebs: true
+    allowToData: true
+
+  # data namespace 정책
+  data:
+    allowInternal: true
+    allowFromWebs: true
+    allowFromAi: true
+
+  # monitoring namespace 정책
+  monitoring:
+    allowScrape: true
+    allowGrafanaToLoki: true
+    allowLogCollection: true
+
+  # kube-system namespace 정책
+  kubeSystem:
+    allowCilium: true
+    allowHubble: true
+
+  # 외부 네트워크 접근
+  external:
+    allowHttps: true
+    allowFqdn: false  # FQDN 기반은 선택적 활성화

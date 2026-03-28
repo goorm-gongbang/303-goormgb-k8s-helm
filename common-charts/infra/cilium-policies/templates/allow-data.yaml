@@ -1,0 +1,73 @@
+{{- if and .Values.enabled .Values.allowServices.enabled (not .Values.auditMode) }}
+# Phase 2: data namespace 통신 정책
+---
+# 1. data 내부 통신 허용 (Replication 등)
+{{- if .Values.allowServices.data.allowInternal }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-internal-traffic
+  namespace: data
+  annotations:
+    description: "Allow internal data namespace communication"
+spec:
+  description: "data 내부 서비스 간 통신 허용 (PostgreSQL Replication 등)"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: data
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: data
+{{- end }}
+---
+# 2. dev-webs에서 들어오는 트래픽 허용
+{{- if .Values.allowServices.data.allowFromWebs }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-from-webs
+  namespace: data
+  annotations:
+    description: "Allow traffic from dev-webs"
+spec:
+  description: "dev-webs → data (PostgreSQL, Redis) 허용"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-webs
+      toPorts:
+        - ports:
+            - port: "5432"   # PostgreSQL
+              protocol: TCP
+            - port: "6379"   # Redis
+              protocol: TCP
+            - port: "6380"   # Redis (queue)
+              protocol: TCP
+{{- end }}
+---
+# 3. dev-ai에서 들어오는 트래픽 허용
+{{- if .Values.allowServices.data.allowFromAi }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-from-ai
+  namespace: data
+  annotations:
+    description: "Allow traffic from dev-ai"
+spec:
+  description: "dev-ai → data (Redis) 허용"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-ai
+      toPorts:
+        - ports:
+            - port: "6379"   # Redis
+              protocol: TCP
+{{- end }}
+{{- end }}
