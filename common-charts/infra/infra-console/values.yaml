@@ -82,5 +82,10 @@ oauth:
   redirectUrl: "https://console.dev.goormgb.space/auth/callback"
   secureCookie: true
   allowEmails: []
-  # Secret containing OAuth credentials
+  # Option 1: Use existing Secret
   existingSecret: ""  # e.g., "infra-console-oauth"
+  # Option 2: Use External Secrets (AWS Secrets Manager)
+  secretManagerKey: ""  # e.g., "dev/infra/oauth/google"
+  secretStoreRef:
+    name: "aws-secrets-manager"
+    kind: "ClusterSecretStore"

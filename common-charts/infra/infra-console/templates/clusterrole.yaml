@@ -1,9 +1,9 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "istio-console.fullname" . }}
+  name: {{ include "infra-console.fullname" . }}
   labels:
-    {{- include "istio-console.labels" . | nindent 4 }}
+    {{- include "infra-console.labels" . | nindent 4 }}
 rules:
   # Core K8s
   - apiGroups: [""]
