@@ -10,7 +10,7 @@ cilium:
   kubeProxyReplacement: "true"
 
   # Kubernetes API Server 주소 (mini-gmk)
-  k8sServiceHost: "192.168.45.10"
+  k8sServiceHost: "192.168.45.123"
   k8sServicePort: 6443
 
   # BPF 설정
