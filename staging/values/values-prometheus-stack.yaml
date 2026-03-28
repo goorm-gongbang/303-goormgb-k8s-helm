@@ -61,6 +61,10 @@ dashboards:
     enabled: true
     folderName: "STAGING 알람 현황판"
 
+# VPC CNI Metrics (EKS eBPF)
+vpcCniMetrics:
+  enabled: true
+
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
 fullnameOverride: prom
 cleanPrometheusOperatorObjectNames: true
@@ -152,6 +156,7 @@ prometheus:
     #           storage: 30Gi
 
   # VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
+  # Service는 prometheus-stack 차트에서 생성 (vpc-cni-service.yaml)
   additionalServiceMonitors:
     - name: aws-vpc-cni
       jobLabel: k8s-app
@@ -165,6 +170,8 @@ prometheus:
         - port: metrics
           interval: 30s
           path: /metrics
+          # VPC CNI metrics port
+          targetPort: 61678
 
 # Grafana는 별도 Application으로 분리 (ociCharts.grafana)
 # values-grafana.yaml 참조
