@@ -80,8 +80,9 @@ ociCharts:
     valueFiles:
       - $values/dev/values/istio/values-kiali.yaml
 
+  # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   tigera-operator:
-    enabled: true
+    enabled: false  # Cilium eBPF로 대체
     repoURL: https://docs.tigera.io/calico/charts
     chart: tigera-operator
     version: "v3.29.3"
@@ -367,8 +368,9 @@ gitCharts:
     valueFiles:
       - ../../../../dev/values/istio/values-kiali.yaml
 
+  # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   calico-config:
-    enabled: true
+    enabled: false  # Cilium eBPF로 대체
     path: common-charts/infra/calico
     namespace: calico-system
     syncWave: "-9"
