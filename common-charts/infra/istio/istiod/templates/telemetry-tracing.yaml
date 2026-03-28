@@ -1,0 +1,15 @@
+# Telemetry API - Tracing configuration
+# Adds istio.cluster_id tag for Kiali trace queries
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: mesh-default
+  namespace: istio-system
+spec:
+  tracing:
+    - providers:
+        - name: "zipkin"
+      customTags:
+        "istio.cluster_id":
+          literal:
+            value: "Kubernetes"
