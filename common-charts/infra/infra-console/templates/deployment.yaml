@@ -65,17 +65,29 @@ spec:
             - name: GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.oauth.secretManagerKey }}
+                  name: {{ include "infra-console.fullname" . }}-oauth
+                  {{- else }}
                   name: {{ .Values.oauth.existingSecret }}
+                  {{- end }}
                   key: GOOGLE_CLIENT_ID
             - name: GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.oauth.secretManagerKey }}
+                  name: {{ include "infra-console.fullname" . }}-oauth
+                  {{- else }}
                   name: {{ .Values.oauth.existingSecret }}
+                  {{- end }}
                   key: GOOGLE_CLIENT_SECRET
             - name: SESSION_KEY
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.oauth.secretManagerKey }}
+                  name: {{ include "infra-console.fullname" . }}-oauth
+                  {{- else }}
                   name: {{ .Values.oauth.existingSecret }}
+                  {{- end }}
                   key: SESSION_KEY
             {{- end }}
           livenessProbe:

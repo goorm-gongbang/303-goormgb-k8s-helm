@@ -1,0 +1,39 @@
+# Kyverno Policies - Staging Environment
+# ValidatingPolicy (CEL based) - Kyverno 1.17+
+# staging 환경에서는 Ignore 모드로 위반 로깅만 수행
+
+# Ignore: 정책 위반 시에도 리소스 생성 허용 (audit 모드와 유사)
+# Fail: 정책 위반 시 리소스 생성 차단 (enforce 모드와 유사)
+failurePolicy: Ignore
+
+policies:
+  requireLabels:
+    enabled: true
+    requiredLabels:
+      - app
+      - version
+
+  disallowPrivileged:
+    enabled: true
+
+  disallowLatestTag:
+    enabled: true
+
+  requireResourceLimits:
+    enabled: true
+
+  requireProbes:
+    enabled: false  # staging에서는 비활성화
+
+excludeNamespaces:
+  - kube-system
+  - kube-public
+  - kube-node-lease
+  - kyverno
+  - argocd
+  - istio-system
+  - monitoring
+  - external-secrets
+  - karpenter
+  - cert-manager
+  # EKS: VPC CNI (eBPF 기반, kube-system에 포함)

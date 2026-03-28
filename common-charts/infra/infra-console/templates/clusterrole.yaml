@@ -7,8 +7,13 @@ metadata:
 rules:
   # Core K8s
   - apiGroups: [""]
-    resources: ["namespaces", "pods", "services"]
+    resources: ["namespaces", "pods", "services", "nodes"]
     verbs: ["get", "list", "watch"]
+
+  # Apps (Deployments, ReplicaSets, etc.)
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
+    verbs: ["get", "list", "watch", "update", "patch"]
 
   # Istio Networking
   - apiGroups: ["networking.istio.io"]
@@ -36,3 +41,18 @@ rules:
     resources:
       - telemetries
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Kyverno Policies
+  - apiGroups: ["kyverno.io"]
+    resources:
+      - clusterpolicies
+      - policies
+      - policyexceptions
+    verbs: ["get", "list", "watch", "update", "patch"]
+
+  # Kyverno Reports
+  - apiGroups: ["wgpolicyk8s.io"]
+    resources:
+      - policyreports
+      - clusterpolicyreports
+    verbs: ["get", "list", "watch"]

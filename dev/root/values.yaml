@@ -79,9 +79,29 @@ ociCharts:
     syncWave: "-1"
     valueFiles:
       - $values/dev/values/istio/values-kiali.yaml
+    syncOptions:
+      - RespectIgnoreDifferences=true
+      - ServerSideApply=true
+    ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+          - .metadata.annotations
+          - .spec.template.metadata.annotations
+          - .spec.template.spec.containers[].resources
+      - group: ""
+        kind: ConfigMap
+        jqPathExpressions:
+          - .data
+      - group: ""
+        kind: Service
+        jqPathExpressions:
+          - .spec.clusterIP
+          - .spec.clusterIPs
 
+  # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   tigera-operator:
-    enabled: true
+    enabled: false  # Cilium eBPF로 대체
     repoURL: https://docs.tigera.io/calico/charts
     chart: tigera-operator
     version: "v3.29.3"
@@ -367,8 +387,9 @@ gitCharts:
     valueFiles:
       - ../../../../dev/values/istio/values-kiali.yaml
 
+  # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   calico-config:
-    enabled: true
+    enabled: false  # Cilium eBPF로 대체
     path: common-charts/infra/calico
     namespace: calico-system
     syncWave: "-9"
@@ -414,6 +435,24 @@ gitCharts:
     syncWave: "5"
     valueFiles:
       - ../../../dev/values/infra/values-infra-console.yaml
+
+  # === Kyverno Policies ===
+  kyverno-policies:
+    enabled: true
+    path: common-charts/infra/kyverno-policies
+    namespace: kyverno
+    syncWave: "0"
+    valueFiles:
+      - ../../../dev/values/infra/values-kyverno-policies.yaml
+
+  # === Cilium Network Policies ===
+  cilium-policies:
+    enabled: true
+    path: common-charts/infra/cilium-policies
+    namespace: kube-system
+    syncWave: "0"
+    valueFiles:
+      - ../../../dev/values/infra/values-cilium-policies.yaml
 
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)

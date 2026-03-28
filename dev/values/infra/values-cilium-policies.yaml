@@ -1,0 +1,91 @@
+# CiliumNetworkPolicy - Dev 환경 설정
+# 2026-03-29: 전체 비활성화 - 네트워크 장애 발생으로 롤백
+# TODO: 정책 재설계 필요 (kube-system만 보호하는 방향으로)
+
+# 전체 정책 비활성화
+enabled: false
+
+# ===== Phase 2: 비활성화 =====
+auditMode: true
+
+# ===== Phase 3: Istio Ingress 설정 =====
+# istio-ingress namespace 분리 시 아래 값만 변경
+istioIngress:
+  namespace: istio-system  # TODO: istio-ingress로 변경 후 allowServices.istioIngress.enabled: true
+  appLabel: istio-ingressgateway
+
+# Default Deny - 명시적으로 허용된 트래픽만 통과
+defaultDeny:
+  enabled: true
+  namespaces:
+    - dev-webs
+    - dev-ai
+    - data
+
+# DNS 허용 - 필수! 이거 없으면 서비스 디스커버리 불가
+allowDns:
+  enabled: true
+
+# 서비스 간 통신 허용
+allowServices:
+  enabled: true
+
+  # dev-webs namespace 정책
+  devWebs:
+    allowInternal: true       # dev-webs 내부 통신
+    allowFromIngress: true    # Istio IngressGateway -> dev-webs
+    allowToData: true         # dev-webs -> data (PostgreSQL, Redis)
+    allowToAi: true           # dev-webs -> dev-ai
+
+  # dev-ai namespace 정책
+  devAi:
+    allowInternal: true       # dev-ai 내부 통신
+    allowFromWebs: true       # dev-webs -> dev-ai
+    allowToData: true         # dev-ai -> data (Redis)
+
+  # data namespace 정책
+  data:
+    allowInternal: true       # data 내부 통신 (Replication 등)
+    allowFromWebs: true       # dev-webs -> data
+    allowFromAi: true         # dev-ai -> data
+
+  # monitoring namespace 정책
+  monitoring:
+    allowInternal: true       # monitoring 내부 통신
+    allowScrape: true         # Prometheus scrape
+    allowGrafanaToLoki: true  # Grafana -> Loki
+    allowLogCollection: true  # Alloy -> Loki
+
+  # kube-system namespace 정책
+  kubeSystem:
+    allowCilium: true         # Cilium Agent 간 통신
+    allowHubble: true         # Hubble 통신
+
+  # istio-system namespace 정책
+  istioSystem:
+    allowInternal: true           # istio-system 내부 통신
+    allowKialiToPrometheus: true  # Kiali -> Prometheus
+    allowKialiToGrafana: true     # Kiali -> Grafana
+    allowKialiToTempo: true       # Kiali -> Tempo
+    allowKialiToK8sApi: true      # Kiali -> K8s API
+    allowIstiodToAll: true        # istiod 컨트롤 플레인
+
+  # 외부 네트워크 접근
+  external:
+    allowHttps: true          # 외부 HTTPS (AWS, OAuth 등)
+    allowFqdn: false          # FQDN 기반 세밀한 제어 (선택적)
+
+  # argocd namespace 정책
+  argocd:
+    allowInternal: true       # argocd 내부 통신
+    allowFromIngress: true    # IngressGateway -> ArgoCD
+    allowToK8sApi: true       # ArgoCD -> K8s API
+
+  # kyverno namespace 정책
+  kyverno:
+    enabled: true             # Kyverno 정책 활성화
+
+  # istio-ingress namespace 정책 (Phase 3)
+  # namespace 분리 완료 후 enabled: true로 변경
+  istioIngress:
+    enabled: false

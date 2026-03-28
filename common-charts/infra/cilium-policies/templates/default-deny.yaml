@@ -1,0 +1,27 @@
+{{- if and .Values.enabled .Values.defaultDeny.enabled (not .Values.auditMode) }}
+# Phase 2: Default Deny - 명시적으로 허용된 트래픽만 통과
+# 주의: 이 정책 적용 전 allow-* 정책들이 먼저 적용되어야 함!
+{{- range .Values.defaultDeny.namespaces }}
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: {{ . }}
+  annotations:
+    description: "Default deny all ingress/egress traffic"
+    phase: "2"
+spec:
+  description: |
+    Zero Trust 기본 정책
+    - 모든 ingress/egress 트래픽 차단
+    - allow-* 정책으로 명시적 허용 필요
+  endpointSelector: {}
+  ingress:
+    - fromEntities:
+        - reserved:none  # 아무것도 허용 안함
+  egress:
+    - toEntities:
+        - reserved:none  # 아무것도 허용 안함
+{{- end }}
+{{- end }}

@@ -1,0 +1,112 @@
+{{- if and .Values.enabled .Values.allowServices.enabled (not .Values.auditMode) }}
+# Phase 2: dev-ai namespace 통신 정책
+---
+# 1. dev-ai 내부 통신 허용
+{{- if .Values.allowServices.devAi.allowInternal }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-internal-traffic
+  namespace: dev-ai
+  annotations:
+    description: "Allow internal dev-ai communication"
+spec:
+  description: "dev-ai 내부 서비스 간 통신 허용"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-ai
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-ai
+{{- end }}
+---
+# 2. dev-webs에서 들어오는 트래픽 허용
+{{- if .Values.allowServices.devAi.allowFromWebs }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-from-webs
+  namespace: dev-ai
+  annotations:
+    description: "Allow traffic from dev-webs"
+spec:
+  description: "dev-webs → dev-ai 허용"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-webs
+{{- end }}
+---
+# 3. data namespace로 나가는 트래픽 허용 (Redis)
+{{- if .Values.allowServices.devAi.allowToData }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-to-data
+  namespace: dev-ai
+  annotations:
+    description: "Allow dev-ai to access data namespace"
+spec:
+  description: "dev-ai → data (Redis) 허용"
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: data
+      toPorts:
+        - ports:
+            - port: "6379"   # Redis
+              protocol: TCP
+{{- end }}
+---
+# 4. DNS 쿼리 허용 (kube-dns)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-to-dns
+  namespace: dev-ai
+  annotations:
+    description: "Allow DNS queries to CoreDNS"
+spec:
+  description: "dev-ai → kube-dns (DNS 쿼리) 허용"
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+---
+# 5. Tempo로 트레이싱 전송 허용
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-to-tempo
+  namespace: dev-ai
+  annotations:
+    description: "Allow tracing to Tempo"
+spec:
+  description: "dev-ai → Tempo (트레이싱) 허용"
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+      toPorts:
+        - ports:
+            - port: "9411"   # Zipkin
+              protocol: TCP
+            - port: "4317"   # OTLP gRPC
+              protocol: TCP
+            - port: "4318"   # OTLP HTTP
+              protocol: TCP
+{{- end }}

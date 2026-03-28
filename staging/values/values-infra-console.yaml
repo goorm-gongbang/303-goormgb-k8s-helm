@@ -1,0 +1,59 @@
+# Infra Console - Staging Values
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/goorm-gongbang/305-goormgb-infra-console
+  tag: latest
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: ghcr-secret
+
+service:
+  type: ClusterIP
+  port: 8088
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+config:
+  logLevel: info
+  listenAddr: ":8088"
+
+# GitOps configuration
+gitops:
+  enabled: false
+
+# OAuth configuration (기존 staging/argocd/oauth 공유)
+oauth:
+  enabled: true
+  secretManagerKey: "staging/argocd/oauth"
+  redirectUrl: "https://console.staging.playball.one/auth/callback"
+  secureCookie: true
+  allowEmails:
+    - "212clab@gmail.com"
+    - "rhuba23@gmail.com"
+    - "chamchi0129@gmail.com"
+
+# Node placement
+nodeSelector:
+  role: infra
+
+tolerations:
+  - key: "role"
+    operator: "Equal"
+    value: "infra"
+    effect: "NoSchedule"
+
+# Istio VirtualService
+virtualService:
+  enabled: true
+  gateway: "istio-system/api-gateway"
+  hosts:
+    - "console.staging.playball.one"

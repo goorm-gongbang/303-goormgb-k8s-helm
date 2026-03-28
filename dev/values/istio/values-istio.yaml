@@ -74,7 +74,9 @@ sharedGateway:
   hosts:
     - "argocd.goormgb.space"
     - "cloudbeaver.goormgb.space"
+    - "console.goormgb.space"
     - "grafana.goormgb.space"
+    - "hubble.goormgb.space"
     - "kiali.goormgb.space"
     - "prometheus.goormgb.space"
     - "redisinsight.goormgb.space"
@@ -121,6 +123,12 @@ kiali-server:
 kialiVirtualService:
   enabled: true
   host: "kiali.goormgb.space"
+
+# Hubble UI VirtualService (Cilium 관측성 UI)
+# Cilium은 bootstrap으로 설치, VirtualService만 ArgoCD 관리
+hubbleVirtualService:
+  enabled: true
+  host: "hubble.goormgb.space"
 
 # Kiali OIDC (Google OAuth) - 비활성화
 oidc:

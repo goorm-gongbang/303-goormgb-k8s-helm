@@ -1,0 +1,208 @@
+{{- if and .Values.enabled .Values.allowServices.enabled (not .Values.auditMode) }}
+# istio-system namespace 통신 정책
+# Kiali, istiod, IngressGateway 등이 다른 namespace와 통신할 수 있도록 허용
+---
+# 0-1. 외부(world) -> IngressGateway 허용 (Cloudflare, ALB 등)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-world-to-ingress
+  namespace: {{ .Values.istioIngress.namespace | default "istio-system" }}
+  annotations:
+    description: "Allow external traffic to IngressGateway"
+spec:
+  description: "외부(world) -> IngressGateway 허용"
+  endpointSelector:
+    matchLabels:
+      app: {{ .Values.istioIngress.appLabel | default "istio-ingressgateway" }}
+  ingress:
+    - fromEntities:
+        - world
+        - cluster
+---
+# 0-2. IngressGateway -> 모든 백엔드 namespace (Grafana, ArgoCD, Apps 등)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-ingressgateway-egress
+  namespace: {{ .Values.istioIngress.namespace | default "istio-system" }}
+  annotations:
+    description: "Allow IngressGateway to reach backend services"
+spec:
+  description: "IngressGateway -> 모든 백엔드 namespace 허용"
+  endpointSelector:
+    matchLabels:
+      app: {{ .Values.istioIngress.appLabel | default "istio-ingressgateway" }}
+  egress:
+    # monitoring (Grafana, Prometheus 등)
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+    # argocd
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: argocd
+    # dev-webs
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-webs
+    # dev-ai
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-ai
+    # istio-system (Kiali 등)
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: istio-system
+    # data
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: data
+---
+# 1. Kiali -> Prometheus (메트릭 조회)
+{{- if .Values.allowServices.istioSystem.allowKialiToPrometheus }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-kiali-to-prometheus
+  namespace: istio-system
+  annotations:
+    description: "Allow Kiali to query Prometheus"
+spec:
+  description: "Kiali -> Prometheus 메트릭 조회 허용"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: kiali
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+      toPorts:
+        - ports:
+            - port: "9090"   # Prometheus
+              protocol: TCP
+{{- end }}
+---
+# 2. Kiali -> Grafana (대시보드 링크)
+{{- if .Values.allowServices.istioSystem.allowKialiToGrafana }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-kiali-to-grafana
+  namespace: istio-system
+  annotations:
+    description: "Allow Kiali to access Grafana"
+spec:
+  description: "Kiali -> Grafana 접근 허용"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: kiali
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+      toPorts:
+        - ports:
+            - port: "80"     # Grafana
+              protocol: TCP
+            - port: "3000"   # Grafana direct
+              protocol: TCP
+{{- end }}
+---
+# 3. Kiali -> Tempo (트레이싱)
+{{- if .Values.allowServices.istioSystem.allowKialiToTempo }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-kiali-to-tempo
+  namespace: istio-system
+  annotations:
+    description: "Allow Kiali to query Tempo"
+spec:
+  description: "Kiali -> Tempo 트레이싱 조회 허용"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: kiali
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+      toPorts:
+        - ports:
+            - port: "3200"   # Tempo HTTP
+              protocol: TCP
+{{- end }}
+---
+# 4. Kiali -> Kubernetes API (클러스터 정보 조회)
+{{- if .Values.allowServices.istioSystem.allowKialiToK8sApi }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-kiali-to-k8s-api
+  namespace: istio-system
+  annotations:
+    description: "Allow Kiali to access Kubernetes API"
+spec:
+  description: "Kiali -> Kubernetes API 허용"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: kiali
+  egress:
+    - toEntities:
+        - kube-apiserver
+{{- end }}
+---
+# 5. istiod -> 모든 namespace (sidecar injection, xDS)
+{{- if .Values.allowServices.istioSystem.allowIstiodToAll }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-istiod-control-plane
+  namespace: istio-system
+  annotations:
+    description: "Allow istiod to manage all namespaces"
+spec:
+  description: "istiod 컨트롤 플레인 통신 허용"
+  endpointSelector:
+    matchLabels:
+      app: istiod
+  egress:
+    - toEntities:
+        - kube-apiserver
+    - toEndpoints:
+        - {}  # 모든 Pod (sidecar injection 위해)
+  ingress:
+    - fromEndpoints:
+        - {}  # 모든 Pod에서 xDS 연결 허용
+      toPorts:
+        - ports:
+            - port: "15010"  # xDS plaintext
+              protocol: TCP
+            - port: "15012"  # xDS TLS
+              protocol: TCP
+            - port: "15014"  # Control plane monitoring
+              protocol: TCP
+{{- end }}
+---
+# 6. istio-system 내부 통신
+{{- if .Values.allowServices.istioSystem.allowInternal }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-internal-traffic
+  namespace: istio-system
+  annotations:
+    description: "Allow internal istio-system communication"
+spec:
+  description: "istio-system 내부 통신 허용"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: istio-system
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: istio-system
+{{- end }}
+{{- end }}
