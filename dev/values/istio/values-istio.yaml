@@ -8,57 +8,57 @@ base:
     istioNamespace: istio-system
 
 # ===== Istiod =====
-istiod:
-  global:
-    istioNamespace: istio-system
+# Istio 공식 Helm chart는 meshConfig, pilot, global을 루트 레벨에서 기대함
 
-    # Sidecar Proxy 기본 리소스 설정
-    proxy:
-      resources:
-        requests:
-          cpu: 50m
-          memory: 64Mi
-        limits:
-          cpu: 500m
-          memory: 256Mi
-
-  meshConfig:
-    enableTracing: true
-
-    # Istio 1.22+ extensionProviders 방식 (Telemetry API 연동)
-    extensionProviders:
-      - name: zipkin
-        zipkin:
-          service: tempo.monitoring.svc.cluster.local
-          port: 9411
-
-    # 기본 tracing provider 설정
-    defaultProviders:
-      tracing:
-        - zipkin
-
-    defaultConfig:
-      tracing:
-        sampling: 100  # 100% 샘플링 (kubeadm-dev 환경)
-
-    # Access logging
-    accessLogFile: /dev/stdout
-
-  pilot:
-    # CP 노드에 배치
-    nodeSelector:
-      kubernetes.io/hostname: mini-gmk
-
+global:
+  istioNamespace: istio-system
+  # Sidecar Proxy 기본 리소스 설정
+  proxy:
     resources:
       requests:
         cpu: 50m
-        memory: 128Mi
+        memory: 64Mi
       limits:
-        cpu: 200m
-        memory: 512Mi
+        cpu: 500m
+        memory: 256Mi
 
-    autoscaleEnabled: false
-    replicaCount: 1
+meshConfig:
+  enableTracing: true
+
+  # Istio 1.22+ extensionProviders 방식 (Telemetry API 연동)
+  extensionProviders:
+    - name: zipkin
+      zipkin:
+        service: tempo.monitoring.svc.cluster.local
+        port: 9411
+
+  # 기본 tracing provider 설정
+  defaultProviders:
+    tracing:
+      - zipkin
+
+  defaultConfig:
+    tracing:
+      sampling: 100  # 100% 샘플링 (kubeadm-dev 환경)
+
+  # Access logging
+  accessLogFile: /dev/stdout
+
+pilot:
+  # CP 노드에 배치
+  nodeSelector:
+    kubernetes.io/hostname: mini-gmk
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+
+  autoscaleEnabled: false
+  replicaCount: 1
 
 # ===== Shared Gateway =====
 # istio-ingressgateway는 istioctl로 설치됨 (scripts/istio/install.sh)
