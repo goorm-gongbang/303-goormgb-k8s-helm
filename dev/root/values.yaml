@@ -406,6 +406,15 @@ gitCharts:
     valueFiles:
       - ../../../../dev/values/monitoring/values-alloy.yaml
 
+  # === Infra Console ===
+  infra-console:
+    enabled: true
+    path: common-charts/infra/infra-console
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../dev/values/infra/values-infra-console.yaml
+
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
