@@ -82,5 +82,7 @@ oauth:
   redirectUrl: "https://console.goormgb.space/auth/callback"
   secureCookie: true
   allowEmails: []
-  # Secret containing OAuth credentials
+  # AWS Secrets Manager key (ESO will create secret)
+  secretManagerKey: ""  # e.g., "dev/infra/oauth/google"
+  # Or use existing secret
   existingSecret: ""  # e.g., "infra-console-oauth"
