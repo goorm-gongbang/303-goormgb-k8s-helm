@@ -36,7 +36,4 @@ excludeNamespaces:
   - external-secrets
   - karpenter
   - cert-manager
-  # Calico networking (privileged 필요)
-  - calico-system
-  - calico-apiserver
-  - tigera-operator
+  # EKS: VPC CNI (eBPF 기반, kube-system에 포함)
