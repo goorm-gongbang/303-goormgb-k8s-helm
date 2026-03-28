@@ -1,6 +1,6 @@
 {{- if .Values.policies.requireLabels.enabled }}
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
 metadata:
   name: require-labels
   annotations:
@@ -9,29 +9,34 @@ metadata:
     policies.kyverno.io/severity: medium
     policies.kyverno.io/description: >-
       Pod에 필수 라벨(app, version)이 있는지 확인합니다.
+      라벨은 리소스 식별과 서비스 디스커버리에 필수적입니다.
 spec:
-  validationFailureAction: {{ .Values.validationFailureAction }}
-  background: true
-  rules:
-    - name: require-labels
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      exclude:
-        any:
-          {{- range .Values.excludeNamespaces }}
-          - resources:
-              namespaces:
-                - {{ . }}
-          {{- end }}
-      validate:
-        message: "Pod에는 'app' 및 'version' 라벨이 필요합니다."
-        pattern:
-          metadata:
-            labels:
-              {{- range .Values.policies.requireLabels.requiredLabels }}
-              {{ . }}: "?*"
-              {{- end }}
+  failurePolicy: {{ .Values.failurePolicy | default "Ignore" }}
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+    excludeResourceRules:
+      {{- range .Values.excludeNamespaces }}
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+        resourceNames: []
+        namespaces:
+          - {{ . }}
+      {{- end }}
+  variables:
+    - name: labels
+      expression: "object.metadata.?labels.orValue({})"
+  validations:
+    {{- range .Values.policies.requireLabels.requiredLabels }}
+    - expression: |
+        has(variables.labels.{{ . }}) && variables.labels.{{ . }} != ""
+      message: "Pod에는 '{{ . }}' 라벨이 필요합니다."
+    {{- end }}
+  auditAnnotations:
+    - key: "policy-violation"
+      valueExpression: "'require-labels'"
 {{- end }}
