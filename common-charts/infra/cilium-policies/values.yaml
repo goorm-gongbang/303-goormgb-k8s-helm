@@ -1,12 +1,19 @@
 # CiliumNetworkPolicy Configuration
 # Phase 1: Audit 모드 (기본)
 # Phase 2: 점진적 적용
+# Phase 3: istio-ingress 분리 대비
 
 # 전체 정책 활성화
 enabled: true
 
 # Audit 모드 - 차단하지 않고 로깅만 (Phase 1)
 auditMode: true
+
+# Istio Ingress 설정 (Phase 3 준비)
+# istio-ingress namespace 분리 시 이 값만 변경
+istioIngress:
+  namespace: istio-system  # Phase 3 후: istio-ingress
+  appLabel: istio-ingressgateway
 
 # Default Deny 정책 (Phase 2+)
 defaultDeny:
@@ -69,3 +76,8 @@ allowServices:
     allowHttps: true
     # FQDN 기반 세밀한 제어
     allowFqdn: false
+
+  # istio-ingress namespace 정책 (Phase 3)
+  # namespace 분리 후 enabled: true로 변경
+  istioIngress:
+    enabled: false
