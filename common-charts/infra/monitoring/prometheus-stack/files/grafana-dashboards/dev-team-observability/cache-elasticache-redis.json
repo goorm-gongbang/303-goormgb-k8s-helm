@@ -600,7 +600,7 @@
       "id": 22,
       "options": {
         "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
-        "content": "## ElastiCache 서버 로그\n\nCloudWatch Logs로 내보내려면 Terraform 설정 필요 (Redis 6.0+)\n\n**Terraform 설정:**\n```hcl\n# modules/elasticache/main.tf\nlog_delivery_configuration {\n  destination      = aws_cloudwatch_log_group.redis.name\n  destination_type = \"cloudwatch-logs\"\n  log_format       = \"json\"\n  log_type         = \"slow-log\"  # 또는 \"engine-log\"\n}\n```\n\n**수동 확인:**\n```bash\nredis-cli SLOWLOG GET 10\n```",
+        "content": "## ElastiCache 서버 로그\n\nCloudWatch Logs로 내보내려면 Terraform 설정 필요 (Redis 6.0+)\n\n**Terraform 설정:**\n```hcl\n# modules/elasticache/main.tf\n# ⚠️ 추가 비용 발생 (수집: $0.76/GB, 저장: $0.03/GB/월)\nlog_delivery_configuration {\n  destination      = aws_cloudwatch_log_group.redis.name\n  destination_type = \"cloudwatch-logs\"\n  log_format       = \"json\"\n  log_type         = \"slow-log\"  # 또는 \"engine-log\"\n}\n```\n\n**수동 확인:**\n```bash\nredis-cli SLOWLOG GET 10\n```",
         "mode": "markdown"
       },
       "title": "ElastiCache 서버 로그 안내",
