@@ -13,7 +13,7 @@
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
       "id": 1,
       "panels": [],
-      "title": "🔍 Cilium Agent 상태",
+      "title": "Cilium Agent 상태",
       "type": "row"
     },
     {
@@ -38,7 +38,7 @@
           "refId": "A"
         }
       ],
-      "title": "✅ 전체 엔드포인트",
+      "title": "전체 엔드포인트",
       "type": "stat"
     },
     {
@@ -62,7 +62,7 @@
           "refId": "A"
         }
       ],
-      "title": "⚠️ 재생성 실패 (5분)",
+      "title": "재생성 실패 (5분)",
       "type": "stat"
     },
     {
@@ -86,7 +86,7 @@
           "refId": "A"
         }
       ],
-      "title": "🛡️ 활성 정책 수",
+      "title": "활성 정책 수",
       "type": "stat"
     },
     {
@@ -110,7 +110,7 @@
           "refId": "A"
         }
       ],
-      "title": "💾 BPF 메모리 (MB)",
+      "title": "BPF 메모리 (MB)",
       "type": "stat"
     },
     {
@@ -118,7 +118,7 @@
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
       "id": 10,
       "panels": [],
-      "title": "📊 트래픽 현황",
+      "title": "트래픽 현황",
       "type": "row"
     },
     {
@@ -148,7 +148,7 @@
           "refId": "B"
         }
       ],
-      "title": "📈 포워딩된 패킷",
+      "title": "포워딩된 패킷",
       "type": "timeseries"
     },
     {
@@ -173,7 +173,7 @@
           "refId": "A"
         }
       ],
-      "title": "🚫 드롭된 패킷 (사유별)",
+      "title": "드롭된 패킷 (사유별)",
       "type": "timeseries"
     },
     {
@@ -181,7 +181,7 @@
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
       "id": 20,
       "panels": [],
-      "title": "🔧 eBPF / Conntrack",
+      "title": "eBPF / Conntrack",
       "type": "row"
     },
     {
@@ -201,17 +201,17 @@
       "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
         {
-          "expr": "cilium_bpf_map_entries{map_name=~\"cilium_ct.*\"}",
-          "legendFormat": "{{instance}} - {{map_name}}",
+          "expr": "sum(cilium_datapath_conntrack_gc_entries{status=\"alive\"}) by (instance, protocol)",
+          "legendFormat": "{{instance}} - {{protocol}}",
           "refId": "A"
         }
       ],
-      "title": "🔗 Conntrack 엔트리",
+      "title": "Conntrack 엔트리",
       "type": "timeseries"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "### BPF 시스템 콜 호출 빈도\n\n**설명**: Cilium이 커널에 eBPF 작업을 요청하는 빈도\n\n**주요 작업**:\n- `map_update`: BPF 맵 업데이트 (정책/라우팅 변경)\n- `map_delete`: BPF 맵 엔트리 삭제\n- `prog_load`: BPF 프로그램 로드\n- `map_lookup`: BPF 맵 조회\n\n**모니터링 포인트**:\n- 정상: 일정한 빈도 유지\n- 이상: 급격한 증가 → Pod 대량 생성/삭제 또는 정책 변경\n- 높은 빈도가 지속되면 CPU 사용량 증가",
+      "description": "### BPF 맵 작업 빈도\n\n**설명**: Cilium이 eBPF 맵에 수행하는 작업 빈도\n\n**주요 맵**:\n- `ct4_global`: Connection Tracking (연결 추적)\n- `lb4_services_v2`: LoadBalancer 서비스\n- `ipcache_v2`: IP 캐시\n- `lxc`: 컨테이너 엔드포인트\n\n**모니터링 포인트**:\n- 정상: 일정한 빈도 유지\n- ct4_global delete 증가: 연결 종료 많음\n- lb4 update 증가: 서비스 변경 빈번\n- 급격한 증가 → Pod 대량 생성/삭제",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -226,12 +226,12 @@
       "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
         {
-          "expr": "sum(rate(cilium_bpf_syscall_duration_seconds_count[$__rate_interval])) by (instance, operation)",
-          "legendFormat": "{{instance}} - {{operation}}",
+          "expr": "sum(rate(cilium_bpf_map_ops_total[$__rate_interval])) by (map_name, operation)",
+          "legendFormat": "{{map_name}} - {{operation}}",
           "refId": "A"
         }
       ],
-      "title": "⚙️ BPF 시스템 콜",
+      "title": "BPF 맵 작업",
       "type": "timeseries"
     },
     {
@@ -239,7 +239,7 @@
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
       "id": 30,
       "panels": [],
-      "title": "🖥️ API / 컨트롤 플레인",
+      "title": "API / 컨트롤 플레인",
       "type": "row"
     },
     {
@@ -259,12 +259,12 @@
       "options": { "legend": { "calcs": ["mean", "p99"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
         {
-          "expr": "histogram_quantile(0.99, sum(rate(cilium_api_limiter_processing_duration_seconds_bucket[$__rate_interval])) by (le, api_call))",
-          "legendFormat": "{{api_call}} p99",
+          "expr": "histogram_quantile(0.99, sum(rate(cilium_agent_api_process_time_seconds_bucket[$__rate_interval])) by (le, method, path))",
+          "legendFormat": "{{method}} {{path}} p99",
           "refId": "A"
         }
       ],
-      "title": "⏱️ API 처리 시간 (p99)",
+      "title": "API 처리 시간 (p99)",
       "type": "timeseries"
     },
     {
@@ -289,7 +289,7 @@
           "refId": "A"
         }
       ],
-      "title": "🔄 엔드포인트 재생성 시간 (p99)",
+      "title": "엔드포인트 재생성 시간 (p99)",
       "type": "timeseries"
     }
   ],

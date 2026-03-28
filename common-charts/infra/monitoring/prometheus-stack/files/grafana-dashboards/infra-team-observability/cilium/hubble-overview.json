@@ -13,7 +13,7 @@
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
       "id": 1,
       "panels": [],
-      "title": "📊 플로우 개요",
+      "title": "플로우 개요",
       "type": "row"
     },
     {
@@ -37,7 +37,7 @@
           "refId": "A"
         }
       ],
-      "title": "🔄 전체 플로우/초",
+      "title": "전체 플로우/초",
       "type": "stat"
     },
     {
@@ -61,7 +61,7 @@
           "refId": "A"
         }
       ],
-      "title": "🔗 TCP 연결/초",
+      "title": "TCP 연결/초",
       "type": "stat"
     },
     {
@@ -85,7 +85,7 @@
           "refId": "A"
         }
       ],
-      "title": "🔍 DNS 쿼리/초",
+      "title": "DNS 쿼리/초",
       "type": "stat"
     },
     {
@@ -109,7 +109,7 @@
           "refId": "A"
         }
       ],
-      "title": "🚫 드롭/초",
+      "title": "드롭/초",
       "type": "stat"
     },
     {
@@ -117,7 +117,7 @@
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
       "id": 10,
       "panels": [],
-      "title": "🌐 HTTP 트래픽 (L7)",
+      "title": "HTTP 트래픽 (L7)",
       "type": "row"
     },
     {
@@ -142,7 +142,7 @@
           "refId": "A"
         }
       ],
-      "title": "📤 HTTP 요청 (메소드별)",
+      "title": "HTTP 요청 (메소드별)",
       "type": "timeseries"
     },
     {
@@ -167,7 +167,7 @@
           "refId": "A"
         }
       ],
-      "title": "📥 HTTP 응답 (상태별)",
+      "title": "HTTP 응답 (상태별)",
       "type": "timeseries"
     },
     {
@@ -175,7 +175,7 @@
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
       "id": 20,
       "panels": [],
-      "title": "🔍 DNS 트래픽",
+      "title": "DNS 트래픽",
       "type": "row"
     },
     {
@@ -200,7 +200,7 @@
           "refId": "A"
         }
       ],
-      "title": "📋 Top 10 DNS 쿼리",
+      "title": "Top 10 DNS 쿼리",
       "type": "timeseries"
     },
     {
@@ -225,7 +225,7 @@
           "refId": "A"
         }
       ],
-      "title": "📊 DNS 응답 코드",
+      "title": "DNS 응답 코드",
       "type": "timeseries"
     },
     {
@@ -233,7 +233,7 @@
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
       "id": 30,
       "panels": [],
-      "title": "🔗 TCP 트래픽",
+      "title": "TCP 트래픽",
       "type": "row"
     },
     {
@@ -258,7 +258,7 @@
           "refId": "A"
         }
       ],
-      "title": "🚦 TCP 플래그",
+      "title": "TCP 플래그",
       "type": "timeseries"
     },
     {
@@ -283,7 +283,7 @@
           "refId": "A"
         }
       ],
-      "title": "🚫 드롭 사유",
+      "title": "드롭 사유",
       "type": "timeseries"
     },
     {
@@ -291,7 +291,7 @@
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 32 },
       "id": 40,
       "panels": [],
-      "title": "🛡️ 네트워크 정책",
+      "title": "네트워크 정책",
       "type": "row"
     },
     {
@@ -316,7 +316,7 @@
           "refId": "A"
         }
       ],
-      "title": "⚖️ 정책 판정",
+      "title": "정책 판정",
       "type": "timeseries"
     }
   ],
