@@ -91,4 +91,55 @@ spec:
             - port: "50051"  # gRPC
               protocol: TCP
 {{- end }}
+---
+# 5. DNS 쿼리 허용 (kube-dns)
+{{- if .Values.allowServices.devWebs.allowDns | default true }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-to-dns
+  namespace: dev-webs
+  annotations:
+    description: "Allow DNS queries to CoreDNS"
+spec:
+  description: "dev-webs → kube-dns (DNS 쿼리) 허용"
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+{{- end }}
+---
+# 6. Tempo로 트레이싱 전송 허용
+{{- if .Values.allowServices.devWebs.allowToTempo | default true }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-to-tempo
+  namespace: dev-webs
+  annotations:
+    description: "Allow tracing to Tempo"
+spec:
+  description: "dev-webs → Tempo (트레이싱) 허용"
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+      toPorts:
+        - ports:
+            - port: "9411"   # Zipkin
+              protocol: TCP
+            - port: "4317"   # OTLP gRPC
+              protocol: TCP
+            - port: "4318"   # OTLP HTTP
+              protocol: TCP
+{{- end }}
 {{- end }}
