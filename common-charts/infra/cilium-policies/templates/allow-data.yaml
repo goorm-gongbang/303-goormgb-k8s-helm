@@ -70,4 +70,27 @@ spec:
             - port: "6379"   # Redis
               protocol: TCP
 {{- end }}
+---
+# 4. DNS 쿼리 허용 (kube-dns)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-to-dns
+  namespace: data
+  annotations:
+    description: "Allow DNS queries to CoreDNS"
+spec:
+  description: "data -> kube-dns (DNS 쿼리) 허용"
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
 {{- end }}
