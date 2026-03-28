@@ -24,17 +24,25 @@ istiod:
 
   meshConfig:
     enableTracing: true
+
+    # Istio 1.22+ extensionProviders 방식 (Telemetry API 연동)
+    extensionProviders:
+      - name: zipkin
+        zipkin:
+          service: tempo.monitoring.svc.cluster.local
+          port: 9411
+
+    # 기본 tracing provider 설정
+    defaultProviders:
+      tracing:
+        - zipkin
+
     defaultConfig:
       tracing:
-        sampling: 100 # 100% 샘플링 (kubeadm-dev 환경)
-        zipkin:
-          address: "tempo.monitoring.svc.cluster.local:9411"
+        sampling: 100  # 100% 샘플링 (kubeadm-dev 환경)
 
     # Access logging
     accessLogFile: /dev/stdout
-
-    # External Authorization - 비활성화 (추후 Policy Controller 방식으로 전환)
-    # extensionProviders: []
 
   pilot:
     # CP 노드에 배치
