@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/goormgb/istio-console
+  repository: ghcr.io/goorm-gongbang/305-goormgb-infra-console
   tag: latest
   pullPolicy: Always
 
