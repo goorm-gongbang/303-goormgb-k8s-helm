@@ -1,5 +1,6 @@
 # Telemetry API - Tracing configuration
-# Adds istio.cluster_id tag for Kiali trace queries
+# - Adds istio.cluster_id tag for Kiali trace queries
+# - 100% sampling for dev environment
 apiVersion: telemetry.istio.io/v1
 kind: Telemetry
 metadata:
@@ -9,7 +10,11 @@ spec:
   tracing:
     - providers:
         - name: "zipkin"
+      randomSamplingPercentage: 100
       customTags:
         "istio.cluster_id":
           literal:
             value: "Kubernetes"
+        "environment":
+          literal:
+            value: "dev"
