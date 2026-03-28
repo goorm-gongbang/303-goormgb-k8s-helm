@@ -36,3 +36,18 @@ rules:
     resources:
       - telemetries
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Kyverno Policies
+  - apiGroups: ["kyverno.io"]
+    resources:
+      - clusterpolicies
+      - policies
+      - policyexceptions
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Kyverno Policy Reports
+  - apiGroups: ["wgpolicyk8s.io"]
+    resources:
+      - policyreports
+      - clusterpolicyreports
+    verbs: ["get", "list", "watch"]
