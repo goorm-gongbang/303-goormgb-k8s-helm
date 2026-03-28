@@ -76,6 +76,7 @@ sharedGateway:
     - "cloudbeaver.goormgb.space"
     - "console.goormgb.space"
     - "grafana.goormgb.space"
+    - "hubble.goormgb.space"
     - "kiali.goormgb.space"
     - "prometheus.goormgb.space"
     - "redisinsight.goormgb.space"

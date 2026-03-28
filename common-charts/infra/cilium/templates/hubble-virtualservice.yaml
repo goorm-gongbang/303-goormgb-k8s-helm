@@ -8,7 +8,7 @@ spec:
   hosts:
     - {{ .Values.hubbleUI.host | quote }}
   gateways:
-    - istio-system/infra-gateway
+    - istio-system/goormgb-gateway
   http:
     - match:
         - uri:
