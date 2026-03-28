@@ -57,7 +57,7 @@ istiod:
 # 여기서는 Gateway CRD만 생성
 
 # 공용 Gateway (인프라 서비스용)
-# api.dev.goormgb.space는 api-gateway에서 처리
+# api.goormgb.space는 api-gateway에서 처리
 sharedGateway:
   enabled: true
   name: goormgb-gateway
