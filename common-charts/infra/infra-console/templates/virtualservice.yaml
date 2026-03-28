@@ -2,9 +2,9 @@
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
-  name: {{ include "infra-console.fullname" . }}
+  name: {{ include "istio-console.fullname" . }}
   labels:
-    {{- include "infra-console.labels" . | nindent 4 }}
+    {{- include "istio-console.labels" . | nindent 4 }}
 spec:
   hosts:
     {{- toYaml .Values.virtualService.hosts | nindent 4 }}
@@ -16,7 +16,7 @@ spec:
             prefix: /
       route:
         - destination:
-            host: {{ include "infra-console.fullname" . }}
+            host: {{ include "istio-console.fullname" . }}
             port:
               number: {{ .Values.service.port }}
 {{- end }}
