@@ -6,8 +6,8 @@
 enabled: true
 
 # ===== Phase 2: 정책 적용 =====
-# 2026-03-29: auditMode 다시 활성화 - IngressGateway DNS egress 누락
-auditMode: true
+# 2026-03-29: 누락 정책 추가 완료 (world->ingress, DNS, Tempo, Kyverno)
+auditMode: false
 
 # ===== Phase 3: Istio Ingress 설정 =====
 # istio-ingress namespace 분리 시 아래 값만 변경
@@ -81,6 +81,10 @@ allowServices:
     allowInternal: true       # argocd 내부 통신
     allowFromIngress: true    # IngressGateway -> ArgoCD
     allowToK8sApi: true       # ArgoCD -> K8s API
+
+  # kyverno namespace 정책
+  kyverno:
+    enabled: true             # Kyverno 정책 활성화
 
   # istio-ingress namespace 정책 (Phase 3)
   # namespace 분리 완료 후 enabled: true로 변경

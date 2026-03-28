@@ -2,7 +2,25 @@
 # istio-system namespace 통신 정책
 # Kiali, istiod, IngressGateway 등이 다른 namespace와 통신할 수 있도록 허용
 ---
-# 0. IngressGateway -> 모든 백엔드 namespace (Grafana, ArgoCD, Apps 등)
+# 0-1. 외부(world) -> IngressGateway 허용 (Cloudflare, ALB 등)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-world-to-ingress
+  namespace: {{ .Values.istioIngress.namespace | default "istio-system" }}
+  annotations:
+    description: "Allow external traffic to IngressGateway"
+spec:
+  description: "외부(world) -> IngressGateway 허용"
+  endpointSelector:
+    matchLabels:
+      app: {{ .Values.istioIngress.appLabel | default "istio-ingressgateway" }}
+  ingress:
+    - fromEntities:
+        - world
+        - cluster
+---
+# 0-2. IngressGateway -> 모든 백엔드 namespace (Grafana, ArgoCD, Apps 등)
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
