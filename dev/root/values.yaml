@@ -79,6 +79,25 @@ ociCharts:
     syncWave: "-1"
     valueFiles:
       - $values/dev/values/istio/values-kiali.yaml
+    syncOptions:
+      - RespectIgnoreDifferences=true
+      - ServerSideApply=true
+    ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+          - .metadata.annotations
+          - .spec.template.metadata.annotations
+          - .spec.template.spec.containers[].resources
+      - group: ""
+        kind: ConfigMap
+        jqPathExpressions:
+          - .data
+      - group: ""
+        kind: Service
+        jqPathExpressions:
+          - .spec.clusterIP
+          - .spec.clusterIPs
 
   # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   tigera-operator:
