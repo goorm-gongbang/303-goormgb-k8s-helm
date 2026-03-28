@@ -18,15 +18,14 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["pods"]
-    excludeResourceRules:
-      {{- range .Values.excludeNamespaces }}
-      - apiGroups: [""]
-        apiVersions: ["v1"]
-        resources: ["pods"]
-        resourceNames: []
-        namespaces:
-          - {{ . }}
-      {{- end }}
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            {{- range .Values.excludeNamespaces }}
+            - {{ . }}
+            {{- end }}
   variables:
     - name: labels
       expression: "object.metadata.?labels.orValue({})"
