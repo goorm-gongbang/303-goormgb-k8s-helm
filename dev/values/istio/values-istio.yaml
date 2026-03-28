@@ -29,6 +29,10 @@ istiod:
         sampling: 100 # 100% 샘플링 (kubeadm-dev 환경)
         zipkin:
           address: "tempo.monitoring.svc.cluster.local:9411"
+        custom_tags:
+          istio.cluster_id:
+            literal:
+              value: "Kubernetes"
 
     # Access logging
     accessLogFile: /dev/stdout

@@ -29,8 +29,10 @@ external_services:
     in_cluster_url: http://tempo.monitoring.svc.cluster.local:3200
     use_grpc: false
     # cluster filter 비활성화 (single cluster 환경)
-    query_scope:
-      cluster: ""
+    query_scope: {}
+    # Kiali가 멀티클러스터 모드에서 추가하는 cluster 필터 비활성화
+    custom_headers: {}
+    whitelist_istio_system: []
     tempo_config:
       org_id: "1"
       cache_enabled: true
