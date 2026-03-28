@@ -11,6 +11,11 @@ auth:
 server:
   web_root: /kiali
 
+# 멀티클러스터 비활성화 (single cluster 환경)
+# 이게 없으면 Kiali가 trace 쿼리에 istio.cluster_id 필터 추가함
+clustering:
+  enabled: false
+
 # Istio 라벨 설정 - app 라벨 사용 (app.kubernetes.io/name 대신)
 istio_labels:
   app_label_name: app
