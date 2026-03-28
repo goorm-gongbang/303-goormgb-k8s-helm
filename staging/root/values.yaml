@@ -480,6 +480,15 @@ gitCharts:
     valueFiles:
       - ../../../../staging/values/monitoring/values-cloudbeaver.yaml
 
+  # Infra Console (Istio & Kyverno 관리 콘솔)
+  infra-console:
+    enabled: true
+    path: common-charts/infra/infra-console
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../staging/values/values-infra-console.yaml
+
 # =============================================================================
 # ApplicationSets
 # =============================================================================

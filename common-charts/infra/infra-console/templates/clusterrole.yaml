@@ -1,14 +1,19 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "infra-console.fullname" . }}
+  name: {{ include "istio-console.fullname" . }}
   labels:
-    {{- include "infra-console.labels" . | nindent 4 }}
+    {{- include "istio-console.labels" . | nindent 4 }}
 rules:
   # Core K8s
   - apiGroups: [""]
     resources: ["namespaces", "pods", "services", "nodes"]
     verbs: ["get", "list", "watch"]
+
+  # Apps (Deployments, ReplicaSets, etc.)
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
+    verbs: ["get", "list", "watch", "update", "patch"]
 
   # Istio Networking
   - apiGroups: ["networking.istio.io"]
@@ -43,9 +48,9 @@ rules:
       - clusterpolicies
       - policies
       - policyexceptions
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+    verbs: ["get", "list", "watch", "update", "patch"]
 
-  # Kyverno Policy Reports
+  # Kyverno Reports
   - apiGroups: ["wgpolicyk8s.io"]
     resources:
       - policyreports
