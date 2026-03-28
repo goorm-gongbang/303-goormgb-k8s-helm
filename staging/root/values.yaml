@@ -319,6 +319,34 @@ ociCharts:
     syncWave: "-9"
     valueFiles: []
 
+  # Kyverno - Policy Engine
+  kyverno:
+    enabled: true
+    repoURL: https://kyverno.github.io/kyverno/
+    chart: kyverno
+    version: "3.7.1"
+    namespace: kyverno
+    syncWave: "-7"
+    valueFiles:
+      - $values/staging/values/values-kyverno.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+    ignoreDifferences:
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+        jsonPointers:
+          - /webhooks
+      - group: admissionregistration.k8s.io
+        kind: MutatingWebhookConfiguration
+        jsonPointers:
+          - /webhooks
+      - group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        jsonPointers:
+          - /status
+          - /metadata/annotations
+
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
 # =============================================================================
@@ -427,6 +455,17 @@ gitCharts:
     namespace: argocd
     valueFiles:
       - ../../../staging/values/core/values-argocd.yaml
+
+  # Kyverno Policies
+  kyverno-policies:
+    enabled: true
+    path: common-charts/infra/kyverno-policies
+    namespace: kyverno
+    syncWave: "-6"
+    valueFiles:
+      - ../../../staging/values/values-kyverno-policies.yaml
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
 
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)

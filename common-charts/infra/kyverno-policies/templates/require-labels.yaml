@@ -1,0 +1,37 @@
+{{- if .Values.policies.requireLabels.enabled }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-labels
+  annotations:
+    policies.kyverno.io/title: Require Labels
+    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      Pod에 필수 라벨(app, version)이 있는지 확인합니다.
+spec:
+  validationFailureAction: {{ .Values.validationFailureAction }}
+  background: true
+  rules:
+    - name: require-labels
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      exclude:
+        any:
+          {{- range .Values.excludeNamespaces }}
+          - resources:
+              namespaces:
+                - {{ . }}
+          {{- end }}
+      validate:
+        message: "Pod에는 'app' 및 'version' 라벨이 필요합니다."
+        pattern:
+          metadata:
+            labels:
+              {{- range .Values.policies.requireLabels.requiredLabels }}
+              {{ . }}: "?*"
+              {{- end }}
+{{- end }}

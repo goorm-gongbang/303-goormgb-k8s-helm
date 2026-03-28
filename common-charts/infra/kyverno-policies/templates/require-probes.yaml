@@ -1,0 +1,57 @@
+{{- if .Values.policies.requireProbes.enabled }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-probes
+  annotations:
+    policies.kyverno.io/title: Require Probes
+    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/severity: low
+    policies.kyverno.io/description: >-
+      모든 컨테이너에 readinessProbe와 livenessProbe가 설정되어 있는지 확인합니다.
+      프로브는 Kubernetes가 애플리케이션 상태를 모니터링하고 트래픽을 적절히 라우팅하는 데 필수적입니다.
+spec:
+  validationFailureAction: {{ .Values.validationFailureAction }}
+  background: true
+  rules:
+    - name: require-readiness-probe
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      exclude:
+        any:
+          {{- range .Values.excludeNamespaces }}
+          - resources:
+              namespaces:
+                - {{ . }}
+          {{- end }}
+      validate:
+        message: "컨테이너에 readinessProbe가 필요합니다."
+        pattern:
+          spec:
+            containers:
+              - readinessProbe:
+                  httpGet: "*"
+    - name: require-liveness-probe
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      exclude:
+        any:
+          {{- range .Values.excludeNamespaces }}
+          - resources:
+              namespaces:
+                - {{ . }}
+          {{- end }}
+      validate:
+        message: "컨테이너에 livenessProbe가 필요합니다."
+        pattern:
+          spec:
+            containers:
+              - livenessProbe:
+                  httpGet: "*"
+{{- end }}

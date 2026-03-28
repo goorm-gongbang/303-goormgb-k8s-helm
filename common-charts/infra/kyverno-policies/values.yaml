@@ -1,0 +1,41 @@
+# Kyverno Policies Configuration
+
+# Policy enforcement mode: audit | enforce
+# audit: 위반 로깅만, 배포 허용
+# enforce: 위반시 배포 차단
+validationFailureAction: Audit
+
+# 정책별 활성화
+policies:
+  requireLabels:
+    enabled: true
+    requiredLabels:
+      - app
+      - version
+
+  disallowPrivileged:
+    enabled: true
+
+  disallowLatestTag:
+    enabled: true
+
+  requireResourceLimits:
+    enabled: true
+    defaultLimits:
+      memory: "512Mi"
+      cpu: "500m"
+
+  requireProbes:
+    enabled: false  # staging에서는 비활성화
+
+# 정책에서 제외할 네임스페이스
+excludeNamespaces:
+  - kube-system
+  - kube-public
+  - kube-node-lease
+  - kyverno
+  - argocd
+  - istio-system
+  - monitoring
+  - external-secrets
+  - karpenter
