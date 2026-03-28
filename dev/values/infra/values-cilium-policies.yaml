@@ -6,7 +6,7 @@
 enabled: true
 
 # ===== Phase 2: 정책 적용 =====
-# Audit 모드 비활성화 - 실제 정책 적용
+# 2026-03-29: 점진적 정책 추가 중
 auditMode: false
 
 # ===== Phase 3: Istio Ingress 설정 =====
@@ -75,6 +75,12 @@ allowServices:
   external:
     allowHttps: true          # 외부 HTTPS (AWS, OAuth 등)
     allowFqdn: false          # FQDN 기반 세밀한 제어 (선택적)
+
+  # argocd namespace 정책
+  argocd:
+    allowInternal: true       # argocd 내부 통신
+    allowFromIngress: true    # IngressGateway -> ArgoCD
+    allowToK8sApi: true       # ArgoCD -> K8s API
 
   # istio-ingress namespace 정책 (Phase 3)
   # namespace 분리 완료 후 enabled: true로 변경

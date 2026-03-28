@@ -1,6 +1,45 @@
 {{- if and .Values.enabled .Values.allowServices.enabled (not .Values.auditMode) }}
 # istio-system namespace 통신 정책
-# Kiali, istiod 등이 다른 namespace와 통신할 수 있도록 허용
+# Kiali, istiod, IngressGateway 등이 다른 namespace와 통신할 수 있도록 허용
+---
+# 0. IngressGateway -> 모든 백엔드 namespace (Grafana, ArgoCD, Apps 등)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-ingressgateway-egress
+  namespace: {{ .Values.istioIngress.namespace | default "istio-system" }}
+  annotations:
+    description: "Allow IngressGateway to reach backend services"
+spec:
+  description: "IngressGateway -> 모든 백엔드 namespace 허용"
+  endpointSelector:
+    matchLabels:
+      app: {{ .Values.istioIngress.appLabel | default "istio-ingressgateway" }}
+  egress:
+    # monitoring (Grafana, Prometheus 등)
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+    # argocd
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: argocd
+    # dev-webs
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-webs
+    # dev-ai
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-ai
+    # istio-system (Kiali 등)
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: istio-system
+    # data
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: data
 ---
 # 1. Kiali -> Prometheus (메트릭 조회)
 {{- if .Values.allowServices.istioSystem.allowKialiToPrometheus }}

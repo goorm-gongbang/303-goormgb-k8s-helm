@@ -1,6 +1,23 @@
 {{- if and .Values.enabled .Values.allowServices.enabled (not .Values.auditMode) }}
 # Phase 2: monitoring namespace 통신 정책
 ---
+# Istio IngressGateway -> monitoring (Grafana 외부 접근)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-from-ingress
+  namespace: monitoring
+  annotations:
+    description: "Allow traffic from Istio IngressGateway"
+spec:
+  description: "Istio IngressGateway -> monitoring 허용 (Grafana 외부 접근)"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: {{ .Values.istioIngress.namespace | default "istio-system" }}
+            app: {{ .Values.istioIngress.appLabel | default "istio-ingressgateway" }}
+---
 # 0. monitoring 내부 통신 허용 (Grafana <-> Prometheus, Loki, Tempo 등)
 {{- if .Values.allowServices.monitoring.allowInternal }}
 apiVersion: cilium.io/v2
