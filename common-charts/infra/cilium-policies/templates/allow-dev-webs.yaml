@@ -1,0 +1,94 @@
+{{- if and .Values.enabled .Values.allowServices.enabled (not .Values.auditMode) }}
+# Phase 2: dev-webs namespace 통신 정책
+---
+# 1. dev-webs 내부 통신 허용
+{{- if .Values.allowServices.devWebs.allowInternal }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-internal-traffic
+  namespace: dev-webs
+  annotations:
+    description: "Allow internal dev-webs communication"
+spec:
+  description: "dev-webs 내부 서비스 간 통신 허용"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-webs
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-webs
+{{- end }}
+---
+# 2. Istio IngressGateway에서 들어오는 트래픽 허용
+{{- if .Values.allowServices.devWebs.allowFromIngress }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-from-ingress
+  namespace: dev-webs
+  annotations:
+    description: "Allow traffic from Istio IngressGateway"
+spec:
+  description: "Istio IngressGateway → dev-webs 허용"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: istio-system
+            app: istio-ingressgateway
+{{- end }}
+---
+# 3. data namespace로 나가는 트래픽 허용 (PostgreSQL, Redis)
+{{- if .Values.allowServices.devWebs.allowToData }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-to-data
+  namespace: dev-webs
+  annotations:
+    description: "Allow dev-webs to access data namespace"
+spec:
+  description: "dev-webs → data (PostgreSQL, Redis) 허용"
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: data
+      toPorts:
+        - ports:
+            - port: "5432"   # PostgreSQL
+              protocol: TCP
+            - port: "6379"   # Redis
+              protocol: TCP
+            - port: "6380"   # Redis (queue)
+              protocol: TCP
+{{- end }}
+---
+# 4. dev-ai namespace로 나가는 트래픽 허용
+{{- if .Values.allowServices.devWebs.allowToAi }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-to-ai
+  namespace: dev-webs
+  annotations:
+    description: "Allow dev-webs to call dev-ai services"
+spec:
+  description: "dev-webs → dev-ai (AI 서비스 호출) 허용"
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-ai
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+            - port: "50051"  # gRPC
+              protocol: TCP
+{{- end }}
+{{- end }}

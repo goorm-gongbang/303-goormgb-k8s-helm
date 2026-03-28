@@ -1,0 +1,84 @@
+{{- if and .Values.enabled .Values.allowServices.enabled (not .Values.auditMode) }}
+# Phase 2: 외부 네트워크 접근 정책
+# AWS 서비스, 외부 API 등 접근 허용
+---
+# 1. 외부 HTTPS 접근 허용 (AWS 서비스, 외부 API)
+{{- if .Values.allowServices.external.allowHttps }}
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-external-https
+  annotations:
+    description: "Allow egress to external HTTPS endpoints"
+spec:
+  description: |
+    외부 HTTPS 접근 허용
+    - AWS 서비스 (S3, SQS, SES 등)
+    - 외부 OAuth (Google, Naver 등)
+    - 결제 게이트웨이
+  endpointSelector:
+    matchExpressions:
+      - key: io.kubernetes.pod.namespace
+        operator: In
+        values:
+          - dev-webs
+          - dev-ai
+  egress:
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+{{- end }}
+---
+# 2. FQDN 기반 외부 접근 (더 세밀한 제어)
+{{- if .Values.allowServices.external.allowFqdn }}
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-aws-services
+  annotations:
+    description: "Allow egress to AWS services by FQDN"
+spec:
+  description: "AWS 서비스 FQDN 기반 접근 허용"
+  endpointSelector:
+    matchExpressions:
+      - key: io.kubernetes.pod.namespace
+        operator: In
+        values:
+          - dev-webs
+          - dev-ai
+  egress:
+    - toFQDNs:
+        - matchPattern: "*.amazonaws.com"
+        - matchPattern: "*.aws.amazon.com"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-oauth-providers
+  annotations:
+    description: "Allow egress to OAuth providers"
+spec:
+  description: "OAuth 제공자 접근 허용 (Google, Naver 등)"
+  endpointSelector:
+    matchLabels:
+      io.kubernetes.pod.namespace: dev-webs
+  egress:
+    - toFQDNs:
+        - matchPattern: "accounts.google.com"
+        - matchPattern: "oauth2.googleapis.com"
+        - matchPattern: "www.googleapis.com"
+        - matchPattern: "nid.naver.com"
+        - matchPattern: "openapi.naver.com"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+{{- end }}
+{{- end }}
