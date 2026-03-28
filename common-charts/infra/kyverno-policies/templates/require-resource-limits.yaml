@@ -1,0 +1,39 @@
+{{- if .Values.policies.requireResourceLimits.enabled }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-resource-limits
+  annotations:
+    policies.kyverno.io/title: Require Resource Limits
+    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      모든 컨테이너에 CPU 및 메모리 limits가 설정되어 있는지 확인합니다.
+      리소스 제한은 노드 리소스 고갈을 방지하고 안정적인 워크로드 스케줄링을 보장합니다.
+spec:
+  validationFailureAction: {{ .Values.validationFailureAction }}
+  background: true
+  rules:
+    - name: require-limits
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      exclude:
+        any:
+          {{- range .Values.excludeNamespaces }}
+          - resources:
+              namespaces:
+                - {{ . }}
+          {{- end }}
+      validate:
+        message: "컨테이너에 CPU 및 메모리 limits가 필요합니다."
+        pattern:
+          spec:
+            containers:
+              - resources:
+                  limits:
+                    memory: "?*"
+                    cpu: "?*"
+{{- end }}
