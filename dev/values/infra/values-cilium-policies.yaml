@@ -6,8 +6,8 @@
 enabled: true
 
 # ===== Phase 2: 정책 적용 =====
-# 2026-03-29: 점진적 정책 추가 중
-auditMode: false
+# 2026-03-29: auditMode 다시 활성화 - IngressGateway DNS egress 누락
+auditMode: true
 
 # ===== Phase 3: Istio Ingress 설정 =====
 # istio-ingress namespace 분리 시 아래 값만 변경
