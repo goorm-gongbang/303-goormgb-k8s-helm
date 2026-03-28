@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "infra-console.fullname" . }}
+  name: {{ include "istio-console.fullname" . }}
   labels:
-    {{- include "infra-console.labels" . | nindent 4 }}
+    {{- include "istio-console.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "infra-console.selectorLabels" . | nindent 6 }}
+      {{- include "istio-console.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "infra-console.selectorLabels" . | nindent 8 }}
+        {{- include "istio-console.selectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "infra-console.serviceAccountName" . }}
+      serviceAccountName: {{ include "istio-console.serviceAccountName" . }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -47,7 +47,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   {{- if .Values.externalSecret.enabled }}
-                  name: {{ include "infra-console.fullname" . }}-github
+                  name: {{ include "istio-console.fullname" . }}-github
                   {{- else }}
                   name: {{ .Values.gitops.existingSecret }}
                   {{- end }}
@@ -65,29 +65,17 @@ spec:
             - name: GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.oauth.secretManagerKey }}
-                  name: {{ include "infra-console.fullname" . }}-oauth
-                  {{- else }}
                   name: {{ .Values.oauth.existingSecret }}
-                  {{- end }}
                   key: GOOGLE_CLIENT_ID
             - name: GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.oauth.secretManagerKey }}
-                  name: {{ include "infra-console.fullname" . }}-oauth
-                  {{- else }}
                   name: {{ .Values.oauth.existingSecret }}
-                  {{- end }}
                   key: GOOGLE_CLIENT_SECRET
             - name: SESSION_KEY
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.oauth.secretManagerKey }}
-                  name: {{ include "infra-console.fullname" . }}-oauth
-                  {{- else }}
                   name: {{ .Values.oauth.existingSecret }}
-                  {{- end }}
                   key: SESSION_KEY
             {{- end }}
           livenessProbe:

@@ -1,0 +1,52 @@
+# Infra Console - Staging Values
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/goorm-gongbang/305-goormgb-infra-console
+  tag: latest
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: ghcr-secret
+
+service:
+  type: ClusterIP
+  port: 8088
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+config:
+  logLevel: info
+  listenAddr: ":8088"
+
+# GitOps configuration
+gitops:
+  enabled: false
+
+# OAuth configuration
+oauth:
+  enabled: false
+
+# Node placement
+nodeSelector:
+  node-role: infra
+
+tolerations:
+  - key: "node-role"
+    operator: "Equal"
+    value: "infra"
+    effect: "NoSchedule"
+
+# Istio VirtualService
+virtualService:
+  enabled: true
+  gateway: "istio-system/default-gateway"
+  hosts:
+    - "console.staging.goormgb.space"

@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/goormgb/istio-console
+  repository: ghcr.io/goorm-gongbang/305-goormgb-infra-console
   tag: latest
   pullPolicy: Always
 
@@ -74,15 +74,13 @@ virtualService:
   enabled: true
   gateway: "istio-system/default-gateway"
   hosts:
-    - "console.goormgb.space"
+    - "console.dev.goormgb.space"
 
 # OAuth configuration
 oauth:
   enabled: false
-  redirectUrl: "https://console.goormgb.space/auth/callback"
+  redirectUrl: "https://console.dev.goormgb.space/auth/callback"
   secureCookie: true
   allowEmails: []
-  # AWS Secrets Manager key (ESO will create secret)
-  secretManagerKey: ""  # e.g., "dev/infra/oauth/google"
-  # Or use existing secret
+  # Secret containing OAuth credentials
   existingSecret: ""  # e.g., "infra-console-oauth"
