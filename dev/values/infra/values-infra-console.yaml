@@ -37,9 +37,16 @@ virtualService:
   hosts:
     - "console.goormgb.space"
 
-# OAuth disabled for now
+# Google OAuth (ESO에서 secret 생성)
 oauth:
-  enabled: false
+  enabled: true
+  secretManagerKey: "dev/infra/oauth/google"
+  redirectUrl: "https://console.goormgb.space/auth/callback"
+  secureCookie: true
+  allowEmails:
+    - "212clab@gmail.com"
+    - "rhuba23@gmail.com"
+    - "chamchi0129@gmail.com"
 
 # Node selector for infra nodes (mini-gmk)
 nodeSelector:
