@@ -1,0 +1,56 @@
+# Infra Console - Dev Environment
+replicaCount: 1
+
+image:
+  repository: ghcr.io/goorm-gongbang/305-goormgb-infra-console
+  tag: latest
+  pullPolicy: Always
+
+# GHCR pull secret
+imagePullSecrets:
+  - name: ghcr-secret
+
+service:
+  type: ClusterIP
+  port: 8088
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+config:
+  logLevel: info
+  listenAddr: ":8088"
+
+# GitOps disabled for now
+gitops:
+  enabled: false
+
+# VirtualService for Istio routing
+virtualService:
+  enabled: true
+  gateway: "istio-system/goormgb-gateway"
+  hosts:
+    - "console.goormgb.space"
+
+# OAuth disabled for now
+oauth:
+  enabled: false
+
+# Node selector for infra nodes (mini-gmk)
+nodeSelector:
+  node-role: infra
+
+tolerations:
+  - key: "node-role"
+    operator: "Equal"
+    value: "infra"
+    effect: "NoSchedule"
+  # control-plane 노드에서 실행 허용
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
