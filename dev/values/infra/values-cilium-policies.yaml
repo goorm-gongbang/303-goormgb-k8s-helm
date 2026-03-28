@@ -52,6 +52,7 @@ allowServices:
 
   # monitoring namespace 정책
   monitoring:
+    allowInternal: true       # monitoring 내부 통신
     allowScrape: true         # Prometheus scrape
     allowGrafanaToLoki: true  # Grafana -> Loki
     allowLogCollection: true  # Alloy -> Loki
@@ -60,6 +61,15 @@ allowServices:
   kubeSystem:
     allowCilium: true         # Cilium Agent 간 통신
     allowHubble: true         # Hubble 통신
+
+  # istio-system namespace 정책
+  istioSystem:
+    allowInternal: true           # istio-system 내부 통신
+    allowKialiToPrometheus: true  # Kiali -> Prometheus
+    allowKialiToGrafana: true     # Kiali -> Grafana
+    allowKialiToTempo: true       # Kiali -> Tempo
+    allowKialiToK8sApi: true      # Kiali -> K8s API
+    allowIstiodToAll: true        # istiod 컨트롤 플레인
 
   # 외부 네트워크 접근
   external:

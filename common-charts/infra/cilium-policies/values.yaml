@@ -54,8 +54,10 @@ allowServices:
     allowFromAi: true
     allowInternal: true
 
-# 서비스 간 통신: monitoring
+  # 서비스 간 통신: monitoring
   monitoring:
+    # monitoring 내부 통신 허용
+    allowInternal: true
     # Prometheus scrape 허용
     allowScrape: true
     # Grafana → Loki 허용
@@ -76,6 +78,15 @@ allowServices:
     allowHttps: true
     # FQDN 기반 세밀한 제어
     allowFqdn: false
+
+  # istio-system namespace 정책
+  istioSystem:
+    allowInternal: true
+    allowKialiToPrometheus: true
+    allowKialiToGrafana: true
+    allowKialiToTempo: true
+    allowKialiToK8sApi: true
+    allowIstiodToAll: true
 
   # istio-ingress namespace 정책 (Phase 3)
   # namespace 분리 후 enabled: true로 변경
