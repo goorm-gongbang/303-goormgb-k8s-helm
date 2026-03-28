@@ -39,7 +39,5 @@ excludeNamespaces:
   - external-secrets
   - karpenter
   - cert-manager
-  # Calico networking (privileged 필요)
-  - calico-system
-  - calico-apiserver
-  - tigera-operator
+  - local-path-storage
+  # Cilium eBPF (kube-system에 설치됨, 이미 위에서 제외)

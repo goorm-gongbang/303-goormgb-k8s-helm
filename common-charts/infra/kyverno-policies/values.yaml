@@ -51,6 +51,6 @@ excludeNamespaces:
   - monitoring
   - external-secrets
   - karpenter
-  - calico-system
-  - calico-apiserver
-  - tigera-operator
+  - cert-manager
+  - local-path-storage
+  # CNI: Cilium (kube-system), VPC CNI (kube-system) - 이미 위에서 제외
