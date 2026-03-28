@@ -74,6 +74,7 @@ sharedGateway:
   hosts:
     - "argocd.goormgb.space"
     - "cloudbeaver.goormgb.space"
+    - "console.goormgb.space"
     - "grafana.goormgb.space"
     - "kiali.goormgb.space"
     - "prometheus.goormgb.space"
