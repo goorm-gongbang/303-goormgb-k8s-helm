@@ -40,4 +40,5 @@ excludeNamespaces:
   - karpenter
   - cert-manager
   - local-path-storage
+  - data
   # Cilium eBPF (kube-system에 설치됨, 이미 위에서 제외)
