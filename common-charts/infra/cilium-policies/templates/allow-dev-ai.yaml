@@ -1,0 +1,65 @@
+{{- if and .Values.enabled .Values.allowServices.enabled (not .Values.auditMode) }}
+# Phase 2: dev-ai namespace 통신 정책
+---
+# 1. dev-ai 내부 통신 허용
+{{- if .Values.allowServices.devAi.allowInternal }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-internal-traffic
+  namespace: dev-ai
+  annotations:
+    description: "Allow internal dev-ai communication"
+spec:
+  description: "dev-ai 내부 서비스 간 통신 허용"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-ai
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-ai
+{{- end }}
+---
+# 2. dev-webs에서 들어오는 트래픽 허용
+{{- if .Values.allowServices.devAi.allowFromWebs }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-from-webs
+  namespace: dev-ai
+  annotations:
+    description: "Allow traffic from dev-webs"
+spec:
+  description: "dev-webs → dev-ai 허용"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: dev-webs
+{{- end }}
+---
+# 3. data namespace로 나가는 트래픽 허용 (Redis)
+{{- if .Values.allowServices.devAi.allowToData }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-to-data
+  namespace: dev-ai
+  annotations:
+    description: "Allow dev-ai to access data namespace"
+spec:
+  description: "dev-ai → data (Redis) 허용"
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: data
+      toPorts:
+        - ports:
+            - port: "6379"   # Redis
+              protocol: TCP
+{{- end }}
+{{- end }}
