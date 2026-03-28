@@ -1,0 +1,26 @@
+{{- if .Values.cilium.prometheus.enabled }}
+# Cilium Agent ServiceMonitor (cilium subchart에서 생성하지만 백업용)
+# cilium.prometheus.serviceMonitor.enabled: true 로 대체 가능
+---
+# Hubble 추가 메트릭 (cilium subchart에 없는 경우)
+{{- if .Values.cilium.hubble.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hubble-metrics
+  namespace: kube-system
+  labels:
+    release: prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      k8s-app: hubble
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  endpoints:
+    - port: hubble-metrics
+      interval: 30s
+      path: /metrics
+{{- end }}
+{{- end }}

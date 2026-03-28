@@ -1,0 +1,125 @@
+# Cilium CNI 설정 (dev 환경)
+# - eBPF 데이터플레인
+# - kube-proxy 대체
+# - Hubble 관측성
+
+cilium:
+  enabled: true
+
+  # eBPF 기반 kube-proxy 대체
+  kubeProxyReplacement: "true"
+
+  # Kubernetes API Server 주소 (mini-gmk)
+  k8sServiceHost: "192.168.45.10"
+  k8sServicePort: 6443
+
+  # BPF 설정
+  bpf:
+    masquerade: true
+    clockProbe: true
+    preallocateMaps: true
+    tproxy: true
+
+  # IP Pool (기존 Calico와 동일)
+  ipam:
+    mode: "kubernetes"
+    operator:
+      clusterPoolIPv4PodCIDRList:
+        - "10.244.0.0/16"
+
+  # Istio 통합 - sidecar 충돌 방지
+  socketLB:
+    hostNamespaceOnly: true
+
+  # CNI 설정
+  cni:
+    exclusive: true
+    install: true
+
+  # Hubble 관측성
+  hubble:
+    enabled: true
+
+    relay:
+      enabled: true
+      replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
+    ui:
+      enabled: true
+      replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
+    metrics:
+      enabled:
+        - dns
+        - drop
+        - tcp
+        - flow
+        - icmp
+        - http
+      serviceMonitor:
+        enabled: true
+        labels:
+          release: prometheus-stack
+
+  # Prometheus 메트릭
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: prometheus-stack
+
+  # Operator 설정 (CP 노드에 배치)
+  operator:
+    replicas: 1
+    nodeSelector:
+      kubernetes.io/hostname: mini-gmk
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+    prometheus:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        labels:
+          release: prometheus-stack
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+  # Agent 설정
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  # 모든 노드에 배포
+  tolerations:
+    - operator: "Exists"
+
+# Hubble UI VirtualService
+hubbleUI:
+  enabled: true
+  host: "hubble.dev.goormgb.space"

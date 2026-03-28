@@ -9,4 +9,12 @@ spec:
   # Prometheus 메트릭 활성화 (Felix 모니터링용)
   prometheusMetricsEnabled: {{ .Values.felixConfiguration.prometheusMetricsEnabled | default true }}
   prometheusMetricsPort: {{ .Values.felixConfiguration.prometheusMetricsPort | default 9091 }}
+  {{- if .Values.felixConfiguration.bpfEnabled }}
+  # eBPF 모드 활성화 (iptables 대체, 고성능)
+  bpfEnabled: true
+  bpfDisableUnprivileged: true
+  bpfKubeProxyIptablesCleanupEnabled: {{ .Values.felixConfiguration.bpfKubeProxyIptablesCleanupEnabled | default true }}
+  bpfKubeProxyMinSyncPeriod: {{ .Values.felixConfiguration.bpfKubeProxyMinSyncPeriod | default "1s" }}
+  bpfKubeProxyEndpointSlicesEnabled: {{ .Values.felixConfiguration.bpfKubeProxyEndpointSlicesEnabled | default true }}
+  {{- end }}
 {{- end }}
