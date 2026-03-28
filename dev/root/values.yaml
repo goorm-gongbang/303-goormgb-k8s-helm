@@ -415,6 +415,15 @@ gitCharts:
     valueFiles:
       - ../../../dev/values/infra/values-infra-console.yaml
 
+  # === Kyverno Policies ===
+  kyverno-policies:
+    enabled: true
+    path: common-charts/infra/kyverno-policies
+    namespace: kyverno
+    syncWave: "0"
+    valueFiles:
+      - ../../../dev/values/infra/values-kyverno-policies.yaml
+
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)

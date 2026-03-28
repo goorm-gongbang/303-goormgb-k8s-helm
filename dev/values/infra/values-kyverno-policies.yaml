@@ -1,0 +1,38 @@
+# Kyverno Policies - Dev Environment
+# dev 환경에서는 Audit 모드로 위반 로깅만 수행
+
+validationFailureAction: Audit
+
+policies:
+  requireLabels:
+    enabled: true
+    requiredLabels:
+      - app
+      - version
+
+  disallowPrivileged:
+    enabled: true
+
+  disallowLatestTag:
+    enabled: true
+
+  requireResourceLimits:
+    enabled: true
+    defaultLimits:
+      memory: "512Mi"
+      cpu: "500m"
+
+  requireProbes:
+    enabled: false  # dev에서는 비활성화
+
+excludeNamespaces:
+  - kube-system
+  - kube-public
+  - kube-node-lease
+  - kyverno
+  - argocd
+  - istio-system
+  - monitoring
+  - external-secrets
+  - karpenter
+  - cert-manager
