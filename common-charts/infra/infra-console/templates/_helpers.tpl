@@ -1,14 +1,14 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "istio-console.name" -}}
+{{- define "infra-console.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
 */}}
-{{- define "istio-console.fullname" -}}
+{{- define "infra-console.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -24,16 +24,16 @@ Create a default fully qualified app name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "istio-console.chart" -}}
+{{- define "infra-console.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "istio-console.labels" -}}
-helm.sh/chart: {{ include "istio-console.chart" . }}
-{{ include "istio-console.selectorLabels" . }}
+{{- define "infra-console.labels" -}}
+helm.sh/chart: {{ include "infra-console.chart" . }}
+{{ include "infra-console.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -43,17 +43,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "istio-console.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "istio-console.name" . }}
+{{- define "infra-console.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "infra-console.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "istio-console.serviceAccountName" -}}
+{{- define "infra-console.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "istio-console.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "infra-console.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
