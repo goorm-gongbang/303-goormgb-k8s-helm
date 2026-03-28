@@ -3,7 +3,10 @@ apiVersion: projectcalico.org/v3
 kind: FelixConfiguration
 metadata:
   name: default
+  annotations:
+    argocd.argoproj.io/sync-options: ServerSideApply=true
 spec:
+  # Prometheus 메트릭 활성화 (Felix 모니터링용)
   prometheusMetricsEnabled: {{ .Values.felixConfiguration.prometheusMetricsEnabled | default true }}
   prometheusMetricsPort: {{ .Values.felixConfiguration.prometheusMetricsPort | default 9091 }}
 {{- end }}
