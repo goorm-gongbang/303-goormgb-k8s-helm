@@ -1,0 +1,38 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "infra-console.fullname" . }}
+  labels:
+    {{- include "infra-console.labels" . | nindent 4 }}
+rules:
+  # Core K8s
+  - apiGroups: [""]
+    resources: ["namespaces", "pods", "services"]
+    verbs: ["get", "list", "watch"]
+
+  # Istio Networking
+  - apiGroups: ["networking.istio.io"]
+    resources:
+      - gateways
+      - virtualservices
+      - destinationrules
+      - serviceentries
+      - sidecars
+      - envoyfilters
+      - workloadentries
+      - workloadgroups
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Istio Security
+  - apiGroups: ["security.istio.io"]
+    resources:
+      - authorizationpolicies
+      - peerauthentications
+      - requestauthentications
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Istio Telemetry
+  - apiGroups: ["telemetry.istio.io"]
+    resources:
+      - telemetries
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

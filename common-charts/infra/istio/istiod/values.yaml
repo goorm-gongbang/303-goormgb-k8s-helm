@@ -29,6 +29,12 @@ istiod:
     autoscaleEnabled: false
     replicaCount: 1
 
+# Telemetry API (Kiali trace용 cluster_id 추가)
+telemetry:
+  tracing:
+    enabled: true
+    sampling: 100
+
 # Node placement
 nodeSelector: {}
 tolerations: []
