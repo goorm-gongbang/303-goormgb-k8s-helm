@@ -1,34 +1,46 @@
-# Kyverno Policies Configuration
+# Kyverno Policies Configuration (ValidatingPolicy - CEL based)
+# Kyverno 1.17+ 호환
 
-# Policy enforcement mode: audit | enforce
-# audit: 위반 로깅만, 배포 허용
-# enforce: 위반시 배포 차단
-validationFailureAction: Audit
+# Policy failure mode: Ignore | Fail
+# Ignore: 정책 평가 실패 시 리소스 생성 허용 (audit 모드와 유사)
+# Fail: 정책 평가 실패 시 리소스 생성 차단 (enforce 모드와 유사)
+failurePolicy: Ignore
 
 # 정책별 활성화
 policies:
+  # 필수 라벨 검증
+  # Pod에 app, version 라벨이 있는지 확인
   requireLabels:
     enabled: true
     requiredLabels:
       - app
       - version
 
+  # Privileged 컨테이너 차단
+  # 보안 위험이 있는 privileged 모드 컨테이너를 금지
   disallowPrivileged:
     enabled: true
 
+  # Latest 태그 금지
+  # 명시적 버전 태그 사용을 강제하여 배포 재현성 확보
   disallowLatestTag:
     enabled: true
 
+  # 리소스 제한 필수
+  # CPU/Memory limits 설정을 강제하여 노드 리소스 보호
   requireResourceLimits:
     enabled: true
     defaultLimits:
       memory: "512Mi"
       cpu: "500m"
 
+  # Probe 설정 필수
+  # readinessProbe, livenessProbe 설정을 강제
   requireProbes:
     enabled: false  # staging에서는 비활성화
 
 # 정책에서 제외할 네임스페이스
+# 시스템 및 인프라 네임스페이스는 정책 검사에서 제외
 excludeNamespaces:
   - kube-system
   - kube-public
@@ -39,3 +51,6 @@ excludeNamespaces:
   - monitoring
   - external-secrets
   - karpenter
+  - calico-system
+  - calico-apiserver
+  - tigera-operator
