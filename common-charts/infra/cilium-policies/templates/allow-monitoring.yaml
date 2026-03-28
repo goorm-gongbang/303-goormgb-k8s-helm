@@ -1,6 +1,28 @@
 {{- if and .Values.enabled .Values.allowServices.enabled (not .Values.auditMode) }}
 # Phase 2: monitoring namespace 통신 정책
 ---
+# 0. monitoring 내부 통신 허용 (Grafana <-> Prometheus, Loki, Tempo 등)
+{{- if .Values.allowServices.monitoring.allowInternal }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-internal-traffic
+  namespace: monitoring
+  annotations:
+    description: "Allow internal monitoring namespace communication"
+spec:
+  description: "monitoring 내부 통신 허용 (Grafana, Prometheus, Loki, Tempo 등)"
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+{{- end }}
+---
 # 1. Prometheus가 모든 namespace의 metrics 스크래핑 허용
 {{- if .Values.allowServices.monitoring.allowScrape }}
 apiVersion: cilium.io/v2
