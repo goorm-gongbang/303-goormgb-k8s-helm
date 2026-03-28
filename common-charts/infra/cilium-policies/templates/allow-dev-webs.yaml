@@ -38,8 +38,8 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: istio-system
-            app: istio-ingressgateway
+            io.kubernetes.pod.namespace: {{ .Values.istioIngress.namespace | default "istio-system" }}
+            app: {{ .Values.istioIngress.appLabel | default "istio-ingressgateway" }}
 {{- end }}
 ---
 # 3. data namespace로 나가는 트래픽 허용 (PostgreSQL, Redis)

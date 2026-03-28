@@ -1,61 +1,72 @@
 # CiliumNetworkPolicy - Dev 환경 설정
-# Phase 1: Audit 모드 (현재)
-# Phase 2: 점진적 적용 (auditMode: false 후 allowServices 하나씩 활성화)
+# Phase 2: 점진적 적용 (2026-03-29 활성화)
+# Phase 3: istio-ingress 분리 준비 완료
 
 # 전체 정책 활성화
 enabled: true
 
-# ===== Phase 1: Audit 모드 =====
-# 트래픽 차단 없이 Hubble에서 관측만
-auditMode: true
+# ===== Phase 2: 정책 적용 =====
+# Audit 모드 비활성화 - 실제 정책 적용
+auditMode: false
 
-# ===== Phase 2: Default Deny + Allow Policies =====
-# Phase 2로 전환 시: auditMode: false
+# ===== Phase 3: Istio Ingress 설정 =====
+# istio-ingress namespace 분리 시 아래 값만 변경
+istioIngress:
+  namespace: istio-system  # TODO: istio-ingress로 변경 후 allowServices.istioIngress.enabled: true
+  appLabel: istio-ingressgateway
 
+# Default Deny - 명시적으로 허용된 트래픽만 통과
 defaultDeny:
-  enabled: false
+  enabled: true
   namespaces:
     - dev-webs
     - dev-ai
     - data
 
+# DNS 허용 - 필수! 이거 없으면 서비스 디스커버리 불가
 allowDns:
-  enabled: false
+  enabled: true
 
+# 서비스 간 통신 허용
 allowServices:
-  enabled: false
+  enabled: true
 
   # dev-webs namespace 정책
   devWebs:
-    allowInternal: true
-    allowFromIngress: true
-    allowToData: true
-    allowToAi: true
+    allowInternal: true       # dev-webs 내부 통신
+    allowFromIngress: true    # Istio IngressGateway -> dev-webs
+    allowToData: true         # dev-webs -> data (PostgreSQL, Redis)
+    allowToAi: true           # dev-webs -> dev-ai
 
   # dev-ai namespace 정책
   devAi:
-    allowInternal: true
-    allowFromWebs: true
-    allowToData: true
+    allowInternal: true       # dev-ai 내부 통신
+    allowFromWebs: true       # dev-webs -> dev-ai
+    allowToData: true         # dev-ai -> data (Redis)
 
   # data namespace 정책
   data:
-    allowInternal: true
-    allowFromWebs: true
-    allowFromAi: true
+    allowInternal: true       # data 내부 통신 (Replication 등)
+    allowFromWebs: true       # dev-webs -> data
+    allowFromAi: true         # dev-ai -> data
 
   # monitoring namespace 정책
   monitoring:
-    allowScrape: true
-    allowGrafanaToLoki: true
-    allowLogCollection: true
+    allowScrape: true         # Prometheus scrape
+    allowGrafanaToLoki: true  # Grafana -> Loki
+    allowLogCollection: true  # Alloy -> Loki
 
   # kube-system namespace 정책
   kubeSystem:
-    allowCilium: true
-    allowHubble: true
+    allowCilium: true         # Cilium Agent 간 통신
+    allowHubble: true         # Hubble 통신
 
   # 외부 네트워크 접근
   external:
-    allowHttps: true
-    allowFqdn: false  # FQDN 기반은 선택적 활성화
+    allowHttps: true          # 외부 HTTPS (AWS, OAuth 등)
+    allowFqdn: false          # FQDN 기반 세밀한 제어 (선택적)
+
+  # istio-ingress namespace 정책 (Phase 3)
+  # namespace 분리 완료 후 enabled: true로 변경
+  istioIngress:
+    enabled: false
