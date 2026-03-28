@@ -33,17 +33,17 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "expr": "sum(cilium_endpoint_state{state=\"ready\"})",
+          "expr": "sum(cilium_endpoint)",
           "legendFormat": "Ready",
           "refId": "A"
         }
       ],
-      "title": "✅ 준비 완료 엔드포인트",
+      "title": "✅ 전체 엔드포인트",
       "type": "stat"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "### 준비 안됨 엔드포인트\n\n**설명**: 아직 네트워크 정책이 적용되지 않았거나 오류 상태인 Pod 수\n\n**모니터링 포인트**:\n- **0이 정상** (모든 Pod이 ready 상태)\n- 숫자가 있으면 Pod 배포 중이거나 문제 발생\n- 지속적으로 1 이상이면 Cilium Agent 로그 확인 필요\n\n**트러블슈팅**:\n```bash\nkubectl logs -n kube-system -l app.kubernetes.io/name=cilium --tail=50\n```",
+      "description": "### 엔드포인트 재생성 실패\n\n**설명**: 최근 5분간 eBPF 프로그램 재생성에 실패한 횟수\n\n**모니터링 포인트**:\n- **0이 정상**\n- 숫자가 있으면 Cilium Agent에 문제 발생\n- 지속적인 실패는 커널 호환성 또는 리소스 부족 의심\n\n**트러블슈팅**:\n```bash\nkubectl logs -n kube-system -l app.kubernetes.io/name=cilium --tail=50 | grep -i fail\n```",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -57,12 +57,12 @@
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [
         {
-          "expr": "sum(cilium_endpoint_state{state!=\"ready\"})",
-          "legendFormat": "Not Ready",
+          "expr": "sum(increase(cilium_endpoint_regenerations_total{outcome=\"fail\"}[5m])) or vector(0)",
+          "legendFormat": "Failed",
           "refId": "A"
         }
       ],
-      "title": "⚠️ 준비 안됨 엔드포인트",
+      "title": "⚠️ 재생성 실패 (5분)",
       "type": "stat"
     },
     {
