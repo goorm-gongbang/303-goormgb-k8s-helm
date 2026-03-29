@@ -51,6 +51,16 @@ tolerations:
     value: "infra"
     effect: "NoSchedule"
 
+# Loki configuration for IP detection
+loki:
+  enabled: true
+  endpoint: "http://loki-gateway.monitoring.svc:80"
+
+# Prometheus configuration for Tetragon metrics
+prometheus:
+  enabled: true
+  endpoint: "http://kube-prometheus-stack-prometheus.monitoring.svc:9090"
+
 # Istio VirtualService
 virtualService:
   enabled: true

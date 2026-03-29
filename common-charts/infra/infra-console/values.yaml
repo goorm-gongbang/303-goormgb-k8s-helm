@@ -76,6 +76,16 @@ virtualService:
   hosts:
     - "console.dev.goormgb.space"
 
+# Loki configuration for IP detection
+loki:
+  enabled: false
+  endpoint: ""
+
+# Prometheus configuration for Tetragon metrics
+prometheus:
+  enabled: false
+  endpoint: ""
+
 # OAuth configuration
 oauth:
   enabled: false
