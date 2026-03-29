@@ -312,7 +312,7 @@ ociCharts:
   # Tetragon - eBPF-based runtime security (L3/L4 threat detection)
   # Works independently with AWS VPC CNI (no Cilium required)
   tetragon:
-    enabled: true
+    enabled: false  # eBPF 비활성화 - cni-eBPF 브랜치에서 활성화
     repoURL: https://helm.cilium.io
     chart: tetragon
     version: "1.3.0"
@@ -489,7 +489,7 @@ gitCharts:
 
   # === Tetragon TracingPolicy (L3/L4 threat detection) ===
   tetragon-config:
-    enabled: true
+    enabled: false  # eBPF 비활성화 - cni-eBPF 브랜치에서 활성화
     path: common-charts/infra/tetragon
     namespace: kube-system
     syncWave: "-7"
