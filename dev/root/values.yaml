@@ -464,15 +464,6 @@ gitCharts:
     valueFiles:
       - ../../../dev/values/infra/values-kyverno-policies.yaml
 
-  # === Cilium Network Policies ===
-  cilium-policies:
-    enabled: true
-    path: common-charts/infra/cilium-policies
-    namespace: kube-system
-    syncWave: "0"
-    valueFiles:
-      - ../../../dev/values/infra/values-cilium-policies.yaml
-
   # === Tetragon TracingPolicy (L3/L4 threat detection) ===
   tetragon-config:
     enabled: true
