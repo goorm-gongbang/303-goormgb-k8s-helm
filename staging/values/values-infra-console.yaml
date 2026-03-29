@@ -30,16 +30,23 @@ config:
 gitops:
   enabled: false
 
-# OAuth configuration
+# OAuth configuration (기존 staging/argocd/oauth 공유)
 oauth:
-  enabled: false
+  enabled: true
+  secretManagerKey: "staging/argocd/oauth"
+  redirectUrl: "https://console.staging.playball.one/auth/callback"
+  secureCookie: true
+  allowEmails:
+    - "212clab@gmail.com"
+    - "rhuba23@gmail.com"
+    - "chamchi0129@gmail.com"
 
 # Node placement
 nodeSelector:
-  node-role: infra
+  role: infra
 
 tolerations:
-  - key: "node-role"
+  - key: "role"
     operator: "Equal"
     value: "infra"
     effect: "NoSchedule"
@@ -47,6 +54,6 @@ tolerations:
 # Istio VirtualService
 virtualService:
   enabled: true
-  gateway: "istio-system/default-gateway"
+  gateway: "istio-system/api-gateway"
   hosts:
-    - "console.staging.goormgb.space"
+    - "console.staging.playball.one"
