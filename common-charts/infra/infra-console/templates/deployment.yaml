@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "infra-console.selectorLabels" . | nindent 8 }}
+        {{- include "infra-console.podLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "infra-console.serviceAccountName" . }}
       {{- with .Values.imagePullSecrets }}
