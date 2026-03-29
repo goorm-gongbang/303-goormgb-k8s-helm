@@ -1,0 +1,69 @@
+{{- if .Values.detection.suspiciousProcess.enabled }}
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: suspicious-process-detector
+  labels:
+    app.kubernetes.io/name: tetragon-policy
+    app.kubernetes.io/component: suspicious-process
+spec:
+  # Monitor process execution from suspicious paths
+  kprobes:
+  - call: "sys_execve"
+    syscall: true
+    args:
+    - index: 0
+      type: "string"
+    selectors:
+    - matchArgs:
+      - index: 0
+        operator: "Prefix"
+        values:
+        {{- range .Values.detection.suspiciousProcess.paths }}
+        - {{ . | quote }}
+        {{- end }}
+      matchNamespaces:
+      {{- range .Values.targetNamespaces }}
+      - namespace: {{ . }}
+        operator: In
+      {{- end }}
+      matchActions:
+      {{- range index .Values.actions .Values.mode }}
+      - action: {{ . }}
+      {{- end }}
+---
+# Monitor file write to suspicious paths
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: suspicious-write-detector
+  labels:
+    app.kubernetes.io/name: tetragon-policy
+    app.kubernetes.io/component: suspicious-write
+spec:
+  kprobes:
+  - call: "security_file_open"
+    syscall: false
+    args:
+    - index: 0
+      type: "file"
+    - index: 1
+      type: "int"
+    selectors:
+    - matchArgs:
+      - index: 0
+        operator: "Prefix"
+        values:
+        {{- range .Values.detection.suspiciousProcess.paths }}
+        - {{ . | quote }}
+        {{- end }}
+      - index: 1
+        operator: "Mask"
+        values:
+        - "2"   # O_WRONLY
+        - "66"  # O_WRONLY | O_CREAT
+      matchActions:
+      {{- range index .Values.actions .Values.mode }}
+      - action: {{ . }}
+      {{- end }}
+{{- end }}

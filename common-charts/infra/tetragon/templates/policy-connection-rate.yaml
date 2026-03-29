@@ -1,0 +1,51 @@
+{{- if .Values.detection.connectionRate.enabled }}
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: connection-rate-monitor
+  labels:
+    app.kubernetes.io/name: tetragon-policy
+    app.kubernetes.io/component: connection-rate
+spec:
+  # Monitor TCP connect system calls for connection rate analysis
+  kprobes:
+  - call: "tcp_connect"
+    syscall: false
+    return: true
+    args:
+    - index: 0
+      type: "sock"
+    selectors:
+    # Track all TCP connections for rate analysis
+    - matchActions:
+      {{- range index .Values.actions .Values.mode }}
+      - action: {{ . }}
+      {{- end }}
+      - action: TrackSock
+        sockOp: TrackConnect
+    - matchReturnActions:
+      - action: UntrackSock
+---
+# Monitor TCP accept for incoming connections
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: connection-accept-monitor
+  labels:
+    app.kubernetes.io/name: tetragon-policy
+    app.kubernetes.io/component: connection-accept
+spec:
+  kprobes:
+  - call: "tcp_v4_connect"
+    syscall: false
+    args:
+    - index: 0
+      type: "sock"
+    - index: 1
+      type: "int"
+    selectors:
+    - matchActions:
+      {{- range index .Values.actions .Values.mode }}
+      - action: {{ . }}
+      {{- end }}
+{{- end }}
