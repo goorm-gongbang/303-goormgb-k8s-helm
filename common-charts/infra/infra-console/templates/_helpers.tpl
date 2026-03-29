@@ -41,13 +41,20 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Selector labels
+Selector labels (immutable - do not add new labels here)
 */}}
 {{- define "infra-console.selectorLabels" -}}
-app: {{ include "infra-console.name" . }}
-version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/name: {{ include "infra-console.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Pod labels (includes Kyverno-required labels: app, version)
+*/}}
+{{- define "infra-console.podLabels" -}}
+app: {{ include "infra-console.name" . }}
+version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+{{ include "infra-console.selectorLabels" . }}
 {{- end }}
 
 {{/*
