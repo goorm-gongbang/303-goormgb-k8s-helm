@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/auth-guard"
-  tag: "08a50e4"
+  tag: "de7ce81.10"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -39,11 +39,11 @@ affinity:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 256Mi
-  limits:
     cpu: 500m
     memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 istio:
   sidecar: true
@@ -54,6 +54,8 @@ service:
   port: *port
 
 envFrom:
+  - configMapRef:
+      name: service-config
   - secretRef:
       name: service-config
 
@@ -75,6 +77,12 @@ readinessProbe:
 
 otel:
   enabled: true
+
+# Prometheus metrics (PodMonitor)
+metrics:
+  enabled: true
+  path: /actuator/prometheus
+  interval: 30s
 
 # PodDisruptionBudget - 최소 1개 유지
 pdb:

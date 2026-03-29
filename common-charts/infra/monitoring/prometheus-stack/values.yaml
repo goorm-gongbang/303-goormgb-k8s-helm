@@ -149,6 +149,7 @@ gateway:
   prometheus:
     enabled: false
     host: ""
+    gatewayRef: "istio-system/goormgb-gateway"
 
 # Node placement
 nodeSelector: {}
@@ -176,3 +177,9 @@ dashboards:
     exclude: []  # 예: ["calico-felix.json", "karpenter.json"]
   devTeam:
     exclude: []  # 예: ["database-rds-postgresql.json", "cache-elasticache-redis.json"]
+  alertOps:
+    enabled: false
+  businessKpi:
+    enabled: false
+  securityOps:
+    enabled: false

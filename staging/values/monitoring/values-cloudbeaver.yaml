@@ -1,0 +1,42 @@
+# CloudBeaver - Staging 환경 (부하테스트용 DB 관리)
+# Domain: cloudbeaver.staging.playball.one
+
+replicaCount: 1
+
+nodeSelector:
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
+image:
+  repository: dbeaver/cloudbeaver
+  tag: "24.0.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1536Mi
+
+persistence:
+  enabled: true
+  size: 2Gi
+  storageClass: gp3
+
+# Istio VirtualService
+virtualService:
+  enabled: true
+  host: "cloudbeaver.staging.playball.one"
+  gateway: "istio-system/api-gateway"
+
+# RDS 연결 정보 (CloudBeaver UI에서 직접 연결 설정)
+# Host: goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com
+# Port: 5432
+# Database: goormgb
+# Username: goormgb_admin

@@ -1,0 +1,32 @@
+{{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/dev-team-observability/*.json" -}}
+{{- $excludeList := list -}}
+{{- $namespacePattern := "dev-webs" -}}
+{{- $redisClusterPattern := "goormgb-.*" -}}
+{{- $folderName := "DEV 서비스 관측(개발)" -}}
+{{- if and .Values.dashboards .Values.dashboards.devTeam -}}
+{{- $excludeList = .Values.dashboards.devTeam.exclude | default list -}}
+{{- $namespacePattern = .Values.dashboards.devTeam.namespacePattern | default "dev-webs" -}}
+{{- $redisClusterPattern = .Values.dashboards.devTeam.redisClusterPattern | default "goormgb-.*" -}}
+{{- $folderName = .Values.dashboards.devTeam.folderName | default "DEV 서비스 관측(개발)" -}}
+{{- end -}}
+{{- if gt (len $dashboardFiles) 0 }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-dev-team-observability
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: monitoring
+    grafana_dashboard: "1"
+  annotations:
+    grafana_folder: {{ $folderName | quote }}
+data:
+{{- range $path, $_ := $dashboardFiles }}
+{{- $filename := base $path -}}
+{{- if not (has $filename $excludeList) }}
+  {{ $filename }}: |-
+{{ $.Files.Get $path | replace "__NAMESPACE_PATTERN__" $namespacePattern | replace "__REDIS_CLUSTER_PATTERN__" $redisClusterPattern | nindent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}

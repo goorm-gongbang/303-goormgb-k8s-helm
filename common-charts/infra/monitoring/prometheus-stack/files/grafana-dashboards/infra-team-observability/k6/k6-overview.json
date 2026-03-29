@@ -1,52 +1,52 @@
 {
   "annotations": { "list": [] },
-  "description": "k6 부하 테스트 전체 개요 - TPS, 응답시간, 에러율 통합 뷰",
+  "description": "k6 부하 테스트 시 Java 서비스 성능 모니터링 - RPS, 비즈니스 성공 TPS, 응답시간, 에러율",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
   "id": null,
   "links": [],
   "panels": [
-    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }, "id": 100, "panels": [], "title": "테스트 현황", "type": "row" },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }, "id": 100, "panels": [], "title": "서비스 현황", "type": "row" },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "현재 활성화된 가상 사용자(VU) 수",
+      "description": "초당 전체 요청 수 (RPS)",
       "fieldConfig": {
-        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 100 }, { "color": "red", "value": 500 }] }, "unit": "short" },
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "reqps" },
         "overrides": []
       },
       "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
       "id": 1,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(k6_vus)", "legendFormat": "VUs", "refId": "A" }],
-      "title": "Active VUs",
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval]))", "legendFormat": "RPS", "refId": "A" }],
+      "title": "Requests/sec (RPS)",
       "type": "stat"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "초당 요청 수 (TPS/RPS)",
+      "description": "초당 비즈니스 성공 트랜잭션 수입니다. HTTP 2xx 이면서 응답 body의 code == \"OK\" 인 경우만 집계합니다.",
       "fieldConfig": {
-        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "reqps" },
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "reqps" },
         "overrides": []
       },
       "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
       "id": 2,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(k6_http_reqs_total[1m]))", "legendFormat": "RPS", "refId": "A" }],
-      "title": "Requests/sec",
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(business_ok_transactions[$__rate_interval]))", "legendFormat": "Business OK TPS", "refId": "A" }],
+      "title": "Business OK TPS",
       "type": "stat"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "평균 응답 시간",
       "fieldConfig": {
-        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 500 }, { "color": "red", "value": 1000 }] }, "unit": "ms" },
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 300 }, { "color": "red", "value": 1000 }] }, "unit": "ms" },
         "overrides": []
       },
       "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
       "id": 3,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(k6_http_req_duration_avg) * 1000", "legendFormat": "Avg", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(http_server_request_duration_seconds_sum{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval])) / sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval])) * 1000", "legendFormat": "Avg", "refId": "A" }],
       "title": "Avg Response Time",
       "type": "stat"
     },
@@ -60,13 +60,13 @@
       "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
       "id": 4,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(k6_http_req_duration_p95) * 1000", "legendFormat": "P95", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval]))) * 1000", "legendFormat": "P95", "refId": "A" }],
       "title": "P95 Response Time",
       "type": "stat"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "HTTP 요청 실패율",
+      "description": "5xx 에러율",
       "fieldConfig": {
         "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 5 }] }, "unit": "percent" },
         "overrides": []
@@ -74,13 +74,13 @@
       "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
       "id": 5,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(k6_http_reqs_total{expected_response=\"false\"}[1m])) / sum(rate(k6_http_reqs_total[1m])) * 100", "legendFormat": "Error %", "refId": "A" }],
-      "title": "Error Rate",
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", app=~\"$app\", http_response_status_code=~\"5..\"}[$__rate_interval])) / sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval])) * 100", "legendFormat": "Error %", "refId": "A" }],
+      "title": "Error Rate (5xx)",
       "type": "stat"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "총 반복 횟수",
+      "description": "선택 기간 총 요청 수",
       "fieldConfig": {
         "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "short" },
         "overrides": []
@@ -88,272 +88,225 @@
       "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
       "id": 6,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(k6_iterations_total)", "legendFormat": "Iterations", "refId": "A" }],
-      "title": "Total Iterations",
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(http_server_request_duration_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[$__range]))", "legendFormat": "Total", "refId": "A" }],
+      "title": "Total Requests",
       "type": "stat"
     },
-    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 }, "id": 101, "panels": [], "title": "TPS & VU 추이", "type": "row" },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 }, "id": 101, "panels": [], "title": "RPS & TPS 추이", "type": "row" },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "시간에 따른 초당 요청 수 변화",
       "fieldConfig": {
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "reqps" },
-        "overrides": []
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "RPS (전체)" }, "properties": [{ "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Business OK TPS" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] }
+        ]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 6 },
       "id": 10,
       "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(k6_http_reqs_total[1m]))", "legendFormat": "Total RPS", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(k6_http_reqs_total{expected_response=\"true\"}[1m]))", "legendFormat": "Success RPS", "refId": "B" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval]))", "legendFormat": "RPS (전체)", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(business_ok_transactions[$__rate_interval]))", "legendFormat": "Business OK TPS", "refId": "B" }
       ],
-      "title": "Requests Per Second",
+      "title": "RPS / TPS 추이",
       "type": "timeseries"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "가상 사용자 수 변화",
+      "description": "애플리케이션별 RPS",
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "reqps" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
-      "id": 11,
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 6 },
+      "id": 12,
       "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(k6_vus)", "legendFormat": "Active VUs", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(k6_vus_max)", "legendFormat": "Max VUs", "refId": "B" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (app) (rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval]))", "legendFormat": "{{app}}", "refId": "A" }
       ],
-      "title": "Virtual Users",
-      "type": "timeseries"
-    },
-    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 }, "id": 102, "panels": [], "title": "응답 시간 분석", "type": "row" },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "응답 시간 분포 (avg, p90, p95, p99)",
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "line" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 500 }, { "color": "red", "value": 1000 }] }, "unit": "ms" },
-        "overrides": [
-          { "matcher": { "id": "byName", "options": "P99" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
-          { "matcher": { "id": "byName", "options": "P95" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] },
-          { "matcher": { "id": "byName", "options": "P90" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] },
-          { "matcher": { "id": "byName", "options": "Avg" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
-      "id": 20,
-      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(k6_http_req_duration_avg) * 1000", "legendFormat": "Avg", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(k6_http_req_duration_p90) * 1000", "legendFormat": "P90", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(k6_http_req_duration_p95) * 1000", "legendFormat": "P95", "refId": "C" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "avg(k6_http_req_duration_p99) * 1000", "legendFormat": "P99", "refId": "D" }
-      ],
-      "title": "Response Time Percentiles",
+      "title": "애플리케이션별 RPS",
       "type": "timeseries"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "HTTP 상태 코드별 요청 수",
+      "description": "상태코드별 요청 추이",
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "bars", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "reqps" },
         "overrides": [
           { "matcher": { "id": "byRegexp", "options": "2.." }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
           { "matcher": { "id": "byRegexp", "options": "4.." }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] },
           { "matcher": { "id": "byRegexp", "options": "5.." }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
         ]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
-      "id": 21,
-      "options": { "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (status) (rate(k6_http_reqs_total[1m]))", "legendFormat": "{{status}}", "refId": "A" }],
-      "title": "HTTP Status Codes",
-      "type": "timeseries"
-    },
-    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 }, "id": 103, "panels": [], "title": "데이터 전송량", "type": "row" },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "네트워크 데이터 전송량",
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "Bps" },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 24 },
-      "id": 30,
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 6 },
+      "id": 11,
       "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(k6_data_received_total[1m]))", "legendFormat": "Data Received", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(k6_data_sent_total[1m]))", "legendFormat": "Data Sent", "refId": "B" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (http_response_status_code) (rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval]))", "legendFormat": "{{http_response_status_code}}", "refId": "A" }
       ],
-      "title": "Data Transfer",
+      "title": "상태코드별 요청 추이",
       "type": "timeseries"
     },
-    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 32 }, "id": 104, "panels": [], "title": "RDS (PostgreSQL)", "type": "row" },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 }, "id": 102, "panels": [], "title": "응답 시간 분석", "type": "row" },
     {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "RDS CPU 사용률",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "응답 시간 분포 (P50, P95, P99)",
       "fieldConfig": {
-        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] }, "unit": "percent" },
-        "overrides": []
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "line" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 500 }, { "color": "red", "value": 1000 }] }, "unit": "ms" },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "P99" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "P95" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "P50" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] }
+        ]
       },
-      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 33 },
-      "id": 40,
-      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "CPUUtilization", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
-      "title": "RDS CPU",
-      "type": "stat"
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+      "id": 20,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "histogram_quantile(0.50, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval]))) * 1000", "legendFormat": "P50", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval]))) * 1000", "legendFormat": "P95", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", app=~\"$app\"}[$__rate_interval]))) * 1000", "legendFormat": "P99", "refId": "C" }
+      ],
+      "title": "Response Time Percentiles",
+      "type": "timeseries"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "활성 DB 연결 수",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "느린 엔드포인트 TOP 10",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "continuous-GrYlRd" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 300 }, { "color": "red", "value": 1000 }] }, "unit": "ms" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+      "id": 21,
+      "options": { "displayMode": "lcd", "maxVizHeight": 300, "minVizHeight": 16, "minVizWidth": 8, "namePlacement": "auto", "orientation": "horizontal", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showUnfilled": true, "sizing": "auto", "valueMode": "color" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "topk(10, sum by (http_route) (rate(http_server_request_duration_seconds_sum{namespace=\"$namespace\", app=~\"$app\", http_route=~\"/.+\", http_route!~\".*actuator.*|.*swagger.*|.*api-docs.*|.*health.*|.*ready.*|.*metrics.*\"}[$__rate_interval])) / clamp_min(sum by (http_route) (rate(http_server_request_duration_seconds_count{namespace=\"$namespace\", app=~\"$app\", http_route=~\"/.+\", http_route!~\".*actuator.*|.*swagger.*|.*api-docs.*|.*health.*|.*ready.*|.*metrics.*\"}[$__rate_interval])), 1) * 1000)", "legendFormat": "{{http_route}}", "refId": "A" }],
+      "title": "느린 엔드포인트 TOP 10",
+      "type": "bargauge"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 }, "id": 104, "panels": [], "title": "PostgreSQL (Pod)", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "PostgreSQL 활성 연결 수",
       "fieldConfig": {
         "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 50 }, { "color": "red", "value": 100 }] }, "unit": "short" },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 33 },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 24 },
+      "id": 40,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(pg_stat_activity_count{namespace=\"data\"})", "legendFormat": "Connections", "refId": "A" }],
+      "title": "Active Connections",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "초당 트랜잭션 수",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 24 },
       "id": 41,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "DatabaseConnections", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
-      "title": "DB Connections",
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(pg_stat_database_xact_commit{namespace=\"data\"}[$__rate_interval])) + sum(rate(pg_stat_database_xact_rollback{namespace=\"data\"}[$__rate_interval]))", "legendFormat": "TPS", "refId": "A" }],
+      "title": "Transactions/sec",
       "type": "stat"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "RDS 사용 가능한 메모리",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "PostgreSQL 트랜잭션 추이 (commit/rollback)",
       "fieldConfig": {
-        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 536870912 }, { "color": "green", "value": 1073741824 }] }, "unit": "bytes" },
-        "overrides": []
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Commit" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Rollback" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+        ]
       },
-      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 33 },
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 24 },
       "id": 42,
-      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "FreeableMemory", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
-      "title": "Freeable Memory",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "RDS Read/Write IOPS",
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "iops" },
-        "overrides": []
-      },
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 33 },
-      "id": 43,
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "ReadIOPS", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" },
-        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "WriteIOPS", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "B", "region": "ap-northeast-2", "statistic": "Average" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(pg_stat_database_xact_commit{namespace=\"data\"}[$__rate_interval]))", "legendFormat": "Commit", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(pg_stat_database_xact_rollback{namespace=\"data\"}[$__rate_interval]))", "legendFormat": "Rollback", "refId": "B" }
       ],
-      "title": "RDS IOPS",
+      "title": "Transactions (Commit/Rollback)",
       "type": "timeseries"
     },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 }, "id": 105, "panels": [], "title": "Redis (Pod)", "type": "row" },
     {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "RDS Read/Write Latency",
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "s" },
-        "overrides": []
-      },
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 33 },
-      "id": 44,
-      "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [
-        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "ReadLatency", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" },
-        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": ["$rds_instance"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "WriteLatency", "metricQueryType": 0, "namespace": "AWS/RDS", "period": "60", "queryMode": "Metrics", "refId": "B", "region": "ap-northeast-2", "statistic": "Average" }
-      ],
-      "title": "RDS Latency",
-      "type": "timeseries"
-    },
-    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 38 }, "id": 105, "panels": [], "title": "Redis (ElastiCache)", "type": "row" },
-    {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "Redis CPU 사용률",
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] }, "unit": "percent" },
-        "overrides": []
-      },
-      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 39 },
-      "id": 50,
-      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "CPUUtilization", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
-      "title": "Redis CPU",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "Redis 현재 연결 수",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Redis 연결된 클라이언트 수",
       "fieldConfig": {
         "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 100 }, { "color": "red", "value": 500 }] }, "unit": "short" },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 39 },
-      "id": 51,
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 30 },
+      "id": 50,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "CurrConnections", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
-      "title": "Connections",
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(redis_connected_clients{namespace=\"data\"})", "legendFormat": "Clients", "refId": "A" }],
+      "title": "Connected Clients",
       "type": "stat"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Redis 메모리 사용량",
       "fieldConfig": {
-        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1073741824 }, { "color": "red", "value": 2147483648 }] }, "unit": "bytes" },
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 536870912 }, { "color": "red", "value": 1073741824 }] }, "unit": "bytes" },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 39 },
-      "id": 52,
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 30 },
+      "id": 51,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "BytesUsedForCache", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(redis_memory_used_bytes{namespace=\"data\"})", "legendFormat": "Used", "refId": "A" }],
       "title": "Memory Used",
       "type": "stat"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "Cache Hit/Miss 비율",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "초당 Redis 명령 처리 수",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "ops" },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 30 },
+      "id": 52,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(redis_commands_processed_total{namespace=\"data\"}[$__rate_interval]))", "legendFormat": "Ops/s", "refId": "A" }],
+      "title": "Commands/sec",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Redis Cache Hit Rate",
       "fieldConfig": {
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
         "overrides": [
-          { "matcher": { "id": "byName", "options": "CacheHits" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
-          { "matcher": { "id": "byName", "options": "CacheMisses" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+          { "matcher": { "id": "byName", "options": "Hits" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Misses" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
         ]
       },
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 39 },
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 30 },
       "id": 53,
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "CacheHits", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Sum" },
-        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "CacheMisses", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "B", "region": "ap-northeast-2", "statistic": "Sum" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(redis_keyspace_hits_total{namespace=\"data\"}[$__rate_interval]))", "legendFormat": "Hits", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(redis_keyspace_misses_total{namespace=\"data\"}[$__rate_interval]))", "legendFormat": "Misses", "refId": "B" }
       ],
       "title": "Cache Hits/Misses",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "Redis 네트워크 I/O",
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "Bps" },
-        "overrides": []
-      },
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 39 },
-      "id": 54,
-      "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [
-        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "NetworkBytesIn", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" },
-        { "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": ["$redis_cluster"] }, "expression": "", "id": "", "matchExact": true, "metricEditorMode": 0, "metricName": "NetworkBytesOut", "metricQueryType": 0, "namespace": "AWS/ElastiCache", "period": "60", "queryMode": "Metrics", "refId": "B", "region": "ap-northeast-2", "statistic": "Average" }
-      ],
-      "title": "Network I/O",
       "type": "timeseries"
     }
   ],
   "refresh": "5s",
   "schemaVersion": 39,
-  "tags": ["k6", "load-testing", "performance"],
+  "tags": ["k6", "load-testing", "performance", "java"],
   "templating": {
     "list": [
-      { "current": { "selected": false, "text": "Prometheus", "value": "prometheus" }, "hide": 0, "includeAll": false, "label": "Datasource", "multi": false, "name": "datasource", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "skipUrlSync": false, "type": "datasource" },
-      { "current": { "selected": false, "text": "goormgb-staging-postgres", "value": "goormgb-staging-postgres" }, "hide": 0, "includeAll": false, "label": "RDS Instance", "multi": false, "name": "rds_instance", "options": [{ "selected": true, "text": "goormgb-staging-postgres", "value": "goormgb-staging-postgres" }], "query": "goormgb-staging-postgres", "skipUrlSync": false, "type": "textbox" },
-      { "current": { "selected": false, "text": "goormgb-staging-redis-001", "value": "goormgb-staging-redis-001" }, "hide": 0, "includeAll": false, "label": "Redis Cluster", "multi": false, "name": "redis_cluster", "options": [{ "selected": true, "text": "goormgb-staging-redis-001", "value": "goormgb-staging-redis-001" }], "query": "goormgb-staging-redis-001", "skipUrlSync": false, "type": "textbox" }
+      { "current": { "selected": false, "text": "Prometheus", "value": "prometheus" }, "hide": 0, "includeAll": false, "label": "데이터소스", "multi": false, "name": "datasource", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "skipUrlSync": false, "type": "datasource" },
+      { "current": { "selected": true, "text": "__NAMESPACE_PATTERN__", "value": "__NAMESPACE_PATTERN__" }, "hide": 0, "includeAll": false, "label": "네임스페이스", "multi": false, "name": "namespace", "options": [{ "selected": true, "text": "__NAMESPACE_PATTERN__", "value": "__NAMESPACE_PATTERN__" }], "query": "__NAMESPACE_PATTERN__", "skipUrlSync": false, "type": "custom" },
+      { "allValue": ".+", "current": { "selected": true, "text": ["All"], "value": ["$__all"] }, "datasource": { "type": "prometheus", "uid": "${datasource}" }, "definition": "label_values(http_server_request_duration_seconds_count{namespace=\"$namespace\"}, app)", "hide": 0, "includeAll": true, "label": "애플리케이션", "multi": true, "name": "app", "options": [], "query": "label_values(http_server_request_duration_seconds_count{namespace=\"$namespace\"}, app)", "refresh": 1, "regex": "", "sort": 1, "skipUrlSync": false, "type": "query" }
     ]
   },
   "time": { "from": "now-15m", "to": "now" },

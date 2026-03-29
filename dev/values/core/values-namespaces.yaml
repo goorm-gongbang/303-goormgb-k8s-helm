@@ -2,13 +2,22 @@
 # Istio sidecar injection 활성화
 
 namespaces:
+  # 애플리케이션
   - name: dev-webs
     istio: true   # Spring Boot + Next.js 웹 앱
   - name: dev-ai
     istio: true   # FastAPI AI Agent 서비스
+
+  # 데이터 레이어 (Phase 4: data -> data-db, data-cache 분리)
   - name: data
     istio: true   # PostgreSQL, Redis - Kiali에서 트래픽 모니터링
+  - name: data-db
+    istio: true   # Phase 4: PostgreSQL
+  - name: data-cache
+    istio: true   # Phase 4: Redis
+
+  # 인프라
   - name: monitoring
     istio: false  # Prometheus, Grafana - Istio 불필요
-  - name: infra
-    istio: false  # 인프라 CronJobs - Istio 불필요
+  - name: istio-ingress
+    istio: false  # Phase 3: IngressGateway 전용 (sidecar 불필요)

@@ -1,0 +1,36 @@
+# OAuth2 Proxy - Swagger 인증용
+# swagger.staging.playball.one → OAuth2 Proxy → 실제 서비스
+
+replicaCount: 1
+
+# Monitoring 노드에 배치
+nodeSelector:
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
+# Google OAuth 설정
+config:
+  cookieSecure: true
+  cookieDomain: ".staging.playball.one"
+
+# Upstream services
+upstreams:
+  apiGateway: "http://api-gateway.staging-webs.svc.cluster.local:8085"
+  aiDefense: "http://ai-defense.staging-ai.svc.cluster.local:8000"
+
+# ESO - AWS Secrets Manager에서 OAuth credentials + 이메일 목록 가져옴
+eso:
+  enabled: true
+  secretKey: staging/infra/oauth/swagger
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi

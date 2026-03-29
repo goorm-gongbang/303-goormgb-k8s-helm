@@ -6,9 +6,18 @@ fullnameOverride: otel-collector  # 서비스명 단순화
 mode: deployment
 replicaCount: 1
 
+# 0.147.1 버전부터 필수
+image:
+  repository: otel/opentelemetry-collector-contrib
+
 # CP 노드에 배치
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
 
 resources:
   requests:
@@ -32,12 +41,27 @@ config:
       timeout: 5s
       send_batch_size: 512
 
-    # service.name → service_name 라벨 변환 (OTel 대시보드 호환)
+    # Trace service.name 변환 (Kiali 호환: <name>.<namespace>)
+    transform/traces:
+      trace_statements:
+        - context: resource
+          statements:
+            - set(attributes["service.name"], Concat([attributes["service.name"], attributes["service.namespace"]], ".")) where attributes["service.namespace"] != nil
+
+    # OTel → Prometheus 라벨 변환 (대시보드 호환)
     transform:
       metric_statements:
         - context: datapoint
           statements:
+            # Resource attributes → metric labels
             - set(attributes["service_name"], resource.attributes["service.name"])
+            - set(attributes["namespace"], resource.attributes["service.namespace"])
+            # app 라벨 설정 (Promtail/Loki와 통일, 대시보드 호환)
+            - set(attributes["app"], resource.attributes["service.name"])
+            # HTTP semantic convention 라벨 변환 (OTEL dots → Prometheus underscores)
+            - set(attributes["http_route"], attributes["http.route"]) where attributes["http.route"] != nil
+            - set(attributes["http_response_status_code"], attributes["http.response.status_code"]) where attributes["http.response.status_code"] != nil
+            - set(attributes["http_request_method"], attributes["http.request.method"]) where attributes["http.request.method"] != nil
 
     # Tail-based Sampling
     tail_sampling:
@@ -80,7 +104,7 @@ config:
       tls:
         insecure: true
 
-    logging:
+    debug:
       verbosity: basic
 
   extensions:
@@ -92,13 +116,13 @@ config:
     pipelines:
       traces:
         receivers: [otlp]
-        processors: [batch, tail_sampling]
-        exporters: [otlp/tempo, logging]
+        processors: [transform/traces, tail_sampling, batch]  # transform으로 service.name 변환, tail_sampling 후 batch
+        exporters: [otlp/tempo, debug]
       metrics:
         receivers: [otlp]
         processors: [transform, batch]
-        exporters: [prometheusremotewrite, logging]
+        exporters: [prometheusremotewrite, debug]
       logs:
         receivers: [otlp]
         processors: [batch]
-        exporters: [otlphttp/loki, logging]
+        exporters: [otlphttp/loki, debug]

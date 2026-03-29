@@ -24,13 +24,13 @@ spec:
         mode: SIMPLE
         credentialName: goormgb-tls
       hosts:
-        - "api.dev.goormgb.space"
+        - "api.goormgb.space"
     - port:
         number: 80
         name: http
         protocol: HTTP
       hosts:
-        - "api.dev.goormgb.space"
+        - "api.goormgb.space"
       tls:
         httpsRedirect: true
 {{- end }}
@@ -153,7 +153,7 @@ spec:
 {{- if .Values.rawManifests.aiDefenseRoute.enabled }}
 ---
 # AI Defense 서비스 라우팅
-# api.dev.goormgb.space/ai/* -> ai-defense 서비스
+# api.goormgb.space/ai/* -> ai-defense 서비스
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
@@ -161,7 +161,7 @@ metadata:
   namespace: dev-ai
 spec:
   hosts:
-    - "api.dev.goormgb.space"
+    - "api.goormgb.space"
   gateways:
     - istio-system/api-gateway
   http:

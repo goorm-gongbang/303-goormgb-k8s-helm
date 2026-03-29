@@ -1,4 +1,4 @@
-{{- if .Values.mtls.enabled }}
+{{- if and .Values.mtls .Values.mtls.enabled }}
 # Mesh-wide DestinationRule for mTLS
 apiVersion: networking.istio.io/v1
 kind: DestinationRule
@@ -11,7 +11,7 @@ spec:
     tls:
       mode: ISTIO_MUTUAL
 {{- end }}
-{{- if .Values.mtls.otelCollector.enabled }}
+{{- if and .Values.mtls .Values.mtls.otelCollector .Values.mtls.otelCollector.enabled }}
 ---
 # OTEL Collector - mTLS 비활성화
 # OTEL Java agent가 직접 연결하므로 plain HTTP 허용

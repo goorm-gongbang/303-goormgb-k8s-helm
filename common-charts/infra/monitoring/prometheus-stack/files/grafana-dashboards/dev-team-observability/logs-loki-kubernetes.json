@@ -29,7 +29,10 @@
   "links": [],
   "panels": [
     {
-      "datasource": { "type": "loki", "uid": "${datasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${datasource}"
+      },
       "description": "시간대별 로그 발생 건수입니다.",
       "fieldConfig": {
         "defaults": {
@@ -108,8 +111,11 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${datasource}" },
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container=\"java-service\", instance=~\"$service\"} |= \"$query\" [$__interval]))",
+          "datasource": {
+            "type": "loki",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" $log_level [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -120,7 +126,10 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "loki", "uid": "${datasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${datasource}"
+      },
       "description": "Logs from services running in Kubernetes",
       "fieldConfig": {
         "defaults": {},
@@ -146,9 +155,12 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${datasource}" },
+          "datasource": {
+            "type": "loki",
+            "uid": "${datasource}"
+          },
           "editorMode": "code",
-          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container=\"java-service\", instance=~\"$service\"} |= \"$query\"",
+          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" $log_level",
           "queryType": "range",
           "refId": "A"
         }
@@ -183,25 +195,14 @@
       },
       {
         "current": {
-          "text": "",
-          "value": ""
+          "selected": true,
+          "text": "dev-webs",
+          "value": "dev-webs"
         },
-        "description": "검색어 (ERROR, WARN 등 로그 레벨 포함)",
-        "label": "검색어",
-        "name": "query",
-        "options": [
-          {
-            "selected": true,
-            "text": "",
-            "value": ""
-          }
-        ],
-        "query": "",
-        "type": "textbox"
-      },
-      {
-        "current": {},
-        "datasource": { "type": "loki", "uid": "${datasource}" },
+        "datasource": {
+          "type": "loki",
+          "uid": "${datasource}"
+        },
         "definition": "label_values(namespace)",
         "hide": 0,
         "includeAll": false,
@@ -211,9 +212,92 @@
         "options": [],
         "query": "label_values(namespace)",
         "refresh": 1,
-        "regex": ".*-webs$",
+        "regex": "/(dev-webs|staging-webs)/",
         "sort": 1,
         "type": "query"
+      },
+      {
+        "allValue": ".+",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "loki",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values({namespace=\"$namespace\"}, app)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "애플리케이션",
+        "multi": true,
+        "name": "app",
+        "options": [],
+        "query": "label_values({namespace=\"$namespace\"}, app)",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "",
+          "value": "|= ``"
+        },
+        "description": "검색어 (ERROR, WARN 등 로그 레벨 포함)",
+        "label": "검색어",
+        "name": "query",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": "|= ``"
+          }
+        ],
+        "query": "",
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "전체",
+          "value": "|= ``"
+        },
+        "description": "로그 유형 필터링",
+        "hide": 0,
+        "includeAll": false,
+        "label": "로그 유형",
+        "multi": false,
+        "name": "log_type",
+        "options": [
+          {
+            "selected": true,
+            "text": "전체",
+            "value": ""
+          },
+          {
+            "selected": false,
+            "text": "비즈니스 로그",
+            "value": "!~ `Hibernate:` !~ `kube-probe`"
+          },
+          {
+            "selected": false,
+            "text": "SQL 쿼리 (Hibernate)",
+            "value": "|~ `Hibernate:`"
+          },
+          {
+            "selected": false,
+            "text": "Health Check 제외",
+            "value": "!~ `kube-probe`"
+          }
+        ],
+        "query": "전체 : |= ``,비즈니스 로그 : !~ `Hibernate:` !~ `kube-probe`,SQL 쿼리 (Hibernate) : |~ `Hibernate:`,Health Check 제외 : !~ `kube-probe`",
+        "type": "custom"
       },
       {
         "allValue": ".+",
@@ -246,21 +330,51 @@
         "type": "custom"
       },
       {
-        "allValue": ".+",
-        "current": {},
-        "datasource": { "type": "loki", "uid": "${datasource}" },
-        "definition": "label_values({namespace=~\"$namespace\"}, instance)",
+        "current": {
+          "selected": true,
+          "text": "전체",
+          "value": "|= ``"
+        },
+        "description": "애플리케이션 로그 레벨 필터링",
         "hide": 0,
-        "includeAll": true,
-        "label": "서비스",
-        "multi": true,
-        "name": "service",
-        "options": [],
-        "query": "label_values({namespace=~\"$namespace\"}, instance)",
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "type": "query"
+        "includeAll": false,
+        "label": "로그 레벨",
+        "multi": false,
+        "name": "log_level",
+        "options": [
+          {
+            "selected": true,
+            "text": "전체",
+            "value": "|= ``"
+          },
+          {
+            "selected": false,
+            "text": "TRACE",
+            "value": "|~ `\"level\": ?\"TRACE\"`"
+          },
+          {
+            "selected": false,
+            "text": "DEBUG",
+            "value": "|~ `\"level\": ?\"DEBUG\"`"
+          },
+          {
+            "selected": false,
+            "text": "INFO",
+            "value": "|~ `\"level\": ?\"INFO\"`"
+          },
+          {
+            "selected": false,
+            "text": "WARN",
+            "value": "|~ `\"level\": ?\"WARN\"`"
+          },
+          {
+            "selected": false,
+            "text": "ERROR",
+            "value": "|~ `\"level\": ?\"ERROR\"`"
+          }
+        ],
+        "query": "전체 : |= ``,TRACE : |~ `\"level\": ?\"TRACE\"`,DEBUG : |~ `\"level\": ?\"DEBUG\"`,INFO : |~ `\"level\": ?\"INFO\"`,WARN : |~ `\"level\": ?\"WARN\"`,ERROR : |~ `\"level\": ?\"ERROR\"`",
+        "type": "custom"
       }
     ]
   },
@@ -272,6 +386,6 @@
   "timezone": "",
   "title": "로그 확인(Loki Kubernetes Logs)",
   "uid": "cfevec81ezw8wc",
-  "version": 13,
+  "version": 15,
   "weekStart": ""
 }

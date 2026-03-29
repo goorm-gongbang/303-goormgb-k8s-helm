@@ -81,20 +81,27 @@ ociCharts:
       - $values/dev/values/istio/values-kiali.yaml
     syncOptions:
       - RespectIgnoreDifferences=true
+      - ServerSideApply=true
     ignoreDifferences:
-      - group: ""
-        kind: ConfigMap
-        name: kiali
-        jsonPointers:
-          - /data
       - group: apps
         kind: Deployment
-        name: kiali
-        jsonPointers:
-          - /spec/template/metadata/annotations
+        jqPathExpressions:
+          - .metadata.annotations
+          - .spec.template.metadata.annotations
+          - .spec.template.spec.containers[].resources
+      - group: ""
+        kind: ConfigMap
+        jqPathExpressions:
+          - .data
+      - group: ""
+        kind: Service
+        jqPathExpressions:
+          - .spec.clusterIP
+          - .spec.clusterIPs
 
+  # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   tigera-operator:
-    enabled: true
+    enabled: false  # Cilium eBPF로 대체
     repoURL: https://docs.tigera.io/calico/charts
     chart: tigera-operator
     version: "v3.29.3"
@@ -156,16 +163,23 @@ ociCharts:
     enabled: true
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    version: "82.10.3"
+    version: "82.13.6"
     namespace: monitoring
     syncWave: "-1"
+    skipCrds: true  # CRD는 bootstrap에서 설치 (make install-prometheus-crds)
     valueFiles:
       - $values/dev/values/monitoring/values-prometheus-stack.yaml
       - $values/dev/values/monitoring/alerting/values-alertmanager-dev.yaml
       - $values/dev/values/monitoring/alerting/values-rules-dev-5xx.yaml
     syncOptions:
-      - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
+      - PruneLast=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 5
+      duration: "15s"
+      maxDuration: "5m"
+      factor: 2
     ignoreDifferences:
       - group: ""
         kind: PersistentVolumeClaim
@@ -194,7 +208,7 @@ ociCharts:
     valueFiles: []
 
   alloy:
-    enabled: false  # 프론트엔드 적용 전까지 비활성화
+    enabled: true  # Faro 프론트엔드 RUM 활성화
     repoURL: https://grafana.github.io/helm-charts
     chart: alloy
     version: "1.6.2"
@@ -216,7 +230,7 @@ ociCharts:
     enabled: true
     repoURL: https://grafana.github.io/helm-charts
     chart: tempo
-    version: "1.10.3"
+    version: "1.24.4"
     namespace: monitoring
     syncWave: "0"
     valueFiles:
@@ -228,15 +242,51 @@ ociCharts:
           - /spec/volumeName
           - /spec/storageClassName
 
+  # Grafana (kube-prometheus-stack에서 분리)
+  grafana:
+    enabled: true
+    repoURL: https://grafana.github.io/helm-charts
+    chart: grafana
+    version: "8.14.0"
+    namespace: monitoring
+    syncWave: "0"
+    valueFiles:
+      - $values/dev/values/monitoring/values-grafana.yaml
+    ignoreDifferences:
+      - group: ""
+        kind: PersistentVolumeClaim
+        jsonPointers:
+          - /spec/volumeName
+          - /spec/storageClassName
+
   opentelemetry-collector:
     enabled: true
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-collector
-    version: "0.85.0"
+    version: "0.147.1"
     namespace: monitoring
     syncWave: "1"
     valueFiles:
       - $values/dev/values/monitoring/values-opentelemetry-collector.yaml
+
+  # Tetragon - eBPF-based runtime security (L3/L4 threat detection)
+  tetragon:
+    enabled: true
+    repoURL: https://helm.cilium.io
+    chart: tetragon
+    version: "1.3.0"
+    namespace: kube-system
+    syncWave: "-8"
+    valueFiles:
+      - $values/dev/values/infra/values-tetragon-oci.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+    ignoreDifferences:
+      - group: cilium.io
+        kind: TracingPolicy
+        jsonPointers:
+          - /status
 
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
@@ -257,18 +307,26 @@ gitCharts:
     namespace: argocd
     valueFiles:
       - ../../../dev/values/core/values-argocd.yaml
+    syncOptions:
+      - RespectIgnoreDifferences=true
+    ignoreDifferences:
+      - group: ""
+        kind: ConfigMap
+        name: argocd-cm
+        jsonPointers:
+          - /data
 
   ddns-cloudflare:
     enabled: true
     path: dev/charts/core/ddns
-    namespace: infra
+    namespace: istio-system
     valueFiles:
       - ../../../values/core/values-ddns.yaml
 
   ecr-creds:
     enabled: true
     path: dev/charts/core/ecr-creds
-    namespace: infra
+    namespace: istio-system
     syncWave: "-8"
     valueFiles:
       - ../../../values/core/values-ecr-creds.yaml
@@ -298,6 +356,12 @@ gitCharts:
     enabled: true
     path: dev/charts/security/service-secrets
     namespace: dev-webs
+    syncWave: "-6"
+
+  ai-service-secrets:
+    enabled: true
+    path: dev/charts/security/ai-service-secrets
+    namespace: dev-ai
     syncWave: "-6"
 
   oauth2-proxy:
@@ -342,8 +406,9 @@ gitCharts:
     valueFiles:
       - ../../../../dev/values/istio/values-kiali.yaml
 
+  # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   calico-config:
-    enabled: true
+    enabled: false  # Cilium eBPF로 대체
     path: common-charts/infra/calico
     namespace: calico-system
     syncWave: "-9"
@@ -374,12 +439,41 @@ gitCharts:
       - ../../../../dev/values/monitoring/values-prometheus-stack.yaml
       - ../../../../dev/values/monitoring/alerting/values-alertmanager-dev.yaml
   alloy-config:
-    enabled: false  # 프론트엔드 적용 전까지 비활성화
+    enabled: true  # Faro VirtualService 활성화
     path: common-charts/infra/monitoring/alloy
     namespace: monitoring
     syncWave: "1"
     valueFiles:
       - ../../../../dev/values/monitoring/values-alloy.yaml
+
+  # === Infra Console ===
+  infra-console:
+    enabled: true
+    path: common-charts/infra/infra-console
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../dev/values/infra/values-infra-console.yaml
+
+  # === Kyverno Policies ===
+  kyverno-policies:
+    enabled: true
+    path: common-charts/infra/kyverno-policies
+    namespace: kyverno
+    syncWave: "0"
+    valueFiles:
+      - ../../../dev/values/infra/values-kyverno-policies.yaml
+
+  # === Tetragon TracingPolicy (L3/L4 threat detection) ===
+  tetragon-config:
+    enabled: true
+    path: common-charts/infra/tetragon
+    namespace: kube-system
+    syncWave: "-7"
+    valueFiles:
+      - ../../../dev/values/infra/values-tetragon.yaml
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
 
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
@@ -427,6 +521,20 @@ gitCharts:
       maxDuration: "3m"
       factor: 2
 
+  redis-ai:
+    enabled: true
+    path: dev/charts/data/redis
+    namespace: data
+    syncWave: "-5"
+    releaseName: redis-ai
+    valueFiles:
+      - ../../../values/data/values-redis-ai.yaml
+    retry:
+      limit: 5
+      duration: "10s"
+      maxDuration: "3m"
+      factor: 2
+
   cloudbeaver:
     enabled: true
     path: dev/charts/data/cloudbeaver
@@ -466,6 +574,7 @@ applicationSets:
     valueFilesPattern: ../../../dev/values/apps/values-{{name}}.yaml
     services:
       - name: ai-defense
+      - name: authz-adapter
 
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)

@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   name: "dev/goormgb/queue"
-  tag: "239ebbd"
+  tag: "8608193"
   pullPolicy: Always
 
 imagePullSecrets:
@@ -16,11 +16,11 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
     cpu: 500m
     memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 # Istio
 istio:
@@ -74,6 +74,12 @@ env:
       secretKeyRef:
         name: service-config
         key: REDIS_QUEUE_PORT
+
+# Prometheus Metrics (Spring Boot Actuator)
+metrics:
+  enabled: true
+  path: /actuator/prometheus
+  interval: 15s
 
 # OpenTelemetry Java Agent
 otel:

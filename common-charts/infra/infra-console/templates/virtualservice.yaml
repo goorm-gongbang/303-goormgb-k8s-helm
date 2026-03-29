@@ -1,0 +1,22 @@
+{{- if .Values.virtualService.enabled }}
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: {{ include "infra-console.fullname" . }}
+  labels:
+    {{- include "infra-console.labels" . | nindent 4 }}
+spec:
+  hosts:
+    {{- toYaml .Values.virtualService.hosts | nindent 4 }}
+  gateways:
+    - {{ .Values.virtualService.gateway }}
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: {{ include "infra-console.fullname" . }}
+            port:
+              number: {{ .Values.service.port }}
+{{- end }}

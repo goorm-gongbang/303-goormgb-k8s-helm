@@ -1,4 +1,4 @@
-{{- if and .Values.enabled .Values.rateLimiting.global.enabled }}
+{{- if and .Values.enabled .Values.rateLimiting .Values.rateLimiting.global .Values.rateLimiting.global.enabled }}
 # ============================================================
 # Rate Limit Service + Redis
 # Global Rate Limiting을 위한 인프라

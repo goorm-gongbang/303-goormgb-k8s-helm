@@ -273,7 +273,7 @@ kube-prometheus-stack:
       - name: Tempo
         type: tempo
         access: proxy
-        url: http://tempo.monitoring.svc.cluster.local:3100
+        url: http://tempo.monitoring.svc.cluster.local:3200
         isDefault: false
         jsonData:
           tracesToLogsV2:
@@ -299,6 +299,14 @@ gateway:
     enabled: true
     host: "grafana.staging.playball.one"
     # EKS: TLS는 CloudFront + ACM에서 처리
+
+dashboards:
+  alertOps:
+    enabled: true
+  businessKpi:
+    enabled: true
+  securityOps:
+    enabled: true
 
 # ===== Loki =====
 loki:

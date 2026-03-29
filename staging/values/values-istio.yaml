@@ -30,6 +30,23 @@ global:
 
 meshConfig:
   accessLogFile: /dev/stdout
+  enableTracing: true
+
+  # Istio 1.22+ extensionProviders 방식 (Telemetry API 연동)
+  extensionProviders:
+    - name: zipkin
+      zipkin:
+        service: tempo.monitoring.svc.cluster.local
+        port: 9411
+
+  # 기본 tracing provider 설정
+  defaultProviders:
+    tracing:
+      - zipkin
+
+  defaultConfig:
+    tracing:
+      sampling: 100  # staging은 100% 샘플링
 
 # Legacy gateways 비활성화 (ALB Ingress 사용)
 sharedGateway:
@@ -47,10 +64,20 @@ apiGatewayConfig:
   selector: ingressgateway
   hosts:
     - "api.staging.playball.one"
+    - "prometheus.staging.playball.one"
+    - "cloudbeaver.staging.playball.one"
 
 # =============================================================================
 # Kiali - Service Mesh Observability
 # =============================================================================
+# 멀티클러스터 비활성화 (single cluster 환경)
+# 이게 없으면 Kiali가 trace 쿼리에 istio.cluster_id 필터 추가함
+clustering:
+  enabled: false
+
+auth:
+  strategy: anonymous
+
 deployment:
   node_selector:
     role: monitoring
@@ -77,3 +104,7 @@ external_services:
     provider: "tempo"
     in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3200"
     use_grpc: false
+    tempo_config:
+      org_id: "1"
+      cache_enabled: true
+      cache_capacity: 200

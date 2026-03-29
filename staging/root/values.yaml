@@ -116,7 +116,7 @@ ociCharts:
     enabled: true
     repoURL: public.ecr.aws/karpenter
     chart: karpenter
-    version: "1.9.0"
+    version: "1.10.0"
     namespace: karpenter
     syncWave: "-8"
     valueFiles:
@@ -156,7 +156,7 @@ ociCharts:
     enabled: true
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    version: "82.10.3"
+    version: "82.13.6"
     namespace: monitoring
     syncWave: "-1"
     valueFiles:
@@ -164,6 +164,13 @@ ociCharts:
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
+      - PruneLast=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 5
+      duration: "15s"
+      maxDuration: "5m"
+      factor: 2
     ignoreDifferences:
       - group: ""
         kind: PersistentVolumeClaim
@@ -186,7 +193,7 @@ ociCharts:
     enabled: true
     repoURL: https://aws.github.io/eks-charts
     chart: aws-load-balancer-controller
-    version: "1.11.0"
+    version: "3.1.0"
     namespace: kube-system
     syncWave: "-9"
     valueFiles:
@@ -221,7 +228,7 @@ ociCharts:
     enabled: true
     repoURL: https://charts.external-secrets.io
     chart: external-secrets
-    version: "2.1.0"
+    version: "2.2.0"
     namespace: external-secrets
     syncWave: "-9"
     valueFiles:
@@ -240,20 +247,21 @@ ociCharts:
     enabled: true
     repoURL: https://kubernetes-sigs.github.io/external-dns/
     chart: external-dns
-    version: "1.15.2"
+    version: "1.20.0"
     namespace: external-dns
     syncWave: "-8"
     valueFiles:
       - $values/staging/values/values-external-dns.yaml
 
   alloy:
-    enabled: false
+    enabled: true
     repoURL: https://grafana.github.io/helm-charts
     chart: alloy
     version: "1.6.2"
     namespace: monitoring
     syncWave: "0"
-    valueFiles: []
+    valueFiles:
+      - $values/staging/values/monitoring/values-alloy.yaml
 
   k6-operator:
     enabled: false
@@ -268,7 +276,7 @@ ociCharts:
     enabled: true
     repoURL: https://grafana.github.io/helm-charts
     chart: tempo
-    version: "1.10.3"
+    version: "1.24.4"
     namespace: monitoring
     syncWave: "0"
     valueFiles:
@@ -280,25 +288,84 @@ ociCharts:
           - /spec/volumeName
           - /spec/storageClassName
 
+  # Grafana (kube-prometheus-stack에서 분리)
+  grafana:
+    enabled: true
+    repoURL: https://grafana.github.io/helm-charts
+    chart: grafana
+    version: "8.14.0"
+    namespace: monitoring
+    syncWave: "0"
+    valueFiles:
+      - $values/staging/values/values-grafana.yaml
+
   opentelemetry-collector:
     enabled: true
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-collector
-    version: "0.85.0"
+    version: "0.147.1"
     namespace: monitoring
     syncWave: "1"
     valueFiles:
       - $values/staging/values/values-opentelemetry-collector.yaml
+
+  # Tetragon - eBPF-based runtime security (L3/L4 threat detection)
+  # Works independently with AWS VPC CNI (no Cilium required)
+  tetragon:
+    enabled: true
+    repoURL: https://helm.cilium.io
+    chart: tetragon
+    version: "1.3.0"
+    namespace: kube-system
+    syncWave: "-8"
+    valueFiles:
+      - $values/staging/values/values-tetragon-oci.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+    ignoreDifferences:
+      - group: cilium.io
+        kind: TracingPolicy
+        jsonPointers:
+          - /status
 
   # Metrics Server - kubectl top nodes/pods
   metrics-server:
     enabled: true
     repoURL: https://kubernetes-sigs.github.io/metrics-server/
     chart: metrics-server
-    version: "3.12.0"
+    version: "3.13.0"
     namespace: kube-system
     syncWave: "-9"
     valueFiles: []
+
+  # Kyverno - Policy Engine
+  kyverno:
+    enabled: true
+    repoURL: https://kyverno.github.io/kyverno/
+    chart: kyverno
+    version: "3.7.1"
+    namespace: kyverno
+    syncWave: "-7"
+    valueFiles:
+      - $values/staging/values/values-kyverno.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+    ignoreDifferences:
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+        jsonPointers:
+          - /webhooks
+      - group: admissionregistration.k8s.io
+        kind: MutatingWebhookConfiguration
+        jsonPointers:
+          - /webhooks
+      - group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        jsonPointers:
+          - /status
+          - /metadata/annotations
 
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
@@ -381,6 +448,17 @@ gitCharts:
     syncWave: "0"
     valueFiles:
       - ../../../../staging/values/values-prometheus-stack.yaml
+    syncOptions:
+      - Replace=true
+
+  alloy-config:
+    enabled: true
+    path: common-charts/infra/monitoring/alloy
+    releaseName: alloy
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - ../../../../staging/values/monitoring/values-alloy.yaml
 
   loki-backup:
     enabled: false  # staging에서 필요시 활성화
@@ -398,9 +476,49 @@ gitCharts:
     valueFiles:
       - ../../../staging/values/core/values-argocd.yaml
 
+  # Kyverno Policies
+  kyverno-policies:
+    enabled: true
+    path: common-charts/infra/kyverno-policies
+    namespace: kyverno
+    syncWave: "-6"
+    valueFiles:
+      - ../../../staging/values/values-kyverno-policies.yaml
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
+
+  # === Tetragon TracingPolicy (L3/L4 threat detection) ===
+  tetragon-config:
+    enabled: true
+    path: common-charts/infra/tetragon
+    namespace: kube-system
+    syncWave: "-7"
+    valueFiles:
+      - ../../../staging/values/values-tetragon.yaml
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
+
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
+
+  # CloudBeaver (DB 관리 - 부하테스트용)
+  cloudbeaver:
+    enabled: true
+    path: staging/charts/monitoring/cloudbeaver
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../../staging/values/monitoring/values-cloudbeaver.yaml
+
+  # Infra Console (Istio & Kyverno 관리 콘솔)
+  infra-console:
+    enabled: true
+    path: common-charts/infra/infra-console
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../staging/values/values-infra-console.yaml
 
 # =============================================================================
 # ApplicationSets

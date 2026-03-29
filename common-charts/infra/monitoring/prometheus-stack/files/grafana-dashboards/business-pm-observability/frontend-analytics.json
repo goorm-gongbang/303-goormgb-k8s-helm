@@ -8,11 +8,18 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
+  "description": "프론트엔드 사용자 행동과 화면 전환 흐름을 확인하기 위한 PM용 대시보드입니다. 유입, 주요 클릭, 온보딩, API 오류를 함께 보며 사용자 경험을 파악합니다. 모든 패널이 비면 Faro SDK 초기화, NEXT_PUBLIC_FARO_URL, /faro 수집 경로, 프론트 staging 배포 상태를 먼저 확인하세요. page_view만 보이고 다른 이벤트가 비면 trackAction 계측이 아직 붙지 않았을 가능성이 크고, 최근 24시간 패널이 비면 staging 실제 사용 트래픽이 거의 없었을 수 있습니다.",
   "panels": [
     {
       "type": "stat",
-      "title": "Total Page Views (24h)",
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "description": "최근 24시간 전체 페이지뷰 수입니다. 기본 유입 규모를 빠르게 확인할 때 사용합니다.",
+      "title": "전체 페이지뷰 (24h)",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -25,17 +32,43 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
       "fieldConfig": {
-        "defaults": { "unit": "short", "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } },
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "stat",
-      "title": "Unique Sessions (24h)",
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "description": "최근 24시간 동안 관측된 세션 수입니다. 반복 조회와 실제 사용자 흐름을 구분할 때 참고합니다.",
+      "title": "세션 수 (24h)",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -48,17 +81,43 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
       "fieldConfig": {
-        "defaults": { "unit": "short", "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] } },
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "stat",
-      "title": "Match Clicks (24h)",
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "description": "최근 24시간 경기 또는 매치 클릭 수입니다. 상세 페이지 진입 관심도를 확인할 수 있습니다.",
+      "title": "매치 클릭 수 (24h)",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -71,17 +130,43 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
       "fieldConfig": {
-        "defaults": { "unit": "short", "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "orange", "value": null }] } },
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange",
+                "value": null
+              }
+            ]
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "stat",
-      "title": "Checkout Starts (24h)",
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "description": "최근 24시간 체크아웃 시작 수입니다. 결제 단계 진입 볼륨을 빠르게 보여줍니다.",
+      "title": "체크아웃 시작 수 (24h)",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -94,17 +179,43 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
       "fieldConfig": {
-        "defaults": { "unit": "short", "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }] } },
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "timeseries",
-      "title": "Page Views Over Time",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "description": "시간대별 페이지뷰 추이입니다. 특정 시간 구간의 유입 증가나 이벤트 영향 여부를 확인합니다.",
+      "title": "페이지뷰 추이",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -114,18 +225,37 @@
         }
       ],
       "options": {
-        "legend": { "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "single" }
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2, "fillOpacity": 10 } },
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "timeseries",
-      "title": "User Actions Over Time",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "description": "사용자 주요 행동의 시간대별 추이입니다. 클릭과 체크아웃 시작이 어떻게 변하는지 비교할 수 있습니다.",
+      "title": "사용자 행동 추이",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -145,18 +275,37 @@
         }
       ],
       "options": {
-        "legend": { "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "multi" }
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
       },
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2, "fillOpacity": 10 } },
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "piechart",
-      "title": "Device Type Distribution",
-      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 12 },
+      "description": "기기 유형 분포입니다. 모바일과 데스크톱 사용 비중을 확인할 수 있습니다.",
+      "title": "기기 유형 분포",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 12
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -166,19 +315,38 @@
         }
       ],
       "options": {
-        "legend": { "displayMode": "list", "placement": "right" },
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        },
         "pieType": "pie",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" } },
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "piechart",
-      "title": "Login Status",
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 12 },
+      "description": "로그인 여부 분포입니다. 로그인 사용자의 행동과 비로그인 사용자의 행동 차이를 파악할 때 참고합니다.",
+      "title": "로그인 여부 분포",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 12
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -188,19 +356,38 @@
         }
       ],
       "options": {
-        "legend": { "displayMode": "list", "placement": "right" },
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        },
         "pieType": "pie",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" } },
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "bargauge",
-      "title": "Top Pages",
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 12 },
+      "description": "가장 많이 조회된 상위 페이지 목록입니다. 어떤 화면에 사용자가 많이 몰리는지 확인할 수 있습니다.",
+      "title": "상위 페이지",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 12
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -212,17 +399,42 @@
       "options": {
         "displayMode": "gradient",
         "orientation": "horizontal",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } },
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "timeseries",
-      "title": "Onboarding Funnel",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "description": "온보딩 시작부터 완료까지 단계별 추이입니다. 어느 단계에서 이탈이 발생하는지 파악할 때 사용합니다.",
+      "title": "온보딩 퍼널",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -242,18 +454,37 @@
         }
       ],
       "options": {
-        "legend": { "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "multi" }
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
       },
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2, "fillOpacity": 10 } },
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "timeseries",
-      "title": "API Errors",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "description": "프론트엔드에서 관측한 API 오류 추이입니다. 사용자 행동 이상이 백엔드 오류와 같이 움직이는지 볼 수 있습니다.",
+      "title": "API 오류 추이",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 20
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -263,18 +494,38 @@
         }
       ],
       "options": {
-        "legend": { "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "single" }
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
       "fieldConfig": {
-        "defaults": { "color": { "fixedColor": "red", "mode": "fixed" }, "custom": { "lineWidth": 2, "fillOpacity": 20 } },
+        "defaults": {
+          "color": {
+            "fixedColor": "red",
+            "mode": "fixed"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 20
+          }
+        },
         "overrides": []
       }
     },
     {
       "type": "logs",
-      "title": "Recent Events",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 28 },
+      "description": "최근 수집된 프론트엔드 이벤트 로그입니다. 이상 구간의 실제 이벤트를 빠르게 확인할 수 있습니다.",
+      "title": "최근 이벤트 로그",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
       "datasource": "Loki",
       "targets": [
         {
@@ -295,7 +546,12 @@
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["faro", "frontend", "pm", "business"],
+  "tags": [
+    "faro",
+    "frontend",
+    "pm",
+    "business"
+  ],
   "templating": {
     "list": []
   },
@@ -305,7 +561,7 @@
   },
   "timepicker": {},
   "timezone": "Asia/Seoul",
-  "title": "Frontend Analytics (PM)",
+  "title": "사용자 행동 분석 (PM)",
   "uid": "frontend-analytics-pm",
-  "version": 1
+  "version": 2
 }

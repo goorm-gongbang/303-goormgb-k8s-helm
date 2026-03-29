@@ -1,0 +1,179 @@
+{{- if and .Values.extAuthz .Values.extAuthz.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: ext-authz-filter
+  namespace: istio-system
+  labels:
+    app: istio-security
+    component: ext-authz
+spec:
+  workloadSelector:
+    labels:
+      {{- toYaml .Values.selector.labels | nindent 6 }}
+
+  configPatches:
+    # ============================================================
+    # 1. Authz Adapter gRPC 클러스터 정의
+    # ============================================================
+    - applyTo: CLUSTER
+      match:
+        context: GATEWAY
+      patch:
+        operation: ADD
+        value:
+          name: ext_authz_cluster
+          type: STRICT_DNS
+          connect_timeout: {{ .Values.extAuthz.connectTimeout | default "0.5s" }}
+          lb_policy: ROUND_ROBIN
+          typed_extension_protocol_options:
+            envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+              "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+              explicit_http_config:
+                http2_protocol_options: {}
+          load_assignment:
+            cluster_name: ext_authz_cluster
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: {{ .Values.extAuthz.service.host | default "authz-adapter.staging-ai.svc.cluster.local" }}
+                          port_value: {{ .Values.extAuthz.service.port | default 9001 }}
+
+    # ============================================================
+    # 2. ext_authz HTTP 필터 등록
+    # ============================================================
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.ext_authz
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
+            transport_api_version: V3
+            grpc_service:
+              envoy_grpc:
+                cluster_name: ext_authz_cluster
+              timeout: {{ .Values.extAuthz.timeout | default "0.8s" }}
+            failure_mode_allow: {{ .Values.extAuthz.failOpen | default true }}
+            # Adapter에 전달할 요청 컨텍스트 (헤더만 전달, body 불필요)
+            include_peer_certificate: false
+            # 에러 시 응답 코드
+            status_on_error:
+              code: 503
+            # 메타데이터 기반 비활성화 지원
+            filter_enabled_metadata:
+              filter: "envoy.filters.http.ext_authz"
+              path:
+                - key: "ext_authz_enabled"
+              value:
+                string_match:
+                  exact: "true"
+
+    # ============================================================
+    # 3. 경로 매칭 Lua 필터 (ext_authz 활성화 여부 결정)
+    # ============================================================
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.ext_authz
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            defaultSourceCode:
+              inlineString: |
+                -- ext_authz 경로 매칭 필터
+                -- AI Defense Critical API에만 ext_authz 적용
+
+                -- 제외 경로 (AI direct routes, health checks 등)
+                local EXCLUDE_PREFIXES = {
+                  {{- range .Values.extAuthz.excludePaths }}
+                  "{{ . }}",
+                  {{- end }}
+                }
+
+                -- Critical API 패턴 (ext_authz 적용 대상)
+                local CRITICAL_APIS = {
+                  {{- range .Values.extAuthz.includePaths }}
+                  { method = "{{ .method }}", pattern = [=[{{ .pattern }}]=], event_type = "{{ .eventType }}" },
+                  {{- end }}
+                }
+
+                -- 경로가 제외 대상인지 확인
+                local function is_excluded(path)
+                  for _, prefix in ipairs(EXCLUDE_PREFIXES) do
+                    if string.sub(path, 1, #prefix) == prefix then
+                      return true
+                    end
+                  end
+                  return false
+                end
+
+                -- Critical API 매칭
+                local function match_critical_api(method, path)
+                  for _, api in ipairs(CRITICAL_APIS) do
+                    if api.method == method then
+                      if string.match(path, api.pattern) then
+                        return api.event_type
+                      end
+                    end
+                  end
+                  return nil
+                end
+
+                function envoy_on_request(request_handle)
+                  local path = request_handle:headers():get(":path") or ""
+                  local method = request_handle:headers():get(":method") or ""
+
+                  -- 쿼리스트링 제거
+                  local path_only = string.match(path, "^([^?]+)") or path
+
+                  -- 1. 제외 경로 체크
+                  if is_excluded(path_only) then
+                    request_handle:streamInfo():dynamicMetadata():set(
+                      "envoy.filters.http.ext_authz",
+                      "ext_authz_enabled",
+                      "false"
+                    )
+                    return
+                  end
+
+                  -- 2. Critical API 매칭
+                  local event_type = match_critical_api(method, path_only)
+
+                  if event_type then
+                    -- ext_authz 활성화
+                    request_handle:streamInfo():dynamicMetadata():set(
+                      "envoy.filters.http.ext_authz",
+                      "ext_authz_enabled",
+                      "true"
+                    )
+                    -- eventType을 헤더로 전달 (Adapter가 읽음)
+                    request_handle:headers():add("x-ext-authz-event-type", event_type)
+                  else
+                    -- ext_authz 비활성화
+                    request_handle:streamInfo():dynamicMetadata():set(
+                      "envoy.filters.http.ext_authz",
+                      "ext_authz_enabled",
+                      "false"
+                    )
+                  end
+                end
+{{- end }}

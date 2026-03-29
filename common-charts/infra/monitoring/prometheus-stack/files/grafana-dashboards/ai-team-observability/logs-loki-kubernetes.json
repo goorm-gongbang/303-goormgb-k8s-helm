@@ -1,118 +1,49 @@
 {
   "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
-        "type": "dashboard"
-      }
-    ]
+    "list": []
   },
-  "description": "Logs collected from Kubernetes, stored in Loki",
+  "description": "AI 서비스 로그 모니터링 (dev-ai namespace)",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
   "links": [],
   "panels": [
     {
-      "datasource": "Loki",
+      "datasource": {"type": "loki", "uid": "loki"},
       "description": "시간대별 로그 발생 건수입니다.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": {"mode": "palette-classic"},
           "custom": {
             "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "bars",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
+            "fillOpacity": 30,
+            "gradientMode": "opacity",
             "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "showPoints": "never",
+            "stacking": {"group": "A", "mode": "none"}
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
+            "steps": [{"color": "green", "value": null}]
           }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 4,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "gridPos": {"h": 5, "w": 24, "x": 0, "y": 0},
+      "id": 4,
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "multi", "sort": "desc"}
+      },
       "targets": [
         {
-          "datasource": "Loki",
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", container =~\"$container\"} |= \"$query\" [$__interval]))",
-          "instant": false,
-          "legendFormat": "Log count",
-          "range": true,
+          "datasource": {"type": "loki", "uid": "loki"},
+          "expr": "sum by (app) (count_over_time({namespace=\"__AI_NAMESPACE__\", app=~\"$app\"} |~ \"$query\" [$__interval]))",
+          "legendFormat": "{{app}}",
           "refId": "A"
         }
       ],
@@ -120,199 +51,95 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Loki",
-      "description": "Logs from services running in Kubernetes",
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 25,
-        "w": 24,
-        "x": 0,
-        "y": 4
-      },
+      "datasource": {"type": "loki", "uid": "loki"},
+      "description": "AI 서비스 로그 스트림",
+      "gridPos": {"h": 25, "w": 24, "x": 0, "y": 5},
       "id": 2,
       "options": {
         "dedupStrategy": "none",
         "enableLogDetails": true,
         "prettifyLogMessage": true,
-        "showCommonLabels": true,
+        "showCommonLabels": false,
         "showLabels": true,
         "showTime": true,
         "sortOrder": "Descending",
         "wrapLogMessage": true
       },
-      "pluginVersion": "11.4.0",
       "targets": [
         {
-          "datasource": "Loki",
+          "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", container =~\"$container\"} |= \"$query\"",
+          "expr": "{namespace=\"__AI_NAMESPACE__\", app=~\"$app\", container!=\"istio-proxy\"} |~ \"$level\" |~ \"$query\"",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Log Stream",
+      "title": "로그 스트림",
       "type": "logs"
     }
   ],
-  "preload": false,
-  "refresh": "1m",
+  "refresh": "30s",
   "schemaVersion": 40,
-  "tags": [
-    "logs",
-    "loki",
-    "k8s"
-  ],
+  "tags": ["logs", "loki", "ai"],
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "",
-          "value": ""
-        },
-        "description": "String to search for",
-        "label": "Search Query",
-        "name": "query",
-        "options": [
-          {
-            "selected": true,
-            "text": "",
-            "value": ""
-          }
-        ],
-        "query": "",
-        "type": "textbox"
-      },
-      {
-        "allValue": ".+",
-        "current": {
-          "text": "dev-ai",
-          "value": ["dev-ai"]
-        },
-        "datasource": "Loki",
-        "definition": "",
-        "includeAll": true,
-        "multi": true,
+        "current": {"selected": true, "text": "__AI_NAMESPACE__", "value": "__AI_NAMESPACE__"},
+        "hide": 2,
+        "label": "네임스페이스",
         "name": "namespace",
-        "options": [],
-        "query": {
-          "label": "namespace",
-          "refId": "LokiVariableQueryEditor-VariableQuery",
-          "stream": "",
-          "type": 1
-        },
-        "refresh": 1,
-        "regex": "dev-ai",
-        "type": "query"
+        "options": [{"selected": true, "text": "__AI_NAMESPACE__", "value": "__AI_NAMESPACE__"}],
+        "query": "__AI_NAMESPACE__",
+        "type": "custom"
       },
       {
         "allValue": ".+",
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "Loki",
-        "definition": "label_values(stream)",
-        "includeAll": true,
-        "multi": true,
-        "name": "stream",
-        "options": [],
-        "query": "label_values(stream)",
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "allValue": ".+",
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "Loki",
-        "definition": "label_values(container)",
+        "current": {"selected": true, "text": ["All"], "value": ["$__all"]},
+        "datasource": {"type": "loki", "uid": "loki"},
+        "definition": "label_values({namespace=\"__AI_NAMESPACE__\"}, app)",
         "hide": 0,
         "includeAll": true,
-        "label": "Container",
+        "label": "애플리케이션",
         "multi": true,
-        "name": "container",
+        "name": "app",
         "options": [],
-        "query": "label_values(container)",
+        "query": "label_values({namespace=\"__AI_NAMESPACE__\"}, app)",
         "refresh": 1,
         "regex": "",
         "sort": 1,
         "type": "query"
       },
       {
-        "allValue": "ERROR|WARN|INFO",
-        "current": {
-          "text": [
-            "$__all"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "allValue": ".*",
+        "current": {"selected": true, "text": ["All"], "value": ["$__all"]},
+        "hide": 0,
         "includeAll": true,
-        "label": "Log Level",
+        "label": "로그 레벨",
         "multi": true,
         "name": "level",
         "options": [
-          {
-            "selected": false,
-            "text": "ERROR",
-            "value": "ERROR"
-          },
-          {
-            "selected": false,
-            "text": "WARN",
-            "value": "WARN"
-          },
-          {
-            "selected": false,
-            "text": "INFO",
-            "value": "INFO"
-          }
+          {"selected": false, "text": "ERROR", "value": "ERROR|error"},
+          {"selected": false, "text": "WARN", "value": "WARN|warn|WARNING"},
+          {"selected": false, "text": "INFO", "value": "INFO|info"}
         ],
-        "query": "ERROR,WARN,INFO",
+        "query": "ERROR|error,WARN|warn|WARNING,INFO|info",
         "type": "custom"
       },
       {
-        "allValue": ".+",
-        "current": {
-          "text": "All",
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": "Loki",
-        "definition": "",
-        "includeAll": true,
-        "label": "Application Name",
-        "multi": true,
-        "name": "instance",
-        "options": [],
-        "query": {
-          "label": "instance",
-          "refId": "LokiVariableQueryEditor-VariableQuery",
-          "stream": "",
-          "type": 1
-        },
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
+        "current": {"selected": false, "text": "", "value": ""},
+        "hide": 0,
+        "label": "검색어",
+        "name": "query",
+        "options": [{"selected": true, "text": "", "value": ""}],
+        "query": "",
+        "type": "textbox"
       }
     ]
   },
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
+  "time": {"from": "now-1h", "to": "now"},
   "timepicker": {},
-  "timezone": "",
+  "timezone": "browser",
   "title": "[AI] 로그 확인",
   "uid": "ai-logs-loki",
-  "version": 12,
-  "weekStart": ""
+  "version": 1
 }

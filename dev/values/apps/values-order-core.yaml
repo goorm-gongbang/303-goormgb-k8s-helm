@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   name: "dev/goormgb/order-core"
-  tag: "239ebbd"
+  tag: "8608193"
   pullPolicy: Always
 
 imagePullSecrets:
@@ -16,11 +16,11 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
     cpu: 500m
     memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 # Istio
 istio:
@@ -50,6 +50,12 @@ readinessProbe:
   initialDelaySeconds: 30
   periodSeconds: 5
   failureThreshold: 3
+
+# Prometheus Metrics (Spring Boot Actuator)
+metrics:
+  enabled: true
+  path: /actuator/prometheus
+  interval: 15s
 
 # OpenTelemetry Java Agent
 otel:

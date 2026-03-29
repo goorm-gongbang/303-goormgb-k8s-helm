@@ -26,6 +26,12 @@ fullnameOverride: ""
 service:
   type: ClusterIP
   port: 8000  # uvicorn default
+  portName: http  # http or grpc
+  # gRPC용 추가 포트 (authz-adapter 등)
+  grpc:
+    enabled: false
+    port: 9001
+    portName: grpc
 
 # Resources
 resources:
@@ -54,9 +60,27 @@ istio:
   gateway:
     enabled: false
     host: ""
+    # 외부 Gateway 참조 (Gateway CRD 생성 안 함)
+    externalRef: ""  # e.g., "istio-system/api-gateway"
+    # Context path (prefix matching)
+    contextPath: ""  # e.g., "/ai"
     tls:
       enabled: true
       credentialName: goormgb-tls
+  # CORS 설정
+  cors:
+    enabled: false
+    allowOrigins: []
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allowHeaders:
+      - "*"
+    allowCredentials: true
+    maxAge: "24h"
 
 # FastAPI health checks
 livenessProbe:
@@ -92,16 +116,23 @@ envFrom: []
 # - secretRef:
 #     name: ai-secrets
 
-# Prometheus Metrics
+# Prometheus Metrics (ServiceMonitor)
 metrics:
   enabled: false
   port: 9090
   portName: metrics
   path: /metrics
-  interval: 30s
+  interval: 15s
 
 # OpenTelemetry (앱에 opentelemetry SDK 필요)
 # pip install opentelemetry-api opentelemetry-sdk opentelemetry-instrumentation-fastapi
 otel:
   enabled: false
   collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"
+
+# authz-adapter 전용 설정
+authzAdapter:
+  enabled: false
+  aiDefenseUrl: ""
+  aiDefenseTimeoutMs: 800
+  logLevel: info

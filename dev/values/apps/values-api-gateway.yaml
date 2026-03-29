@@ -3,11 +3,11 @@
 contextPath: ""  # api-gateway는 context path 없음
 fullnameOverride: "java-cloud-gateway"
 
-replicaCount: 1
+replicaCount: 2
 
 image:
   name: "dev/goormgb/api-gateway"
-  tag: "32c4283"
+  tag: "8608193"
   pullPolicy: Always
 
 imagePullSecrets:
@@ -19,11 +19,11 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
     cpu: 500m
     memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 # Istio - 공통 Gateway(istio-system/api-gateway) 사용
 istio:
@@ -31,14 +31,15 @@ istio:
   gateway:
     enabled: true
     externalRef: "istio-system/api-gateway"  # 외부 Gateway 참조 (Gateway CRD 생성 안 함)
-    host: "api.dev.goormgb.space"
+    host: "api.goormgb.space"
   # CORS 설정 - Istio VirtualService 레벨
   cors:
     enabled: true
     allowOrigins:
       - "https://dev.goormgb.space"
-      - "https://swagger.dev.goormgb.space"
+      - "https://swagger.goormgb.space"
       - "http://localhost:3000"
+      - "http://localhost:6060"  # k6-controller 로컬 개발용
     allowMethods:
       - GET
       - POST
@@ -60,7 +61,7 @@ service:
 # Environment variables - 백엔드 서비스 URL
 env:
   - name: ALLOWED_ORIGINS
-    value: "https://dev.goormgb.space,https://swagger.dev.goormgb.space,http://localhost:3000"
+    value: "https://dev.goormgb.space,https://swagger.goormgb.space,http://localhost:3000"
   - name: AUTH_GUARD_URL
     value: "http://dev-auth-guard.dev-webs.svc.cluster.local:8080"
   - name: QUEUE_URL
@@ -104,6 +105,12 @@ readinessProbe:
   initialDelaySeconds: 30
   periodSeconds: 5
   failureThreshold: 3
+
+# Prometheus Metrics (Spring Boot Actuator)
+metrics:
+  enabled: true
+  path: /actuator/prometheus
+  interval: 15s
 
 # OpenTelemetry Java Agent
 otel:

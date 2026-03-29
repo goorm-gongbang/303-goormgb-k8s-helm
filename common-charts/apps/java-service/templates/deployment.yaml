@@ -57,7 +57,9 @@ spec:
             - name: JAVA_TOOL_OPTIONS
               value: "-javaagent:/otel/opentelemetry-javaagent.jar"
             - name: OTEL_SERVICE_NAME
-              value: {{ include "java-service.fullname" . }}
+              value: {{ .Release.Name }}
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.namespace={{ .Release.Namespace }}"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: {{ .Values.otel.collectorEndpoint | quote }}
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
@@ -73,6 +75,14 @@ spec:
             # 메트릭 수집 간격 (기본 60초 → 15초)
             - name: OTEL_METRIC_EXPORT_INTERVAL
               value: "15000"
+            {{- end }}
+            {{- if .Values.metrics.enabled }}
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: "health,info,metrics,prometheus"
+            - name: MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS
+              value: "always"
+            - name: MANAGEMENT_PROMETHEUS_METRICS_EXPORT_ENABLED
+              value: "true"
             {{- end }}
             {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}

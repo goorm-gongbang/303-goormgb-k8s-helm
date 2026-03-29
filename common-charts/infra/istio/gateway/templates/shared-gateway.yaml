@@ -3,7 +3,7 @@ apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: {{ .Values.sharedGateway.name | default "goormgb-gateway" }}
-  namespace: istio-system
+  namespace: {{ .Values.sharedGateway.namespace | default "istio-system" }}
 spec:
   selector:
     istio: {{ .Values.sharedGateway.selector | default "ingressgateway" }}
@@ -31,13 +31,13 @@ spec:
         httpsRedirect: {{ .Values.sharedGateway.httpsRedirect | default true }}
 {{- end }}
 ---
-{{- if .Values.apiGatewayConfig.enabled }}
+{{- if and .Values.apiGatewayConfig .Values.apiGatewayConfig.enabled }}
 # API Gateway - ALB → Istio IngressGateway → VirtualService
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: {{ .Values.apiGatewayConfig.name | default "api-gateway" }}
-  namespace: istio-system
+  namespace: {{ .Values.apiGatewayConfig.namespace | default .Values.sharedGateway.namespace | default "istio-system" }}
 spec:
   selector:
     istio: {{ .Values.apiGatewayConfig.selector | default "ingressgateway" }}

@@ -1,0 +1,25 @@
+{{- if .Values.oidc.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  # ArgoCD URL (VirtualService host 사용)
+  {{- if .Values.gateway.host }}
+  url: https://{{ .Values.gateway.host }}
+  {{- end }}
+  # OIDC Configuration
+  oidc.config: |
+    name: {{ .Values.oidc.name }}
+    issuer: {{ .Values.oidc.issuer }}
+    clientID: $argocd-google-oauth:clientId
+    clientSecret: $argocd-google-oauth:clientSecret
+    requestedScopes:
+      {{- range .Values.oidc.requestedScopes }}
+      - {{ . }}
+      {{- end }}
+{{- end }}

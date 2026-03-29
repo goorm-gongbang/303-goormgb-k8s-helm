@@ -12,8 +12,13 @@ secretName: ecr-pull-secret
 
 awsCredentialsSecret:
   name: ecr-aws-credentials
-  namespace: infra
+  namespace: istio-system
 
 # CP 노드에 배치 (인프라 작업)
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"

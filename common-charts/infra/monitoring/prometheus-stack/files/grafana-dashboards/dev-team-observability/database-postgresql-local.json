@@ -161,6 +161,29 @@
       ],
       "title": "튜플 작업 (CRUD)",
       "type": "timeseries"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 }, "id": 30, "panels": [], "title": "PostgreSQL 로그", "type": "row" },
+    {
+      "datasource": { "type": "loki", "uid": "${loki}" },
+      "description": "Java 서비스의 Hibernate SQL 쿼리 로그",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 24 },
+      "id": 31,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"dev-webs\", app=~\"$log_app\"} |~ `Hibernate:`", "queryType": "range", "refId": "A" }],
+      "title": "서비스 DB 로그 (Hibernate)",
+      "type": "logs"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "${loki}" },
+      "description": "PostgreSQL 서버 로그 (data 네임스페이스)",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 34 },
+      "id": 32,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"data\", app=~\"postgresql.*\"}", "queryType": "range", "refId": "A" }],
+      "title": "PostgreSQL 서버 로그",
+      "type": "logs"
     }
   ],
   "schemaVersion": 39,
@@ -180,6 +203,42 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "current": {},
+        "hide": 2,
+        "includeAll": false,
+        "label": "Loki",
+        "multi": false,
+        "name": "loki",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "allValue": ".+",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": { "type": "loki", "uid": "${loki}" },
+        "definition": "label_values({namespace=\"dev-webs\"}, app)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "서비스 (로그)",
+        "multi": true,
+        "name": "log_app",
+        "options": [],
+        "query": "label_values({namespace=\"dev-webs\"}, app)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       },
       {
         "allValue": ".*",

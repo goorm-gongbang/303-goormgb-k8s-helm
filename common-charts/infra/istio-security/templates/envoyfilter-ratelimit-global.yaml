@@ -1,4 +1,4 @@
-{{- if and .Values.enabled .Values.rateLimiting.global.enabled }}
+{{- if and .Values.enabled .Values.rateLimiting .Values.rateLimiting.global .Values.rateLimiting.global.enabled }}
 # ============================================================
 # Global Rate Limit (Redis 기반)
 # - 분산 환경에서 정확한 카운팅
