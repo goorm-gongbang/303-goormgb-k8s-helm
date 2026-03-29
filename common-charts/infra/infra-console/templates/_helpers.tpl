@@ -44,6 +44,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "infra-console.selectorLabels" -}}
+app: {{ include "infra-console.name" . }}
+version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/name: {{ include "infra-console.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
