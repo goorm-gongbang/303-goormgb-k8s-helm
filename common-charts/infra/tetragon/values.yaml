@@ -1,0 +1,55 @@
+# Tetragon TracingPolicy Configuration
+# L3/L4 threat detection for macro/bot traffic
+
+# Environment mode: dev | staging | prod
+mode: dev
+
+# Detection thresholds
+detection:
+  # TCP connection rate monitoring
+  connectionRate:
+    enabled: true
+    # Connections per second threshold
+    threshold: 100
+
+  # Timing pattern detection (for bot detection)
+  timingPattern:
+    enabled: true
+    # Exact interval requests in ms (bots often have precise timing)
+    suspiciousIntervals:
+      - 1000   # exactly 1s
+      - 500    # exactly 0.5s
+      - 100    # exactly 0.1s
+
+  # Suspicious process detection
+  suspiciousProcess:
+    enabled: true
+    paths:
+      - "/tmp/"
+      - "/dev/shm/"
+      - "/var/tmp/"
+
+# Action modes per environment
+# dev: Post only (log)
+# staging: Post + Signal (log + alert)
+# prod: Post + Signal + Sigkill (log + alert + block)
+actions:
+  dev:
+    - Post
+  staging:
+    - Post
+    - Signal
+  prod:
+    - Post
+    - Signal
+
+# Namespace targets (workload namespaces to monitor)
+targetNamespaces:
+  - dev-webs
+  - dev-ai
+
+# ServiceMonitor for Prometheus metrics
+metrics:
+  enabled: true
+  port: 2112
+  interval: "15s"

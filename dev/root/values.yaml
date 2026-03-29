@@ -269,6 +269,25 @@ ociCharts:
     valueFiles:
       - $values/dev/values/monitoring/values-opentelemetry-collector.yaml
 
+  # Tetragon - eBPF-based runtime security (L3/L4 threat detection)
+  tetragon:
+    enabled: true
+    repoURL: https://helm.cilium.io
+    chart: tetragon
+    version: "1.3.0"
+    namespace: kube-system
+    syncWave: "-8"
+    valueFiles:
+      - $values/dev/values/infra/values-tetragon-oci.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+    ignoreDifferences:
+      - group: cilium.io
+        kind: TracingPolicy
+        jsonPointers:
+          - /status
+
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
 # =============================================================================
@@ -453,6 +472,17 @@ gitCharts:
     syncWave: "0"
     valueFiles:
       - ../../../dev/values/infra/values-cilium-policies.yaml
+
+  # === Tetragon TracingPolicy (L3/L4 threat detection) ===
+  tetragon-config:
+    enabled: true
+    path: common-charts/infra/tetragon
+    namespace: kube-system
+    syncWave: "-7"
+    valueFiles:
+      - ../../../dev/values/infra/values-tetragon.yaml
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
 
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
