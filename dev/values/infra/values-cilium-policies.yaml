@@ -1,13 +1,11 @@
 # CiliumNetworkPolicy - Dev 환경 설정
-# Phase 2: 점진적 적용 (2026-03-29 활성화)
-# Phase 3: istio-ingress 분리 준비 완료
+# 2026-03-29: 전체 비활성화 - 네트워크 장애 발생으로 롤백
+# TODO: 정책 재설계 필요 (kube-system만 보호하는 방향으로)
 
-# 전체 정책 활성화
-enabled: true
+# 전체 정책 비활성화
+enabled: false
 
-# ===== Phase 2: 정책 적용 =====
-# 2026-03-29: 롤백 - 정책 복잡도 이슈로 비활성화
-# TODO: 정책 재설계 필요 (namespace별 DNS, Tempo, internal 등 기본 정책 누락)
+# ===== Phase 2: 비활성화 =====
 auditMode: true
 
 # ===== Phase 3: Istio Ingress 설정 =====
