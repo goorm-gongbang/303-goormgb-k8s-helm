@@ -22,11 +22,6 @@ spec:
         {{- range .Values.detection.suspiciousProcess.paths }}
         - {{ . | quote }}
         {{- end }}
-      matchNamespaces:
-      {{- range .Values.targetNamespaces }}
-      - namespace: {{ . }}
-        operator: In
-      {{- end }}
       matchActions:
       {{- range index .Values.actions .Values.mode }}
       - action: {{ . }}
