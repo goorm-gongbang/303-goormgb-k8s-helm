@@ -48,6 +48,16 @@ oauth:
     - "rhuba23@gmail.com"
     - "chamchi0129@gmail.com"
 
+# Loki configuration for IP detection
+loki:
+  enabled: true
+  endpoint: "http://loki-gateway.monitoring.svc:80"
+
+# Prometheus configuration for Tetragon metrics
+prometheus:
+  enabled: true
+  endpoint: "http://kube-prometheus-stack-prometheus.monitoring.svc:9090"
+
 # Node selector for infra nodes (mini-gmk)
 nodeSelector:
   node-role: infra

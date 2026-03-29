@@ -90,6 +90,14 @@ spec:
                   {{- end }}
                   key: SESSION_KEY
             {{- end }}
+            {{- if .Values.loki.enabled }}
+            - name: LOKI_ENDPOINT
+              value: "{{ .Values.loki.endpoint }}"
+            {{- end }}
+            {{- if .Values.prometheus.enabled }}
+            - name: PROMETHEUS_ENDPOINT
+              value: "{{ .Values.prometheus.endpoint }}"
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
