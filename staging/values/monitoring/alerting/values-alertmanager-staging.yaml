@@ -118,7 +118,7 @@ alertmanager:
 
       - name: 'discord-security-critical'
         slack_configs:
-          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
+          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-critical-webhook-url'
             send_resolved: true
             title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
             title: |-
@@ -138,7 +138,7 @@ alertmanager:
 
       - name: 'discord-security-warning'
         slack_configs:
-          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/warning-webhook-url'
+          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-warning-webhook-url'
             send_resolved: true
             title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
             title: |-
@@ -158,7 +158,7 @@ alertmanager:
 
       - name: 'discord-security-info'
         slack_configs:
-          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/info-webhook-url'
+          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-info-webhook-url'
             send_resolved: true
             title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
             title: |-
