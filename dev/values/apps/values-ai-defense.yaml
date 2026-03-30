@@ -59,6 +59,10 @@ env:
     value: ""
   - name: TM_PG_URL
     value: ""
+  # OpenTelemetry: 새 Semantic Convention 사용 (Java와 통일)
+  # http.server.request.duration (seconds), http.response.status_code 등
+  - name: OTEL_SEMCONV_STABILITY_OPT_IN
+    value: "http"
 
 imagePullSecrets:
   - name: ecr-pull-secret
