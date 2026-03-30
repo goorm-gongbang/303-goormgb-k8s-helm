@@ -7,7 +7,7 @@ replicaCount: 1
 
 image:
   name: "dev/goormgb/authz-adapter"
-  tag: "0de638d"
+  tag: "1ac2b63"
   pullPolicy: Always
 
 imagePullSecrets:
