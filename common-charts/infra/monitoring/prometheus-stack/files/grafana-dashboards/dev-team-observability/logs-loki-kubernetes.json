@@ -115,7 +115,7 @@
             "type": "loki",
             "uid": "${datasource}"
           },
-          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" $log_level [$__interval]))",
+          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} ${log_type:raw} |= \"$query\" ${log_level:raw} [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -160,7 +160,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" $log_level",
+          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} ${log_type:raw} |= \"$query\" ${log_level:raw}",
           "queryType": "range",
           "refId": "A"
         }
@@ -296,7 +296,7 @@
             "value": "!~ `kube-probe`"
           }
         ],
-        "query": "전체 : |= ``,비즈니스 로그 : !~ `Hibernate:` !~ `kube-probe`,SQL 쿼리 (Hibernate) : |~ `Hibernate:`,Health Check 제외 : !~ `kube-probe`",
+        "query": "전체: |= ``,비즈니스 로그: !~ `Hibernate:` !~ `kube-probe`,SQL 쿼리 (Hibernate): |~ `Hibernate:`,Health Check 제외: !~ `kube-probe`",
         "type": "custom"
       },
       {
@@ -373,7 +373,7 @@
             "value": "|~ `\"level\": ?\"ERROR\"`"
           }
         ],
-        "query": "전체 : |= ``,TRACE : |~ `\"level\": ?\"TRACE\"`,DEBUG : |~ `\"level\": ?\"DEBUG\"`,INFO : |~ `\"level\": ?\"INFO\"`,WARN : |~ `\"level\": ?\"WARN\"`,ERROR : |~ `\"level\": ?\"ERROR\"`",
+        "query": "전체: |= ``,TRACE: |~ `\"level\": ?\"TRACE\"`,DEBUG: |~ `\"level\": ?\"DEBUG\"`,INFO: |~ `\"level\": ?\"INFO\"`,WARN: |~ `\"level\": ?\"WARN\"`,ERROR: |~ `\"level\": ?\"ERROR\"`",
         "type": "custom"
       }
     ]
