@@ -161,6 +161,8 @@ ociCharts:
     syncWave: "-1"
     valueFiles:
       - $values/staging/values/values-prometheus-stack.yaml
+      - $values/staging/values/monitoring/alerting/values-rules-staging.yaml
+      - $values/staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -448,6 +450,8 @@ gitCharts:
     syncWave: "0"
     valueFiles:
       - ../../../../staging/values/values-prometheus-stack.yaml
+      - ../../../../staging/values/monitoring/alerting/values-rules-staging.yaml
+      - ../../../../staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
       - Replace=true
 
