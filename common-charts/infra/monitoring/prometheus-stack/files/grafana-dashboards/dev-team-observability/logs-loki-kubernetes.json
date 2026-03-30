@@ -266,7 +266,7 @@
         "current": {
           "selected": true,
           "text": "전체",
-          "value": ""
+          "value": "|= ``"
         },
         "description": "로그 유형 필터링",
         "hide": 0,
@@ -278,7 +278,7 @@
           {
             "selected": true,
             "text": "전체",
-            "value": ""
+            "value": "|= ``"
           },
           {
             "selected": false,
@@ -296,7 +296,7 @@
             "value": "!~ `kube-probe`"
           }
         ],
-        "query": "전체,비즈니스 로그 : !~ `Hibernate:` !~ `kube-probe`,SQL 쿼리 (Hibernate) : |~ `Hibernate:`,Health Check 제외 : !~ `kube-probe`",
+        "query": "전체 : |= ``,비즈니스 로그 : !~ `Hibernate:` !~ `kube-probe`,SQL 쿼리 (Hibernate) : |~ `Hibernate:`,Health Check 제외 : !~ `kube-probe`",
         "type": "custom"
       },
       {
@@ -333,7 +333,7 @@
         "current": {
           "selected": true,
           "text": "전체",
-          "value": ""
+          "value": "|= ``"
         },
         "description": "애플리케이션 로그 레벨 필터링",
         "hide": 0,
@@ -345,7 +345,7 @@
           {
             "selected": true,
             "text": "전체",
-            "value": ""
+            "value": "|= ``"
           },
           {
             "selected": false,
@@ -373,7 +373,7 @@
             "value": "|~ `\"level\": ?\"ERROR\"`"
           }
         ],
-        "query": "전체,TRACE : |~ `\"level\": ?\"TRACE\"`,DEBUG : |~ `\"level\": ?\"DEBUG\"`,INFO : |~ `\"level\": ?\"INFO\"`,WARN : |~ `\"level\": ?\"WARN\"`,ERROR : |~ `\"level\": ?\"ERROR\"`",
+        "query": "전체 : |= ``,TRACE : |~ `\"level\": ?\"TRACE\"`,DEBUG : |~ `\"level\": ?\"DEBUG\"`,INFO : |~ `\"level\": ?\"INFO\"`,WARN : |~ `\"level\": ?\"WARN\"`,ERROR : |~ `\"level\": ?\"ERROR\"`",
         "type": "custom"
       }
     ]
