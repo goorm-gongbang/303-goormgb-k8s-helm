@@ -30,14 +30,14 @@ alertmanager:
           receiver: 'discord-critical'
           repeat_interval: 30m
         - match:
+            alertname: DevApiP99Warning
             environment: dev
-            severity: warning
           receiver: 'discord-warning'
           repeat_interval: 30m
         - match:
+            alertname: DevPostgresConnectionsWarning
             environment: dev
-            severity: info
-          receiver: 'discord-info'
+          receiver: 'discord-warning'
           repeat_interval: 30m
         - match:
             alertname: Watchdog
@@ -145,14 +145,14 @@ kube-prometheus-stack:
             receiver: 'discord-critical'
             repeat_interval: 30m
           - match:
+              alertname: DevApiP99Warning
               environment: dev
-              severity: warning
             receiver: 'discord-warning'
             repeat_interval: 30m
           - match:
+              alertname: DevPostgresConnectionsWarning
               environment: dev
-              severity: info
-            receiver: 'discord-info'
+            receiver: 'discord-warning'
             repeat_interval: 30m
           - match:
               alertname: Watchdog
