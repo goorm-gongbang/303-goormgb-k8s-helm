@@ -1,6 +1,6 @@
-# Karpenter Configuration - Staging (Main Account: 497012402578)
-clusterName: goormgb-staging-eks
-nodeRole: goormgb-staging-karpenter-node
+# Karpenter Configuration - Prod (Main Account: 497012402578)
+clusterName: goormgb-prod-eks
+nodeRole: goormgb-prod-karpenter-node
 
 # 공통 Zone 설정
 zones:
@@ -20,7 +20,7 @@ nodePools:
   workloads:
     enabled: true
 
-    # On-demand 우선 (staging 안정성), Spot fallback
+    # On-demand 우선 (prod 안정성), Spot fallback
     capacityTypes:
       - on-demand
       - spot

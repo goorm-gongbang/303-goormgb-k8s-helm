@@ -1,4 +1,4 @@
-# EKS Staging - External Secrets Operator Configuration
+# EKS Prod - External Secrets Operator Configuration
 # AWS Secrets Manager 연동 (IRSA 사용)
 
 # ServiceAccount with IRSA annotation

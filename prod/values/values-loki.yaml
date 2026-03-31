@@ -1,4 +1,4 @@
-# EKS Staging - Loki Configuration
+# EKS Prod - Loki Configuration
 # SingleBinary 모드 (S3 불필요, 로컬 스토리지 사용)
 
 deploymentMode: SingleBinary

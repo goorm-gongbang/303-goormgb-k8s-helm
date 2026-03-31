@@ -1,4 +1,4 @@
-# seat - Staging 환경
+# seat - Prod 환경
 fullnameOverride: "seat"
 contextPath: "/seat"
 replicaCount: 1

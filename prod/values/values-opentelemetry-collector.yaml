@@ -1,4 +1,4 @@
-# OpenTelemetry Collector - Staging 환경
+# OpenTelemetry Collector - Prod 환경
 # Tail-based Sampling으로 스토리지 최적화
 
 fullnameOverride: otel-collector

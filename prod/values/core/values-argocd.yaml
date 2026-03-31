@@ -1,4 +1,4 @@
-# ArgoCD Config - EKS Staging
+# ArgoCD Config - EKS Prod
 # Domain: playball.one
 
 # ArgoCD Server Service - NLB + HTTPS (Istio 안 거침)

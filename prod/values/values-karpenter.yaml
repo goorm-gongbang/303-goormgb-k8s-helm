@@ -1,4 +1,4 @@
-# Karpenter Configuration - Staging
+# Karpenter Configuration - Prod
 # EKS Cluster: goormgb-prod-eks
 
 # Service Account with IRSA

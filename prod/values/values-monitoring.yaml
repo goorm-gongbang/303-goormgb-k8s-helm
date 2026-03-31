@@ -1,4 +1,4 @@
-# EKS Staging - Monitoring Stack Configuration
+# EKS Prod - Monitoring Stack Configuration
 # Domain: playball.one
 # Components: Prometheus, Grafana, Loki, Tempo
 #

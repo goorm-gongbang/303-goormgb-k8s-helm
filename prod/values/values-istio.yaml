@@ -1,4 +1,4 @@
-# EKS Staging 클러스터 Istio 설정
+# EKS Prod 클러스터 Istio 설정
 # ALB Ingress 사용 - Istio IngressGateway는 API 트래픽만 처리
 
 # istiod (Helm chart values)

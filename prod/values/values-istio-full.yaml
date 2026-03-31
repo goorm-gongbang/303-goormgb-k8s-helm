@@ -1,4 +1,4 @@
-# EKS Staging - Istio 설정 (Helm values)
+# EKS Prod - Istio 설정 (Helm values)
 # Domain: playball.one
 # Components: istio-base, istiod, istio-gateway, kiali
 

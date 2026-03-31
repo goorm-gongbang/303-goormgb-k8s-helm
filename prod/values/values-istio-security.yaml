@@ -1,4 +1,4 @@
-# EKS Staging - Istio Security
+# EKS Prod - Istio Security
 # WAF-like protection using EnvoyFilter + Lua
 
 enabled: true
@@ -9,7 +9,7 @@ selector:
     istio: ingressgateway
 
 # 차단 모드: block (차단) | detect (로그만)
-# Staging 환경에서는 block 모드 사용
+# Prod 환경에서는 block 모드 사용
 mode: block
 
 # 로깅 설정
@@ -99,7 +99,7 @@ extAuthz:
 
   # gRPC authz adapter 연결 설정 (202-goormgb-authz-adapter)
   service:
-    host: authz-adapter.dev-ai.svc.cluster.local
+    host: authz-adapter.prod-ai.svc.cluster.local
     port: 9001
 
   # 타임아웃 설정

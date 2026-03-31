@@ -1,4 +1,4 @@
-# EKS Staging - Promtail Configuration
+# EKS Prod - Promtail Configuration
 # Loki로 로그 전송
 
 config:

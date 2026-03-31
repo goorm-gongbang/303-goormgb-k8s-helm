@@ -1,4 +1,4 @@
-# Grafana Tempo - Staging 환경
+# Grafana Tempo - Prod 환경
 # 분산 추적 저장소
 
 tempo:

@@ -396,7 +396,7 @@ gitCharts:
       - ../../../../prod/values/monitoring/values-alloy.yaml
 
   loki-backup:
-    enabled: false  # staging에서 필요시 활성화
+    enabled: false  # prod에서 필요시 활성화
     path: common-charts/infra/monitoring/loki
     namespace: monitoring
     syncWave: "1"
@@ -452,7 +452,7 @@ applicationSets:
 # =============================================================================
 rawManifests:
   apiGateway:
-    enabled: false  # staging에서 필요시 활성화
+    enabled: false  # prod에서 필요시 활성화
   swaggerGateway:
     enabled: false
   swagger403Redirect:

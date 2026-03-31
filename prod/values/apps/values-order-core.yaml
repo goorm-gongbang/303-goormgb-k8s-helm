@@ -1,4 +1,4 @@
-# order-core - Staging 환경
+# order-core - Prod 환경
 fullnameOverride: "order-core"
 contextPath: "/order"
 replicaCount: 1

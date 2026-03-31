@@ -1,4 +1,4 @@
-# ALB Ingress - EKS Staging
+# ALB Ingress - EKS Prod
 # Host-based routing for all services
 
 ingress:

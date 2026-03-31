@@ -1,4 +1,4 @@
-# queue - Staging 환경
+# queue - Prod 환경
 fullnameOverride: "queue"
 contextPath: "/queue"
 replicaCount: 1

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: prod-root
-description: ArgoCD Applications for staging environment
+description: ArgoCD Applications for prod environment
 type: application
 version: 1.0.0
 appVersion: "1.0.0"

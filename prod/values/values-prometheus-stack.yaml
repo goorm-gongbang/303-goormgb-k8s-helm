@@ -1,4 +1,4 @@
-# EKS Staging - kube-prometheus-stack Configuration
+# EKS Prod - kube-prometheus-stack Configuration
 # Domain: playball.one
 # Note: kube-prometheus-stack을 직접 OCI 배포하므로 prefix 없이 root level에 값 설정
 #
