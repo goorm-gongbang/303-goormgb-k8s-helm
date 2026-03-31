@@ -19,7 +19,8 @@ resources:
     memory: 256Mi
 
 service:
-  port: 8080
+  port: 8090
+  targetPort: 8080  # kafka-ui 기본 포트
 
 virtualService:
   enabled: true
