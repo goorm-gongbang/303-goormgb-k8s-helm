@@ -7,7 +7,7 @@ replicaCount: 2
 
 image:
   name: "dev/goormgb/api-gateway"
-  tag: "473c104"
+  tag: "e0f0f90"
   pullPolicy: Always
 
 imagePullSecrets:
