@@ -11,14 +11,9 @@ admissionController:
       cpu: 100m
       memory: 128Mi
 
-  # Node selection for infra nodes
-  nodeSelector:
-    node-role: infra
-  tolerations:
-    - key: "node-role"
-      operator: "Equal"
-      value: "infra"
-      effect: "NoSchedule"
+  # Karpenter가 노드 배치 관리
+  nodeSelector: {}
+  tolerations: []
 
 # Background controller
 backgroundController:
@@ -29,13 +24,8 @@ backgroundController:
     requests:
       cpu: 50m
       memory: 64Mi
-  nodeSelector:
-    node-role: infra
-  tolerations:
-    - key: "node-role"
-      operator: "Equal"
-      value: "infra"
-      effect: "NoSchedule"
+  nodeSelector: {}
+  tolerations: []
 
 # Cleanup controller
 cleanupController:
@@ -46,13 +36,8 @@ cleanupController:
     requests:
       cpu: 50m
       memory: 64Mi
-  nodeSelector:
-    node-role: infra
-  tolerations:
-    - key: "node-role"
-      operator: "Equal"
-      value: "infra"
-      effect: "NoSchedule"
+  nodeSelector: {}
+  tolerations: []
 
 # Reports controller
 reportsController:
@@ -63,13 +48,8 @@ reportsController:
     requests:
       cpu: 50m
       memory: 64Mi
-  nodeSelector:
-    node-role: infra
-  tolerations:
-    - key: "node-role"
-      operator: "Equal"
-      value: "infra"
-      effect: "NoSchedule"
+  nodeSelector: {}
+  tolerations: []
 
 # Config settings
 config:
