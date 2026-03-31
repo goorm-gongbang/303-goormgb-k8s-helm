@@ -140,6 +140,7 @@ alertmanager:
     eso:
       enabled: false
       secretManagerKey: ""  # 예: dev/monitoring/discord-webhook
+      securityWebhooksEnabled: false  # security-* webhook URLs (securityCriticalWebhookUrl 등)
 
 # Istio Gateway 설정
 gateway:

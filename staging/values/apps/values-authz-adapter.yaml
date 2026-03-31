@@ -4,8 +4,8 @@
 replicaCount: 2
 
 image:
-  name: "staging/goormgb/authz-adapter"
-  tag: "67a1d53"
+  name: "staging/playball/ai/authz-adapter"
+  tag: "20260401-010708"
   pullPolicy: Always
 
 imagePullSecrets:
