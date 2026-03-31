@@ -18,9 +18,9 @@ args:
   - "/ai"
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/goormgb/ai
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
   tag: "af5a835"
-  name: "staging/goormgb/ai"
+  name: "staging/playball/ai/defense"
   pullPolicy: Always
 
 # Python 모듈 경로 설정 + AI Defense 환경변수
