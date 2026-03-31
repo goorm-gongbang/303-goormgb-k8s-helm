@@ -27,16 +27,16 @@ alertmanager:
           receiver: 'discord-security-critical'
           repeat_interval: 30m
         - match:
+            alertname: StagingAuthFailureRateWarning
             team: security
             environment: staging
-            severity: warning
           receiver: 'discord-security-warning'
           repeat_interval: 30m
         - match:
+            alertname: StagingWafBlockedRequestsWarning
             team: security
             environment: staging
-            severity: info
-          receiver: 'discord-security-info'
+          receiver: 'discord-security-warning'
           repeat_interval: 30m
         - match:
             environment: staging
@@ -44,14 +44,19 @@ alertmanager:
           receiver: 'discord-critical'
           repeat_interval: 30m
         - match:
+            alertname: StagingHttp5xxWarning
             environment: staging
-            severity: warning
           receiver: 'discord-warning'
           repeat_interval: 30m
         - match:
+            alertname: StagingApiP99Warning
             environment: staging
-            severity: info
-          receiver: 'discord-info'
+          receiver: 'discord-warning'
+          repeat_interval: 30m
+        - match:
+            alertname: StagingPostgresConnectionsWarning
+            environment: staging
+          receiver: 'discord-warning'
           repeat_interval: 30m
         - match:
             alertname: Watchdog
