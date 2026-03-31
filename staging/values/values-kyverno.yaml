@@ -11,8 +11,9 @@ admissionController:
       cpu: 100m
       memory: 128Mi
 
-  # Karpenter가 노드 배치 관리
-  nodeSelector: {}
+  # EKS staging: infra nodegroup 없음, apps 노드 사용
+  nodeSelector:
+    kubernetes.io/arch: arm64
   tolerations: []
 
 # Background controller
@@ -24,7 +25,8 @@ backgroundController:
     requests:
       cpu: 50m
       memory: 64Mi
-  nodeSelector: {}
+  nodeSelector:
+    kubernetes.io/arch: arm64
   tolerations: []
 
 # Cleanup controller
@@ -36,7 +38,8 @@ cleanupController:
     requests:
       cpu: 50m
       memory: 64Mi
-  nodeSelector: {}
+  nodeSelector:
+    kubernetes.io/arch: arm64
   tolerations: []
 
 # Reports controller
@@ -48,7 +51,8 @@ reportsController:
     requests:
       cpu: 50m
       memory: 64Mi
-  nodeSelector: {}
+  nodeSelector:
+    kubernetes.io/arch: arm64
   tolerations: []
 
 # Config settings
