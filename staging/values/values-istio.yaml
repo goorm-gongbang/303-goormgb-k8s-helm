@@ -66,6 +66,7 @@ apiGatewayConfig:
     - "api.staging.playball.one"
     - "prometheus.staging.playball.one"
     - "cloudbeaver.staging.playball.one"
+    - "console.staging.playball.one"
 
 # =============================================================================
 # Kiali - Service Mesh Observability
