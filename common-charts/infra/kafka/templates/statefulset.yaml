@@ -50,8 +50,6 @@ spec:
               mountPath: /var/lib/kafka/data
             - name: scripts
               mountPath: /scripts
-            - name: config
-              mountPath: /etc/kafka
       containers:
         - name: kafka
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -138,8 +136,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/kafka/data
-            - name: config
-              mountPath: /etc/kafka
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
@@ -189,8 +185,6 @@ spec:
           configMap:
             name: {{ include "kafka.fullname" . }}-config
             defaultMode: 0755
-        - name: config
-          emptyDir: {}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
