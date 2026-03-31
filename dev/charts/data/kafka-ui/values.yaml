@@ -1,0 +1,38 @@
+# Kafka UI
+# Dev/Staging 공용
+
+image:
+  repository: provectuslabs/kafka-ui
+  tag: latest
+  pullPolicy: IfNotPresent
+
+kafka:
+  bootstrapServers: kafka-headless.data.svc.cluster.local:9092
+  clusterName: goormgb-dev
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+service:
+  port: 8080
+
+virtualService:
+  enabled: true
+  host: kafka-ui.goormgb.space
+  gateway: istio-system/main-gateway
+
+nodeSelector: {}
+tolerations: []
+
+probes:
+  liveness:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readiness:
+    initialDelaySeconds: 10
+    periodSeconds: 5
