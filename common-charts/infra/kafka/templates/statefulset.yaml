@@ -66,6 +66,12 @@ spec:
               name: jmx
               protocol: TCP
             {{- end }}
+          command:
+            - /bin/bash
+            - -c
+            - |
+              export KAFKA_NODE_ID=${HOSTNAME##*-}
+              exec /etc/kafka/docker/run
           env:
             - name: POD_NAME
               valueFrom:
@@ -75,11 +81,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            # KRaft 설정
-            - name: KAFKA_NODE_ID
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
             - name: KAFKA_PROCESS_ROLES
               value: "{{ .Values.config.processRoles }}"
             - name: KAFKA_CONTROLLER_QUORUM_VOTERS
