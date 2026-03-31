@@ -5,7 +5,7 @@ replicaCount: 2
 
 image:
   name: "staging/playball/ai/authz-adapter"
-  tag: "67a1d53"
+  tag: "40c8068"
   pullPolicy: Always
 
 imagePullSecrets:
