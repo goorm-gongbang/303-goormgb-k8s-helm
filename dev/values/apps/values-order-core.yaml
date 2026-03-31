@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   name: "dev/goormgb/order-core"
-  tag: "7bcb14f"
+  tag: "88c44fc"
   pullPolicy: Always
 
 imagePullSecrets:
