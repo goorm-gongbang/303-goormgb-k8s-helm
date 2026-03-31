@@ -348,3 +348,45 @@ additionalPrometheusRulesMap:
             annotations:
               summary: "staging 인증 실패율 치명"
               description: "최근 5m 동안 인증 실패율이 50%를 초과했습니다."
+
+          - alert: StagingWafBlockedRequestsWarning
+            expr: |
+              sum(
+                increase(
+                  istio_requests_total{
+                    reporter="destination",
+                    destination_workload_namespace="istio-system",
+                    destination_workload="istio-ingressgateway",
+                    response_code=~"403|429"
+                  }[15m]
+                )
+              ) > 200
+            for: 5m
+            labels:
+              severity: warning
+              environment: staging
+              team: security
+            annotations:
+              summary: "staging WAF 차단 요청 급증 경고"
+              description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청 수가 200건을 초과했습니다."
+
+          - alert: StagingWafBlockedRequestsCritical
+            expr: |
+              sum(
+                increase(
+                  istio_requests_total{
+                    reporter="destination",
+                    destination_workload_namespace="istio-system",
+                    destination_workload="istio-ingressgateway",
+                    response_code=~"403|429"
+                  }[15m]
+                )
+              ) > 1000
+            for: 5m
+            labels:
+              severity: critical
+              environment: staging
+              team: security
+            annotations:
+              summary: "staging WAF 차단 요청 급증 치명"
+              description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청 수가 1000건을 초과했습니다."
