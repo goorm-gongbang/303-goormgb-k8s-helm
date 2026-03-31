@@ -25,6 +25,21 @@ alertmanager:
           receiver: 'discord-critical'
           repeat_interval: 30m
         - match:
+            environment: dev
+            severity: critical
+          receiver: 'discord-critical'
+          repeat_interval: 30m
+        - match:
+            environment: dev
+            severity: warning
+          receiver: 'discord-warning'
+          repeat_interval: 30m
+        - match:
+            environment: dev
+            severity: info
+          receiver: 'discord-info'
+          repeat_interval: 30m
+        - match:
             alertname: Watchdog
           receiver: 'null'
         - match:
@@ -36,9 +51,9 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.goormgb.space/d/dfevjtvzho5q8d'
+            title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
             title: |-
-              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 5xx 복구{{ else }}🚨 5xx 발생{{ end }} [{{ with index .Alerts 0 }}{{ .StartsAt | tz "Asia/Seoul" | date "20060102-150405" }}{{ else }}unknown{{ end }}]
+              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 장애 복구{{ else }}🚨 장애 감지{{ end }} [{{ with index .Alerts 0 }}{{ .StartsAt | tz "Asia/Seoul" | date "20060102-150405" }}{{ else }}unknown{{ end }}]
             text: |-
               {{ if ne .Status "resolved" }}@개발팀 @admins{{ end }}
               ```text
@@ -119,10 +134,25 @@ kube-prometheus-stack:
         repeat_interval: 5m
         receiver: 'null'
         routes:
-          # Dev 임시 정책: 5xx 알람만 Discord 전송
+          # Dev 운영 정책: 5xx는 기존 규칙 유지, 그 외 알람은 환경/심각도 기준 라우팅
           - match:
               alertname: DevHttp5xxDetected
             receiver: 'discord-critical'
+            repeat_interval: 30m
+          - match:
+              environment: dev
+              severity: critical
+            receiver: 'discord-critical'
+            repeat_interval: 30m
+          - match:
+              environment: dev
+              severity: warning
+            receiver: 'discord-warning'
+            repeat_interval: 30m
+          - match:
+              environment: dev
+              severity: info
+            receiver: 'discord-info'
             repeat_interval: 30m
           - match:
               alertname: Watchdog
@@ -136,9 +166,9 @@ kube-prometheus-stack:
           slack_configs:
             - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
               send_resolved: true
-              title_link: 'https://grafana.goormgb.space/d/dfevjtvzho5q8d'
+              title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
               title: |-
-                [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 5xx 복구{{ else }}🚨 5xx 발생{{ end }} [{{ with index .Alerts 0 }}{{ .StartsAt | tz "Asia/Seoul" | date "20060102-150405" }}{{ else }}unknown{{ end }}]
+                [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 장애 복구{{ else }}🚨 장애 감지{{ end }} [{{ with index .Alerts 0 }}{{ .StartsAt | tz "Asia/Seoul" | date "20060102-150405" }}{{ else }}unknown{{ end }}]
               text: |-
                 {{ if ne .Status "resolved" }}@개발팀 @admins{{ end }}
                 ```text
