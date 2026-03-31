@@ -44,6 +44,9 @@ dashboards:
     cicdFolderName: "STAGING CICD 모니터링"
     exclude:
       - "calico-felix.json"
+    ciliumExclude:
+      - "cilium-overview.json"
+      - "hubble-overview.json"
   devTeam:
     folderName: "STAGING 서비스 관측(개발)"
     namespacePattern: "staging-webs"
