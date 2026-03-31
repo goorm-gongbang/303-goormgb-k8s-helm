@@ -1,83 +1,19 @@
-# Alert rule set (staging)
+# Alert rule set (dev)
 
 additionalPrometheusRulesMap:
-  staging-ops-and-security:
+  dev-ops-and-security:
     groups:
-      - name: staging.ops.rules
+      - name: dev.ops.rules
         rules:
-          - alert: StagingHttp5xxWarning
-            expr: |
-              100 * sum by (job) (
-                rate(
-                  http_server_requests_seconds_count{
-                    namespace="staging-webs",
-                    job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)",
-                    status=~"5.."
-                  }[5m]
-                )
-              )
-              /
-              clamp_min(
-                sum by (job) (
-                  rate(
-                    http_server_requests_seconds_count{
-                      namespace="staging-webs",
-                      job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
-                    }[5m]
-                  )
-                ),
-                1
-              ) > 1
-            for: 5m
-            labels:
-              severity: warning
-              environment: staging
-              team: dev
-            annotations:
-              summary: "staging 환경 5xx 에러율 경고"
-              description: "최근 5m 동안 staging 웹 서비스의 5xx 에러율이 1%를 초과했습니다."
-
-          - alert: StagingHttp5xxCritical
-            expr: |
-              100 * sum by (job) (
-                rate(
-                  http_server_requests_seconds_count{
-                    namespace="staging-webs",
-                    job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)",
-                    status=~"5.."
-                  }[5m]
-                )
-              )
-              /
-              clamp_min(
-                sum by (job) (
-                  rate(
-                    http_server_requests_seconds_count{
-                      namespace="staging-webs",
-                      job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
-                    }[5m]
-                  )
-                ),
-                1
-              ) > 3
-            for: 5m
-            labels:
-              severity: critical
-              environment: staging
-              team: dev
-            annotations:
-              summary: "staging 환경 5xx 에러율 치명"
-              description: "최근 5m 동안 staging 웹 서비스의 5xx 에러율이 3%를 초과했습니다."
-
-          - alert: StagingApiP99Warning
+          - alert: DevApiP99Warning
             expr: |
               histogram_quantile(
                 0.99,
-                sum by (job, le) (
+                sum by (service_name, le) (
                   rate(
-                    http_server_requests_seconds_bucket{
-                      namespace="staging-webs",
-                      job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+                    http_server_request_duration_seconds_bucket{
+                      namespace="dev-webs",
+                      service_name=~"(java-cloud-gateway|dev-auth-guard|dev-order-core|dev-queue|dev-seat)"
                     }[5m]
                   )
                 )
@@ -85,21 +21,21 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: warning
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging 환경 API P99 지연 경고"
-              description: "최근 5m 동안 staging 웹 서비스의 P99 응답시간이 3초를 초과했습니다."
+              summary: "dev 환경 API P99 지연 경고"
+              description: "최근 5m 동안 dev 웹 서비스의 P99 응답시간이 3초를 초과했습니다."
 
-          - alert: StagingApiP99Critical
+          - alert: DevApiP99Critical
             expr: |
               histogram_quantile(
                 0.99,
-                sum by (job, le) (
+                sum by (service_name, le) (
                   rate(
-                    http_server_requests_seconds_bucket{
-                      namespace="staging-webs",
-                      job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+                    http_server_request_duration_seconds_bucket{
+                      namespace="dev-webs",
+                      service_name=~"(java-cloud-gateway|dev-auth-guard|dev-order-core|dev-queue|dev-seat)"
                     }[5m]
                   )
                 )
@@ -107,39 +43,39 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging 환경 API P99 지연 치명"
-              description: "최근 5m 동안 staging 웹 서비스의 P99 응답시간이 5초를 초과했습니다."
+              summary: "dev 환경 API P99 지연 치명"
+              description: "최근 5m 동안 dev 웹 서비스의 P99 응답시간이 5초를 초과했습니다."
 
-          - alert: StagingPodCrashLoopCritical
+          - alert: DevPodCrashLoopCritical
             expr: |
               sum by (namespace, pod) (
-                increase(kube_pod_container_status_restarts_total{namespace="staging-webs"}[10m])
+                increase(kube_pod_container_status_restarts_total{namespace="dev-webs"}[10m])
               ) > 3
             for: 0m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging 환경 Pod 재시작 급증"
-              description: "최근 10m 동안 staging 웹 서비스 Pod 재시작이 3회를 초과했습니다."
+              summary: "dev 환경 Pod 재시작 급증"
+              description: "최근 10m 동안 dev 웹 서비스 Pod 재시작이 3회를 초과했습니다."
 
-          - alert: StagingNodeNotReadyCritical
+          - alert: DevNodeNotReadyCritical
             expr: |
               sum(kube_node_status_condition{condition="Ready", status="true"} == bool 0) > 0
             for: 5m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging 환경 Node NotReady 감지"
+              summary: "dev 환경 Node NotReady 감지"
               description: "Ready가 아닌 노드가 5m 이상 지속되고 있습니다."
 
-          - alert: StagingClusterCpuWarning
+          - alert: DevClusterCpuWarning
             expr: |
               100 * sum(rate(container_cpu_usage_seconds_total{container!="", container!="POD"}[5m]))
               /
@@ -147,13 +83,13 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: warning
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging 클러스터 CPU 사용률 경고"
+              summary: "dev 클러스터 CPU 사용률 경고"
               description: "최근 5m 기준 클러스터 CPU 사용률이 65%를 초과했습니다."
 
-          - alert: StagingClusterCpuCritical
+          - alert: DevClusterCpuCritical
             expr: |
               100 * sum(rate(container_cpu_usage_seconds_total{container!="", container!="POD"}[5m]))
               /
@@ -161,13 +97,13 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging 클러스터 CPU 사용률 치명"
+              summary: "dev 클러스터 CPU 사용률 치명"
               description: "최근 5m 기준 클러스터 CPU 사용률이 80%를 초과했습니다."
 
-          - alert: StagingClusterMemoryWarning
+          - alert: DevClusterMemoryWarning
             expr: |
               100 * sum(container_memory_working_set_bytes{container!="", container!="POD"})
               /
@@ -175,13 +111,13 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: warning
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging 클러스터 메모리 사용률 경고"
+              summary: "dev 클러스터 메모리 사용률 경고"
               description: "클러스터 메모리 사용률이 70%를 초과했습니다."
 
-          - alert: StagingClusterMemoryCritical
+          - alert: DevClusterMemoryCritical
             expr: |
               100 * sum(container_memory_working_set_bytes{container!="", container!="POD"})
               /
@@ -189,13 +125,13 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging 클러스터 메모리 사용률 치명"
+              summary: "dev 클러스터 메모리 사용률 치명"
               description: "클러스터 메모리 사용률이 90%를 초과했습니다."
 
-          - alert: StagingPostgresConnectionsWarning
+          - alert: DevPostgresConnectionsWarning
             expr: |
               100 * sum(pg_stat_activity_count{namespace="data"})
               /
@@ -203,13 +139,13 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: warning
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging PostgreSQL 연결 사용률 경고"
+              summary: "dev PostgreSQL 연결 사용률 경고"
               description: "PostgreSQL 연결 사용률이 70%를 초과했습니다."
 
-          - alert: StagingPostgresConnectionsCritical
+          - alert: DevPostgresConnectionsCritical
             expr: |
               100 * sum(pg_stat_activity_count{namespace="data"})
               /
@@ -217,25 +153,25 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging PostgreSQL 연결 사용률 치명"
+              summary: "dev PostgreSQL 연결 사용률 치명"
               description: "PostgreSQL 연결 사용률이 90%를 초과했습니다."
 
-          - alert: StagingRedisDownCritical
+          - alert: DevRedisDownCritical
             expr: |
               min(redis_up{namespace="data"}) == 0
             for: 1m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging Redis 비가용 감지"
+              summary: "dev Redis 비가용 감지"
               description: "Redis 인스턴스가 응답하지 않습니다."
 
-          - alert: StagingRedisMemoryWarning
+          - alert: DevRedisMemoryWarning
             expr: |
               100 * sum(redis_memory_used_bytes{namespace="data"})
               /
@@ -243,13 +179,13 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: warning
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging Redis 메모리 사용률 경고"
+              summary: "dev Redis 메모리 사용률 경고"
               description: "Redis 메모리 사용률이 80%를 초과했습니다."
 
-          - alert: StagingRedisMemoryCritical
+          - alert: DevRedisMemoryCritical
             expr: |
               100 * sum(redis_memory_used_bytes{namespace="data"})
               /
@@ -257,63 +193,63 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: dev
             annotations:
-              summary: "staging Redis 메모리 사용률 치명"
+              summary: "dev Redis 메모리 사용률 치명"
               description: "Redis 메모리 사용률이 90%를 초과했습니다."
 
-      - name: staging.security.rules
+      - name: dev.security.rules
         rules:
-          - alert: StagingMacroDetectedWarning
+          - alert: DevMacroDetectedWarning
             expr: |
               increase(ticketing_security_macro_detected_total[5m]) > 50
             for: 0m
             labels:
               severity: warning
-              environment: staging
+              environment: dev
               team: security
             annotations:
-              summary: "staging 매크로/봇 탐지 경고"
+              summary: "dev 매크로/봇 탐지 경고"
               description: "최근 5m 동안 매크로/봇 탐지 수가 50건을 초과했습니다."
 
-          - alert: StagingMacroDetectedCritical
+          - alert: DevMacroDetectedCritical
             expr: |
               increase(ticketing_security_macro_detected_total[5m]) > 200
             for: 0m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: security
             annotations:
-              summary: "staging 매크로/봇 탐지 치명"
+              summary: "dev 매크로/봇 탐지 치명"
               description: "최근 5m 동안 매크로/봇 탐지 수가 200건을 초과했습니다."
 
-          - alert: StagingBlockedIpWarning
+          - alert: DevBlockedIpWarning
             expr: |
               increase(ticketing_security_blocked_ip_total[5m]) > 100
             for: 0m
             labels:
               severity: warning
-              environment: staging
+              environment: dev
               team: security
             annotations:
-              summary: "staging 차단 IP 수 경고"
+              summary: "dev 차단 IP 수 경고"
               description: "최근 5m 동안 차단 IP 수가 100건을 초과했습니다."
 
-          - alert: StagingBlockedIpCritical
+          - alert: DevBlockedIpCritical
             expr: |
               increase(ticketing_security_blocked_ip_total[5m]) > 500
             for: 0m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: security
             annotations:
-              summary: "staging 차단 IP 수 치명"
+              summary: "dev 차단 IP 수 치명"
               description: "최근 5m 동안 차단 IP 수가 500건을 초과했습니다."
 
-          - alert: StagingAuthFailureRateWarning
+          - alert: DevAuthFailureRateWarning
             expr: |
               (
                 1 - (
@@ -325,13 +261,13 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: warning
-              environment: staging
+              environment: dev
               team: security
             annotations:
-              summary: "staging 인증 실패율 경고"
+              summary: "dev 인증 실패율 경고"
               description: "최근 5m 동안 인증 실패율이 30%를 초과했습니다."
 
-          - alert: StagingAuthFailureRateCritical
+          - alert: DevAuthFailureRateCritical
             expr: |
               (
                 1 - (
@@ -343,13 +279,13 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: security
             annotations:
-              summary: "staging 인증 실패율 치명"
+              summary: "dev 인증 실패율 치명"
               description: "최근 5m 동안 인증 실패율이 50%를 초과했습니다."
 
-          - alert: StagingWafBlockedRequestsWarning
+          - alert: DevWafBlockedRequestsWarning
             expr: |
               sum(
                 increase(
@@ -364,13 +300,13 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: warning
-              environment: staging
+              environment: dev
               team: security
             annotations:
-              summary: "staging WAF 차단 요청 급증 경고"
+              summary: "dev WAF 차단 요청 급증 경고"
               description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청 수가 200건을 초과했습니다."
 
-          - alert: StagingWafBlockedRequestsCritical
+          - alert: DevWafBlockedRequestsCritical
             expr: |
               sum(
                 increase(
@@ -385,8 +321,8 @@ additionalPrometheusRulesMap:
             for: 5m
             labels:
               severity: critical
-              environment: staging
+              environment: dev
               team: security
             annotations:
-              summary: "staging WAF 차단 요청 급증 치명"
+              summary: "dev WAF 차단 요청 급증 치명"
               description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청 수가 1000건을 초과했습니다."

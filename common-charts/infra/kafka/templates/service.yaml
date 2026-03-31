@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kafka.fullname" . }}
+  labels:
+    {{- include "kafka.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: kafka
+      protocol: TCP
+      name: kafka
+    {{- if .Values.exporter.enabled }}
+    - port: {{ .Values.exporter.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: http-metrics
+    {{- end }}
+  selector:
+    {{- include "kafka.selectorLabels" . | nindent 4 }}
+---
+# Headless Service for StatefulSet
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kafka.headless" . }}
+  labels:
+    {{- include "kafka.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: kafka
+      protocol: TCP
+      name: kafka
+    - port: {{ .Values.service.controllerPort }}
+      targetPort: controller
+      protocol: TCP
+      name: controller
+    {{- if .Values.exporter.enabled }}
+    - port: {{ .Values.exporter.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: http-metrics
+    {{- end }}
+  selector:
+    {{- include "kafka.selectorLabels" . | nindent 4 }}

@@ -171,6 +171,7 @@ ociCharts:
       - $values/dev/values/monitoring/values-prometheus-stack.yaml
       - $values/dev/values/monitoring/alerting/values-alertmanager-dev.yaml
       - $values/dev/values/monitoring/alerting/values-rules-dev-5xx.yaml
+      - $values/dev/values/monitoring/alerting/values-rules-dev.yaml
     syncOptions:
       - SkipDryRunOnMissingResource=true
       - PruneLast=true
@@ -548,6 +549,34 @@ gitCharts:
     namespace: data
     valueFiles:
       - ../../../values/data/values-redisinsight.yaml
+
+  # === Data (Kafka) ===
+  kafka:
+    enabled: true
+    path: common-charts/infra/kafka
+    namespace: data
+    syncWave: "-5"
+    valueFiles:
+      - ../../../dev/values/data/values-kafka.yaml
+    retry:
+      limit: 5
+      duration: "10s"
+      maxDuration: "3m"
+      factor: 2
+    ignoreDifferences:
+      - group: ""
+        kind: PersistentVolumeClaim
+        jsonPointers:
+          - /spec/volumeName
+          - /spec/storageClassName
+
+  kafka-ui:
+    enabled: true
+    path: dev/charts/data/kafka-ui
+    namespace: data
+    syncWave: "0"
+    valueFiles:
+      - ../../../values/data/values-kafka-ui.yaml
 
 # =============================================================================
 # ApplicationSets

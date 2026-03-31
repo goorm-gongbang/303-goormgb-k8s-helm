@@ -4,6 +4,8 @@
 namespaces:
   - name: staging-webs
     istio: true
+  - name: data
+    istio: false  # 데이터 레이어는 sidecar 불필요 (PostgreSQL, Redis, Kafka)
   - name: monitoring
     istio: false  # 모니터링은 sidecar 불필요
   - name: external-dns
