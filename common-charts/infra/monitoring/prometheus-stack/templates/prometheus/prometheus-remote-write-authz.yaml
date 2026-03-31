@@ -1,0 +1,32 @@
+{{- if .Values.gateway.prometheus.enabled }}
+{{- if .Values.gateway.prometheus.remoteWriteAuth.enabled }}
+---
+# Remote Write 인증용 AuthorizationPolicy
+# k6, OTel Collector 등 외부에서 메트릭 전송 시 토큰 검증
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: prometheus-remote-write-authz
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+  action: ALLOW
+  rules:
+    # Remote Write 엔드포인트 - 토큰 필수
+    - to:
+        - operation:
+            methods: ["POST"]
+            paths: ["/api/v1/write"]
+      when:
+        - key: request.headers[x-remote-write-token]
+          values:
+            - {{ .Values.gateway.prometheus.remoteWriteAuth.token | quote }}
+    # Health check - 인증 불필요
+    - to:
+        - operation:
+            methods: ["GET"]
+            paths: ["/-/ready", "/-/healthy"]
+{{- end }}
+{{- end }}

@@ -1,0 +1,26 @@
+# Kafka UI Staging Environment
+
+image:
+  repository: provectuslabs/kafka-ui
+  tag: latest
+  pullPolicy: IfNotPresent
+
+kafka:
+  bootstrapServers: kafka-headless.data.svc.cluster.local:9092
+  clusterName: goormgb-staging
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+virtualService:
+  enabled: true
+  host: kafka-ui.staging.playball.one
+  gateway: istio-system/main-gateway
+
+nodeSelector: {}
+tolerations: []

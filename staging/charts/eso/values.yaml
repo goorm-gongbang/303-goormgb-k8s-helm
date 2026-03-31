@@ -18,3 +18,13 @@ serviceConfig:
   enabled: true
   namespace: staging-webs
   secretManagerPrefix: staging/services
+
+# GHCR Secret - Private container registry access
+# 시크릿 구조:
+#   - staging/infra/ghcr : username, token
+ghcrSecret:
+  enabled: true
+  secretManagerKey: staging/infra/ghcr
+  # ghcr-secret이 필요한 네임스페이스 목록
+  namespaces:
+    - monitoring

@@ -1,0 +1,26 @@
+# Telemetry API - Tracing & Metrics configuration
+# - Adds istio.cluster_id tag for Kiali trace queries
+# - 100% sampling for dev environment
+# - Prometheus metrics for istio_requests_total, istio_request_duration, etc.
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: mesh-default
+  namespace: istio-system
+spec:
+  # Metrics configuration (istio_requests_total 등)
+  metrics:
+    - providers:
+        - name: prometheus
+  # Tracing configuration
+  tracing:
+    - providers:
+        - name: "zipkin"
+      randomSamplingPercentage: 100
+      customTags:
+        "istio.cluster_id":
+          literal:
+            value: "Kubernetes"
+        "environment":
+          literal:
+            value: "dev"

@@ -48,6 +48,9 @@ env:
   # 런타임 캐시용 Redis URL (동적 파싱)
   - name: TM_REDIS_URL
     value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+  # CORS 허용 Origin (Frontend)
+  - name: TM_CORS_ALLOW_ORIGINS
+    value: "https://dev.goormgb.space"
   # S3 아카이빙 비활성화 (로컬 파일 모드 - dev)
   - name: TM_S3_BUCKET
     value: ""
@@ -56,6 +59,10 @@ env:
     value: ""
   - name: TM_PG_URL
     value: ""
+  # OpenTelemetry: 새 Semantic Convention 사용 (Java와 통일)
+  # http.server.request.duration (seconds), http.response.status_code 등
+  - name: OTEL_SEMCONV_STABILITY_OPT_IN
+    value: "http"
 
 imagePullSecrets:
   - name: ecr-pull-secret

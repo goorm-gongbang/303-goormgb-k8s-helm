@@ -1,0 +1,62 @@
+# Kafka Dev Environment
+# MiniPC kubeadm cluster
+
+replicas: 1
+
+kraft:
+  clusterId: "goormgb-dev-kafka-001"
+
+config:
+  processRoles: broker,controller
+  controllerQuorumVoters: "1@kafka-0.kafka-headless.data.svc.cluster.local:9093"
+  advertisedListeners: "PLAINTEXT://kafka-0.kafka-headless.data.svc.cluster.local:9092"
+
+  # 토픽 기본값
+  numPartitions: 3
+  defaultReplicationFactor: 1
+  minInsyncReplicas: 1
+
+  # 로그 보존 (72시간)
+  logRetentionHours: 72
+  logRetentionBytes: 5368709120  # 5GB
+
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 5Gi
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi
+
+exporter:
+  enabled: true
+
+serviceMonitor:
+  enabled: true
+  interval: 30s
+
+# Control Plane 노드에 배치
+nodeSelector:
+  kubernetes.io/hostname: mini-gmk
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+# 초기 토픽 생성
+topics:
+  - name: payment-completed
+    partitions: 3
+    replicationFactor: 1
+  - name: order-created
+    partitions: 3
+    replicationFactor: 1
+  - name: order-cancelled
+    partitions: 3
+    replicationFactor: 1

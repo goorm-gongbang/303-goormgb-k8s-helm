@@ -1,0 +1,67 @@
+# Tetragon OCI Chart Values for DEV environment
+# Official Cilium Tetragon Helm chart configuration
+
+tetragon:
+  enabled: true
+
+  # Enable BPF-based runtime security
+  enableProcessCred: true
+  enableProcessNs: true
+
+  # Prometheus metrics
+  prometheus:
+    enabled: true
+    port: 2112
+    serviceMonitor:
+      enabled: false  # Using custom ServiceMonitor from tetragon-config
+
+  # Export configuration
+  export:
+    stdout:
+      enabledEvents:
+        - PROCESS_EXEC
+        - PROCESS_EXIT
+        - PROCESS_KPROBE
+        - PROCESS_TRACEPOINT
+      # JSON format for Loki ingestion
+      extraEnv:
+        - name: TETRAGON_JSON_EXPORT
+          value: "true"
+
+  # Resource limits
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Tetragon CLI (optional)
+  tetra:
+    enabled: true
+
+  # Pod security
+  podSecurityContext:
+    runAsNonRoot: false
+
+  # Tolerations to run on all nodes
+  tolerations:
+    - operator: Exists
+
+  # Update strategy
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+
+# Tetragon Operator
+tetragonOperator:
+  enabled: true
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi

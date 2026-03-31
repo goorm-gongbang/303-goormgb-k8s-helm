@@ -1,0 +1,121 @@
+# ai-defense - Staging 환경
+# Python FastAPI 기반 AI Defense API
+
+replicaCount: 2
+
+# Uvicorn 실행 명령어 (root-path 설정 for /ai prefix)
+command:
+  - "python"
+args:
+  - "-m"
+  - "uvicorn"
+  - "traffic_master_ai.defense.api.main:app"
+  - "--host"
+  - "0.0.0.0"
+  - "--port"
+  - "8000"
+  - "--root-path"
+  - "/ai"
+
+image:
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/goormgb/ai
+  tag: "af5a835"
+  name: "staging/goormgb/ai"
+  pullPolicy: Always
+
+# Python 모듈 경로 설정 + AI Defense 환경변수
+env:
+  - name: PYTHONPATH
+    value: /app/src
+  - name: APP_PORT
+    value: "8000"
+  # 런타임 상태 관리를 Redis로 명시 (인메모리 방지)
+  - name: TM_RUNTIME_STATE_BACKEND
+    value: "redis"
+  - name: TM_DEFENSE_POLICY_VERSION
+    value: "def-pol-2.0.0"
+  # Redis 연결 (Secrets Manager에서 가져옴)
+  - name: AI_REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_HOST
+  - name: AI_REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_PORT
+  # 런타임 캐시용 Redis URL (동적 파싱)
+  - name: TM_REDIS_URL
+    value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+  # CORS 허용 Origin (Frontend)
+  - name: TM_CORS_ALLOW_ORIGINS
+    value: "https://staging.playball.one"
+  # S3 아카이빙 비활성화 (로컬 파일 모드 - staging)
+  - name: TM_S3_BUCKET
+    value: ""
+  # ClickHouse/PostgreSQL 비활성화 (MVP/staging)
+  - name: TM_CLICKHOUSE_URL
+    value: ""
+  - name: TM_PG_URL
+    value: ""
+  # OpenTelemetry: 새 Semantic Convention 사용 (Java와 통일)
+  - name: OTEL_SEMCONV_STABILITY_OPT_IN
+    value: "http"
+
+imagePullSecrets:
+  - name: ecr-pull-secret
+
+# Graviton (ARM64) 노드에 배치
+nodeSelector:
+  kubernetes.io/arch: arm64
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+# Istio
+# /ai/* 라우팅은 rawManifests의 ai-defense-route VirtualService에서 처리
+istio:
+  sidecar: true
+  gateway:
+    enabled: false  # rawManifests.aiDefenseRoute 사용
+
+# Service
+service:
+  type: ClusterIP
+  port: 8000
+
+# Health checks (FastAPI endpoints)
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  failureThreshold: 3
+
+# Prometheus Metrics (FastAPI - 같은 포트에서 /metrics 노출)
+metrics:
+  enabled: true
+  port: 8000
+  portName: http
+  path: /metrics
+  interval: 15s
+
+# OpenTelemetry (앱에 opentelemetry SDK 설치 필요)
+otel:
+  enabled: true
+  collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"

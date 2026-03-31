@@ -1,0 +1,324 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "description": "Cilium CNI 개요 - eBPF 데이터플레인 모니터링. Cilium Agent의 상태, 트래픽 처리량, eBPF 맵 상태를 실시간으로 확인합니다.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "panels": [],
+      "title": "Cilium Agent 상태",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "### 준비 완료 엔드포인트\n\n**설명**: Cilium이 관리하는 Pod 중 네트워크 정책이 적용되어 정상 동작하는 수\n\n**모니터링 포인트**:\n- 전체 Pod 수와 비교하여 일치해야 정상\n- 숫자가 감소하면 Cilium Agent 문제 의심\n- 0이면 Cilium이 완전히 비활성화된 상태",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "id": 2,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "expr": "sum(cilium_endpoint)",
+          "legendFormat": "Ready",
+          "refId": "A"
+        }
+      ],
+      "title": "전체 엔드포인트",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "### 엔드포인트 재생성 실패\n\n**설명**: 최근 5분간 eBPF 프로그램 재생성에 실패한 횟수\n\n**모니터링 포인트**:\n- **0이 정상**\n- 숫자가 있으면 Cilium Agent에 문제 발생\n- 지속적인 실패는 커널 호환성 또는 리소스 부족 의심\n\n**트러블슈팅**:\n```bash\nkubectl logs -n kube-system -l app.kubernetes.io/name=cilium --tail=50 | grep -i fail\n```",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 10 }] },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "id": 3,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [
+        {
+          "expr": "sum(increase(cilium_endpoint_regenerations_total{outcome=\"fail\"}[5m])) or vector(0)",
+          "legendFormat": "Failed",
+          "refId": "A"
+        }
+      ],
+      "title": "재생성 실패 (5분)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "### 활성 네트워크 정책 수\n\n**설명**: Cilium에 적용된 CiliumNetworkPolicy, NetworkPolicy 총 개수\n\n**모니터링 포인트**:\n- 예상하는 정책 수와 일치하는지 확인\n- 갑자기 0이 되면 정책 삭제 또는 Cilium 재시작 의심\n- Kyverno 정책과 별개 (Cilium은 네트워크 L3/L4 정책)",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+      "id": 4,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [
+        {
+          "expr": "sum(cilium_policy)",
+          "legendFormat": "Policies",
+          "refId": "A"
+        }
+      ],
+      "title": "활성 정책 수",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "### BPF 메모리 사용량\n\n**설명**: Cilium이 eBPF 맵에 사용하는 가상 메모리 (MB)\n\n**모니터링 포인트**:\n- 노드당 수백 MB가 정상 (Pod 수에 비례)\n- 급격히 증가하면 conntrack 테이블 폭발 의심\n- 커널 메모리 제한에 걸릴 수 있음 (OOM 주의)\n\n**참고**: eBPF는 커널 내에서 실행되므로 일반 컨테이너 메모리와 별도",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 500 }, { "color": "red", "value": 1000 }] },
+          "unit": "decmbytes"
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+      "id": 5,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [
+        {
+          "expr": "sum(cilium_bpf_maps_virtual_memory_max_bytes) / 1024 / 1024",
+          "legendFormat": "BPF Memory",
+          "refId": "A"
+        }
+      ],
+      "title": "BPF 메모리 (MB)",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "id": 10,
+      "panels": [],
+      "title": "트래픽 현황",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "### 포워딩된 패킷 (초당)\n\n**설명**: Cilium이 처리한 Ingress/Egress 패킷 수\n\n**모니터링 포인트**:\n- Ingress = 외부 → Pod 방향\n- Egress = Pod → 외부 방향\n- 트래픽 패턴 이해에 활용\n- 갑작스런 급증은 DDoS 또는 이상 트래픽 의심\n\n**활용**:\n- 서비스별 트래픽 분석\n- 피크 시간대 파악\n- 용량 계획 수립",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "pps"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "id": 11,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        {
+          "expr": "sum(rate(cilium_forward_count_total{direction=\"INGRESS\"}[$__rate_interval])) by (instance)",
+          "legendFormat": "{{instance}} - Ingress",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(cilium_forward_count_total{direction=\"EGRESS\"}[$__rate_interval])) by (instance)",
+          "legendFormat": "{{instance}} - Egress",
+          "refId": "B"
+        }
+      ],
+      "title": "포워딩된 패킷",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "### 드롭된 패킷 (사유별)\n\n**설명**: Cilium이 차단하거나 처리하지 못한 패킷\n\n**주요 드롭 사유**:\n- `Policy denied`: 네트워크 정책에 의해 차단 (의도적)\n- `CT: Unknown L4 protocol`: 지원하지 않는 L4 프로토콜\n- `FIB lookup failed`: 라우팅 테이블 조회 실패\n- `Stale or unroutable IP`: 오래된/라우팅 불가 IP\n- `Unsupported L3 protocol`: IPv4/IPv6 외 프로토콜\n\n**경고 상황**:\n- Policy denied가 급증하면 정책 설정 확인\n- FIB lookup failed가 지속되면 라우팅 문제",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] },
+          "unit": "pps"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "id": 12,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        {
+          "expr": "sum(rate(cilium_drop_count_total[$__rate_interval])) by (reason)",
+          "legendFormat": "{{reason}}",
+          "refId": "A"
+        }
+      ],
+      "title": "드롭된 패킷 (사유별)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "id": 20,
+      "panels": [],
+      "title": "eBPF / Conntrack",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "### Conntrack 엔트리 수\n\n**설명**: eBPF 연결 추적 테이블에 저장된 활성 연결 수\n\n**모니터링 포인트**:\n- 연결 수가 많을수록 메모리 사용량 증가\n- 급격한 증가는 연결 폭발 (connection storm) 의심\n- TCP/UDP 연결을 L4에서 추적\n\n**Conntrack 맵 종류**:\n- `cilium_ct4_global`: IPv4 연결 추적\n- `cilium_ct6_global`: IPv6 연결 추적\n- `cilium_ct_any4_global`: 기타 L4 프로토콜\n\n**용량 초과 시**:\n- 새 연결 생성 실패\n- Cilium 재시작 또는 맵 크기 튜닝 필요",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+      "id": 21,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        {
+          "expr": "sum(cilium_datapath_conntrack_gc_entries{status=\"alive\"}) by (instance, protocol)",
+          "legendFormat": "{{instance}} - {{protocol}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Conntrack 엔트리",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "### BPF 맵 작업 빈도\n\n**설명**: Cilium이 eBPF 맵에 수행하는 작업 빈도\n\n**주요 맵**:\n- `ct4_global`: Connection Tracking (연결 추적)\n- `lb4_services_v2`: LoadBalancer 서비스\n- `ipcache_v2`: IP 캐시\n- `lxc`: 컨테이너 엔드포인트\n\n**모니터링 포인트**:\n- 정상: 일정한 빈도 유지\n- ct4_global delete 증가: 연결 종료 많음\n- lb4 update 증가: 서비스 변경 빈번\n- 급격한 증가 → Pod 대량 생성/삭제",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "ops"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+      "id": 22,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        {
+          "expr": "sum(rate(cilium_bpf_map_ops_total[$__rate_interval])) by (map_name, operation)",
+          "legendFormat": "{{map_name}} - {{operation}}",
+          "refId": "A"
+        }
+      ],
+      "title": "BPF 맵 작업",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
+      "id": 30,
+      "panels": [],
+      "title": "API / 컨트롤 플레인",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "### API 처리 지연시간 (p99)\n\n**설명**: Cilium Agent API 요청 처리 시간의 99번째 백분위\n\n**주요 API**:\n- `PUT /endpoint/{id}`: 엔드포인트 업데이트\n- `DELETE /endpoint/{id}`: 엔드포인트 삭제\n- `GET /healthz`: 헬스체크\n- `GET /config`: 설정 조회\n\n**모니터링 포인트**:\n- 정상: 수십 ms 이내\n- 100ms 초과 시 Agent 과부하 의심\n- 1s 초과 시 심각한 성능 저하\n\n**영향**: API 지연이 높으면 Pod 생성/삭제 속도 저하",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "s"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "id": 31,
+      "options": { "legend": { "calcs": ["mean", "p99"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(cilium_agent_api_process_time_seconds_bucket[$__rate_interval])) by (le, method, path))",
+          "legendFormat": "{{method}} {{path}} p99",
+          "refId": "A"
+        }
+      ],
+      "title": "API 처리 시간 (p99)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "### 엔드포인트 재생성 시간 (p99)\n\n**설명**: Pod가 생성/변경될 때 Cilium이 eBPF 프로그램을 컴파일하고 로드하는 시간\n\n**재생성 단계**:\n- `policyCalculation`: 정책 계산\n- `bpfCompilation`: BPF 프로그램 컴파일\n- `bpfWaitForELF`: ELF 파일 대기\n- `bpfLoadProg`: BPF 프로그램 커널 로드\n- `mapSync`: BPF 맵 동기화\n- `prepareBuild`: 빌드 준비\n\n**모니터링 포인트**:\n- 정상: 각 단계 수백 ms 이내\n- bpfCompilation이 느리면 CPU 병목\n- mapSync가 느리면 맵 크기가 너무 큼\n\n**영향**: 재생성이 느리면 Pod 시작 시간 증가",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "s"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "id": 32,
+      "options": { "legend": { "calcs": ["mean", "p99"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(cilium_endpoint_regeneration_time_stats_seconds_bucket[$__rate_interval])) by (le, scope))",
+          "legendFormat": "{{scope}} p99",
+          "refId": "A"
+        }
+      ],
+      "title": "엔드포인트 재생성 시간 (p99)",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["cilium", "ebpf", "cni", "infra"],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "데이터소스",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Cilium 개요",
+  "uid": "cilium-overview",
+  "version": 2
+}

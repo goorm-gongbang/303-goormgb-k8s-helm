@@ -115,7 +115,7 @@
             "type": "loki",
             "uid": "${datasource}"
           },
-          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" $log_level [$__interval]))",
+          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} ${log_type:raw} |= \"$query\" ${log_level:raw} [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -160,7 +160,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} $log_type |= \"$query\" $log_level",
+          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} ${log_type:raw} |= \"$query\" ${log_level:raw}",
           "queryType": "range",
           "refId": "A"
         }
@@ -247,7 +247,7 @@
       {
         "current": {
           "text": "",
-          "value": "|= ``"
+          "value": ""
         },
         "description": "검색어 (ERROR, WARN 등 로그 레벨 포함)",
         "label": "검색어",
@@ -256,7 +256,7 @@
           {
             "selected": true,
             "text": "",
-            "value": "|= ``"
+            "value": ""
           }
         ],
         "query": "",
@@ -278,7 +278,7 @@
           {
             "selected": true,
             "text": "전체",
-            "value": ""
+            "value": "|= ``"
           },
           {
             "selected": false,

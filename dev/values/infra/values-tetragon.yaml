@@ -1,0 +1,43 @@
+# Tetragon Configuration for DEV environment
+# L3/L4 threat detection - logging only
+
+mode: dev
+
+detection:
+  connectionRate:
+    enabled: true
+    threshold: 100
+
+  timingPattern:
+    enabled: true
+    suspiciousIntervals:
+      - 1000
+      - 500
+      - 100
+
+  suspiciousProcess:
+    enabled: true
+    paths:
+      - "/tmp/"
+      - "/dev/shm/"
+      - "/var/tmp/"
+
+# Dev: Post only (logging)
+actions:
+  dev:
+    - Post
+  staging:
+    - Post
+    - Signal
+  prod:
+    - Post
+    - Signal
+
+targetNamespaces:
+  - dev-webs
+  - dev-ai
+
+metrics:
+  enabled: true
+  port: 2112
+  interval: "15s"

@@ -6,7 +6,9 @@ zoneID: "f9fdc81712963738bc9d5ee628849e53"
 
 records:
   - "" # goormgb.space (root)
-  - "api.dev" # api.dev.goormgb.space (백엔드 API)
+  - "api" # api.goormgb.space (백엔드 API)
+  - "swagger" # swagger.goormgb.space (Swagger UI)
+  - "console" # console.goormgb.space (Infra Console)
   - "argocd" # argocd.goormgb.space
   - "grafana" # grafana.goormgb.space
   - "kiali" # kiali.goormgb.space

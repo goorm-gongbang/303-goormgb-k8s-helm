@@ -79,9 +79,29 @@ ociCharts:
     syncWave: "-1"
     valueFiles:
       - $values/dev/values/istio/values-kiali.yaml
+    syncOptions:
+      - RespectIgnoreDifferences=true
+      - ServerSideApply=true
+    ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+          - .metadata.annotations
+          - .spec.template.metadata.annotations
+          - .spec.template.spec.containers[].resources
+      - group: ""
+        kind: ConfigMap
+        jqPathExpressions:
+          - .data
+      - group: ""
+        kind: Service
+        jqPathExpressions:
+          - .spec.clusterIP
+          - .spec.clusterIPs
 
+  # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   tigera-operator:
-    enabled: true
+    enabled: false  # Cilium eBPF로 대체
     repoURL: https://docs.tigera.io/calico/charts
     chart: tigera-operator
     version: "v3.29.3"
@@ -151,6 +171,7 @@ ociCharts:
       - $values/dev/values/monitoring/values-prometheus-stack.yaml
       - $values/dev/values/monitoring/alerting/values-alertmanager-dev.yaml
       - $values/dev/values/monitoring/alerting/values-rules-dev-5xx.yaml
+      - $values/dev/values/monitoring/alerting/values-rules-dev.yaml
     syncOptions:
       - SkipDryRunOnMissingResource=true
       - PruneLast=true
@@ -248,6 +269,25 @@ ociCharts:
     syncWave: "1"
     valueFiles:
       - $values/dev/values/monitoring/values-opentelemetry-collector.yaml
+
+  # Tetragon - eBPF-based runtime security (L3/L4 threat detection)
+  tetragon:
+    enabled: true
+    repoURL: https://helm.cilium.io
+    chart: tetragon
+    version: "1.3.0"
+    namespace: kube-system
+    syncWave: "-8"
+    valueFiles:
+      - $values/dev/values/infra/values-tetragon-oci.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+    ignoreDifferences:
+      - group: cilium.io
+        kind: TracingPolicy
+        jsonPointers:
+          - /status
 
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
@@ -367,8 +407,9 @@ gitCharts:
     valueFiles:
       - ../../../../dev/values/istio/values-kiali.yaml
 
+  # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   calico-config:
-    enabled: true
+    enabled: false  # Cilium eBPF로 대체
     path: common-charts/infra/calico
     namespace: calico-system
     syncWave: "-9"
@@ -405,6 +446,35 @@ gitCharts:
     syncWave: "1"
     valueFiles:
       - ../../../../dev/values/monitoring/values-alloy.yaml
+
+  # === Infra Console ===
+  infra-console:
+    enabled: true
+    path: common-charts/infra/infra-console
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../dev/values/infra/values-infra-console.yaml
+
+  # === Kyverno Policies ===
+  kyverno-policies:
+    enabled: true
+    path: common-charts/infra/kyverno-policies
+    namespace: kyverno
+    syncWave: "0"
+    valueFiles:
+      - ../../../dev/values/infra/values-kyverno-policies.yaml
+
+  # === Tetragon TracingPolicy (L3/L4 threat detection) ===
+  tetragon-config:
+    enabled: true
+    path: common-charts/infra/tetragon
+    namespace: kube-system
+    syncWave: "-7"
+    valueFiles:
+      - ../../../dev/values/infra/values-tetragon.yaml
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
 
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
@@ -479,6 +549,34 @@ gitCharts:
     namespace: data
     valueFiles:
       - ../../../values/data/values-redisinsight.yaml
+
+  # === Data (Kafka) ===
+  kafka:
+    enabled: true
+    path: common-charts/infra/kafka
+    namespace: data
+    syncWave: "-5"
+    valueFiles:
+      - ../../../dev/values/data/values-kafka.yaml
+    retry:
+      limit: 5
+      duration: "10s"
+      maxDuration: "3m"
+      factor: 2
+    ignoreDifferences:
+      - group: ""
+        kind: PersistentVolumeClaim
+        jsonPointers:
+          - /spec/volumeName
+          - /spec/storageClassName
+
+  kafka-ui:
+    enabled: true
+    path: dev/charts/data/kafka-ui
+    namespace: data
+    syncWave: "0"
+    valueFiles:
+      - ../../../values/data/values-kafka-ui.yaml
 
 # =============================================================================
 # ApplicationSets

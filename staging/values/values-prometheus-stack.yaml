@@ -28,6 +28,12 @@ gateway:
     enabled: true
     host: "prometheus.staging.playball.one"
     gatewayRef: "istio-system/api-gateway"
+    # Remote Write 인증 (k6, OTel 등 외부 메트릭 전송용)
+    remoteWriteAuth:
+      enabled: true
+      # 토큰은 Secrets Manager에서 관리 권장, 임시로 여기 설정
+      # openssl rand -hex 32 로 생성
+      token: "k6-remote-write-staging-2026-t4goormgb"
 
 # Dashboard 설정 (EKS 환경: Calico, 로컬 exporter 대시보드 제외)
 dashboards:
@@ -60,6 +66,10 @@ dashboards:
   securityOps:
     enabled: true
     folderName: "STAGING 알람 현황판"
+
+# VPC CNI Metrics (EKS eBPF)
+vpcCniMetrics:
+  enabled: true
 
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
 fullnameOverride: prom
@@ -152,6 +162,7 @@ prometheus:
     #           storage: 30Gi
 
   # VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
+  # Service는 prometheus-stack 차트에서 생성 (vpc-cni-service.yaml)
   additionalServiceMonitors:
     - name: aws-vpc-cni
       jobLabel: k8s-app
@@ -165,6 +176,8 @@ prometheus:
         - port: metrics
           interval: 30s
           path: /metrics
+          # VPC CNI metrics port
+          targetPort: 61678
 
 # Grafana는 별도 Application으로 분리 (ociCharts.grafana)
 # values-grafana.yaml 참조
