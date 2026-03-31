@@ -25,7 +25,7 @@ ociCharts:
     chart: base
     version: "1.29.1"
     namespace: istio-system
-    syncWave: "-4"
+    syncWave: "1"
     valueFiles:
       - $values/prod/values/values-istio.yaml
     ignoreDifferences:
@@ -41,7 +41,7 @@ ociCharts:
     chart: istiod
     version: "1.29.1"
     namespace: istio-system
-    syncWave: "-3"
+    syncWave: "1"
     valueFiles:
       - $values/prod/values/values-istio.yaml
     syncOptions:
@@ -77,7 +77,7 @@ ociCharts:
     chart: gateway
     version: "1.29.1"
     namespace: istio-system
-    syncWave: "-2"
+    syncWave: "2"
     valueFiles:
       - $values/prod/values/values-istio-gateway.yaml
 
@@ -87,7 +87,7 @@ ociCharts:
     chart: kiali-server
     version: "2.23.0"
     namespace: istio-system
-    syncWave: "-1"
+    syncWave: "3"
     valueFiles:
       - $values/prod/values/values-istio.yaml
     ignoreDifferences:
@@ -118,7 +118,7 @@ ociCharts:
     chart: karpenter
     version: "1.9.0"
     namespace: karpenter
-    syncWave: "-8"
+    syncWave: "2"
     valueFiles:
       - $values/prod/values/values-karpenter.yaml
     syncOptions:
@@ -130,7 +130,7 @@ ociCharts:
     chart: loki
     version: "6.55.0"
     namespace: monitoring
-    syncWave: "0"
+    syncWave: "3"
     valueFiles:
       - $values/prod/values/values-loki.yaml
     syncOptions:
@@ -158,7 +158,7 @@ ociCharts:
     chart: kube-prometheus-stack
     version: "82.10.3"
     namespace: monitoring
-    syncWave: "-1"
+    syncWave: "3"
     valueFiles:
       - $values/prod/values/values-prometheus-stack.yaml
     syncOptions:
@@ -188,7 +188,7 @@ ociCharts:
     chart: aws-load-balancer-controller
     version: "1.11.0"
     namespace: kube-system
-    syncWave: "-9"
+    syncWave: "1"
     valueFiles:
       - $values/prod/values/values-aws-lb-controller.yaml
     syncOptions:
@@ -223,7 +223,7 @@ ociCharts:
     chart: external-secrets
     version: "2.1.0"
     namespace: external-secrets
-    syncWave: "-9"
+    syncWave: "0"
     valueFiles:
       - $values/prod/values/values-eso.yaml
     syncOptions:
@@ -242,7 +242,7 @@ ociCharts:
     chart: external-dns
     version: "1.15.2"
     namespace: external-dns
-    syncWave: "-8"
+    syncWave: "2"
     valueFiles:
       - $values/prod/values/values-external-dns.yaml
 
@@ -252,7 +252,7 @@ ociCharts:
     chart: alloy
     version: "1.6.2"
     namespace: monitoring
-    syncWave: "0"
+    syncWave: "3"
     valueFiles:
       - $values/prod/values/monitoring/values-alloy.yaml
 
@@ -271,7 +271,7 @@ ociCharts:
     chart: tempo
     version: "1.10.3"
     namespace: monitoring
-    syncWave: "0"
+    syncWave: "3"
     valueFiles:
       - $values/prod/values/values-tempo.yaml
     ignoreDifferences:
@@ -287,7 +287,7 @@ ociCharts:
     chart: opentelemetry-collector
     version: "0.85.0"
     namespace: monitoring
-    syncWave: "1"
+    syncWave: "3"
     valueFiles:
       - $values/prod/values/values-opentelemetry-collector.yaml
 
@@ -298,7 +298,7 @@ ociCharts:
     chart: metrics-server
     version: "3.12.0"
     namespace: kube-system
-    syncWave: "-9"
+    syncWave: "3"
     valueFiles: []
 
 # =============================================================================
@@ -310,7 +310,7 @@ gitCharts:
     enabled: true
     path: common-charts/infra/namespaces
     namespace: default
-    syncWave: "-10"
+    syncWave: "0"
     valueFiles:
       - ../../../prod/values/values-namespaces.yaml
 
@@ -319,6 +319,7 @@ gitCharts:
     enabled: true
     path: common-charts/infra/rbac
     namespace: default
+    syncWave: "0"
     valueFiles:
       - ../../../prod/values/values-rbac.yaml
 
@@ -327,14 +328,14 @@ gitCharts:
     enabled: true
     path: prod/charts/eso
     namespace: external-secrets
-    syncWave: "-8"
+    syncWave: "0"
 
   # Karpenter NodePool & EC2NodeClass
   karpenter-config:
     enabled: true
     path: prod/charts/karpenter
     namespace: karpenter
-    syncWave: "-6"
+    syncWave: "3"
     syncOptions:
       - SkipDryRunOnMissingResource=true
 
@@ -343,7 +344,7 @@ gitCharts:
     enabled: true
     path: prod/charts/alb-ingress
     namespace: istio-system
-    syncWave: "5"
+    syncWave: "2"
     syncOptions:
       - ApplyOutOfSyncOnly=true
       - PrunePropagationPolicy=foreground
@@ -354,7 +355,7 @@ gitCharts:
     enabled: true
     path: common-charts/infra/istio/gateway
     namespace: istio-system
-    syncWave: "-2"
+    syncWave: "2"
     valueFiles:
       - ../../../../prod/values/values-istio.yaml
 
@@ -362,7 +363,7 @@ gitCharts:
     enabled: true
     path: common-charts/infra/istio-security
     namespace: istio-system
-    syncWave: "-1"
+    syncWave: "2"
     valueFiles:
       - ../../../prod/values/values-istio-security.yaml
 
@@ -371,7 +372,7 @@ gitCharts:
     enabled: true
     path: common-charts/infra/istio/istiod
     namespace: istio-system
-    syncWave: "-2"
+    syncWave: "3"
     valueFiles:
       - ../../../../prod/values/values-istio.yaml
 
@@ -379,7 +380,7 @@ gitCharts:
     enabled: true
     path: common-charts/infra/monitoring/prometheus-stack
     namespace: monitoring
-    syncWave: "0"
+    syncWave: "3"
     valueFiles:
       - ../../../../prod/values/values-prometheus-stack.yaml
     syncOptions:
@@ -390,7 +391,7 @@ gitCharts:
     path: common-charts/infra/monitoring/alloy
     releaseName: alloy
     namespace: monitoring
-    syncWave: "1"
+    syncWave: "3"
     valueFiles:
       - ../../../../prod/values/monitoring/values-alloy.yaml
 
@@ -407,6 +408,7 @@ gitCharts:
     enabled: true
     path: common-charts/infra/argocd
     namespace: argocd
+    syncWave: "3"
     valueFiles:
       - ../../../prod/values/core/values-argocd.yaml
 
@@ -420,22 +422,22 @@ gitCharts:
 applicationSets:
   prod-webs-services:
     enabled: true
-    syncWave: "10"
+    syncWave: "4"
     namespace: prod-webs
     chartPath: common-charts/apps/java-service
     valueFilesPattern: ../../../prod/values/apps/values-{{name}}.yaml
     services:
       # 순차 배포: auth-guard → 나머지 서비스 → api-gateway
       - name: auth-guard
-        syncWave: "10"
+        syncWave: "4"
       - name: queue
-        syncWave: "11"
+        syncWave: "4"
       - name: seat
-        syncWave: "11"
+        syncWave: "4"
       - name: order-core
-        syncWave: "11"
+        syncWave: "4"
       - name: api-gateway
-        syncWave: "12"
+        syncWave: "4"
 
   prod-ai-services:
     enabled: false
