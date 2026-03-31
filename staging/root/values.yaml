@@ -397,6 +397,13 @@ gitCharts:
     namespace: external-secrets
     syncWave: "-8"
 
+  # AI Service Secrets (Redis 연결 정보)
+  ai-service-secrets:
+    enabled: true
+    path: staging/charts/security/ai-service-secrets
+    namespace: staging-ai
+    syncWave: "-6"
+
   # Karpenter NodePool & EC2NodeClass
   karpenter-config:
     enabled: true
@@ -581,7 +588,9 @@ applicationSets:
     namespace: staging-ai
     chartPath: common-charts/apps/ai-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
-    services: []  # staging AI 서비스 추가 시 여기에
+    services:
+      - name: ai-defense
+      - name: authz-adapter
 
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)
@@ -594,4 +603,4 @@ rawManifests:
   swagger403Redirect:
     enabled: false
   aiDefenseRoute:
-    enabled: false
+    enabled: true

@@ -1,0 +1,948 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "k6 부하 테스트 수신 메트릭 - API 서버 관점 (Istio metrics)",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": true,
+      "title": "k6 Sender Dashboard",
+      "type": "link",
+      "url": "/d/k6-loadtest-sender/k6-loadtest-sender"
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "panels": [],
+      "title": "Overview - RED Method",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(rate(istio_requests_total{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m]))",
+          "legendFormat": "Requests/s",
+          "refId": "A"
+        }
+      ],
+      "title": "Request Rate",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.01 },
+              { "color": "red", "value": 0.05 }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(rate(istio_requests_total{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\", response_code=~\"5.*\"}[1m])) / sum(rate(istio_requests_total{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m])) or vector(0)",
+          "legendFormat": "Error Rate",
+          "refId": "A"
+        }
+      ],
+      "title": "Error Rate (5xx)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 100 },
+              { "color": "red", "value": 500 }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "histogram_quantile(0.50, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m])) by (le))",
+          "legendFormat": "P50",
+          "refId": "A"
+        }
+      ],
+      "title": "Latency P50",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 200 },
+              { "color": "red", "value": 1000 }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m])) by (le))",
+          "legendFormat": "P95",
+          "refId": "A"
+        }
+      ],
+      "title": "Latency P95",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 500 },
+              { "color": "red", "value": 2000 }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "histogram_quantile(0.99, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m])) by (le))",
+          "legendFormat": "P99",
+          "refId": "A"
+        }
+      ],
+      "title": "Latency P99",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "purple", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(increase(istio_requests_total{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[5m]))",
+          "legendFormat": "Total Requests",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Requests (5m)",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "id": 101,
+      "panels": [],
+      "title": "Time Series",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "id": 10,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(rate(istio_requests_total{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m])) by (destination_workload)",
+          "legendFormat": "{{destination_workload}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Request Rate by Workload",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "id": 11,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "histogram_quantile(0.50, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m])) by (le, destination_workload))",
+          "legendFormat": "{{destination_workload}} P50",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m])) by (le, destination_workload))",
+          "legendFormat": "{{destination_workload}} P95",
+          "refId": "B"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "histogram_quantile(0.99, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m])) by (le, destination_workload))",
+          "legendFormat": "{{destination_workload}} P99",
+          "refId": "C"
+        }
+      ],
+      "title": "Latency Distribution",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "id": 102,
+      "panels": [],
+      "title": "HTTP Status Codes",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "normal" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "reqps"
+        },
+        "overrides": [
+          { "matcher": { "id": "byRegexp", "options": "2.." }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
+          { "matcher": { "id": "byRegexp", "options": "3.." }, "properties": [{ "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }] },
+          { "matcher": { "id": "byRegexp", "options": "4.." }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] },
+          { "matcher": { "id": "byRegexp", "options": "5.." }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+      "id": 20,
+      "options": {
+        "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(rate(istio_requests_total{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m])) by (response_code)",
+          "legendFormat": "{{response_code}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Response Codes Over Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byRegexp", "options": "2.." }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
+          { "matcher": { "id": "byRegexp", "options": "3.." }, "properties": [{ "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }] },
+          { "matcher": { "id": "byRegexp", "options": "4.." }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] },
+          { "matcher": { "id": "byRegexp", "options": "5.." }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 15 },
+      "id": 21,
+      "options": {
+        "displayLabels": ["name", "percent"],
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+        "pieType": "donut",
+        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(increase(istio_requests_total{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[$__range])) by (response_code)",
+          "legendFormat": "{{response_code}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Response Code Distribution",
+      "type": "piechart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "RPS" }, "properties": [{ "id": "unit", "value": "reqps" }] },
+          { "matcher": { "id": "byName", "options": "Error Rate" }, "properties": [{ "id": "unit", "value": "percentunit" }] },
+          { "matcher": { "id": "byName", "options": "P95 Latency" }, "properties": [{ "id": "unit", "value": "ms" }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 15 },
+      "id": 22,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(rate(istio_requests_total{destination_workload=~\"$workload\", destination_workload_namespace=~\"$namespace\"}[1m])) by (request_protocol, destination_service_name)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Services Summary",
+      "transformations": [
+        { "id": "organize", "options": { "excludeByName": { "Time": true }, "renameByName": { "Value": "RPS", "destination_service_name": "Service", "request_protocol": "Protocol" } } }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
+      "id": 103,
+      "panels": [],
+      "title": "Resource Usage",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "id": 30,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=~\"$namespace\", pod=~\".*$workload.*\"}[1m])) by (pod) / sum(kube_pod_container_resource_limits{namespace=~\"$namespace\", pod=~\".*$workload.*\", resource=\"cpu\"}) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU Usage (% of limit)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "id": 31,
+      "options": {
+        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(container_memory_working_set_bytes{namespace=~\"$namespace\", pod=~\".*$workload.*\", container!=\"\"}) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory Usage",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 32 },
+      "id": 104,
+      "panels": [],
+      "title": "Database (RDS PostgreSQL)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 33 },
+      "id": 40,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "alias": "CPU", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": "$db_instance" }, "metricName": "CPUUtilization", "namespace": "AWS/RDS", "period": "60", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "RDS CPU",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 33 },
+      "id": 41,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "alias": "Connections", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": "$db_instance" }, "metricName": "DatabaseConnections", "namespace": "AWS/RDS", "period": "60", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "DB Connections",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 10, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": { "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "unit": "iops"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 33 },
+      "id": 42,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "alias": "Read IOPS", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": "$db_instance" }, "metricName": "ReadIOPS", "namespace": "AWS/RDS", "period": "60", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" },
+        { "alias": "Write IOPS", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": "$db_instance" }, "metricName": "WriteIOPS", "namespace": "AWS/RDS", "period": "60", "refId": "B", "region": "ap-northeast-2", "statistic": "Average" }
+      ],
+      "title": "Read/Write IOPS",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 10, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": { "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 33 },
+      "id": 43,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "alias": "Read Latency", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": "$db_instance" }, "metricName": "ReadLatency", "namespace": "AWS/RDS", "period": "60", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" },
+        { "alias": "Write Latency", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "DBInstanceIdentifier": "$db_instance" }, "metricName": "WriteLatency", "namespace": "AWS/RDS", "period": "60", "refId": "B", "region": "ap-northeast-2", "statistic": "Average" }
+      ],
+      "title": "Read/Write Latency",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 39 },
+      "id": 105,
+      "panels": [],
+      "title": "Cache (ElastiCache Redis)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 40 },
+      "id": 50,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "alias": "CPU", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": "$cache_cluster" }, "metricName": "CPUUtilization", "namespace": "AWS/ElastiCache", "period": "60", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "Redis CPU",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 40 },
+      "id": 51,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "alias": "Memory", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": "$cache_cluster" }, "metricName": "DatabaseMemoryUsagePercentage", "namespace": "AWS/ElastiCache", "period": "60", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "Redis Memory %",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 10, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": { "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 40 },
+      "id": 52,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "alias": "Cache Hits", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": "$cache_cluster" }, "metricName": "CacheHits", "namespace": "AWS/ElastiCache", "period": "60", "refId": "A", "region": "ap-northeast-2", "statistic": "Sum" },
+        { "alias": "Cache Misses", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": "$cache_cluster" }, "metricName": "CacheMisses", "namespace": "AWS/ElastiCache", "period": "60", "refId": "B", "region": "ap-northeast-2", "statistic": "Sum" }
+      ],
+      "title": "Cache Hits/Misses",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 40 },
+      "id": 53,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "alias": "Connections", "datasource": { "type": "cloudwatch", "uid": "cloudwatch" }, "dimensions": { "CacheClusterId": "$cache_cluster" }, "metricName": "CurrConnections", "namespace": "AWS/ElastiCache", "period": "60", "refId": "A", "region": "ap-northeast-2", "statistic": "Average" }],
+      "title": "Redis Connections",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 46 },
+      "id": 106,
+      "panels": [],
+      "title": "AI Services (ai-defense, authz-adapter)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 10, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": { "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 47 },
+      "id": 60,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(istio_requests_total{destination_workload=~\".*ai-defense.*\", destination_workload_namespace=~\".*-ai\"}[1m])) by (destination_workload)", "legendFormat": "{{destination_workload}}", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(istio_requests_total{destination_workload=~\".*authz-adapter.*\", destination_workload_namespace=~\".*-ai\"}[1m])) by (destination_workload)", "legendFormat": "{{destination_workload}}", "refId": "B" }
+      ],
+      "title": "AI Services - Request Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 10, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": { "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 47 },
+      "id": 61,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload=~\".*ai-defense.*\", destination_workload_namespace=~\".*-ai\"}[1m])) by (le))", "legendFormat": "ai-defense P95", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload=~\".*authz-adapter.*\", destination_workload_namespace=~\".*-ai\"}[1m])) by (le))", "legendFormat": "authz-adapter P95", "refId": "B" }
+      ],
+      "title": "AI Services - Latency P95",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 10, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": { "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 47 },
+      "id": 62,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(istio_requests_total{destination_workload=~\".*ai-defense.*\", destination_workload_namespace=~\".*-ai\", response_code=~\"5.*\"}[1m])) / sum(rate(istio_requests_total{destination_workload=~\".*ai-defense.*\", destination_workload_namespace=~\".*-ai\"}[1m])) or vector(0)", "legendFormat": "ai-defense Error Rate", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(istio_requests_total{destination_workload=~\".*authz-adapter.*\", destination_workload_namespace=~\".*-ai\", response_code=~\"5.*\"}[1m])) / sum(rate(istio_requests_total{destination_workload=~\".*authz-adapter.*\", destination_workload_namespace=~\".*-ai\"}[1m])) or vector(0)", "legendFormat": "authz-adapter Error Rate", "refId": "B" }
+      ],
+      "title": "AI Services - Error Rate",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "tags": ["k6", "loadtest", "receiver", "istio"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": false, "text": "prometheus", "value": "prometheus" },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Datasource",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": { "selected": false, "text": "default", "value": "default" },
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(istio_requests_total, destination_workload_namespace)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Namespace",
+        "multi": true,
+        "name": "namespace",
+        "options": [],
+        "query": { "query": "label_values(istio_requests_total, destination_workload_namespace)", "refId": "PrometheusVariableQueryEditor-VariableQuery" },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": { "selected": false, "text": "All", "value": "$__all" },
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(istio_requests_total{destination_workload_namespace=~\"$namespace\"}, destination_workload)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Workload",
+        "multi": true,
+        "name": "workload",
+        "options": [],
+        "query": { "query": "label_values(istio_requests_total{destination_workload_namespace=~\"$namespace\"}, destination_workload)", "refId": "PrometheusVariableQueryEditor-VariableQuery" },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": { "selected": false, "text": "goormgb-staging", "value": "goormgb-staging" },
+        "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "DB Instance",
+        "multi": false,
+        "name": "db_instance",
+        "options": [
+          { "selected": true, "text": "goormgb-staging", "value": "goormgb-staging" },
+          { "selected": false, "text": "goormgb-dev", "value": "goormgb-dev" }
+        ],
+        "query": "",
+        "refresh": 0,
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": { "selected": false, "text": "goormgb-staging-001", "value": "goormgb-staging-001" },
+        "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Cache Cluster",
+        "multi": false,
+        "name": "cache_cluster",
+        "options": [
+          { "selected": true, "text": "goormgb-staging-001", "value": "goormgb-staging-001" },
+          { "selected": false, "text": "goormgb-dev-001", "value": "goormgb-dev-001" }
+        ],
+        "query": "",
+        "refresh": 0,
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": { "from": "now-15m", "to": "now" },
+  "timepicker": {},
+  "timezone": "Asia/Seoul",
+  "title": "k6 Load Test - Receiver",
+  "uid": "k6-loadtest-receiver",
+  "version": 1,
+  "weekStart": ""
+}

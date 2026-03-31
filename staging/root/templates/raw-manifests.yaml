@@ -153,15 +153,15 @@ spec:
 {{- if .Values.rawManifests.aiDefenseRoute.enabled }}
 ---
 # AI Defense 서비스 라우팅
-# api.goormgb.space/ai/* -> ai-defense 서비스
+# api.staging.playball.one/ai/* -> ai-defense 서비스
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: ai-defense-route
-  namespace: dev-ai
+  namespace: staging-ai
 spec:
   hosts:
-    - "api.goormgb.space"
+    - "api.staging.playball.one"
   gateways:
     - istio-system/api-gateway
   http:
@@ -173,7 +173,7 @@ spec:
         uri: /
       route:
         - destination:
-            host: dev-ai-defense.dev-ai.svc.cluster.local
+            host: staging-ai-defense.staging-ai.svc.cluster.local
             port:
               number: 8000
     # /ai (trailing slash 없이) -> /ai/로 리다이렉트

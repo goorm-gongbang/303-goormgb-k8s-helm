@@ -1,0 +1,13 @@
+{{- if .Values.virtualService.enabled }}
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: {{ include "infra-console.fullname" . }}-dr
+  labels:
+    {{- include "infra-console.labels" . | nindent 4 }}
+spec:
+  host: {{ include "infra-console.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+{{- end }}
