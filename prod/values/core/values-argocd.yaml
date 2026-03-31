@@ -29,7 +29,7 @@ oidc:
   enabled: true
   name: Google
   issuer: https://accounts.google.com
-  secretManagerKey: prod/infra/oauth/google
+  secretManagerKey: prod/argocd/oauth
   requestedScopes:
     - openid
     - profile
