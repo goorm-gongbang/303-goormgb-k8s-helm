@@ -1,0 +1,10 @@
+# Security Dashboards - Staging Only
+# Trivy Operator and Falco dashboards
+
+enabled: true
+
+# Grafana sidecar label
+grafanaLabel: grafana_dashboard
+
+# Dashboard folder in Grafana
+folder: "Security Ops"

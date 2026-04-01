@@ -1,0 +1,603 @@
+{{- if .Values.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-falco-security
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{ .Values.grafanaLabel }}: "1"
+  annotations:
+    grafana_folder: {{ .Values.folder | quote }}
+data:
+  falco-runtime-security.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": { "type": "datasource", "uid": "grafana" },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "description": "Falco 런타임 보안 모니터링 대시보드입니다. 컨테이너/호스트 레벨의 의심스러운 활동과 보안 위협을 실시간으로 감지합니다.",
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+          "id": 1,
+          "panels": [],
+          "title": "보안 이벤트 요약",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "CRITICAL 우선순위 보안 이벤트입니다. 즉시 조사가 필요합니다.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 1 }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+          "id": 2,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(increase(falco_events{priority=\"Critical\"}[1h])) or vector(0)",
+              "legendFormat": "Critical",
+              "refId": "A"
+            }
+          ],
+          "title": "CRITICAL (1시간)",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "ERROR 우선순위 보안 이벤트입니다.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "orange", "value": 1 },
+                  { "color": "red", "value": 10 }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+          "id": 3,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(increase(falco_events{priority=\"Error\"}[1h])) or vector(0)",
+              "legendFormat": "Error",
+              "refId": "A"
+            }
+          ],
+          "title": "ERROR (1시간)",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "WARNING 우선순위 보안 이벤트입니다.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 10 }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+          "id": 4,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(increase(falco_events{priority=\"Warning\"}[1h])) or vector(0)",
+              "legendFormat": "Warning",
+              "refId": "A"
+            }
+          ],
+          "title": "WARNING (1시간)",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "전체 보안 이벤트 총 개수입니다 (24시간).",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "blue", "value": null }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+          "id": 5,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(increase(falco_events[24h])) or vector(0)",
+              "legendFormat": "Total",
+              "refId": "A"
+            }
+          ],
+          "title": "전체 이벤트 (24시간)",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "Falco가 실행 중인 노드 수입니다.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+          "id": 6,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "count(up{job=~\".*falco.*\"} == 1) or vector(0)",
+              "legendFormat": "Nodes",
+              "refId": "A"
+            }
+          ],
+          "title": "모니터링 노드",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "현재 활성화된 Falco 규칙 수입니다.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+          "id": 7,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "count(falco_rules{enabled=\"true\"}) or vector(0)",
+              "legendFormat": "Rules",
+              "refId": "A"
+            }
+          ],
+          "title": "활성 규칙",
+          "type": "stat"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+          "id": 8,
+          "panels": [],
+          "title": "보안 이벤트 추이",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "시간대별 보안 이벤트 발생 추이입니다. 갑작스러운 증가는 공격 시도일 수 있습니다.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisPlacement": "auto",
+                "fillOpacity": 30,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "lineWidth": 2,
+                "scaleDistribution": { "type": "linear" },
+                "stacking": { "group": "A", "mode": "none" }
+              },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+            },
+            "overrides": [
+              { "matcher": { "id": "byName", "options": "Critical" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+              { "matcher": { "id": "byName", "options": "Error" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] },
+              { "matcher": { "id": "byName", "options": "Warning" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 16, "x": 0, "y": 6 },
+          "id": 9,
+          "options": {
+            "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(rate(falco_events{priority=\"Critical\"}[5m])) * 60",
+              "legendFormat": "Critical",
+              "refId": "A"
+            },
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(rate(falco_events{priority=\"Error\"}[5m])) * 60",
+              "legendFormat": "Error",
+              "refId": "B"
+            },
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(rate(falco_events{priority=\"Warning\"}[5m])) * 60",
+              "legendFormat": "Warning",
+              "refId": "C"
+            }
+          ],
+          "title": "보안 이벤트 추이 (분당)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "우선순위별 이벤트 비율입니다.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+            },
+            "overrides": [
+              { "matcher": { "id": "byName", "options": "Critical" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+              { "matcher": { "id": "byName", "options": "Error" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] },
+              { "matcher": { "id": "byName", "options": "Warning" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] },
+              { "matcher": { "id": "byName", "options": "Notice" }, "properties": [{ "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }] }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 6 },
+          "id": 10,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+            "pieType": "donut",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "sum by (priority) (increase(falco_events[24h]))",
+              "legendFormat": "{{priority}}",
+              "refId": "A"
+            }
+          ],
+          "title": "우선순위별 분포 (24시간)",
+          "type": "piechart"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+          "id": 11,
+          "panels": [],
+          "title": "위협 유형별 상세",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "크립토마이닝 탐지 이벤트입니다. 즉시 해당 컨테이너를 격리하세요.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 1 }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 0, "y": 15 },
+          "id": 12,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(increase(falco_events{rule=~\".*crypto.*|.*miner.*\"}[24h])) or vector(0)",
+              "legendFormat": "Crypto Mining",
+              "refId": "A"
+            }
+          ],
+          "title": "크립토마이닝 탐지",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "컨테이너 탈출 시도입니다. 권한 상승 공격일 수 있습니다.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 1 }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 6, "y": 15 },
+          "id": 13,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(increase(falco_events{rule=~\".*escape.*|.*nsenter.*|.*privilege.*\"}[24h])) or vector(0)",
+              "legendFormat": "Container Escape",
+              "refId": "A"
+            }
+          ],
+          "title": "컨테이너 탈출 시도",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "민감 파일 접근 시도입니다. /etc/shadow, /etc/passwd 등.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 1 },
+                  { "color": "red", "value": 10 }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 12, "y": 15 },
+          "id": 14,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(increase(falco_events{rule=~\".*sensitive.*|.*shadow.*|.*passwd.*\"}[24h])) or vector(0)",
+              "legendFormat": "Sensitive Files",
+              "refId": "A"
+            }
+          ],
+          "title": "민감 파일 접근",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "셸 실행 탐지입니다. 컨테이너 내 셸 접근은 주의가 필요합니다.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 5 }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 18, "y": 15 },
+          "id": 15,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "sum(increase(falco_events{rule=~\".*shell.*|.*terminal.*\"}[24h])) or vector(0)",
+              "legendFormat": "Shell Spawn",
+              "refId": "A"
+            }
+          ],
+          "title": "셸 실행 탐지",
+          "type": "stat"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 19 },
+          "id": 16,
+          "panels": [],
+          "title": "규칙별 이벤트",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus",
+          "description": "가장 많이 발생한 보안 규칙별 이벤트입니다. 반복되는 패턴을 확인하세요.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisPlacement": "auto",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "lineWidth": 1,
+                "scaleDistribution": { "type": "linear" }
+              },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 20 },
+          "id": 17,
+          "options": {
+            "barRadius": 0,
+            "barWidth": 0.6,
+            "groupWidth": 0.7,
+            "legend": { "calcs": [], "displayMode": "hidden", "placement": "bottom", "showLegend": false },
+            "orientation": "horizontal",
+            "showValue": "auto",
+            "stacking": "none",
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus",
+              "expr": "topk(10, sum by (rule) (increase(falco_events[24h])))",
+              "legendFormat": "{{rule}}",
+              "refId": "A"
+            }
+          ],
+          "title": "규칙별 이벤트 Top 10 (24시간)",
+          "type": "barchart"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 38,
+      "style": "dark",
+      "tags": ["falco", "security", "runtime", "staging"],
+      "templating": { "list": [] },
+      "time": { "from": "now-6h", "to": "now" },
+      "timepicker": {},
+      "timezone": "Asia/Seoul",
+      "title": "Falco 런타임 보안",
+      "uid": "falco-runtime-security",
+      "version": 1,
+      "weekStart": ""
+    }
+{{- end }}
