@@ -76,7 +76,7 @@ nodeSelector:
 
 # Tolerations
 tolerations:
-  - key: "dedicated"
+  - key: "role"
     operator: "Equal"
     value: "infra"
     effect: "NoSchedule"

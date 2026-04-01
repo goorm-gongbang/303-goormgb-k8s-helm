@@ -11,7 +11,7 @@ rdsHost: ""  # ExternalSecret에서 주입
 
 # Database names to backup
 databases:
-  - playball
+  - goormgb
 
 # S3 configuration
 s3:
