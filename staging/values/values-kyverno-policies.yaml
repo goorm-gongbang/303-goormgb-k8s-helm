@@ -30,9 +30,11 @@ policies:
     enabled: false  # staging에서는 비활성화
 
 excludeNamespaces:
+  # Kubernetes system
   - kube-system
   - kube-public
   - kube-node-lease
+  # Infrastructure
   - kyverno
   - argocd
   - istio-system
@@ -40,4 +42,8 @@ excludeNamespaces:
   - external-secrets
   - karpenter
   - cert-manager
-  # EKS: VPC CNI (eBPF 기반, kube-system에 포함)
+  # Security tools (3rd party operators)
+  - trivy-system
+  - falco
+  # Data
+  - messaging
