@@ -557,7 +557,7 @@ gitCharts:
     namespace: messaging
     syncWave: "-5"
     valueFiles:
-      - ../../../dev/values/data/values-kafka.yaml
+      - ../../../dev/values/messaging/values-kafka.yaml
     retry:
       limit: 5
       duration: "10s"
@@ -576,7 +576,7 @@ gitCharts:
     namespace: messaging
     syncWave: "0"
     valueFiles:
-      - ../../../values/data/values-kafka-ui.yaml
+      - ../../../dev/values/messaging/values-kafka-ui.yaml
 
 # =============================================================================
 # ApplicationSets
