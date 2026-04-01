@@ -6,10 +6,6 @@ replicas: 1
 kraft:
   clusterId: "goormgb-dev-kafka-001"
 
-extraEnvVars:
-  - name: CLUSTER_ID
-    value: "goormgb-dev-kafka-001"
-
 config:
   processRoles: broker,controller
   controllerQuorumVoters: "0@kafka-0.kafka-headless.data.svc.cluster.local:9093"
