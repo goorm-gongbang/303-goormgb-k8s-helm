@@ -374,24 +374,6 @@ ociCharts:
           - /status
           - /metadata/annotations
 
-  # Falco - Runtime Security and Threat Detection
-  falco:
-    enabled: true
-    repoURL: https://falcosecurity.github.io/charts
-    chart: falco
-    version: "8.0.1"
-    namespace: falco
-    syncWave: "-6"
-    valueFiles:
-      - $values/staging/values/security/values-falco.yaml
-    syncOptions:
-      - ServerSideApply=true
-    ignoreDifferences:
-      - group: apps
-        kind: DaemonSet
-        jsonPointers:
-          - /spec/template/spec/containers/0/resources
-
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
 # =============================================================================
