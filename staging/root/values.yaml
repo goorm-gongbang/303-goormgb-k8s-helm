@@ -641,4 +641,4 @@ rawManifests:
   swagger403Redirect:
     enabled: false
   aiDefenseRoute:
-    enabled: true
+    enabled: false  # Istio 설치 후 활성화
