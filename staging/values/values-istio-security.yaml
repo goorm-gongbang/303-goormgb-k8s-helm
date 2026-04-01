@@ -42,6 +42,9 @@ patterns:
 
 # 제외 경로 (health check, metrics, 내부 서비스 등)
 excludePaths:
+  # Load-test (k6 부하 테스트 - WAF 패턴 검사 제외)
+  - "/load-test/"
+
   # Faro RUM (프론트엔드 텔레메트리)
   - "/faro/"
 
@@ -115,9 +118,10 @@ extAuthz:
   # AI 서버 장애 시 통과 허용 (fail-open)
   failOpen: true
 
-  # ext_authz 제외 경로 (AI direct routes, health checks)
+  # ext_authz 제외 경로 (AI direct routes, health checks, load-test)
   excludePaths:
     - "/ai/"
+    - "/load-test/"
     - "/health"
     - "/healthz"
     - "/ready"
