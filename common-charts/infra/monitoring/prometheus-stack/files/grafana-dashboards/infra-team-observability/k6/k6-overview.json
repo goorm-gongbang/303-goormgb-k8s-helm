@@ -312,7 +312,7 @@
   "time": { "from": "now-15m", "to": "now" },
   "timepicker": {},
   "timezone": "Asia/Seoul",
-  "title": "k6 Load Test - Overview",
+  "title": "k6 부하테스트 - 개요",
   "uid": "k6-overview",
   "version": 1
 }
