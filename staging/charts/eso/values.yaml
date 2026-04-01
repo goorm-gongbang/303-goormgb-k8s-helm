@@ -18,6 +18,7 @@ serviceConfig:
   enabled: true
   namespace: staging-webs
   secretManagerPrefix: staging/services
+  environment: staging
 
 # GHCR Secret - Private container registry access
 # 시크릿 구조:

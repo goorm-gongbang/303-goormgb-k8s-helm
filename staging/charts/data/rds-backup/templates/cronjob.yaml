@@ -1,0 +1,94 @@
+{{- if .Values.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rds-backup
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          serviceAccountName: {{ .Values.serviceAccount.name }}
+          restartPolicy: OnFailure
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: backup
+              image: postgres:16-alpine
+              env:
+                - name: POSTGRES_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: rds-backup-credentials
+                      key: POSTGRES_HOST
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: rds-backup-credentials
+                      key: POSTGRES_USER
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: rds-backup-credentials
+                      key: POSTGRES_PASSWORD
+                - name: AWS_DEFAULT_REGION
+                  value: ap-northeast-2
+                - name: S3_BUCKET
+                  value: {{ .Values.s3.bucket }}
+                - name: S3_PREFIX
+                  value: {{ .Values.s3.prefix }}
+                - name: DATABASES
+                  value: {{ .Values.databases | join "," | quote }}
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+                  apk add --no-cache aws-cli
+
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+
+                  echo "=== RDS PostgreSQL Backup to S3 ==="
+                  echo "Host: ${POSTGRES_HOST}"
+                  echo "Databases: ${DATABASES}"
+
+                  # Backup each database
+                  echo "$DATABASES" | tr ',' '\n' | while read db; do
+                    [ -z "$db" ] && continue
+
+                    # Validate database name
+                    if ! echo "$db" | grep -qE '^[a-zA-Z0-9_-]+$'; then
+                      echo "ERROR: Invalid database name: $db"
+                      exit 1
+                    fi
+
+                    BACKUP_FILE="${db}-${TIMESTAMP}.sql.gz"
+                    echo "Backing up $db..."
+
+                    pg_dump -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$db" | gzip > "/tmp/${BACKUP_FILE}"
+
+                    echo "Uploading to s3://${S3_BUCKET}/${S3_PREFIX}/${db}/${BACKUP_FILE}"
+                    aws s3 cp "/tmp/${BACKUP_FILE}" "s3://${S3_BUCKET}/${S3_PREFIX}/${db}/${BACKUP_FILE}"
+
+                    rm -f "/tmp/${BACKUP_FILE}"
+                    echo "Done: $db"
+                  done
+
+                  echo "=== Backup Complete ==="
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+{{- end }}

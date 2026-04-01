@@ -61,6 +61,15 @@ dashboardProviders:
         options:
           path: /var/lib/grafana/dashboards/infra-team-observability-templates
 
+      - name: "security-ops"
+        orgId: 1
+        folder: "Security Ops"
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/security-ops
+
 # Grafana.com 대시보드
 dashboards:
   dev-team-observability-templates:
@@ -141,6 +150,8 @@ dashboards:
       datasource:
         - name: DS_PROMETHEUS
           value: Prometheus
+
+  # Security Ops 대시보드는 staging/charts/monitoring/security-dashboards에서 ConfigMap으로 배포
 
 # ESO에서 생성한 secret 사용
 admin:
