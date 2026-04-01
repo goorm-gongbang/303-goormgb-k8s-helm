@@ -20,9 +20,8 @@ nodePools:
   workloads:
     enabled: true
 
-    # On-demand 우선 (staging 안정성), Spot fallback
+    # Spot only (staging 비용 절감)
     capacityTypes:
-      - on-demand
       - spot
 
     # 인스턴스 설정 - arm64 (Graviton, 비용 효율)

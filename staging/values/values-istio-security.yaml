@@ -162,7 +162,7 @@ extAuthz:
 rateLimiting:
   # --- Local Rate Limit (Envoy 내장) ---
   local:
-    enabled: false  # 부하 테스트를 위해 비활성화 (테스트 후 true로 복원 필요)
+    enabled: true  # Rate limiting 활성화
 
     # 기본 설정 (전체 경로에 적용)
     default:
@@ -219,6 +219,7 @@ rateLimiting:
     - "/ready"
     - "/metrics"
     - "/actuator/health"
+    - "/load-test/"  # 부하 테스트 경로 제외
 
 # ============================================================
 # mTLS 설정 (서비스 간 통신 암호화)
