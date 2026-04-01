@@ -1,0 +1,71 @@
+# authz-adapter - Load-test 환경
+# Go 기반 gRPC ext_authz 서비스
+
+replicaCount: 2
+
+image:
+  name: "staging/playball/ai/authz-adapter"
+  tag: "20260401-010708"
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: ecr-pull-secret
+
+# Load-test 노드에 배치
+nodeSelector:
+  role: loadtest
+
+tolerations:
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
+
+service:
+  type: ClusterIP
+  port: 9001
+  portName: grpc
+  grpc:
+    enabled: false
+
+metrics:
+  enabled: true
+  port: 9090
+  portName: metrics
+  path: /metrics
+  interval: 15s
+
+# authz-adapter 전용 설정 - loadtest-ai namespace 참조
+authzAdapter:
+  enabled: true
+  aiDefenseUrl: "http://staging-ai-defense.loadtest-ai.svc.cluster.local:8000/ai/evaluate"
+  aiDefenseTimeoutMs: 800
+  logLevel: info
+
+otel:
+  enabled: true
+  collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 9090
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: 9090
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+istio:
+  sidecar: false

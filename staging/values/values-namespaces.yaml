@@ -7,6 +7,12 @@ namespaces:
     istio: true
   - name: staging-ai
     istio: true
+
+  # Load-test namespaces (부하 테스트 전용)
+  - name: loadtest-webs
+    istio: true
+  - name: loadtest-ai
+    istio: true
   - name: data
     istio: false  # Redis 등 데이터 레이어
   - name: messaging

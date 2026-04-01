@@ -187,8 +187,8 @@ spec:
 {{- if .Values.rawManifests.loadTestRoute.enabled }}
 ---
 # Load Test 라우팅 (k6 부하테스트용)
-# /load-test/* -> prefix strip 후 api-gateway로 라우팅
-# Rate limiting 제외, SPOT 노드 우선
+# /load-test/* -> loadtest-webs namespace의 api-gateway로 라우팅
+# Rate limiting 제외 (EnvoyFilter에서 처리)
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
@@ -200,19 +200,23 @@ spec:
   gateways:
     - istio-system/api-gateway
   http:
-    # /load-test/* 경로 -> prefix strip 후 api-gateway로
+    # /load-test/* 경로 -> prefix strip 후 loadtest-webs의 api-gateway로
     - match:
         - uri:
             prefix: /load-test/
+        - headers:
+            x-load-test:
+              exact: "true"
       rewrite:
         uri: /
       route:
         - destination:
-            host: api-gateway.staging-webs.svc.cluster.local
+            host: api-gateway.loadtest-webs.svc.cluster.local
             port:
               number: 8085
       corsPolicy:
         allowOrigins:
+          - exact: "https://staging.playball.one"
           - exact: "https://loadtest.playball.one"
         allowMethods:
           - GET

@@ -613,6 +613,35 @@ applicationSets:
       - name: ai-defense
       - name: authz-adapter
 
+  # Load-test 전용 서비스 (k6 부하 테스트용)
+  loadtest-webs-services:
+    enabled: true
+    syncWave: "15"
+    namespace: loadtest-webs
+    chartPath: common-charts/apps/java-service
+    valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
+    services:
+      - name: auth-guard
+        syncWave: "15"
+      - name: queue
+        syncWave: "16"
+      - name: seat
+        syncWave: "16"
+      - name: order-core
+        syncWave: "16"
+      - name: api-gateway
+        syncWave: "17"
+
+  loadtest-ai-services:
+    enabled: true
+    syncWave: "15"
+    namespace: loadtest-ai
+    chartPath: common-charts/apps/ai-service
+    valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
+    services:
+      - name: ai-defense
+      - name: authz-adapter
+
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)
 # =============================================================================

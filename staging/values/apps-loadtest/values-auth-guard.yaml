@@ -1,0 +1,79 @@
+# auth-guard - Load-test 환경
+fullnameOverride: "auth-guard"
+contextPath: "/auth"
+replicaCount: 2
+
+image:
+  name: "staging/playball/web/auth-guard"
+  tag: "de7ce81.10"
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+nodeSelector:
+  role: loadtest
+
+tolerations:
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: auth-guard
+          topologyKey: kubernetes.io/hostname
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+istio:
+  sidecar: true
+
+servicePort: &port 8080
+service:
+  type: ClusterIP
+  port: *port
+
+envFrom:
+  - configMapRef:
+      name: service-config
+  - secretRef:
+      name: service-config
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: *port
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  failureThreshold: 6
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: *port
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  failureThreshold: 6
+
+otel:
+  enabled: true
+
+metrics:
+  enabled: true
+  path: /actuator/prometheus
+  interval: 30s
+
+pdb:
+  enabled: true
+  minAvailable: 1
