@@ -14,11 +14,12 @@ zones:
 # Karpenter는 앱 워크로드만 관리
 nodePools:
   # -----------------------------------------------------------------------------
-  # Workloads NodePool: 앱 서비스 전용 (on-demand 우선, 안정성)
+  # Workloads NodePool: 앱 서비스 전용
   # api-gateway, auth-guard, order-core, queue, seat
   # -----------------------------------------------------------------------------
   workloads:
     enabled: true
+    role: app
 
     # Spot only (staging 비용 절감)
     capacityTypes:
@@ -49,6 +50,47 @@ nodePools:
     consolidationPolicy: WhenEmptyOrUnderutilized
     consolidateAfter: 1m
     expireAfter: 720h
+
+  # -----------------------------------------------------------------------------
+  # Load-test NodePool: 부하 테스트 전용
+  # k6-operator, load-test 워크로드
+  # -----------------------------------------------------------------------------
+  loadtest:
+    enabled: true
+    role: loadtest
+
+    # Spot only (비용 절감)
+    capacityTypes:
+      - spot
+
+    # 인스턴스 설정 - arm64 (Graviton, 비용 효율)
+    arch: arm64
+    instanceCategories:
+      - c  # Compute-optimized (부하 테스트에 적합)
+      - m
+    instanceSizes:
+      - xlarge     # 4 vCPU
+      - 2xlarge    # 8 vCPU
+      - 4xlarge    # 16 vCPU (대규모 테스트용)
+
+    # 리소스 제한 (부하 테스트용)
+    limits:
+      cpu: 64
+      memory: 128Gi
+
+    # Taint 설정 (부하 테스트 전용 격리)
+    taints:
+      - key: loadtest
+        value: "true"
+        effect: NoSchedule
+
+    # 높은 우선순위 (테스트 시 빠른 프로비저닝)
+    weight: 100
+
+    # Disruption 설정 (테스트 완료 후 빠른 정리)
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 30s
+    expireAfter: 24h  # 24시간 후 자동 만료
 
 # =============================================================================
 # EC2NodeClass - 공통 설정

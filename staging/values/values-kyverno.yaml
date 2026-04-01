@@ -11,10 +11,13 @@ admissionController:
       cpu: 100m
       memory: 128Mi
 
-  # EKS staging: infra nodegroup 없음, apps 노드 사용
+  # Infra 노드에 배치
   nodeSelector:
-    kubernetes.io/arch: arm64
-  tolerations: []
+    role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule
 
 # Background controller
 backgroundController:
@@ -26,8 +29,11 @@ backgroundController:
       cpu: 50m
       memory: 64Mi
   nodeSelector:
-    kubernetes.io/arch: arm64
-  tolerations: []
+    role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule
 
 # Cleanup controller
 cleanupController:
@@ -39,8 +45,11 @@ cleanupController:
       cpu: 50m
       memory: 64Mi
   nodeSelector:
-    kubernetes.io/arch: arm64
-  tolerations: []
+    role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule
 
 # Reports controller
 reportsController:
@@ -52,8 +61,11 @@ reportsController:
       cpu: 50m
       memory: 64Mi
   nodeSelector:
-    kubernetes.io/arch: arm64
-  tolerations: []
+    role: infra
+  tolerations:
+    - key: role
+      value: infra
+      effect: NoSchedule
 
 # Config settings
 config:
