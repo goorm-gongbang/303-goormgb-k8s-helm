@@ -73,6 +73,8 @@ spec:
               export KAFKA_NODE_ID=${HOSTNAME##*-}
               exec /etc/kafka/docker/run
           env:
+            - name: CLUSTER_ID
+              value: "{{ .Values.kraft.clusterId }}"
             - name: POD_NAME
               valueFrom:
                 fieldRef:
