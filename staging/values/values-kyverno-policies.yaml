@@ -1,10 +1,14 @@
 # Kyverno Policies - Staging Environment
 # ValidatingPolicy (CEL based) - Kyverno 1.17+
-# staging 환경에서는 Ignore 모드로 위반 로깅만 수행
+# staging 환경에서는 Audit 모드로 위반 로깅만 수행
 
-# Ignore: 정책 위반 시에도 리소스 생성 허용 (audit 모드와 유사)
-# Fail: 정책 위반 시 리소스 생성 차단 (enforce 모드와 유사)
+# failurePolicy: 웹훅 실패 시 동작 (Ignore: 허용, Fail: 차단)
 failurePolicy: Ignore
+
+# validationAction: 정책 위반 시 동작
+# Audit: 로깅만, 리소스 생성 허용 (staging)
+# Deny: 리소스 생성 차단 (production)
+validationAction: Audit
 
 policies:
   requireLabels:

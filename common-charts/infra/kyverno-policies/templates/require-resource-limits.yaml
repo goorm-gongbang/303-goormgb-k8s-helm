@@ -37,6 +37,8 @@ spec:
           has(c.resources.limits.memory)
         )
       message: "컨테이너에 메모리 limits가 필요합니다."
+      validationActions:
+        - {{ .Values.validationAction | default "Deny" }}
     - expression: |
         variables.containers.all(c,
           has(c.resources) &&
@@ -44,6 +46,8 @@ spec:
           has(c.resources.limits.cpu)
         )
       message: "컨테이너에 CPU limits가 필요합니다."
+      validationActions:
+        - {{ .Values.validationAction | default "Deny" }}
   auditAnnotations:
     - key: "policy-violation"
       valueExpression: "'require-resource-limits'"

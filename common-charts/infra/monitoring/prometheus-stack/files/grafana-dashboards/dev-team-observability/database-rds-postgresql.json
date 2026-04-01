@@ -514,17 +514,39 @@
       "type": "logs"
     },
     {
-      "datasource": { "type": "datasource", "uid": "grafana" },
-      "description": "",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 35 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "RDS PostgreSQL 서버 로그 (CloudWatch Logs)",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 35 },
       "id": 22,
       "options": {
-        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false },
-        "content": "## RDS PostgreSQL 서버 로그\n\nRDS 로그를 보려면 CloudWatch Logs 내보내기를 활성화해야 합니다.\n\n**Terraform 설정:**\n```hcl\n# modules/rds/main.tf\n# ⚠️ 추가 비용 발생 (수집: $0.76/GB, 저장: $0.03/GB/월)\nenabled_cloudwatch_logs_exports = [\"postgresql\"]\n```\n\n**AWS 콘솔에서 확인:**\n- RDS > Databases > goormgb-staging-postgresql > Logs & events",
-        "mode": "markdown"
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": true,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
       },
-      "title": "RDS PostgreSQL 서버 로그 (설정 필요)",
-      "type": "text"
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "expression": "fields @timestamp, @message | sort @timestamp desc | limit 500",
+          "id": "",
+          "logGroups": [
+            { "arn": "arn:aws:logs:ap-northeast-2:497012402578:log-group:/aws/rds/instance/$db_instance/postgresql", "name": "/aws/rds/instance/$db_instance/postgresql" }
+          ],
+          "matchExact": true,
+          "namespace": "",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "statsGroups": []
+        }
+      ],
+      "title": "RDS PostgreSQL 서버 로그",
+      "type": "logs"
     }
   ],
   "schemaVersion": 39,
