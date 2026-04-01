@@ -311,25 +311,9 @@ ociCharts:
     valueFiles:
       - $values/staging/values/values-opentelemetry-collector.yaml
 
-  # Tetragon - eBPF-based runtime security (L3/L4 threat detection)
-  # Works independently with AWS VPC CNI (no Cilium required)
+  # Tetragon - eBPF (비활성화, VPC CNI 사용)
   tetragon:
-    enabled: false  # eBPF 비활성화 - cni-eBPF 브랜치에서 활성화
-    repoURL: https://helm.cilium.io
-    chart: tetragon
-    version: "1.3.0"
-    namespace: kube-system
-    syncWave: "-8"
-    valueFiles:
-      - $values/staging/values/values-tetragon-oci.yaml
-    syncOptions:
-      - ServerSideApply=true
-      - RespectIgnoreDifferences=true
-    ignoreDifferences:
-      - group: cilium.io
-        kind: TracingPolicy
-        jsonPointers:
-          - /status
+    enabled: false
 
   # Metrics Server - kubectl top nodes/pods
   metrics-server:
@@ -545,16 +529,9 @@ gitCharts:
     syncOptions:
       - SkipDryRunOnMissingResource=true
 
-  # === Tetragon TracingPolicy (L3/L4 threat detection) ===
+  # Tetragon Config (비활성화)
   tetragon-config:
-    enabled: false  # eBPF 비활성화 - cni-eBPF 브랜치에서 활성화
-    path: common-charts/infra/tetragon
-    namespace: kube-system
-    syncWave: "-7"
-    valueFiles:
-      - ../../../staging/values/values-tetragon.yaml
-    syncOptions:
-      - SkipDryRunOnMissingResource=true
+    enabled: false
 
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
@@ -576,9 +553,16 @@ gitCharts:
     namespace: monitoring
     syncWave: "2"
 
+  # RDS Backup CronJob (pg_dump -> S3)
+  rds-backup:
+    enabled: true
+    path: staging/charts/data/rds-backup
+    namespace: data
+    syncWave: "0"
+
   # Infra Console (Istio & Kyverno 관리 콘솔)
   infra-console:
-    enabled: true
+    enabled: false  # 추후 활성화
     path: common-charts/infra/infra-console
     namespace: monitoring
     syncWave: "5"
