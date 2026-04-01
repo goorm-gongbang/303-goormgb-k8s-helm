@@ -42,6 +42,23 @@ resources:
     cpu: 500m
     memory: 512Mi
 
+# Pod Security Context
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container Security Context
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false  # Python apps may need writable dirs
+  capabilities:
+    drop:
+      - ALL
+
 # Node scheduling
 nodeSelector: {}
 tolerations: []

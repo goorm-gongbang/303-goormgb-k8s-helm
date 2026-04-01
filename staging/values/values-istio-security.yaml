@@ -317,3 +317,38 @@ jwtAuth:
 
   unauthorizedResponse:
     enabled: true
+
+# ============================================================
+# Admin Tools IP Whitelist
+# CloudBeaver, Kafka-UI, Prometheus 등 관리 도구 접근 제한
+# ============================================================
+adminTools:
+  ipWhitelist:
+    enabled: true
+    # 허용된 IP 목록 (팀원 IP)
+    allowedIPs:
+      - "59.12.199.140"
+      - "219.241.49.248"
+      - "121.160.234.212"
+      - "118.33.22.122"
+      - "182.222.162.2"
+      - "180.70.114.57"
+      - "211.244.208.42"
+      - "59.7.96.150"
+      - "221.149.74.70"
+      - "58.148.70.203"
+      - "59.20.70.146"
+      - "39.119.192.15"
+      - "119.204.100.200"
+      - "124.49.102.36"
+      - "122.34.166.131"
+      - "182.221.197.174"
+      - "118.221.42.243"
+      - "121.175.144.99"
+    # IP 제한 적용 대상 호스트
+    protectedHosts:
+      - "cloudbeaver.staging.playball.one"
+      - "kafka-ui.staging.playball.one"
+      - "prometheus.staging.playball.one"
+      - "kiali.staging.playball.one"
+      - "grafana.staging.playball.one"
