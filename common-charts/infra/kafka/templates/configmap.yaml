@@ -35,6 +35,9 @@ data:
 
     echo "Formatting Kafka storage with cluster ID: $KRAFT_CLUSTER_ID, node ID: $NODE_ID"
 
+    # lost+found 디렉토리 삭제 (EBS 볼륨에 자동 생성되는데 Kafka가 싫어함)
+    rm -rf "$DATA_DIR/lost+found" 2>/dev/null || true
+
     # 기본 config 복사 후 설정 수정
     CONFIG_FILE="/tmp/server.properties"
     cp /opt/kafka/config/kraft/server.properties $CONFIG_FILE
