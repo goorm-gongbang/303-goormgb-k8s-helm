@@ -352,6 +352,7 @@ ociCharts:
         jsonPointers:
           - /status
           - /metadata/annotations
+          - /metadata/labels
 
   # Trivy Operator - Container Vulnerability Scanning
   trivy-operator:
