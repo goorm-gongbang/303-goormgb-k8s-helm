@@ -8,7 +8,9 @@ namespaces:
   - name: staging-ai
     istio: true
   - name: data
-    istio: false  # Kafka, Redis 등 데이터 레이어
+    istio: false  # Redis 등 데이터 레이어
+  - name: messaging
+    istio: false  # Kafka - 이벤트 스트리밍
 
   # Infrastructure namespaces
   - name: monitoring

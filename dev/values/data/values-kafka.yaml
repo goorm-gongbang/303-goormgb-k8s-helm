@@ -8,8 +8,8 @@ kraft:
 
 config:
   processRoles: broker,controller
-  controllerQuorumVoters: "0@kafka-0.kafka-headless.data.svc.cluster.local:9093"
-  advertisedListeners: "PLAINTEXT://kafka-0.kafka-headless.data.svc.cluster.local:9092"
+  controllerQuorumVoters: "0@kafka-0.kafka-headless.messaging.svc.cluster.local:9093"
+  advertisedListeners: "PLAINTEXT://kafka-0.kafka-headless.messaging.svc.cluster.local:9092"
 
   # 토픽 기본값
   numPartitions: 3
