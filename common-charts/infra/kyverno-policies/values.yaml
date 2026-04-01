@@ -53,4 +53,5 @@ excludeNamespaces:
   - karpenter
   - cert-manager
   - local-path-storage
+  - database
   # CNI: Cilium (kube-system), VPC CNI (kube-system) - 이미 위에서 제외
