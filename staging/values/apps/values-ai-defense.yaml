@@ -66,8 +66,7 @@ env:
   - name: TM_OFFLINE_LLM_AUDIT_PATH
     value: "/tmp/logs/offline_llm_audit.jsonl"
 
-imagePullSecrets:
-  - name: ecr-pull-secret
+# EKS 노드 IAM Role이 ECR 접근 권한 보유 - imagePullSecrets 불필요
 
 # Graviton (ARM64) 노드에 배치
 nodeSelector:
