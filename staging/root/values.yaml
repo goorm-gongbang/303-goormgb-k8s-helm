@@ -569,14 +569,14 @@ gitCharts:
     valueFiles:
       - ../../../staging/values/values-infra-console.yaml
 
-  # === Data (Kafka) ===
+  # === Messaging (Kafka) ===
   kafka:
     enabled: true
     path: common-charts/infra/kafka
-    namespace: data
+    namespace: messaging
     syncWave: "-5"
     valueFiles:
-      - ../../../staging/values/data/values-kafka.yaml
+      - ../../../staging/values/messaging/values-kafka.yaml
     retry:
       limit: 5
       duration: "10s"
@@ -592,10 +592,10 @@ gitCharts:
   kafka-ui:
     enabled: true
     path: dev/charts/data/kafka-ui
-    namespace: data
+    namespace: messaging
     syncWave: "0"
     valueFiles:
-      - ../../../staging/values/data/values-kafka-ui.yaml
+      - ../../../staging/values/messaging/values-kafka-ui.yaml
 
 # =============================================================================
 # ApplicationSets

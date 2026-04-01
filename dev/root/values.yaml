@@ -550,14 +550,14 @@ gitCharts:
     valueFiles:
       - ../../../values/data/values-redisinsight.yaml
 
-  # === Data (Kafka) ===
+  # === Messaging (Kafka) ===
   kafka:
     enabled: true
     path: common-charts/infra/kafka
-    namespace: data
+    namespace: messaging
     syncWave: "-5"
     valueFiles:
-      - ../../../dev/values/data/values-kafka.yaml
+      - ../../../dev/values/messaging/values-kafka.yaml
     retry:
       limit: 5
       duration: "10s"
@@ -573,10 +573,10 @@ gitCharts:
   kafka-ui:
     enabled: true
     path: dev/charts/data/kafka-ui
-    namespace: data
+    namespace: messaging
     syncWave: "0"
     valueFiles:
-      - ../../../values/data/values-kafka-ui.yaml
+      - ../../../dev/values/messaging/values-kafka-ui.yaml
 
 # =============================================================================
 # ApplicationSets

@@ -11,6 +11,8 @@ namespaces:
   # 데이터 레이어 (Phase 4: data -> data-db, data-cache 분리)
   - name: data
     istio: true   # PostgreSQL, Redis - Kiali에서 트래픽 모니터링
+  - name: messaging
+    istio: true   # Kafka - 이벤트 스트리밍
   - name: data-db
     istio: true   # Phase 4: PostgreSQL
   - name: data-cache
