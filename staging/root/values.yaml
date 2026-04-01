@@ -595,7 +595,7 @@ gitCharts:
     namespace: messaging
     syncWave: "0"
     valueFiles:
-      - ../../../staging/values/messaging/values-kafka-ui.yaml
+      - ../../../../staging/values/messaging/values-kafka-ui.yaml
 
 # =============================================================================
 # ApplicationSets
