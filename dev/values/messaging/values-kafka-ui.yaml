@@ -20,7 +20,7 @@ resources:
 virtualService:
   enabled: true
   host: kafka-ui.goormgb.space
-  gateway: istio-system/main-gateway
+  gateway: istio-system/goormgb-gateway
 
 # Control Plane 노드에 배치
 nodeSelector:

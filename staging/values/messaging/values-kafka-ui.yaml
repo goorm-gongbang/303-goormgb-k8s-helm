@@ -20,7 +20,7 @@ resources:
 virtualService:
   enabled: true
   host: kafka-ui.staging.playball.one
-  gateway: istio-system/main-gateway
+  gateway: istio-system/api-gateway
 
 nodeSelector: {}
 tolerations: []
