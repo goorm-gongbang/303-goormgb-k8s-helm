@@ -42,7 +42,7 @@
       "targets": [
         {
           "datasource": {"type": "loki", "uid": "loki"},
-          "expr": "sum by (app) (count_over_time({namespace=\"__AI_NAMESPACE__\", app=~\"$app\", app!=\"istio-proxy\"} |~ \"$query\" | $healthFilter [$__interval]))",
+          "expr": "sum by (app) (count_over_time({namespace=\"__AI_NAMESPACE__\", app=~\"$app\", app!=\"istio-proxy\"} |~ \"$query\" $healthFilter [$__interval]))",
           "legendFormat": "{{app}}",
           "refId": "A"
         }
@@ -69,7 +69,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"__AI_NAMESPACE__\", app=~\"$app\", app!=\"istio-proxy\"} |~ \"$level\" |~ \"$query\" | $healthFilter",
+          "expr": "{namespace=\"__AI_NAMESPACE__\", app=~\"$app\", app!=\"istio-proxy\"} |~ \"$level\" |~ \"$query\" $healthFilter",
           "queryType": "range",
           "refId": "A"
         }

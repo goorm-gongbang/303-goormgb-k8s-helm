@@ -12,9 +12,13 @@ redis:
   hostEnvVar: AI_REDIS_HOST
   portEnvVar: AI_REDIS_PORT
   # Secret 참조 (ESO에서 생성)
-  secretName: staging-ai-config
+  secretName: ai-service-config
   # 기본 포트 (Secret에 없을 경우)
   defaultPort: "6379"
+
+# Istio sidecar 비활성화
+podAnnotations:
+  sidecar.istio.io/inject: "false"
 
 # Exporter 설정
 exporter:
