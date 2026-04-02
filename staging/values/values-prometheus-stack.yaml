@@ -58,6 +58,8 @@ dashboards:
   aiTeam:
     folderName: "STAGING 서비스 관측(AI)"
     aiNamespace: "staging-ai"
+    websNamespace: "staging-webs"
+    redisInfo: "ElastiCache: goormgb-staging-redis.ihyerz.ng.0001.apn2.cache.amazonaws.com:6379 (AI IP Blacklist / Session, DB2)"
   alertOps:
     enabled: true
     folderName: "STAGING 알람 현황판"
