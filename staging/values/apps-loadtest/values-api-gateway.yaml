@@ -36,11 +36,11 @@ affinity:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 512Mi
-  limits:
-    cpu: "1"
+    cpu: 500m
     memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 # Istio - VirtualService는 별도 관리
 istio:
