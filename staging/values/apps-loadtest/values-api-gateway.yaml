@@ -19,6 +19,9 @@ tolerations:
   - key: loadtest
     value: "true"
     effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
 
 # HA: 노드 분산
 affinity:
