@@ -108,7 +108,7 @@ extAuthz:
 
   # gRPC authz adapter 연결 설정 (202-goormgb-authz-adapter)
   service:
-    host: authz-adapter.dev-ai.svc.cluster.local
+    host: staging-authz-adapter.staging-ai.svc.cluster.local
     port: 9001
 
   # 타임아웃 설정
