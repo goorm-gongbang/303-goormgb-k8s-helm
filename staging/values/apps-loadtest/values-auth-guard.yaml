@@ -44,6 +44,13 @@ service:
   type: ClusterIP
   port: *port
 
+# HikariCP connection pool 크기 조정 (부하테스트용)
+env:
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
+
 envFrom:
   - configMapRef:
       name: service-config
