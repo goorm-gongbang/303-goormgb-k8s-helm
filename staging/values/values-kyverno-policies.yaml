@@ -42,8 +42,5 @@ excludeNamespaces:
   - external-secrets
   - karpenter
   - cert-manager
-  # Security tools (3rd party operators)
-  - trivy-system
-  - falco
   # Data
   - messaging
