@@ -2,7 +2,7 @@
   "annotations": {
     "list": []
   },
-  "description": "AI 서비스 로그 모니터링 (dev-ai namespace)",
+  "description": "AI 서비스 로그 모니터링 (ai-defense, authz-adapter)",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -42,8 +42,8 @@
       "targets": [
         {
           "datasource": {"type": "loki", "uid": "loki"},
-          "expr": "sum by (app) (count_over_time({namespace=\"__AI_NAMESPACE__\", app=~\"$app\", app!=\"istio-proxy\"} |~ \"$query\" $healthFilter [$__interval]))",
-          "legendFormat": "{{app}}",
+          "expr": "sum by (pod) (count_over_time({namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\"} |~ \"$query\" $healthFilter [$__interval]))",
+          "legendFormat": "{{pod}}",
           "refId": "A"
         }
       ],
@@ -58,9 +58,9 @@
       "options": {
         "dedupStrategy": "none",
         "enableLogDetails": true,
-        "prettifyLogMessage": true,
+        "prettifyLogMessage": false,
         "showCommonLabels": false,
-        "showLabels": true,
+        "showLabels": false,
         "showTime": true,
         "sortOrder": "Descending",
         "wrapLogMessage": true
@@ -69,7 +69,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"__AI_NAMESPACE__\", app=~\"$app\", app!=\"istio-proxy\"} |~ \"$level\" |~ \"$query\" $healthFilter",
+          "expr": "{namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\"} |~ \"$level\" |~ \"$query\" $healthFilter | line_format \"[{{.pod | trunc 30}}] {{.container}}: {{__line__}}\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -93,21 +93,19 @@
         "type": "custom"
       },
       {
-        "allValue": ".+",
-        "current": {"selected": false, "text": "All", "value": "$__all"},
-        "datasource": {"type": "loki", "uid": "loki"},
-        "definition": "label_values({namespace=\"__AI_NAMESPACE__\"}, app)",
+        "allValue": ".*",
+        "current": {"selected": true, "text": ["All"], "value": ["$__all"]},
         "hide": 0,
         "includeAll": true,
-        "label": "애플리케이션",
-        "multi": false,
-        "name": "app",
-        "options": [],
-        "query": "label_values({namespace=\"__AI_NAMESPACE__\"}, app)",
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "type": "query"
+        "label": "Pod",
+        "multi": true,
+        "name": "pod",
+        "options": [
+          {"selected": false, "text": "ai-defense", "value": ".*ai-defense.*"},
+          {"selected": false, "text": "authz-adapter", "value": ".*authz-adapter.*"}
+        ],
+        "query": ".*ai-defense.*,.*authz-adapter.*",
+        "type": "custom"
       },
       {
         "allValue": ".*",
@@ -120,9 +118,10 @@
         "options": [
           {"selected": false, "text": "ERROR", "value": "ERROR|error"},
           {"selected": false, "text": "WARN", "value": "WARN|warn|WARNING"},
-          {"selected": false, "text": "INFO", "value": "INFO|info"}
+          {"selected": false, "text": "INFO", "value": "INFO|info"},
+          {"selected": false, "text": "DEBUG", "value": "DEBUG|debug"}
         ],
-        "query": "ERROR|error,WARN|warn|WARNING,INFO|info",
+        "query": "ERROR|error,WARN|warn|WARNING,INFO|info,DEBUG|debug",
         "type": "custom"
       },
       {
@@ -157,5 +156,5 @@
   "timezone": "browser",
   "title": "[AI] 로그 확인",
   "uid": "ai-logs-loki",
-  "version": 1
+  "version": 2
 }
