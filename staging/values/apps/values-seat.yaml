@@ -53,6 +53,11 @@ service:
   type: ClusterIP
   port: *port
 
+# Kafka consumer group ID
+env:
+  - name: KAFKA_CONSUMER_GROUP_ID
+    value: "seat-service"
+
 envFrom:
   - configMapRef:
       name: service-config

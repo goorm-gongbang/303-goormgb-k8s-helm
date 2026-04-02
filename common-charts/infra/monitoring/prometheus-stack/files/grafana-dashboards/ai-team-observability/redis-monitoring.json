@@ -23,12 +23,12 @@
   "panels": [
     {
       "datasource": {"type": "datasource", "uid": "-- Dashboard --"},
-      "description": "모니터링 대상 Redis (ElastiCache) 정보",
+      "description": "모니터링 대상 Redis 정보",
       "gridPos": {"h": 2, "w": 24, "x": 0, "y": 0},
       "id": 30,
       "options": {
         "code": {"language": "plaintext", "showLineNumbers": false, "showMiniMap": false},
-        "content": "**ElastiCache Endpoint:** `goormgb-staging-redis.ihyerz.ng.0001.apn2.cache.amazonaws.com:6379` (AI IP Blacklist / Session 용도, DB2)",
+        "content": "**__REDIS_INFO__**",
         "mode": "markdown"
       },
       "title": "",

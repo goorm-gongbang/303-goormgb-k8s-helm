@@ -5,10 +5,14 @@
 */}}
 
 {{- $aiNamespace := "dev-ai" -}}
+{{- $websNamespace := "dev-webs" -}}
 {{- $folderName := "DEV 서비스 관측(AI)" -}}
+{{- $redisInfo := "Redis Pod (dev-ai namespace)" -}}
 {{- if and .Values.dashboards .Values.dashboards.aiTeam -}}
 {{- $aiNamespace = .Values.dashboards.aiTeam.aiNamespace | default "dev-ai" -}}
+{{- $websNamespace = .Values.dashboards.aiTeam.websNamespace | default "dev-webs" -}}
 {{- $folderName = .Values.dashboards.aiTeam.folderName | default "DEV 서비스 관측(AI)" -}}
+{{- $redisInfo = .Values.dashboards.aiTeam.redisInfo | default "Redis Pod (dev-ai namespace)" -}}
 {{- end -}}
 
 {{/* Part 1: Large dashboards */}}
@@ -32,7 +36,7 @@ data:
 {{- range $path := $part1Files }}
 {{- if $.Files.Get $path }}
   {{ base $path }}: |-
-{{ $.Files.Get $path | replace "__AI_NAMESPACE__" $aiNamespace | nindent 4 }}
+{{ $.Files.Get $path | replace "__AI_NAMESPACE__" $aiNamespace | replace "__WEBS_NAMESPACE__" $websNamespace | replace "__REDIS_INFO__" $redisInfo | nindent 4 }}
 {{- end }}
 {{- end }}
 ---
@@ -57,6 +61,6 @@ data:
 {{- range $path := $part2Files }}
 {{- if $.Files.Get $path }}
   {{ base $path }}: |-
-{{ $.Files.Get $path | replace "__AI_NAMESPACE__" $aiNamespace | nindent 4 }}
+{{ $.Files.Get $path | replace "__AI_NAMESPACE__" $aiNamespace | replace "__WEBS_NAMESPACE__" $websNamespace | replace "__REDIS_INFO__" $redisInfo | nindent 4 }}
 {{- end }}
 {{- end }}
