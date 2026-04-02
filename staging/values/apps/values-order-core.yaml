@@ -57,6 +57,11 @@ service:
 env:
   - name: KAFKA_CONSUMER_GROUP_ID
     value: "order-core-notification"
+  # HikariCP connection pool 크기 조정
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
 
 envFrom:
   - configMapRef:
