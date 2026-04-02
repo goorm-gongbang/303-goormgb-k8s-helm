@@ -606,7 +606,7 @@ applicationSets:
 
   # Load-test 전용 서비스 (k6 부하 테스트용)
   loadtest-webs-services:
-    enabled: false  # 부하테스트 시 활성화
+    enabled: true
     syncWave: "15"
     namespace: loadtest-webs
     appNamePrefix: "loadtest"
@@ -625,7 +625,7 @@ applicationSets:
         syncWave: "17"
 
   loadtest-ai-services:
-    enabled: false  # 부하테스트 시 활성화
+    enabled: true
     syncWave: "15"
     namespace: loadtest-ai
     appNamePrefix: "loadtest"
