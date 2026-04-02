@@ -555,7 +555,7 @@ gitCharts:
           - /spec/storageClassName
 
   kafka-ui:
-    enabled: true
+    enabled: false  # 임시 비활성화
     path: dev/charts/data/kafka-ui
     namespace: messaging
     syncWave: "0"
