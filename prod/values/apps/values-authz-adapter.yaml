@@ -1,0 +1,72 @@
+# authz-adapter - Prod 환경
+# Go 기반 gRPC ext_authz 서비스
+
+replicaCount: 1
+
+image:
+  name: "playball/authz-adapter"
+  tag: "1.0.0"
+  pullPolicy: Always
+
+# IRSA (imagePullSecrets 비활성화)
+imagePullSecrets: []
+
+# gRPC 메인 포트
+service:
+  type: ClusterIP
+  port: 9001
+  portName: grpc
+
+# Prometheus Metrics
+metrics:
+  enabled: true
+  port: 9090
+  path: /metrics
+  interval: 30s
+
+# authz-adapter 전용 설정
+authzAdapter:
+  enabled: true
+  aiDefenseUrl: "http://ai-defense.prod-ai.svc.cluster.local:8000/ai/evaluate"
+  aiDefenseTimeoutMs: 1000
+  logLevel: info
+
+# OpenTelemetry
+otel:
+  enabled: true
+
+# Health checks
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 9090
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: 9090
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Istio sidecar 비활성화
+istio:
+  sidecar: false
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: role
+              operator: In
+              values: ["app"]
