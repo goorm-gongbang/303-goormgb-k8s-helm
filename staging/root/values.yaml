@@ -563,7 +563,7 @@ gitCharts:
 
   # === Messaging (Kafka) ===
   kafka:
-    enabled: true
+    enabled: false  # 임시 비활성화
     path: common-charts/infra/kafka
     namespace: messaging
     syncWave: "-5"
