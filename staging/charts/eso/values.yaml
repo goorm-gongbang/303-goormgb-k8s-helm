@@ -16,7 +16,10 @@ clusterSecretStore:
 #   - staging/services/jwt      : JWT + Admission 토큰 설정 (통합)
 serviceConfig:
   enabled: true
-  namespace: staging-webs
+  namespaces:
+    - staging-webs
+    - loadtest-webs
+    - loadtest-ai
   secretManagerPrefix: staging/services
   environment: staging
 
