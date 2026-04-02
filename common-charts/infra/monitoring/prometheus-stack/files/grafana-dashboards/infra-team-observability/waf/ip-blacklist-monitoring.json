@@ -333,13 +333,88 @@
       "collapsed": false,
       "gridPos": {"h": 1, "w": 24, "x": 0, "y": 34},
       "id": 103,
-      "title": "Redis Blacklist 현황",
+      "title": "Blacklist IP 목록",
       "type": "row"
     },
     {
       "datasource": {"type": "loki", "uid": "loki"},
-      "description": "Redis에서 블랙리스트 조회 로그 (최근 추가/제거된 IP 확인)",
-      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 35},
+      "description": "블랙리스트에 추가된 IP 목록 (AI Defense 판정 기준)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+        },
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "Count"}, "properties": [{"id": "custom.width", "value": 80}]},
+          {"matcher": {"id": "byName", "options": "IP"}, "properties": [{"id": "custom.width", "value": 150}]}
+        ]
+      },
+      "gridPos": {"h": 10, "w": 12, "x": 0, "y": 35},
+      "id": 10,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false},
+        "showHeader": true,
+        "sortBy": [{"desc": true, "displayName": "Count"}]
+      },
+      "targets": [
+        {
+          "datasource": {"type": "loki", "uid": "loki"},
+          "editorMode": "code",
+          "expr": "sum by (client_ip) (count_over_time({namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"blacklist\" | json | __error__=\"\" [$__range]))",
+          "legendFormat": "",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "title": "차단된 IP 목록 (Top 20)",
+      "transformations": [
+        {"id": "sortBy", "options": {"fields": {}, "sort": [{"desc": true, "field": "Value"}]}},
+        {"id": "limit", "options": {"limitField": 20}},
+        {"id": "organize", "options": {"renameByName": {"client_ip": "IP", "Value": "Count"}}}
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "loki", "uid": "loki"},
+      "description": "블랙리스트 추가 이유 (AI Defense 판정 결과)",
+      "gridPos": {"h": 10, "w": 12, "x": 12, "y": 35},
+      "id": 11,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {"type": "loki", "uid": "loki"},
+          "editorMode": "code",
+          "expr": "{namespace=\"staging-ai\", app=\"staging-ai-defense\"} |= \"blacklist\" |= \"add\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Blacklist 추가 로그 (AI Defense)",
+      "type": "logs"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 45},
+      "id": 104,
+      "title": "상세 로그",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "loki", "uid": "loki"},
+      "description": "블랙리스트 차단 상세 로그",
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 46},
       "id": 9,
       "options": {
         "dedupStrategy": "none",
@@ -355,12 +430,12 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |~ \"blacklist\" | json | line_format \"{{.client_ip}} - {{.msg}} - {{.path}}\"",
+          "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"blacklist\" | json | line_format \"[{{.level}}] {{.client_ip}} - {{.msg}} - {{.path}}\"",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "차단된 IP 로그 (상세)",
+      "title": "차단 로그 (authz-adapter)",
       "type": "logs"
     }
   ],
