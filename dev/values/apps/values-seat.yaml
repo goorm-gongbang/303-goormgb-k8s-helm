@@ -6,6 +6,8 @@ replicaCount: 1
 env:
   - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
     value: "kafka.messaging.svc.cluster.local:9092"
+  - name: KAFKA_CONSUMER_GROUP_ID
+    value: "seat-service"
 
 image:
   name: "dev/goormgb/seat"
