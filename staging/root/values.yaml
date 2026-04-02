@@ -662,6 +662,6 @@ rawManifests:
   swagger403Redirect:
     enabled: false
   aiDefenseRoute:
-    enabled: false  # Istio 설치 후 활성화
+    enabled: true
   loadTestRoute:
     enabled: true  # k6 부하테스트 라우팅 (/load-test/* -> api-gateway)
