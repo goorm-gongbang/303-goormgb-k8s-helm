@@ -1,4 +1,4 @@
-# authz-adapter - Staging 환경
+# authz-adapter - Load-test 환경
 # Go 기반 gRPC ext_authz 서비스
 
 replicaCount: 2
@@ -11,19 +11,22 @@ image:
 # EKS 노드 IAM Role이 ECR 접근 권한 보유 - imagePullSecrets 불필요
 imagePullSecrets: []
 
-# Graviton (ARM64) 노드에 배치
+# Load-test 노드에 배치
 nodeSelector:
-  kubernetes.io/arch: arm64
+  role: loadtest
 
-# gRPC 메인 포트를 service.port로 사용
+tolerations:
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
+
 service:
   type: ClusterIP
   port: 9001
   portName: grpc
   grpc:
-    enabled: false  # 메인 포트가 이미 gRPC
+    enabled: false
 
-# Prometheus Metrics
 metrics:
   enabled: true
   port: 9090
@@ -31,19 +34,17 @@ metrics:
   path: /metrics
   interval: 15s
 
-# authz-adapter 전용 설정
+# authz-adapter 전용 설정 - loadtest-ai namespace 참조
 authzAdapter:
   enabled: true
-  aiDefenseUrl: "http://staging-ai-defense.staging-ai.svc.cluster.local:8000/ai/evaluate"
+  aiDefenseUrl: "http://staging-ai-defense.loadtest-ai.svc.cluster.local:8000/ai/evaluate"
   aiDefenseTimeoutMs: 800
   logLevel: info
 
-# OpenTelemetry
 otel:
   enabled: true
   collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"
 
-# Health checks (Go HTTP 서버)
 livenessProbe:
   httpGet:
     path: /healthz
@@ -66,6 +67,5 @@ resources:
     cpu: "2"
     memory: 2Gi
 
-# Istio sidecar 비활성화 (ext_authz는 sidecar 없이 동작)
 istio:
   sidecar: false

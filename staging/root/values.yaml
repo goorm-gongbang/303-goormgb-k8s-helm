@@ -352,6 +352,7 @@ ociCharts:
         jsonPointers:
           - /status
           - /metadata/annotations
+          - /metadata/labels
 
   # Trivy Operator - Container Vulnerability Scanning
   trivy-operator:
@@ -372,24 +373,6 @@ ociCharts:
         jsonPointers:
           - /status
           - /metadata/annotations
-
-  # Falco - Runtime Security and Threat Detection
-  falco:
-    enabled: true
-    repoURL: https://falcosecurity.github.io/charts
-    chart: falco
-    version: "8.0.1"
-    namespace: falco
-    syncWave: "-6"
-    valueFiles:
-      - $values/staging/values/security/values-falco.yaml
-    syncOptions:
-      - ServerSideApply=true
-    ignoreDifferences:
-      - group: apps
-        kind: DaemonSet
-        jsonPointers:
-          - /spec/template/spec/containers/0/resources
 
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
@@ -630,6 +613,35 @@ applicationSets:
       - name: ai-defense
       - name: authz-adapter
 
+  # Load-test 전용 서비스 (k6 부하 테스트용)
+  loadtest-webs-services:
+    enabled: true
+    syncWave: "15"
+    namespace: loadtest-webs
+    chartPath: common-charts/apps/java-service
+    valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
+    services:
+      - name: auth-guard
+        syncWave: "15"
+      - name: queue
+        syncWave: "16"
+      - name: seat
+        syncWave: "16"
+      - name: order-core
+        syncWave: "16"
+      - name: api-gateway
+        syncWave: "17"
+
+  loadtest-ai-services:
+    enabled: true
+    syncWave: "15"
+    namespace: loadtest-ai
+    chartPath: common-charts/apps/ai-service
+    valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
+    services:
+      - name: ai-defense
+      - name: authz-adapter
+
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)
 # =============================================================================
@@ -642,3 +654,5 @@ rawManifests:
     enabled: false
   aiDefenseRoute:
     enabled: false  # Istio 설치 후 활성화
+  loadTestRoute:
+    enabled: true  # k6 부하테스트 라우팅 (/load-test/* -> api-gateway)

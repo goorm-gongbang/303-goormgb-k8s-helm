@@ -34,6 +34,8 @@ spec:
     - expression: |
         has(variables.labels.{{ . }}) && variables.labels.{{ . }} != ""
       message: "Pod에는 '{{ . }}' 라벨이 필요합니다."
+      validationActions:
+        - {{ $.Values.validationAction | default "Deny" }}
     {{- end }}
   auditAnnotations:
     - key: "policy-violation"

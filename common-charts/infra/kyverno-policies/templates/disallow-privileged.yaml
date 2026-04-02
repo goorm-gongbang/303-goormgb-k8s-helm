@@ -41,6 +41,8 @@ spec:
           c.securityContext.privileged == false
         )
       message: "Privileged 컨테이너는 허용되지 않습니다. (container)"
+      validationActions:
+        - {{ .Values.validationAction | default "Deny" }}
     - expression: |
         variables.initContainers.all(c,
           !has(c.securityContext) ||
@@ -48,6 +50,8 @@ spec:
           c.securityContext.privileged == false
         )
       message: "Privileged 컨테이너는 허용되지 않습니다. (initContainer)"
+      validationActions:
+        - {{ .Values.validationAction | default "Deny" }}
     - expression: |
         variables.ephemeralContainers.all(c,
           !has(c.securityContext) ||
@@ -55,6 +59,8 @@ spec:
           c.securityContext.privileged == false
         )
       message: "Privileged 컨테이너는 허용되지 않습니다. (ephemeralContainer)"
+      validationActions:
+        - {{ .Values.validationAction | default "Deny" }}
   auditAnnotations:
     - key: "policy-violation"
       valueExpression: "'disallow-privileged-containers'"

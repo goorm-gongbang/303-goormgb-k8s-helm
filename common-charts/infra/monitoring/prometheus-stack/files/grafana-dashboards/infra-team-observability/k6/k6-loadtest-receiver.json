@@ -941,7 +941,7 @@
   "time": { "from": "now-15m", "to": "now" },
   "timepicker": {},
   "timezone": "Asia/Seoul",
-  "title": "k6 Load Test - Receiver",
+  "title": "k6 부하테스트 - 수신(Receiver)",
   "uid": "k6-loadtest-receiver",
   "version": 1,
   "weekStart": ""

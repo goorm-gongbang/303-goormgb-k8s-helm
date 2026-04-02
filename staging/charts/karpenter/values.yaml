@@ -14,15 +14,15 @@ zones:
 # Karpenter는 앱 워크로드만 관리
 nodePools:
   # -----------------------------------------------------------------------------
-  # Workloads NodePool: 앱 서비스 전용 (on-demand 우선, 안정성)
+  # Workloads NodePool: 앱 서비스 전용
   # api-gateway, auth-guard, order-core, queue, seat
   # -----------------------------------------------------------------------------
   workloads:
     enabled: true
+    role: app
 
-    # On-demand 우선 (staging 안정성), Spot fallback
+    # Spot only (staging 비용 절감)
     capacityTypes:
-      - on-demand
       - spot
 
     # 인스턴스 설정 - arm64 (Graviton, 비용 효율)
@@ -47,6 +47,44 @@ nodePools:
     weight: 50
 
     # Disruption 설정 (빠른 통합)
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 1m
+    expireAfter: 720h
+
+  # -----------------------------------------------------------------------------
+  # Load-test NodePool: 부하 테스트 전용 앱 서비스
+  # java-services + ai-services 2세트 운영
+  # -----------------------------------------------------------------------------
+  loadtest:
+    enabled: true
+    role: loadtest
+
+    # Spot only (비용 절감)
+    capacityTypes:
+      - spot
+
+    # 인스턴스 설정 - arm64 (Graviton)
+    arch: arm64
+    instanceCategories:
+      - c  # Compute-optimized
+      - m
+    instanceSizes:
+      - 2xlarge    # 8 vCPU, 16GB - 앱 2세트용
+
+    # 리소스 제한 (노드 2개 정도)
+    limits:
+      cpu: 32
+      memory: 64Gi
+
+    # Taint 설정 (부하 테스트 전용 격리)
+    taints:
+      - key: loadtest
+        value: "true"
+        effect: NoSchedule
+
+    weight: 50
+
+    # Disruption 설정
     consolidationPolicy: WhenEmptyOrUnderutilized
     consolidateAfter: 1m
     expireAfter: 720h

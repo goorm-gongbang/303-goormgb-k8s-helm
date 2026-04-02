@@ -1,0 +1,221 @@
+{
+  "annotations": { "list": [] },
+  "description": "Load-test NodePool 전용 대시보드. Karpenter loadtest NodePool에서 프로비저닝된 노드의 리소스 사용량을 모니터링합니다.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }, "id": 100, "panels": [], "title": "Load-test 노드 개요", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## Load-test 노드 수\n\nloadtest NodePool에서 프로비저닝된 노드 수입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }, { "color": "green", "value": 1 }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 }, "id": 1,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_node_labels{label_nodepool=\"loadtest\"}) or vector(0)", "legendFormat": "노드", "refId": "A" }],
+      "title": "Load-test 노드 수", "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## k6 Runner Pod 수\n\n현재 실행 중인 k6 테스트 Pod 수입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }, { "color": "green", "value": 1 }, { "color": "yellow", "value": 10 }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 }, "id": 2,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_info{namespace=\"k6-tests\", pod=~\".*-runner-.*\"}) or vector(0)", "legendFormat": "Runner", "refId": "A" }],
+      "title": "k6 Runner Pod", "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 인스턴스 타입 분포\n\nLoad-test 노드의 EC2 인스턴스 타입입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 6, "w": 6, "x": 8, "y": 1 }, "id": 3,
+      "options": { "legend": { "displayMode": "table", "placement": "right" }, "pieType": "pie", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (label_node_kubernetes_io_instance_type) (kube_node_labels{label_nodepool=\"loadtest\", label_node_kubernetes_io_instance_type!=\"\"})", "legendFormat": "{{label_node_kubernetes_io_instance_type}}", "refId": "A" }],
+      "title": "인스턴스 타입", "type": "piechart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 가용 영역 분포\n\nLoad-test 노드가 배포된 가용 영역입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 6, "w": 5, "x": 14, "y": 1 }, "id": 4,
+      "options": { "legend": { "displayMode": "table", "placement": "right" }, "pieType": "pie", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (label_topology_kubernetes_io_zone) (kube_node_labels{label_nodepool=\"loadtest\", label_topology_kubernetes_io_zone!=\"\"})", "legendFormat": "{{label_topology_kubernetes_io_zone}}", "refId": "A" }],
+      "title": "가용 영역", "type": "piechart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 총 CPU/Memory 용량\n\nLoad-test 노드의 총 리소스 용량입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 3, "w": 5, "x": 19, "y": 1 }, "id": 5,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "horizontal", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "value_and_name" },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_node_status_allocatable{resource=\"cpu\", node=~\"$loadtest_node\"}) or vector(0)", "legendFormat": "CPU (cores)", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_node_status_allocatable{resource=\"memory\", node=~\"$loadtest_node\"}) / 1024 / 1024 / 1024 or vector(0)", "legendFormat": "Memory (GiB)", "refId": "B" }
+      ],
+      "title": "총 리소스 용량", "type": "stat"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 }, "id": 101, "panels": [], "title": "리소스 사용량", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## CPU 사용률\n\nLoad-test 노드의 CPU 사용률입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "percentunit", "min": 0, "max": 1 }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 }, "id": 6,
+      "options": { "legend": { "calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "1 - avg by (node) (rate(node_cpu_seconds_total{mode=\"idle\", instance=~\"$loadtest_node_ip:.*\"}[5m]))", "legendFormat": "{{node}}", "refId": "A" }
+      ],
+      "title": "CPU 사용률 (노드별)", "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## Memory 사용률\n\nLoad-test 노드의 메모리 사용률입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "percentunit", "min": 0, "max": 1 }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 9 }, "id": 7,
+      "options": { "legend": { "calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "1 - (node_memory_MemAvailable_bytes{instance=~\"$loadtest_node_ip:.*\"} / node_memory_MemTotal_bytes{instance=~\"$loadtest_node_ip:.*\"})", "legendFormat": "{{instance}}", "refId": "A" }
+      ],
+      "title": "Memory 사용률 (노드별)", "type": "timeseries"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 }, "id": 102, "panels": [], "title": "네트워크", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 네트워크 트래픽\n\nLoad-test 노드의 네트워크 I/O입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "Bps" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 }, "id": 8,
+      "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_network_receive_bytes_total{device!~\"lo|veth.*|docker.*|flannel.*|cali.*\", instance=~\"$loadtest_node_ip:.*\"}[5m]))", "legendFormat": "Receive", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(node_network_transmit_bytes_total{device!~\"lo|veth.*|docker.*|flannel.*|cali.*\", instance=~\"$loadtest_node_ip:.*\"}[5m]))", "legendFormat": "Transmit", "refId": "B" }
+      ],
+      "title": "네트워크 I/O (총합)", "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 노드 프로비저닝 타임라인\n\nLoad-test 노드의 생성/삭제 이력입니다.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 18 }, "id": 9,
+      "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_node_labels{label_nodepool=\"loadtest\"})", "legendFormat": "Load-test 노드", "refId": "A" }
+      ],
+      "title": "Load-test 노드 수 추이", "type": "timeseries"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 }, "id": 103, "panels": [], "title": "Load-test 노드 목록", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "## 노드 목록\n\nLoad-test NodePool의 노드 상세 정보입니다.",
+      "fieldConfig": {
+        "defaults": { "mappings": [], "unit": "short", "custom": { "align": "left", "displayMode": "auto" } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "노드명" }, "properties": [{ "id": "custom.width", "value": 300 }] }
+        ]
+      },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 27 }, "id": 10,
+      "options": { "showHeader": true, "cellHeight": "sm", "footer": { "show": false } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_labels{label_nodepool=\"loadtest\"}", "format": "table", "instant": true, "refId": "A" }],
+      "title": "Load-test 노드 목록", "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "cluster": true,
+              "container": true,
+              "endpoint": true,
+              "instance": true,
+              "job": true,
+              "namespace": true,
+              "pod": true,
+              "prometheus": true,
+              "service": true,
+              "uid": true
+            },
+            "indexByName": {
+              "node": 0,
+              "label_node_kubernetes_io_instance_type": 1,
+              "label_topology_kubernetes_io_zone": 2,
+              "label_karpenter_sh_capacity_type": 3
+            },
+            "renameByName": {
+              "node": "노드명",
+              "label_node_kubernetes_io_instance_type": "인스턴스 타입",
+              "label_topology_kubernetes_io_zone": "가용 영역",
+              "label_karpenter_sh_capacity_type": "용량 유형",
+              "label_nodepool": "NodePool",
+              "label_role": "역할"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["k6", "loadtest", "karpenter", "infra", "korean"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": false, "text": "Prometheus", "value": "prometheus" },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Datasource",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(kube_node_labels{label_nodepool=\"loadtest\"}, node)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Load-test 노드",
+        "multi": true,
+        "name": "loadtest_node",
+        "options": [],
+        "query": { "query": "label_values(kube_node_labels{label_nodepool=\"loadtest\"}, node)", "refId": "PrometheusVariableQueryEditor-VariableQuery" },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(kube_node_info{node=~\"$loadtest_node\"}, internal_ip)",
+        "hide": 2,
+        "includeAll": true,
+        "label": "노드 IP",
+        "multi": true,
+        "name": "loadtest_node_ip",
+        "options": [],
+        "query": { "query": "label_values(kube_node_info{node=~\"$loadtest_node\"}, internal_ip)", "refId": "PrometheusVariableQueryEditor-VariableQuery" },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "Asia/Seoul",
+  "title": "K6 Load-test 노드 모니터링",
+  "uid": "k6-loadtest-nodes",
+  "version": 1,
+  "weekStart": ""
+}

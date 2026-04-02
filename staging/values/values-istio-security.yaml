@@ -42,6 +42,9 @@ patterns:
 
 # 제외 경로 (health check, metrics, 내부 서비스 등)
 excludePaths:
+  # Load-test (k6 부하 테스트 - WAF 패턴 검사 제외)
+  - "/load-test/"
+
   # Faro RUM (프론트엔드 텔레메트리)
   - "/faro/"
 
@@ -115,9 +118,10 @@ extAuthz:
   # AI 서버 장애 시 통과 허용 (fail-open)
   failOpen: true
 
-  # ext_authz 제외 경로 (AI direct routes, health checks)
+  # ext_authz 제외 경로 (AI direct routes, health checks, load-test)
   excludePaths:
     - "/ai/"
+    - "/load-test/"
     - "/health"
     - "/healthz"
     - "/ready"
@@ -162,7 +166,7 @@ extAuthz:
 rateLimiting:
   # --- Local Rate Limit (Envoy 내장) ---
   local:
-    enabled: false  # 부하 테스트를 위해 비활성화 (테스트 후 true로 복원 필요)
+    enabled: true  # Rate limiting 활성화
 
     # 기본 설정 (전체 경로에 적용)
     default:
@@ -219,6 +223,7 @@ rateLimiting:
     - "/ready"
     - "/metrics"
     - "/actuator/health"
+    - "/load-test/"  # 부하 테스트 경로 제외
 
 # ============================================================
 # mTLS 설정 (서비스 간 통신 암호화)
@@ -316,3 +321,38 @@ jwtAuth:
 
   unauthorizedResponse:
     enabled: true
+
+# ============================================================
+# Admin Tools IP Whitelist
+# CloudBeaver, Kafka-UI, Prometheus 등 관리 도구 접근 제한
+# ============================================================
+adminTools:
+  ipWhitelist:
+    enabled: true
+    # 허용된 IP 목록 (팀원 IP)
+    allowedIPs:
+      - "59.12.199.140"
+      - "219.241.49.248"
+      - "121.160.234.212"
+      - "118.33.22.122"
+      - "182.222.162.2"
+      - "180.70.114.57"
+      - "211.244.208.42"
+      - "59.7.96.150"
+      - "221.149.74.70"
+      - "58.148.70.203"
+      - "59.20.70.146"
+      - "39.119.192.15"
+      - "119.204.100.200"
+      - "124.49.102.36"
+      - "122.34.166.131"
+      - "182.221.197.174"
+      - "118.221.42.243"
+      - "121.175.144.99"
+    # IP 제한 적용 대상 호스트
+    protectedHosts:
+      - "cloudbeaver.staging.playball.one"
+      - "kafka-ui.staging.playball.one"
+      - "prometheus.staging.playball.one"
+      - "kiali.staging.playball.one"
+      - "grafana.staging.playball.one"
