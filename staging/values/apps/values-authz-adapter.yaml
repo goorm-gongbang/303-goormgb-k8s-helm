@@ -58,7 +58,7 @@ env:
   - name: REDIS_DB
     value: "2"
   - name: BLACKLIST_TTL_SECS
-    value: "3600"
+    value: "604800"  # 7일
 
 # OpenTelemetry
 otel:
