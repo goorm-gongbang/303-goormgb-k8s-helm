@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/auth-guard"
-  tag: "f5e18b0.18"
+  tag: "ffb4207.19"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
