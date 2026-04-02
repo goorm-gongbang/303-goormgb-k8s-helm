@@ -161,8 +161,6 @@ admin:
 
 # Google OAuth 설정 - Secret에서 환경변수 주입
 envFromSecret: google-oauth-credentials
-env:
-  GF_AUTH_OAUTH_ALLOW_INSECURE_EMAIL_LOOKUP: "true"
 
 grafana.ini:
   server:
