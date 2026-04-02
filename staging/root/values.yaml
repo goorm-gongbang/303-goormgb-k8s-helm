@@ -597,6 +597,7 @@ applicationSets:
     enabled: true
     syncWave: "10"
     namespace: staging-webs
+    appNamePrefix: "staging"
     chartPath: common-charts/apps/java-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
     services:
@@ -616,6 +617,7 @@ applicationSets:
     enabled: true
     syncWave: "10"
     namespace: staging-ai
+    appNamePrefix: "staging-ai"
     chartPath: common-charts/apps/ai-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
     services:
@@ -627,6 +629,7 @@ applicationSets:
     enabled: true
     syncWave: "15"
     namespace: loadtest-webs
+    appNamePrefix: "loadtest"
     chartPath: common-charts/apps/java-service
     valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
     services:
@@ -645,6 +648,7 @@ applicationSets:
     enabled: true
     syncWave: "15"
     namespace: loadtest-ai
+    appNamePrefix: "loadtest-ai"
     chartPath: common-charts/apps/ai-service
     valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
     services:
