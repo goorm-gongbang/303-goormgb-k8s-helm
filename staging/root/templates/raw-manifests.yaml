@@ -176,6 +176,21 @@ spec:
             host: staging-ai-defense.staging-ai.svc.cluster.local
             port:
               number: 8000
+      corsPolicy:
+        allowOrigins:
+          - exact: "https://staging.playball.one"
+          - exact: "https://www.staging.playball.one"
+        allowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - OPTIONS
+        allowHeaders:
+          - "*"
+        allowCredentials: true
+        maxAge: "24h"
     # /ai (trailing slash 없이) -> /ai/로 리다이렉트
     - match:
         - uri:
