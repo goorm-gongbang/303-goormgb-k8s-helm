@@ -27,5 +27,4 @@ namespaces:
   # Security namespaces
   - name: trivy-system
     istio: false
-  - name: falco
-    istio: false
+  # falco 비활성화 - 사용 안 함
