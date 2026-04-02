@@ -169,8 +169,6 @@ spec:
     - match:
         - uri:
             prefix: /ai/
-      rewrite:
-        uri: /
       route:
         - destination:
             host: staging-ai-defense.staging-ai.svc.cluster.local
