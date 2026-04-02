@@ -1,7 +1,7 @@
 # ai-defense - Staging 환경
 # Python FastAPI 기반 AI Defense API
 
-replicaCount: 2
+replicaCount: 1
 
 # Uvicorn 실행 명령어 (root-path 설정 for /ai prefix)
 command:
