@@ -5,6 +5,10 @@
 backup:
   enabled: true
 
+databases:
+  - goormgb
+  - ai-db
+
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
 

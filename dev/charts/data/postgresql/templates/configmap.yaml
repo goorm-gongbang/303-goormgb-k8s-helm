@@ -18,9 +18,10 @@ data:
     {{- if not (regexMatch "^[a-zA-Z0-9_-]+$" .) }}
     {{- fail (printf "Invalid database name: %s. Only alphanumeric, underscore, and hyphen allowed." .) }}
     {{- end }}
-    echo "Creating database: {{ . }}"
+    echo "Creating database if not exists: {{ . }}"
     psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
-      CREATE DATABASE "{{ . }}";
+      SELECT 'CREATE DATABASE "{{ . }}"'
+      WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '{{ . }}')\gexec
       GRANT CONNECT, CREATE ON DATABASE "{{ . }}" TO "$POSTGRES_USER";
     EOSQL
 
