@@ -4,6 +4,8 @@ kind: CronJob
 metadata:
   name: rds-backup
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: rds-backup
 spec:
   schedule: {{ .Values.schedule | quote }}
   concurrencyPolicy: Forbid
@@ -15,6 +17,8 @@ spec:
         metadata:
           annotations:
             sidecar.istio.io/inject: "false"
+          labels:
+            app: rds-backup
         spec:
           serviceAccountName: {{ .Values.serviceAccount.name }}
           restartPolicy: OnFailure
