@@ -33,8 +33,7 @@ spec:
               containerPort: {{ .Values.exporter.port }}
               protocol: TCP
           env:
-            - name: REDIS_ADDR
-              value: "redis://$({{ .Values.redis.hostEnvVar }}):$({{ .Values.redis.portEnvVar }})"
+            # 순서 중요: REDIS_ADDR에서 $(VAR) 치환하려면 먼저 정의되어야 함
             - name: {{ .Values.redis.hostEnvVar }}
               valueFrom:
                 secretKeyRef:
@@ -46,6 +45,8 @@ spec:
                   name: {{ .Values.redis.secretName }}
                   key: {{ .Values.redis.portEnvVar }}
                   optional: true
+            - name: REDIS_ADDR
+              value: "redis://$({{ .Values.redis.hostEnvVar }}):$({{ .Values.redis.portEnvVar }})"
           {{- with .Values.exporter.extraArgs }}
           args:
             {{- toYaml . | nindent 12 }}
