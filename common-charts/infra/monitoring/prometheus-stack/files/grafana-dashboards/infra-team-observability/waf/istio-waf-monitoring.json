@@ -769,7 +769,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(authz_adapter_check_requests_total{result=\"blacklist\"}[$__range])) or vector(0)",
+          "expr": "sum(increase(authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"}[$__range])) or vector(0)",
           "legendFormat": "Blacklist Blocks",
           "refId": "A"
         }
@@ -991,12 +991,12 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(authz_adapter_check_requests_total{result=\"blacklist\"}[$__rate_interval])) or vector(0)",
+          "expr": "sum(rate(authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"}[$__rate_interval])) or vector(0)",
           "legendFormat": "Blacklist 차단",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(authz_adapter_check_requests_total{result=\"block\"}[$__rate_interval])) or vector(0)",
+          "expr": "sum(rate(authz_adapter_check_requests_total{path_prefix!=\"blacklist\", result=\"block\"}[$__rate_interval])) or vector(0)",
           "legendFormat": "AI BLOCK",
           "refId": "B"
         },
