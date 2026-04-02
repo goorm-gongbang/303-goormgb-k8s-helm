@@ -383,6 +383,7 @@ grafana:
         contains(['jusanha17@gmail.com', 'lab.jehyun@gmail.com', 'wnconc@gmail.com', 'jbyun1105@gmail.com', 'sayiamseyoun9@gmail.com', 'jminwook0120@gmail.com', 'siyeon0713@gmail.com', 'cdh4112618@gmail.com', 'rhkdgur120@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'yuuijin863@gmail.com', 'hs4734@gmail.com', 'hejwien@gmail.com', 'niceguy6112@gmail.com'], email) && 'Viewer' ||
         'Viewer'
     users:
+      allow_sign_up: true
       auto_assign_org: true
       auto_assign_org_role: Viewer
     auth:
