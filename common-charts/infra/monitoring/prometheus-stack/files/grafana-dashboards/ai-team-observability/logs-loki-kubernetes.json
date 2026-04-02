@@ -94,7 +94,7 @@
       },
       {
         "allValue": ".+",
-        "current": {"selected": true, "text": "All", "value": "$__all"},
+        "current": {"selected": false, "text": "All", "value": "$__all"},
         "datasource": {"type": "loki", "uid": "loki"},
         "definition": "label_values({namespace=\"__AI_NAMESPACE__\"}, app)",
         "hide": 0,
@@ -111,7 +111,7 @@
       },
       {
         "allValue": ".*",
-        "current": {"selected": true, "text": "All", "value": "$__all"},
+        "current": {"selected": false, "text": "All", "value": "$__all"},
         "hide": 0,
         "includeAll": true,
         "label": "로그 레벨",
