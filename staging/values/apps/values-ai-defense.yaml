@@ -62,7 +62,9 @@ env:
   # OpenTelemetry: 새 Semantic Convention 사용 (Java와 통일)
   - name: OTEL_SEMCONV_STABILITY_OPT_IN
     value: "http"
-  # Offline LLM Audit 로그 경로 (컨테이너 쓰기 권한 문제 우회)
+  # Audit 로그 경로 (컨테이너 쓰기 권한 문제 우회)
+  - name: TM_DEFENSE_AUDIT_LOG_PATH
+    value: "/tmp/logs/defense_decision_audit.jsonl"
   - name: TM_OFFLINE_LLM_AUDIT_PATH
     value: "/tmp/logs/offline_llm_audit.jsonl"
 
