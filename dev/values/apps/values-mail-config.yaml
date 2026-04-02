@@ -1,0 +1,12 @@
+# Mail Config - Dev 환경
+enabled: true
+
+secretName: mail-config
+namespace: dev-webs
+
+secretManager:
+  secretStoreRef:
+    name: aws-secrets-manager
+    kind: ClusterSecretStore
+  key: dev/services/mail
+  refreshInterval: 1h
