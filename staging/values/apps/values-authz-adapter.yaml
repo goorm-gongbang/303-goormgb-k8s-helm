@@ -45,12 +45,12 @@ env:
   - name: REDIS_HOST
     valueFrom:
       secretKeyRef:
-        name: ai-service-secrets
+        name: ai-service-config
         key: AI_REDIS_HOST
   - name: REDIS_PORT
     valueFrom:
       secretKeyRef:
-        name: ai-service-secrets
+        name: ai-service-config
         key: AI_REDIS_PORT
   - name: REDIS_PASSWORD
     value: ""
