@@ -2232,8 +2232,8 @@
       {
         "current": {
           "selected": false,
-          "text": "goormgb-staging",
-          "value": "goormgb-staging"
+          "text": "goormgb-staging-postgresql",
+          "value": "goormgb-staging-postgresql"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -2248,8 +2248,8 @@
         "options": [
           {
             "selected": true,
-            "text": "goormgb-staging",
-            "value": "goormgb-staging"
+            "text": "goormgb-staging-postgresql",
+            "value": "goormgb-staging-postgresql"
           },
           {
             "selected": false,
@@ -2265,8 +2265,8 @@
       {
         "current": {
           "selected": false,
-          "text": "goormgb-staging-001",
-          "value": "goormgb-staging-001"
+          "text": "goormgb-staging-redis-001",
+          "value": "goormgb-staging-redis-001"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -2281,8 +2281,8 @@
         "options": [
           {
             "selected": true,
-            "text": "goormgb-staging-001",
-            "value": "goormgb-staging-001"
+            "text": "goormgb-staging-redis-001",
+            "value": "goormgb-staging-redis-001"
           },
           {
             "selected": false,
