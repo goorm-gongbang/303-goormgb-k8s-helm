@@ -102,6 +102,8 @@ prometheusOperator:
 
 # kube-state-metrics
 kube-state-metrics:
+  metricLabelsAllowlist:
+    - nodes=[nodepool,role,topology.kubernetes.io/zone,node.kubernetes.io/instance-type]
   nodeSelector:
     role: monitoring
   tolerations:
