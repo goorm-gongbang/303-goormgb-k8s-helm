@@ -135,14 +135,16 @@
         "type": "textbox"
       },
       {
-        "current": {"selected": true, "text": "Health/Metrics 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready|/metrics\""},
+        "current": {"selected": true, "text": "Health/Metrics/OTEL 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready|/metrics|/actuator|TraceService/Export|MetricsService/Export\""},
         "hide": 0,
         "includeAll": false,
         "label": "필터",
         "multi": false,
         "name": "healthFilter",
         "options": [
-          {"selected": true, "text": "Health/Metrics 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready|/metrics\""},
+          {"selected": true, "text": "Health/Metrics/OTEL 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready|/metrics|/actuator|TraceService/Export|MetricsService/Export\""},
+          {"selected": false, "text": "Health만 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready\""},
+          {"selected": false, "text": "ERROR만 보기", "value": "|~ \"ERROR|error|Error\""},
           {"selected": false, "text": "전체 보기", "value": "|~ \".*\""}
         ],
         "query": "",
