@@ -1,13 +1,16 @@
 # Grafana Tempo - Staging 환경
 # 분산 추적 저장소
 
+# 노드 배치: monitoring 노드
+nodeSelector:
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
 tempo:
-  nodeSelector:
-    role: monitoring
-  tolerations:
-    - key: role
-      value: monitoring
-      effect: NoSchedule
   resources:
     requests:
       cpu: 50m
