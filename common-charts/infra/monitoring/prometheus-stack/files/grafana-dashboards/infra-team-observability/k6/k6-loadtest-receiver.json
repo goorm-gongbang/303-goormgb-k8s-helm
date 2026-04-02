@@ -2197,7 +2197,7 @@
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
-        "regex": "/loadtest.*/",
+        "regex": "/loadtest-.*/",
         "skipUrlSync": false,
         "sort": 1,
         "type": "query"
