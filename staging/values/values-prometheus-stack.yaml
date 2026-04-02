@@ -196,6 +196,8 @@ grafana:
     oauthAllowInsecureEmailLookup: true
   provisioning:
     enabled: true
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
     users:
       - email: 212clab@gmail.com
         orgRole: Admin
