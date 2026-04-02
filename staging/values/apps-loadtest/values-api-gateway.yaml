@@ -2,7 +2,7 @@
 # /load-test/ prefix로 라우팅되는 부하 테스트 전용
 fullnameOverride: "api-gateway"
 contextPath: ""
-replicaCount: 1  # 2세트
+replicaCount: 2
 
 image:
   name: "staging/playball/web/api-gateway"
