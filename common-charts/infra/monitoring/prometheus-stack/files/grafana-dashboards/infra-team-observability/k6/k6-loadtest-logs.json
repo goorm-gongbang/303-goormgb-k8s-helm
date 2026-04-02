@@ -21,7 +21,7 @@
       }
     ]
   },
-  "description": "Loadtest Application Logs - loadtest-webs namespace",
+  "description": "Loadtest Application Logs - loadtest-webs namespace (OTLP)",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -142,7 +142,7 @@
             "type": "loki",
             "uid": "${datasource}"
           },
-          "expr": "sum by (level) (count_over_time({namespace=\"$namespace\", app=~\"$app\"} |~ `\"level\": ?\"(ERROR|WARN)\"` [$__interval]))",
+          "expr": "sum by (level) (count_over_time({service_namespace=\"$namespace\", service_name=~\"$app\"} |~ `\"level\":\\s*\"(ERROR|WARN)\"` [$__interval]))",
           "legendFormat": "{{level}}",
           "refId": "A"
         }
@@ -237,9 +237,9 @@
             "type": "loki",
             "uid": "${datasource}"
           },
-          "expr": "sum by (app) (count_over_time({namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} ${log_type:raw} |= \"$query\" ${log_level:raw} [$__interval]))",
+          "expr": "sum by (service_name) (count_over_time({service_namespace=\"$namespace\", service_name=~\"$app\"} ${log_type:raw} |= \"$query\" ${log_level:raw} [$__interval]))",
           "instant": false,
-          "legendFormat": "{{app}}",
+          "legendFormat": "{{service_name}}",
           "range": true,
           "refId": "A"
         }
@@ -282,7 +282,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "{namespace=\"$namespace\", app=~\"$app\", stream=~\"$stream\"} ${log_type:raw} |= \"$query\" ${log_level:raw}",
+          "expr": "{service_namespace=\"$namespace\", service_name=~\"$app\"} ${log_type:raw} |= \"$query\" ${log_level:raw}",
           "queryType": "range",
           "refId": "A"
         }
@@ -352,14 +352,14 @@
           "type": "loki",
           "uid": "${datasource}"
         },
-        "definition": "label_values({namespace=\"$namespace\"}, app)",
+        "definition": "label_values({service_namespace=\"$namespace\"}, service_name)",
         "hide": 0,
         "includeAll": true,
         "label": "Application",
         "multi": true,
         "name": "app",
         "options": [],
-        "query": "label_values({namespace=\"$namespace\"}, app)",
+        "query": "label_values({service_namespace=\"$namespace\"}, service_name)",
         "refresh": 1,
         "regex": "",
         "sort": 1,
@@ -386,8 +386,8 @@
       {
         "current": {
           "selected": true,
-          "text": "Business logs only",
-          "value": "!~ `Hibernate:` !~ `kube-probe` !~ `health`"
+          "text": "All",
+          "value": "|= ``"
         },
         "description": "Log type filter",
         "hide": 0,
@@ -397,12 +397,12 @@
         "name": "log_type",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "All",
             "value": "|= ``"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "Business logs only",
             "value": "!~ `Hibernate:` !~ `kube-probe` !~ `health`"
           },
@@ -413,36 +413,6 @@
           }
         ],
         "query": "All : |= ``,Business logs only : !~ `Hibernate:` !~ `kube-probe` !~ `health`,SQL Query (Hibernate) : |~ `Hibernate:`",
-        "type": "custom"
-      },
-      {
-        "allValue": ".+",
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        },
-        "hide": 2,
-        "includeAll": true,
-        "multi": true,
-        "name": "stream",
-        "options": [
-          {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "stdout",
-            "value": "stdout"
-          },
-          {
-            "selected": false,
-            "text": "stderr",
-            "value": "stderr"
-          }
-        ],
-        "query": "stdout,stderr",
         "type": "custom"
       },
       {
@@ -466,25 +436,25 @@
           {
             "selected": false,
             "text": "DEBUG",
-            "value": "|~ `\"level\": ?\"DEBUG\"`"
+            "value": "|~ `\"level\":\\s*\"DEBUG\"`"
           },
           {
             "selected": false,
             "text": "INFO",
-            "value": "|~ `\"level\": ?\"INFO\"`"
+            "value": "|~ `\"level\":\\s*\"INFO\"`"
           },
           {
             "selected": false,
             "text": "WARN",
-            "value": "|~ `\"level\": ?\"WARN\"`"
+            "value": "|~ `\"level\":\\s*\"WARN\"`"
           },
           {
             "selected": false,
             "text": "ERROR",
-            "value": "|~ `\"level\": ?\"ERROR\"`"
+            "value": "|~ `\"level\":\\s*\"ERROR\"`"
           }
         ],
-        "query": "All : |= ``,DEBUG : |~ `\"level\": ?\"DEBUG\"`,INFO : |~ `\"level\": ?\"INFO\"`,WARN : |~ `\"level\": ?\"WARN\"`,ERROR : |~ `\"level\": ?\"ERROR\"`",
+        "query": "All : |= ``,DEBUG : |~ `\"level\":\\s*\"DEBUG\"`,INFO : |~ `\"level\":\\s*\"INFO\"`,WARN : |~ `\"level\":\\s*\"WARN\"`,ERROR : |~ `\"level\":\\s*\"ERROR\"`",
         "type": "custom"
       }
     ]
