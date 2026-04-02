@@ -518,6 +518,13 @@ gitCharts:
     valueFiles:
       - ../../../../staging/values/monitoring/values-cloudbeaver.yaml
 
+  # Redis Exporter for AI ElastiCache
+  redis-exporter-ai:
+    enabled: true
+    path: staging/charts/monitoring/redis-exporter-ai
+    namespace: staging-ai
+    syncWave: "5"
+
   # RDS Backup CronJob (pg_dump -> S3)
   rds-backup:
     enabled: true

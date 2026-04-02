@@ -1,0 +1,36 @@
+{{- if and .Values.enabled .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-exporter-ai
+  labels:
+    app: redis-exporter-ai
+    app.kubernetes.io/name: redis-exporter-ai
+    release: redis-ai
+    {{- with .Values.serviceMonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: redis-exporter-ai
+  endpoints:
+    - port: metrics
+      interval: {{ .Values.serviceMonitor.interval }}
+      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+      path: /metrics
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_label_app]
+          targetLabel: app
+        - sourceLabels: [__meta_kubernetes_namespace]
+          targetLabel: namespace
+        # release 라벨 추가 (대시보드 호환)
+        - targetLabel: release
+          replacement: redis-ai
+        # instance 라벨
+        - targetLabel: instance
+          replacement: redis-ai-elasticache
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}
