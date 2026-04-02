@@ -5,7 +5,7 @@ replicaCount: 2
 
 image:
   name: "staging/playball/web/seat"
-  tag: "de7ce81.10"
+  tag: "f5e18b0.18"
   pullPolicy: Always
 
 imagePullSecrets: []
