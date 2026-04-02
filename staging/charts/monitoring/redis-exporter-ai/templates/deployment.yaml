@@ -16,6 +16,7 @@ spec:
       labels:
         app: redis-exporter-ai
         app.kubernetes.io/name: redis-exporter-ai
+        version: {{ .Values.image.tag | quote }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.exporter.port }}"
