@@ -18,7 +18,7 @@
       "type": "row"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -48,7 +48,7 @@
       "targets": [
         {
           "alias": "CPU",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "id": "",
@@ -68,7 +68,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -98,7 +98,7 @@
       "targets": [
         {
           "alias": "Engine CPU",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "id": "",
@@ -118,7 +118,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -146,7 +146,7 @@
       "targets": [
         {
           "alias": "Connections",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "id": "",
@@ -166,7 +166,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -196,7 +196,7 @@
       "targets": [
         {
           "alias": "Hit Rate",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "100 * m1 / (m1 + m2)",
           "id": "e1",
@@ -208,7 +208,7 @@
           "region": "ap-northeast-2"
         },
         {
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "hide": true,
@@ -225,7 +225,7 @@
           "statistic": "Sum"
         },
         {
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "hide": true,
@@ -254,7 +254,7 @@
       "type": "row"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -293,7 +293,7 @@
       "targets": [
         {
           "alias": "Cache Hits",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "id": "",
@@ -310,7 +310,7 @@
         },
         {
           "alias": "Cache Misses",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "id": "",
@@ -330,7 +330,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -369,7 +369,7 @@
       "targets": [
         {
           "alias": "Memory Used",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "id": "",
@@ -389,7 +389,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -428,7 +428,7 @@
       "targets": [
         {
           "alias": "Evictions",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "id": "",
@@ -448,7 +448,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -487,7 +487,7 @@
       "targets": [
         {
           "alias": "Connections",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "id": "",
@@ -515,7 +515,7 @@
       "type": "row"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "description": "Redis List를 Queue로 사용할 때의 길이",
       "fieldConfig": {
         "defaults": {
@@ -555,7 +555,7 @@
       "targets": [
         {
           "alias": "Current Items",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "CacheClusterId": "$cache_cluster" },
           "expression": "",
           "id": "",
@@ -583,18 +583,18 @@
       "type": "row"
     },
     {
-      "datasource": { "type": "loki", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "loki", "uid": "cloudwatch" },
       "description": "Java 서비스의 Redis 클라이언트 로그 (Lettuce/Spring Data Redis)",
       "fieldConfig": { "defaults": {}, "overrides": [] },
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 34 },
       "id": 21,
       "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
-      "targets": [{ "datasource": { "type": "loki", "uid": "k6-loadtest-redis" }, "editorMode": "code", "expr": "{namespace=\"staging-webs\", app=~\"$log_app\"} |~ `(?i)redis|lettuce`", "queryType": "range", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "loki", "uid": "cloudwatch" }, "editorMode": "code", "expr": "{namespace=\"staging-webs\", app=~\"$log_app\"} |~ `(?i)redis|lettuce`", "queryType": "range", "refId": "A" }],
       "title": "서비스 Redis 로그",
       "type": "logs"
     },
     {
-      "datasource": { "type": "datasource", "uid": "k6-loadtest-redis" },
+      "datasource": { "type": "datasource", "uid": "cloudwatch" },
       "description": "",
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 44 },
       "id": 22,
@@ -632,7 +632,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": { "type": "loki", "uid": "k6-loadtest-redis" },
+        "datasource": { "type": "loki", "uid": "cloudwatch" },
         "definition": "label_values({namespace=\"staging-webs\"}, app)",
         "hide": 0,
         "includeAll": true,
@@ -649,7 +649,7 @@
       },
       {
         "current": {},
-        "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-redis" },
+        "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
         "definition": "",
         "hide": 0,
         "includeAll": true,
@@ -667,7 +667,7 @@
           "region": "ap-northeast-2"
         },
         "refresh": 2,
-        "regex": "__REDIS_CLUSTER_PATTERN__",
+        "regex": "goormgb-staging-redis",
         "skipUrlSync": false,
         "sort": 1,
         "type": "query"
@@ -678,7 +678,7 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Cache & Queue - ElastiCache Redis",
-  "uid": "k6-loadtest-redis",
+  "uid": "cloudwatch",
   "version": 1,
   "weekStart": ""
 }

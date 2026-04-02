@@ -18,7 +18,7 @@
       "type": "row"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -49,7 +49,7 @@
       "targets": [
         {
           "alias": "CPU",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "DBInstanceIdentifier": "$db_instance" },
           "expression": "",
           "id": "",
@@ -69,7 +69,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -97,7 +97,7 @@
       "targets": [
         {
           "alias": "Connections",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "DBInstanceIdentifier": "$db_instance" },
           "expression": "",
           "id": "",
@@ -117,7 +117,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -147,7 +147,7 @@
       "targets": [
         {
           "alias": "Memory",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "DBInstanceIdentifier": "$db_instance" },
           "expression": "",
           "id": "",
@@ -167,7 +167,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -197,7 +197,7 @@
       "targets": [
         {
           "alias": "Storage",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "DBInstanceIdentifier": "$db_instance" },
           "expression": "",
           "id": "",
@@ -225,7 +225,7 @@
       "type": "row"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -264,7 +264,7 @@
       "targets": [
         {
           "alias": "Read IOPS",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "DBInstanceIdentifier": "$db_instance" },
           "expression": "",
           "id": "",
@@ -281,7 +281,7 @@
         },
         {
           "alias": "Write IOPS",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "DBInstanceIdentifier": "$db_instance" },
           "expression": "",
           "id": "",
@@ -301,7 +301,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -340,7 +340,7 @@
       "targets": [
         {
           "alias": "Read Latency",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "DBInstanceIdentifier": "$db_instance" },
           "expression": "",
           "id": "",
@@ -357,7 +357,7 @@
         },
         {
           "alias": "Write Latency",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "DBInstanceIdentifier": "$db_instance" },
           "expression": "",
           "id": "",
@@ -377,7 +377,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -416,7 +416,7 @@
       "targets": [
         {
           "alias": "CPU",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "DBInstanceIdentifier": "$db_instance" },
           "expression": "",
           "id": "",
@@ -436,7 +436,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -475,7 +475,7 @@
       "targets": [
         {
           "alias": "Connections",
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "dimensions": { "DBInstanceIdentifier": "$db_instance" },
           "expression": "",
           "id": "",
@@ -503,18 +503,18 @@
       "type": "row"
     },
     {
-      "datasource": { "type": "loki", "uid": "k6-loadtest-rds" },
+      "datasource": { "type": "loki", "uid": "cloudwatch" },
       "description": "Java 서비스의 Hibernate SQL 쿼리 로그",
       "fieldConfig": { "defaults": {}, "overrides": [] },
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 25 },
       "id": 21,
       "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
-      "targets": [{ "datasource": { "type": "loki", "uid": "k6-loadtest-rds" }, "editorMode": "code", "expr": "{namespace=\"staging-webs\", app=~\"$log_app\"} |~ `Hibernate:`", "queryType": "range", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "loki", "uid": "cloudwatch" }, "editorMode": "code", "expr": "{namespace=\"staging-webs\", app=~\"$log_app\"} |~ `Hibernate:`", "queryType": "range", "refId": "A" }],
       "title": "서비스 DB 로그 (Hibernate)",
       "type": "logs"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
       "description": "RDS PostgreSQL 서버 로그 (CloudWatch Logs)",
       "fieldConfig": { "defaults": {}, "overrides": [] },
       "gridPos": { "h": 12, "w": 24, "x": 0, "y": 35 },
@@ -531,7 +531,7 @@
       },
       "targets": [
         {
-          "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "expression": "fields @timestamp, @message | sort @timestamp desc | limit 500",
           "id": "",
           "logGroups": [
@@ -574,7 +574,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": { "type": "loki", "uid": "k6-loadtest-rds" },
+        "datasource": { "type": "loki", "uid": "cloudwatch" },
         "definition": "label_values({namespace=\"staging-webs\"}, app)",
         "hide": 0,
         "includeAll": true,
@@ -591,7 +591,7 @@
       },
       {
         "current": {},
-        "datasource": { "type": "cloudwatch", "uid": "k6-loadtest-rds" },
+        "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
         "definition": "",
         "hide": 0,
         "includeAll": false,
@@ -620,7 +620,7 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Database - RDS PostgreSQL",
-  "uid": "k6-loadtest-rds",
+  "uid": "cloudwatch",
   "version": 1,
   "weekStart": ""
 }
