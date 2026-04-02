@@ -59,6 +59,8 @@ env:
     value: "2"
   - name: BLACKLIST_TTL_SECS
     value: "604800"  # 7일
+  - name: WHITELIST_TTL_SECS
+    value: "2592000"  # 30일
 
 # OpenTelemetry
 otel:
