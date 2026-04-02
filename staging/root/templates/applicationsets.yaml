@@ -26,7 +26,7 @@ spec:
           {{- end }}
   template:
     metadata:
-      name: 'staging-{{`{{name}}`}}'
+      name: '{{ $appSet.appNamePrefix | default "staging" }}-{{`{{name}}`}}'
       labels:
         ns: {{ $appSet.namespace }}
       annotations:

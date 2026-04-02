@@ -354,26 +354,6 @@ ociCharts:
           - /metadata/annotations
           - /metadata/labels
 
-  # Trivy Operator - Container Vulnerability Scanning
-  trivy-operator:
-    enabled: true
-    repoURL: https://aquasecurity.github.io/helm-charts/
-    chart: trivy-operator
-    version: "0.32.1"
-    namespace: trivy-system
-    syncWave: "-6"
-    valueFiles:
-      - $values/staging/values/security/values-trivy-operator.yaml
-    syncOptions:
-      - ServerSideApply=true
-      - SkipDryRunOnMissingResource=true
-    ignoreDifferences:
-      - group: apiextensions.k8s.io
-        kind: CustomResourceDefinition
-        jsonPointers:
-          - /status
-          - /metadata/annotations
-
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
 # =============================================================================
@@ -538,13 +518,6 @@ gitCharts:
     valueFiles:
       - ../../../../staging/values/monitoring/values-cloudbeaver.yaml
 
-  # Security Dashboards (Trivy, Falco - Staging Only)
-  security-dashboards:
-    enabled: true
-    path: staging/charts/monitoring/security-dashboards
-    namespace: monitoring
-    syncWave: "2"
-
   # RDS Backup CronJob (pg_dump -> S3)
   rds-backup:
     enabled: true
@@ -563,7 +536,7 @@ gitCharts:
 
   # === Messaging (Kafka) ===
   kafka:
-    enabled: true
+    enabled: false  # 임시 비활성화
     path: common-charts/infra/kafka
     namespace: messaging
     syncWave: "-5"
@@ -582,7 +555,7 @@ gitCharts:
           - /spec/storageClassName
 
   kafka-ui:
-    enabled: true
+    enabled: false  # 임시 비활성화
     path: dev/charts/data/kafka-ui
     namespace: messaging
     syncWave: "0"
@@ -597,6 +570,7 @@ applicationSets:
     enabled: true
     syncWave: "10"
     namespace: staging-webs
+    appNamePrefix: "staging"
     chartPath: common-charts/apps/java-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
     services:
@@ -616,6 +590,7 @@ applicationSets:
     enabled: true
     syncWave: "10"
     namespace: staging-ai
+    appNamePrefix: "staging"
     chartPath: common-charts/apps/ai-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
     services:
@@ -624,9 +599,10 @@ applicationSets:
 
   # Load-test 전용 서비스 (k6 부하 테스트용)
   loadtest-webs-services:
-    enabled: true
+    enabled: false  # 부하테스트 시 활성화
     syncWave: "15"
     namespace: loadtest-webs
+    appNamePrefix: "loadtest"
     chartPath: common-charts/apps/java-service
     valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
     services:
@@ -642,9 +618,10 @@ applicationSets:
         syncWave: "17"
 
   loadtest-ai-services:
-    enabled: true
+    enabled: false  # 부하테스트 시 활성화
     syncWave: "15"
     namespace: loadtest-ai
+    appNamePrefix: "loadtest"
     chartPath: common-charts/apps/ai-service
     valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
     services:
@@ -662,6 +639,6 @@ rawManifests:
   swagger403Redirect:
     enabled: false
   aiDefenseRoute:
-    enabled: false  # Istio 설치 후 활성화
+    enabled: true
   loadTestRoute:
     enabled: true  # k6 부하테스트 라우팅 (/load-test/* -> api-gateway)

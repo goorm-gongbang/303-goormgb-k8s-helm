@@ -22,6 +22,7 @@ service:
   portName: grpc
   grpc:
     enabled: false  # 메인 포트가 이미 gRPC
+    port: 9001      # GRPC_PORT 환경변수용
 
 # Prometheus Metrics
 metrics:
@@ -45,12 +46,12 @@ env:
   - name: REDIS_HOST
     valueFrom:
       secretKeyRef:
-        name: ai-service-secrets
+        name: ai-service-config
         key: AI_REDIS_HOST
   - name: REDIS_PORT
     valueFrom:
       secretKeyRef:
-        name: ai-service-secrets
+        name: ai-service-config
         key: AI_REDIS_PORT
   - name: REDIS_PASSWORD
     value: ""

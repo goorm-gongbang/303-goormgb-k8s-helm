@@ -26,6 +26,7 @@ service:
   portName: grpc
   grpc:
     enabled: false
+    port: 9001      # GRPC_PORT 환경변수용
 
 metrics:
   enabled: true

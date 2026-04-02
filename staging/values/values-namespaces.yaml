@@ -23,9 +23,3 @@ namespaces:
     istio: false
   - name: external-dns
     istio: false
-
-  # Security namespaces
-  - name: trivy-system
-    istio: false
-  - name: falco
-    istio: false
