@@ -9,7 +9,7 @@ env:
 
 image:
   name: "dev/goormgb/seat"
-  tag: "8608193"
+  tag: "c67c431"
   pullPolicy: Always
 
 imagePullSecrets:
