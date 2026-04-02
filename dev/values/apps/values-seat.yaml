@@ -2,6 +2,11 @@
 contextPath: "/seat"
 replicaCount: 1
 
+# Kafka 설정
+env:
+  - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+    value: "kafka.messaging.svc.cluster.local:9092"
+
 image:
   name: "dev/goormgb/seat"
   tag: "b5e251e"
