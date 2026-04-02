@@ -1,7 +1,9 @@
 # AI Service Secrets 설정
 # AWS Secrets Manager에서 값을 가져옴
 
-namespace: staging-ai
+namespaces:
+  - staging-ai
+  - loadtest-ai
 secretName: ai-service-config
 
 # Secrets Manager 키 prefix
