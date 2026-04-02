@@ -737,11 +737,24 @@
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 41 },
       "id": 50,
       "panels": [],
-      "title": "Authz Adapter / IP Blacklist",
+      "title": "AI Defense / IP Blacklist (ext_authz)",
       "type": "row"
     },
     {
+      "datasource": { "type": "datasource", "uid": "-- Dashboard --" },
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 42 },
+      "id": 60,
+      "options": {
+        "code": { "language": "plaintext", "showLineNumbers": false },
+        "content": "**Rate Limit 설정** (Lua EnvoyFilter)\n- 기본: 100 req/s (전체)\n- IP별: 50 req/s\n- /auth/: 10 req/s\n- /payment/: 5 req/s\n- /signup: 3 req/s\n\n**AI ext_authz 적용 경로**\n- POST /queue/matches/{id}/enter\n- GET /seat/matches/{id}/recommendations/blocks\n- POST /seat/matches/{id}/seat-holds",
+        "mode": "markdown"
+      },
+      "title": "현재 보안 정책",
+      "type": "text"
+    },
+    {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Redis 블랙리스트 IP의 재요청 차단. 이전에 AI가 차단한 IP가 다시 요청시 AI 호출 없이 즉시 차단 (TTL 7일)",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -757,7 +770,7 @@
           "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 42 },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 46 },
       "id": 51,
       "options": {
         "colorMode": "value",
@@ -774,7 +787,7 @@
           "refId": "A"
         }
       ],
-      "title": "Blacklist 차단",
+      "title": "Blacklist 차단 (Redis)",
       "type": "stat"
     },
     {
@@ -792,7 +805,7 @@
           "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 42 },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 46 },
       "id": 52,
       "options": {
         "colorMode": "value",
@@ -827,7 +840,7 @@
           "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 42 },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 46 },
       "id": 53,
       "options": {
         "colorMode": "value",
@@ -864,7 +877,7 @@
           "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 42 },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 46 },
       "id": 54,
       "options": {
         "colorMode": "value",
@@ -886,6 +899,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "AI Defense 모델이 실시간으로 악성 판정하여 차단한 요청 수. 차단된 IP는 Redis 블랙리스트에 추가됨",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -899,7 +913,7 @@
           "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 42 },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 46 },
       "id": 55,
       "options": {
         "colorMode": "value",
@@ -916,7 +930,7 @@
           "refId": "A"
         }
       ],
-      "title": "AI 차단 (BLOCK)",
+      "title": "AI 차단 (실시간)",
       "type": "stat"
     },
     {
@@ -934,7 +948,7 @@
           "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 42 },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 46 },
       "id": 56,
       "options": {
         "colorMode": "value",
@@ -983,7 +997,7 @@
           "unit": "reqps"
         }
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 46 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 50 },
       "id": 57,
       "options": {
         "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
@@ -1038,7 +1052,7 @@
           "unit": "s"
         }
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 46 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 50 },
       "id": 58,
       "options": {
         "legend": { "calcs": ["mean", "max", "p99"], "displayMode": "table", "placement": "bottom", "showLegend": true },
