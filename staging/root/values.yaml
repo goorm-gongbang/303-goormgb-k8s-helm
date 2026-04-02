@@ -354,26 +354,6 @@ ociCharts:
           - /metadata/annotations
           - /metadata/labels
 
-  # Trivy Operator - Container Vulnerability Scanning
-  trivy-operator:
-    enabled: true
-    repoURL: https://aquasecurity.github.io/helm-charts/
-    chart: trivy-operator
-    version: "0.32.1"
-    namespace: trivy-system
-    syncWave: "-6"
-    valueFiles:
-      - $values/staging/values/security/values-trivy-operator.yaml
-    syncOptions:
-      - ServerSideApply=true
-      - SkipDryRunOnMissingResource=true
-    ignoreDifferences:
-      - group: apiextensions.k8s.io
-        kind: CustomResourceDefinition
-        jsonPointers:
-          - /status
-          - /metadata/annotations
-
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
 # =============================================================================
@@ -537,13 +517,6 @@ gitCharts:
     syncWave: "5"
     valueFiles:
       - ../../../../staging/values/monitoring/values-cloudbeaver.yaml
-
-  # Security Dashboards (Trivy, Falco - Staging Only)
-  security-dashboards:
-    enabled: true
-    path: staging/charts/monitoring/security-dashboards
-    namespace: monitoring
-    syncWave: "2"
 
   # RDS Backup CronJob (pg_dump -> S3)
   rds-backup:
