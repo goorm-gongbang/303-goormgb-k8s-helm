@@ -44,3 +44,23 @@ spec:
     4318:
       mode: PERMISSIVE
 {{- end }}
+{{- if and .Values.mtls .Values.mtls.aiServices .Values.mtls.aiServices.enabled }}
+# AI 서비스 - Prometheus 메트릭 스크래핑을 위한 PERMISSIVE 설정
+{{- range $svc := .Values.mtls.aiServices.services }}
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: {{ $svc.name }}
+  namespace: {{ $.Values.mtls.aiServices.namespace | default "staging-ai" }}
+spec:
+  selector:
+    matchLabels:
+      {{- toYaml $svc.selector | nindent 6 }}
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    {{ $svc.metricsPort }}:
+      mode: PERMISSIVE
+{{- end }}
+{{- end }}

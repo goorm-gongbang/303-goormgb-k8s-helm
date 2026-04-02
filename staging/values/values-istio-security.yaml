@@ -245,6 +245,22 @@ mtls:
     selector:
       app.kubernetes.io/name: opentelemetry-collector
 
+  # AI 서비스 예외 설정
+  # Prometheus 메트릭 스크래핑을 위해 PERMISSIVE 모드 필요
+  aiServices:
+    enabled: true
+    namespace: staging-ai
+    # AI Defense 메트릭 포트 (8000)에 대해 PERMISSIVE 허용
+    services:
+      - name: ai-defense
+        selector:
+          app: staging-ai-defense
+        metricsPort: 8000
+      - name: authz-adapter
+        selector:
+          app: staging-authz-adapter
+        metricsPort: 9090
+
 # ============================================================
 # JWT 인증 설정
 # ============================================================
