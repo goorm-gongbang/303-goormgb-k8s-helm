@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/seat"
-  tag: "af0aa1c.17"
+  tag: "f5e18b0.18"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
