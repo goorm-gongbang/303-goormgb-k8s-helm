@@ -878,7 +878,7 @@
         "options": [],
         "query": { "query": "label_values(istio_requests_total, destination_workload_namespace)", "refId": "PrometheusVariableQueryEditor-VariableQuery" },
         "refresh": 2,
-        "regex": "",
+        "regex": "loadtest.*",
         "skipUrlSync": false,
         "sort": 1,
         "type": "query"
