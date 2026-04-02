@@ -58,6 +58,8 @@ envFrom:
       name: service-config
   - secretRef:
       name: service-config
+  - secretRef:
+      name: mail-config
 
 livenessProbe:
   httpGet:

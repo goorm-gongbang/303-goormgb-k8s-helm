@@ -365,6 +365,14 @@ gitCharts:
     namespace: dev-ai
     syncWave: "-6"
 
+  mail-config:
+    enabled: true
+    path: common-charts/apps/mail-config
+    namespace: dev-webs
+    syncWave: "-5"
+    valueFiles:
+      - ../../../dev/values/apps/values-mail-config.yaml
+
   oauth2-proxy:
     enabled: true
     path: dev/charts/security/oauth2-proxy

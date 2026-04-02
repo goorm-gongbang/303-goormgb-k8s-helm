@@ -62,3 +62,12 @@ otel:
   enabled: true
   agentVersion: "2.11.0"
   collectorEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"
+
+# DB, Redis, JWT, Kafka, Mail - envFrom으로 주입
+envFrom:
+  - configMapRef:
+      name: service-config
+  - secretRef:
+      name: service-config
+  - secretRef:
+      name: mail-config

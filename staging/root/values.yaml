@@ -418,6 +418,15 @@ gitCharts:
     namespace: staging-ai
     syncWave: "-6"
 
+  # Mail Config (Gmail SMTP)
+  mail-config:
+    enabled: true
+    path: common-charts/apps/mail-config
+    namespace: staging-webs
+    syncWave: "-5"
+    valueFiles:
+      - ../../../staging/values/apps/values-mail-config.yaml
+
   # Karpenter NodePool & EC2NodeClass
   karpenter-config:
     enabled: true
