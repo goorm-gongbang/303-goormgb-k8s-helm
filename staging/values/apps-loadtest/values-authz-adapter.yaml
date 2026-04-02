@@ -19,6 +19,9 @@ tolerations:
   - key: loadtest
     value: "true"
     effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
 
 service:
   type: ClusterIP
