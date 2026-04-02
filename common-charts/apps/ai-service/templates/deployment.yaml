@@ -68,6 +68,8 @@ spec:
             {{- if .Values.otel.enabled }}
             - name: OTEL_SERVICE_NAME
               value: {{ .Release.Name }}
+            - name: OTEL_SERVICE_NAMESPACE
+              value: {{ .Release.Namespace }}
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "service.namespace={{ .Release.Namespace }}"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
