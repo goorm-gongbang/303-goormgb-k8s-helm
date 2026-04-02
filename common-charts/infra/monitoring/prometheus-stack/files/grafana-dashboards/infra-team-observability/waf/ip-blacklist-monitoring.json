@@ -338,7 +338,7 @@
     },
     {
       "datasource": {"type": "loki", "uid": "loki"},
-      "description": "블랙리스트에 추가된 IP 목록 (AI Defense 판정 기준)",
+      "description": "블랙리스트에 추가된 IP와 사유",
       "fieldConfig": {
         "defaults": {
           "color": {"mode": "thresholds"},
@@ -348,7 +348,8 @@
         },
         "overrides": [
           {"matcher": {"id": "byName", "options": "Count"}, "properties": [{"id": "custom.width", "value": 80}]},
-          {"matcher": {"id": "byName", "options": "IP"}, "properties": [{"id": "custom.width", "value": 150}]}
+          {"matcher": {"id": "byName", "options": "IP"}, "properties": [{"id": "custom.width", "value": 150}]},
+          {"matcher": {"id": "byName", "options": "Reason"}, "properties": [{"id": "custom.width", "value": 150}]}
         ]
       },
       "gridPos": {"h": 10, "w": 12, "x": 0, "y": 35},
@@ -363,23 +364,23 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "sum by (client_ip) (count_over_time({namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"blacklist\" | json | __error__=\"\" [$__range]))",
+          "expr": "sum by (ip, reason) (count_over_time({namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"IP added to blacklist\" | json | __error__=\"\" [$__range]))",
           "legendFormat": "",
           "queryType": "instant",
           "refId": "A"
         }
       ],
-      "title": "차단된 IP 목록 (Top 20)",
+      "title": "Blacklist 추가된 IP 목록",
       "transformations": [
         {"id": "sortBy", "options": {"fields": {}, "sort": [{"desc": true, "field": "Value"}]}},
         {"id": "limit", "options": {"limitField": 20}},
-        {"id": "organize", "options": {"renameByName": {"client_ip": "IP", "Value": "Count"}}}
+        {"id": "organize", "options": {"renameByName": {"ip": "IP", "reason": "Reason", "Value": "Count"}}}
       ],
       "type": "table"
     },
     {
       "datasource": {"type": "loki", "uid": "loki"},
-      "description": "블랙리스트 추가 이유 (AI Defense 판정 결과)",
+      "description": "블랙리스트 추가 상세 로그 (IP, reason, TTL)",
       "gridPos": {"h": 10, "w": 12, "x": 12, "y": 35},
       "id": 11,
       "options": {
@@ -396,12 +397,12 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"staging-ai\", app=\"staging-ai-defense\"} |= \"blacklist\" |= \"add\"",
+          "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"IP added to blacklist\" | json | line_format \"IP: {{.ip}} | Reason: {{.reason}} | TTL: {{.ttl}}\"",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Blacklist 추가 로그 (AI Defense)",
+      "title": "Blacklist 추가 로그 (authz-adapter)",
       "type": "logs"
     },
     {

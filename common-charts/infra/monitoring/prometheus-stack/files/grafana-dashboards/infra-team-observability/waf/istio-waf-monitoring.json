@@ -911,7 +911,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(authz_adapter_check_requests_total{result=\"block\"}[$__range])) or vector(0)",
+          "expr": "sum(increase(authz_adapter_check_requests_total{path_prefix!=\"blacklist\", result=\"block\"}[$__range])) or vector(0)",
           "legendFormat": "AI Block",
           "refId": "A"
         }
