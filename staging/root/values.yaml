@@ -625,7 +625,7 @@ applicationSets:
         syncWave: "17"
 
   loadtest-ai-services:
-    enabled: true
+    enabled: false  # load-test 경로는 ext_authz에서 제외되므로 AI 서비스 불필요
     syncWave: "15"
     namespace: loadtest-ai
     appNamePrefix: "loadtest"
