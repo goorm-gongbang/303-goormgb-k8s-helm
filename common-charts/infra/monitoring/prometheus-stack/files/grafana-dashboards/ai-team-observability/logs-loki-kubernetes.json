@@ -42,7 +42,7 @@
       "targets": [
         {
           "datasource": {"type": "loki", "uid": "loki"},
-          "expr": "sum by (app) (count_over_time({namespace=\"__AI_NAMESPACE__\", app=~\"$app\"} |~ \"$query\" [$__interval]))",
+          "expr": "sum by (app) (count_over_time({namespace=\"__AI_NAMESPACE__\", app=~\"$app\"} |~ \"$query\" | $healthFilter [$__interval]))",
           "legendFormat": "{{app}}",
           "refId": "A"
         }
@@ -69,7 +69,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"__AI_NAMESPACE__\", app=~\"$app\", container!=\"istio-proxy\"} |~ \"$level\" |~ \"$query\"",
+          "expr": "{namespace=\"__AI_NAMESPACE__\", app=~\"$app\", container!=\"istio-proxy\"} |~ \"$level\" |~ \"$query\" | $healthFilter",
           "queryType": "range",
           "refId": "A"
         }
@@ -94,11 +94,11 @@
       },
       {
         "allValue": ".+",
-        "current": {"selected": true, "text": ["All"], "value": ["$__all"]},
+        "current": {"selected": false, "text": [], "value": []},
         "datasource": {"type": "loki", "uid": "loki"},
         "definition": "label_values({namespace=\"__AI_NAMESPACE__\"}, app)",
         "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "label": "애플리케이션",
         "multi": true,
         "name": "app",
@@ -111,9 +111,9 @@
       },
       {
         "allValue": ".*",
-        "current": {"selected": true, "text": ["All"], "value": ["$__all"]},
+        "current": {"selected": false, "text": [], "value": []},
         "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "label": "로그 레벨",
         "multi": true,
         "name": "level",
@@ -133,6 +133,20 @@
         "options": [{"selected": true, "text": "", "value": ""}],
         "query": "",
         "type": "textbox"
+      },
+      {
+        "current": {"selected": true, "text": "Health Check 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready\""},
+        "hide": 0,
+        "includeAll": false,
+        "label": "Health Check",
+        "multi": false,
+        "name": "healthFilter",
+        "options": [
+          {"selected": true, "text": "Health Check 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready\""},
+          {"selected": false, "text": "전체 보기", "value": "|~ \".*\""}
+        ],
+        "query": "",
+        "type": "custom"
       }
     ]
   },
