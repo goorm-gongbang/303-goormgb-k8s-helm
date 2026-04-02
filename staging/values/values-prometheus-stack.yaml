@@ -191,6 +191,7 @@ grafana:
     enabled: true
     secretManagerKey: staging/monitoring/grafana
     oauthSecretManagerKey: staging/infra/oauth/google
+    oauthAllowInsecureEmailLookup: true
   provisioning:
     enabled: true
     users:
