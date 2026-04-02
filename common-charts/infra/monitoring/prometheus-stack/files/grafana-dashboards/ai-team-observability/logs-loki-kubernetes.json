@@ -42,7 +42,7 @@
       "targets": [
         {
           "datasource": {"type": "loki", "uid": "loki"},
-          "expr": "sum by (app) (count_over_time({namespace=\"__AI_NAMESPACE__\", app=~\"$app\"} |~ \"$query\" | $healthFilter [$__interval]))",
+          "expr": "sum by (app) (count_over_time({namespace=\"__AI_NAMESPACE__\", app=~\"$app\", app!=\"istio-proxy\"} |~ \"$query\" | $healthFilter [$__interval]))",
           "legendFormat": "{{app}}",
           "refId": "A"
         }
@@ -69,7 +69,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"__AI_NAMESPACE__\", app=~\"$app\", container!=\"istio-proxy\"} |~ \"$level\" |~ \"$query\" | $healthFilter",
+          "expr": "{namespace=\"__AI_NAMESPACE__\", app=~\"$app\", app!=\"istio-proxy\"} |~ \"$level\" |~ \"$query\" | $healthFilter",
           "queryType": "range",
           "refId": "A"
         }
@@ -94,13 +94,13 @@
       },
       {
         "allValue": ".+",
-        "current": {"selected": false, "text": [], "value": []},
+        "current": {"selected": true, "text": "All", "value": "$__all"},
         "datasource": {"type": "loki", "uid": "loki"},
         "definition": "label_values({namespace=\"__AI_NAMESPACE__\"}, app)",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": "애플리케이션",
-        "multi": true,
+        "multi": false,
         "name": "app",
         "options": [],
         "query": "label_values({namespace=\"__AI_NAMESPACE__\"}, app)",
@@ -111,11 +111,11 @@
       },
       {
         "allValue": ".*",
-        "current": {"selected": false, "text": [], "value": []},
+        "current": {"selected": true, "text": "All", "value": "$__all"},
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": "로그 레벨",
-        "multi": true,
+        "multi": false,
         "name": "level",
         "options": [
           {"selected": false, "text": "ERROR", "value": "ERROR|error"},
@@ -135,14 +135,14 @@
         "type": "textbox"
       },
       {
-        "current": {"selected": true, "text": "Health Check 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready\""},
+        "current": {"selected": true, "text": "Health/Metrics 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready|/metrics\""},
         "hide": 0,
         "includeAll": false,
-        "label": "Health Check",
+        "label": "필터",
         "multi": false,
         "name": "healthFilter",
         "options": [
-          {"selected": true, "text": "Health Check 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready\""},
+          {"selected": true, "text": "Health/Metrics 제외", "value": "!~ \"/healthz|/readyz|/livez|/health|/ready|/metrics\""},
           {"selected": false, "text": "전체 보기", "value": "|~ \".*\""}
         ],
         "query": "",

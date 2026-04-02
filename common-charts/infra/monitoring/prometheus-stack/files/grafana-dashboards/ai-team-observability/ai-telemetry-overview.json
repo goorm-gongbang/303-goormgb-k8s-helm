@@ -1268,7 +1268,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", destination_workload_namespace=\"__AI_NAMESPACE__\"}[1m])) by (grpc_code)",
+          "expr": "sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"__AI_NAMESPACE__\"}[1m])) by (grpc_code)",
           "legendFormat": "{{grpc_code}}",
           "refId": "A"
         }
@@ -1296,12 +1296,12 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", destination_workload_namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
+          "expr": "histogram_quantile(0.95, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
           "legendFormat": "p95",
           "refId": "A"
         },
         {
-          "expr": "histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", destination_workload_namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
+          "expr": "histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
           "legendFormat": "p99",
           "refId": "B"
         }
@@ -1329,7 +1329,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(authz_adapter_ai_defense_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\"}[1m])) by (status)",
+          "expr": "sum(rate(authz_adapter_ai_defense_requests_total{namespace=\"__AI_NAMESPACE__\"}[1m])) by (status)",
           "legendFormat": "AI Defense {{status}}",
           "refId": "A"
         }
@@ -1362,7 +1362,7 @@
       },
       "targets": [
         {
-          "expr": "100 * sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", grpc_code=\"OK\", destination_workload_namespace=\"__AI_NAMESPACE__\"}[5m])) / clamp_min(sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", destination_workload_namespace=\"__AI_NAMESPACE__\"}[5m])), 1)",
+          "expr": "100 * sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", grpc_code=\"OK\", namespace=\"__AI_NAMESPACE__\"}[5m])) / clamp_min(sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"__AI_NAMESPACE__\"}[5m])), 1)",
           "legendFormat": "",
           "refId": "A"
         }
@@ -1395,7 +1395,7 @@
       },
       "targets": [
         {
-          "expr": "sum(up{job=~\".*authz-adapter.*\", destination_workload_namespace=\"__AI_NAMESPACE__\"})",
+          "expr": "sum(up{job=~\".*authz-adapter.*\", namespace=\"__AI_NAMESPACE__\"})",
           "legendFormat": "",
           "refId": "A"
         }
@@ -1423,7 +1423,7 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(authz_adapter_ai_defense_duration_seconds_bucket{destination_workload_namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
+          "expr": "histogram_quantile(0.95, sum(rate(authz_adapter_ai_defense_duration_seconds_bucket{namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
           "legendFormat": "p95",
           "refId": "A"
         }
