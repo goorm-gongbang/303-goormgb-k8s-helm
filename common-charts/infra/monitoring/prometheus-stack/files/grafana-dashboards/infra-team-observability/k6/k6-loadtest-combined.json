@@ -2097,7 +2097,7 @@
       },
       "id": 105,
       "panels": [],
-      "title": "AWS RDS PostgreSQL",
+      "title": "공유 AWS RDS PostgreSQL",
       "type": "row"
     },
     {
@@ -2429,7 +2429,7 @@
       },
       "id": 106,
       "panels": [],
-      "title": "AWS ElastiCache Redis",
+      "title": "공유 AWS ElastiCache Redis",
       "type": "row"
     },
     {
@@ -2839,253 +2839,9 @@
         "x": 0,
         "y": 67
       },
-      "id": 107,
-      "panels": [],
-      "title": "AI 서비스",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisPlacement": "auto",
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 68
-      },
-      "id": 70,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "sum(rate(istio_requests_total{destination_workload=~\".*ai-defense.*\", destination_workload_namespace=~\".*-ai\"}[1m])) by (destination_workload)",
-          "legendFormat": "{{destination_workload}}",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "sum(rate(istio_requests_total{destination_workload=~\".*authz-adapter.*\", destination_workload_namespace=~\".*-ai\"}[1m])) by (destination_workload)",
-          "legendFormat": "{{destination_workload}}",
-          "refId": "B"
-        }
-      ],
-      "title": "AI 서비스 - 요청 속도",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisPlacement": "auto",
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 68
-      },
-      "id": 71,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload=~\".*ai-defense.*\", destination_workload_namespace=~\".*-ai\"}[1m])) by (le))",
-          "legendFormat": "ai-defense P95",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload=~\".*authz-adapter.*\", destination_workload_namespace=~\".*-ai\"}[1m])) by (le))",
-          "legendFormat": "authz-adapter P95",
-          "refId": "B"
-        }
-      ],
-      "title": "AI 서비스 - 지연시간 P95",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisPlacement": "auto",
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "percentunit"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 68
-      },
-      "id": 72,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "sum(rate(istio_requests_total{destination_workload=~\".*ai-defense.*\", destination_workload_namespace=~\".*-ai\", response_code=~\"5.*\"}[1m])) / sum(rate(istio_requests_total{destination_workload=~\".*ai-defense.*\", destination_workload_namespace=~\".*-ai\"}[1m])) or vector(0)",
-          "legendFormat": "ai-defense Error Rate",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "sum(rate(istio_requests_total{destination_workload=~\".*authz-adapter.*\", destination_workload_namespace=~\".*-ai\", response_code=~\"5.*\"}[1m])) / sum(rate(istio_requests_total{destination_workload=~\".*authz-adapter.*\", destination_workload_namespace=~\".*-ai\"}[1m])) or vector(0)",
-          "legendFormat": "authz-adapter Error Rate",
-          "refId": "B"
-        }
-      ],
-      "title": "AI 서비스 - 에러율",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 76
-      },
       "id": 108,
       "panels": [],
-      "title": "부하테스트 핵심 상태 요약",
+      "title": "부하테스트 핵심 상태 요약 (loadtest + 공유 인프라)",
       "type": "row"
     },
     {
@@ -3123,9 +2879,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 6,
         "x": 0,
-        "y": 77
+        "y": 68
       },
       "id": 80,
       "options": {
@@ -3191,9 +2947,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 77
+        "w": 6,
+        "x": 6,
+        "y": 68
       },
       "id": 81,
       "options": {
@@ -3259,9 +3015,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 77
+        "w": 6,
+        "x": 12,
+        "y": 68
       },
       "id": 82,
       "options": {
@@ -3340,9 +3096,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 77
+        "w": 6,
+        "x": 18,
+        "y": 68
       },
       "id": 83,
       "options": {
@@ -3384,145 +3140,6 @@
         }
       ],
       "title": "ElastiCache Evictions",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "Redis exporter 수집 상태",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "color": "red",
-                  "index": 0,
-                  "text": "DOWN"
-                },
-                "1": {
-                  "color": "green",
-                  "index": 1,
-                  "text": "UP"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 77
-      },
-      "id": 84,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "min(redis_up{release=\"redis-ai\"})",
-          "legendFormat": "redis_up",
-          "refId": "A"
-        }
-      ],
-      "title": "Redis Status",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "Redis 사용 메모리",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 77
-      },
-      "id": 85,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "sum(redis_memory_used_bytes{release=\"redis-ai\"})",
-          "legendFormat": "memory_used",
-          "refId": "A"
-        }
-      ],
-      "title": "Redis Used Memory",
       "type": "stat"
     }
   ],
@@ -3576,7 +3193,7 @@
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
-        "regex": "(loadtest|staging)-(webs|ai)",
+        "regex": "loadtest-(webs|ai)",
         "skipUrlSync": false,
         "sort": 1,
         "type": "query",
@@ -3606,7 +3223,7 @@
         "options": [],
         "query": "label_values(http_server_request_duration_seconds_count{namespace=~\"$namespace\"}, app)",
         "refresh": 1,
-        "regex": "(loadtest|staging)-.*",
+        "regex": "loadtest-.*",
         "sort": 1,
         "skipUrlSync": false,
         "type": "query"
