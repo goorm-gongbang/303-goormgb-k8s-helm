@@ -27,7 +27,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "k6에서 발생시킨 초당 요청 수",
+      "description": "k6 클라이언트가 발생시킨 초당 요청 수입니다. 테스트 송신 기준입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -79,7 +79,7 @@
           "refId": "A"
         }
       ],
-      "title": "k6 RPS",
+      "title": "k6 송신 RPS",
       "type": "stat"
     },
     {
@@ -87,7 +87,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "k6 HTTP 요청 평균 응답 시간",
+      "description": "k6 클라이언트 관점 응답시간 P50입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -147,7 +147,7 @@
           "refId": "A"
         }
       ],
-      "title": "k6 응답시간 (P50)",
+      "title": "k6 응답시간 P50",
       "type": "stat"
     },
     {
@@ -155,7 +155,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "k6 HTTP 요청 에러율",
+      "description": "k6 클라이언트 관점 요청 실패율입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -215,7 +215,7 @@
           "refId": "A"
         }
       ],
-      "title": "k6 에러율",
+      "title": "k6 실패율",
       "type": "stat"
     },
     {
@@ -423,7 +423,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "초당 전체 요청 수 (RPS)",
+      "description": "애플리케이션이 실제로 수신한 초당 요청 수입니다. 서비스 수신 기준입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -475,7 +475,7 @@
           "refId": "A"
         }
       ],
-      "title": "Requests/sec (RPS)",
+      "title": "서비스 수신 RPS",
       "type": "stat"
     },
     {
@@ -483,7 +483,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "초당 비즈니스 성공 트랜잭션 수입니다. HTTP 2xx 이면서 응답 body의 code == \"OK\" 인 경우만 집계합니다.",
+      "description": "서비스 관점 비즈니스 성공 TPS입니다. HTTP 2xx 이면서 응답 body의 code == \"OK\" 인 경우만 집계합니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -535,7 +535,7 @@
           "refId": "A"
         }
       ],
-      "title": "Business OK TPS",
+      "title": "서비스 성공 TPS",
       "type": "stat"
     },
     {
@@ -543,7 +543,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "평균 응답 시간",
+      "description": "서비스 관점 평균 응답 시간입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -603,7 +603,7 @@
           "refId": "A"
         }
       ],
-      "title": "Avg Response Time",
+      "title": "서비스 평균 응답시간",
       "type": "stat"
     },
     {
@@ -611,7 +611,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "P95 응답 시간",
+      "description": "서비스 관점 P95 응답 시간입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -671,7 +671,7 @@
           "refId": "A"
         }
       ],
-      "title": "P95 Response Time",
+      "title": "서비스 P95 응답시간",
       "type": "stat"
     },
     {
@@ -679,7 +679,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "5xx 에러율",
+      "description": "서비스 관점 5xx 에러율입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -739,7 +739,7 @@
           "refId": "A"
         }
       ],
-      "title": "Error Rate (5xx)",
+      "title": "서비스 5xx 에러율",
       "type": "stat"
     },
     {
@@ -747,7 +747,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "선택 기간 총 요청 수",
+      "description": "서비스가 선택 기간 동안 수신한 총 요청 수입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -799,7 +799,7 @@
           "refId": "A"
         }
       ],
-      "title": "Total Requests",
+      "title": "서비스 총 요청 수",
       "type": "stat"
     },
     {
@@ -3074,6 +3074,456 @@
       ],
       "title": "AI 서비스 - 에러율",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 76
+      },
+      "id": 108,
+      "panels": [],
+      "title": "부하테스트 핵심 상태 요약",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "애플리케이션 5xx 에러 건수",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 77
+      },
+      "id": 80,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(increase(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app\", http_response_status_code=~\"5..\"}[$__range])) or on() vector(0)",
+          "legendFormat": "5xx",
+          "refId": "A"
+        }
+      ],
+      "title": "App 5xx Count",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "애플리케이션 응답시간 P99",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 3000
+              },
+              {
+                "color": "red",
+                "value": 5000
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 77
+      },
+      "id": 81,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{namespace=~\"$namespace\", app=~\"$app\"}[$__rate_interval]))) * 1000",
+          "legendFormat": "P99",
+          "refId": "A"
+        }
+      ],
+      "title": "App P99",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
+      "description": "ElastiCache Engine CPU 사용률",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 77
+      },
+      "id": 82,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "alias": "Engine CPU",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "cloudwatch"
+          },
+          "dimensions": {
+            "CacheClusterId": "goormgb-staging-redis-001"
+          },
+          "expression": "",
+          "id": "",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "EngineCPUUtilization",
+          "metricQueryType": 0,
+          "namespace": "AWS/ElastiCache",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "statistic": "Average"
+        }
+      ],
+      "title": "ElastiCache Engine CPU",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
+      "description": "ElastiCache 메모리 부족 축출 건수",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 77
+      },
+      "id": 83,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "alias": "Evictions",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "cloudwatch"
+          },
+          "dimensions": {
+            "CacheClusterId": "goormgb-staging-redis-001"
+          },
+          "expression": "",
+          "id": "",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "Evictions",
+          "metricQueryType": 0,
+          "namespace": "AWS/ElastiCache",
+          "period": "300",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "statistic": "Sum"
+        }
+      ],
+      "title": "ElastiCache Evictions",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Redis exporter 수집 상태",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "index": 0,
+                  "text": "DOWN"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "UP"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 77
+      },
+      "id": 84,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "min(redis_up{release=\"redis-ai\"})",
+          "legendFormat": "redis_up",
+          "refId": "A"
+        }
+      ],
+      "title": "Redis Status",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Redis 사용 메모리",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 77
+      },
+      "id": 85,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(redis_memory_used_bytes{release=\"redis-ai\"})",
+          "legendFormat": "memory_used",
+          "refId": "A"
+        }
+      ],
+      "title": "Redis Used Memory",
+      "type": "stat"
     }
   ],
   "refresh": "5s",
