@@ -77,7 +77,14 @@ kiali-server:
     web_schema: https
 
   auth:
-    strategy: anonymous  # CloudFront + ACM 뒤에서 동작
+    strategy: openid
+    openid:
+      client_id_from_secret: kiali-oidc-secret
+      client_id_secret_key: client_id
+      issuer_uri: "https://accounts.google.com"
+      scopes: ["openid", "email", "profile"]
+      username_claim: "email"
+      disable_rbac: true
 
   # Istio 라벨 설정 - app 라벨 사용 (app.kubernetes.io/name 대신)
   istio_labels:
@@ -124,6 +131,7 @@ kialiVirtualService:
   enabled: true
   host: "kiali.staging.playball.one"
 
-# Kiali OIDC - 비활성화 (CloudFront 뒤에서 동작)
+# Kiali OIDC - Google OAuth
 oidc:
-  enabled: false
+  enabled: true
+  secretManagerKey: "staging/infra/oauth/teams-allow"

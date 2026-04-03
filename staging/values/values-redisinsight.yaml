@@ -29,14 +29,14 @@ oauth2Proxy:
     limits:
       cpu: 100m
       memory: 128Mi
-  # ESO: staging/infra/oauth/redisinsight
+  # ESO: staging/infra/oauth/teams-allow
   eso:
     enabled: true
     secretStoreRef:
       name: "aws-secrets-manager"
       kind: "ClusterSecretStore"
     remoteRef:
-      key: "staging/infra/oauth/redisinsight"
+      key: "staging/infra/oauth/teams-allow"
 
 service:
   type: ClusterIP
