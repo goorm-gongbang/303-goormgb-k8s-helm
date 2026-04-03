@@ -33,10 +33,11 @@ meshConfig:
   enableTracing: true
 
   # Istio 1.22+ extensionProviders 방식 (Telemetry API 연동)
+  # otel-collector 경유 (mTLS 비활성화됨, tempo 직접 연결시 mTLS 문제 발생)
   extensionProviders:
     - name: zipkin
       zipkin:
-        service: tempo.monitoring.svc.cluster.local
+        service: otel-collector.monitoring.svc.cluster.local
         port: 9411
 
   # 기본 tracing provider 설정
