@@ -6,7 +6,7 @@ replicaCount: 3
 
 image:
   name: "staging/playball/web/api-gateway"
-  tag: "069d0b1.21"
+  tag: "428a3a6.23"
   pullPolicy: Always
 
 imagePullSecrets: []
