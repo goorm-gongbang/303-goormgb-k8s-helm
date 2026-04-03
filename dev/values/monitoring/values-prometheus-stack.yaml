@@ -11,7 +11,7 @@ gateway:
     tls:
       credentialName: goormgb-tls
   prometheus:
-    enabled: true
+    enabled: false
     host: "prometheus.goormgb.space"
 
 # Dashboard 설정 (kubeadm 환경: EKS/CloudWatch 전용 대시보드 제외)
