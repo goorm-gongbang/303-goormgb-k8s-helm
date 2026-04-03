@@ -78,7 +78,13 @@ clustering:
   enabled: false
 
 auth:
-  strategy: anonymous
+  strategy: openid
+  openid:
+    client_id: "1089953130952-jok8g6t718k2g4vl7leufoc4tjmiqgt1.apps.googleusercontent.com"
+    issuer_uri: "https://accounts.google.com"
+    scopes: ["openid", "email", "profile"]
+    username_claim: "email"
+    disable_rbac: true
 
 deployment:
   node_selector:
