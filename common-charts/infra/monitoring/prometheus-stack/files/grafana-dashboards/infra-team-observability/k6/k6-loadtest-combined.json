@@ -530,7 +530,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(rate(business_ok_transactions[$__rate_interval]))",
+          "expr": "sum(rate(business_ok_transactions{testid=~\"$testid\"}[$__rate_interval])) or on() vector(0)",
           "legendFormat": "Business OK TPS",
           "refId": "A"
         }
@@ -940,7 +940,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(rate(business_ok_transactions[$__rate_interval]))",
+          "expr": "sum(rate(business_ok_transactions{testid=~\"$testid\"}[$__rate_interval])) or on() vector(0)",
           "legendFormat": "Business OK TPS",
           "refId": "B"
         }
@@ -3051,7 +3051,7 @@
           "metricName": "EngineCPUUtilization",
           "metricQueryType": 0,
           "namespace": "AWS/ElastiCache",
-          "period": "300",
+          "period": "60",
           "queryMode": "Metrics",
           "refId": "A",
           "region": "ap-northeast-2",
@@ -3132,7 +3132,7 @@
           "metricName": "Evictions",
           "metricQueryType": 0,
           "namespace": "AWS/ElastiCache",
-          "period": "300",
+          "period": "60",
           "queryMode": "Metrics",
           "refId": "A",
           "region": "ap-northeast-2",
