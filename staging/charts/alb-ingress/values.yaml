@@ -47,7 +47,8 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
 
     # Prometheus Remote Write - Istio IngressGateway 거침
     - host: prometheus.staging.playball.one
@@ -55,7 +56,8 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
 
     # CloudBeaver - Istio IngressGateway 거침 (DB 관리 - 부하테스트용)
     - host: cloudbeaver.staging.playball.one
@@ -63,7 +65,8 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
 
     # Infra Console - Istio IngressGateway 거침
     - host: console.staging.playball.one
@@ -71,7 +74,8 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
 
     # Kafka UI - Istio IngressGateway 거침
     - host: kafka-ui.staging.playball.one
@@ -79,7 +83,8 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
 
     # RedisInsight - Istio IngressGateway 거침
     - host: redis.staging.playball.one
@@ -87,4 +92,5 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
