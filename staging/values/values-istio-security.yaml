@@ -54,6 +54,15 @@ excludePaths:
   # Socket.IO (실시간 폴링 - sid 패턴이 SQL 주입으로 오탐됨)
   - "/socket.io/"
 
+  # 정적 파일 (JS, CSS 등 - 파일명에 특수문자 포함 가능)
+  - "/assets/"
+
+  # Grafana Explore (PromQL/LogQL 쿼리 포함)
+  - "/explore"
+
+  # Grafana 데이터소스 쿼리 API
+  - "/api/ds/query"
+
   # Health checks
   - "/health"
   - "/healthz"
