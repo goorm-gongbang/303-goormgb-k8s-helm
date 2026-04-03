@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "redisinsight.fullname" . }}
+  labels:
+    {{- include "redisinsight.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "redisinsight.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "redisinsight.selectorLabels" . | nindent 8 }}
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        {{- if .Values.oauth2Proxy.enabled }}
+        # OAuth2 Proxy sidecar
+        - name: oauth2-proxy
+          image: "{{ .Values.oauth2Proxy.image.repository }}:{{ .Values.oauth2Proxy.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          args:
+            - --provider={{ .Values.oauth2Proxy.config.provider }}
+            - --email-domain=*
+            - --http-address=0.0.0.0:4180
+            - --cookie-secure={{ .Values.oauth2Proxy.config.cookieSecure }}
+            {{- if .Values.oauth2Proxy.config.cookieDomain }}
+            - --cookie-domain={{ .Values.oauth2Proxy.config.cookieDomain }}
+            {{- end }}
+            - --cookie-samesite=lax
+            - --cookie-refresh={{ .Values.oauth2Proxy.config.cookieRefresh }}
+            - --cookie-expire={{ .Values.oauth2Proxy.config.cookieExpire }}
+            - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails.txt
+            - --skip-provider-button=false
+            - --reverse-proxy=true
+            - --proxy-prefix=/oauth2
+            - --upstream=http://127.0.0.1:5540
+          envFrom:
+            - secretRef:
+                name: {{ include "redisinsight.fullname" . }}-oauth
+          ports:
+            - name: http
+              containerPort: 4180
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.oauth2Proxy.resources | nindent 12 }}
+          volumeMounts:
+            - name: oauth-emails
+              mountPath: /etc/oauth2-proxy
+              readOnly: true
+        {{- end }}
+        # RedisInsight
+        - name: redisinsight
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: ri-http
+              containerPort: 5540
+              protocol: TCP
+          {{- if and .Values.virtualService.enabled .Values.virtualService.hosts }}
+          env:
+            - name: RITRUSTEDORIGINS
+              value: "https://{{ index .Values.virtualService.hosts 0 }}"
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: ri-http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: ri-http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "redisinsight.fullname" . }}-data
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- if .Values.oauth2Proxy.enabled }}
+        - name: oauth-emails
+          secret:
+            secretName: {{ include "redisinsight.fullname" . }}-emails
+        {{- end }}

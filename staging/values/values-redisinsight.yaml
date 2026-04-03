@@ -1,5 +1,5 @@
-# RedisInsight for Dev (kubeadm-dev)
-# URL: https://redisinsight.goormgb.space
+# RedisInsight for Staging
+# URL: https://redis.staging.playball.one
 # Google OAuth 인증 필요
 
 replicaCount: 1
@@ -19,7 +19,7 @@ oauth2Proxy:
   config:
     provider: google
     cookieSecure: true
-    cookieDomain: ".goormgb.space"
+    cookieDomain: ".staging.playball.one"
     cookieRefresh: "1h"
     cookieExpire: "4h"
   resources:
@@ -29,27 +29,27 @@ oauth2Proxy:
     limits:
       cpu: 100m
       memory: 128Mi
-  # ESO: dev/infra/oauth/redisinsight
+  # ESO: staging/infra/oauth/redisinsight
   eso:
     enabled: true
     secretStoreRef:
       name: "aws-secrets-manager"
       kind: "ClusterSecretStore"
     remoteRef:
-      key: "dev/infra/oauth/redisinsight"
+      key: "staging/infra/oauth/redisinsight"
 
 service:
   type: ClusterIP
   port: 4180
 
-# CP node placement
+# Monitoring node placement
 nodeSelector:
-  kubernetes.io/hostname: mini-gmk
+  role: monitoring
 
 tolerations:
-  - key: "node-role.kubernetes.io/control-plane"
-    operator: "Exists"
-    effect: "NoSchedule"
+  - key: role
+    value: monitoring
+    effect: NoSchedule
 
 resources:
   requests:
@@ -62,14 +62,14 @@ resources:
 persistence:
   enabled: true
   size: 1Gi
-  storageClass: local-path
+  storageClass: gp3
 
 virtualService:
   enabled: true
-  gateway: "istio-system/goormgb-gateway"
+  gateway: "istio-system/api-gateway"
   hosts:
-    - "redisinsight.goormgb.space"
+    - "redis.staging.playball.one"
 
-# Redis connections (UI):
-# redis-cache: redis-cache.data.svc.cluster.local:6379
-# redis-queue: redis-queue.data.svc.cluster.local:6379
+# Redis connection (UI): ElastiCache
+# Host: staging 환경의 ElastiCache endpoint
+# Port: 6379

@@ -541,6 +541,15 @@ gitCharts:
     valueFiles:
       - ../../../staging/values/values-infra-console.yaml
 
+  # RedisInsight (Redis GUI with Google OAuth)
+  redisinsight:
+    enabled: true
+    path: common-charts/infra/redisinsight
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../staging/values/values-redisinsight.yaml
+
   # === Messaging (Kafka) ===
   kafka:
     enabled: false  # 임시 비활성화
