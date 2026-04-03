@@ -2,7 +2,7 @@
   "annotations": {
     "list": []
   },
-  "description": "k6 부하테스트 통합 대시보드 - 서비스 메트릭, Istio 수신 메트릭, 리소스 사용량",
+  "description": "k6 부하테스트 수신 대시보드 - 서비스 메트릭, Istio 수신 메트릭, 리소스 사용량",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -2760,7 +2760,7 @@
         "options": [],
         "query": "label_values(http_server_request_duration_seconds_count{namespace=~\"$namespace\"}, app)",
         "refresh": 1,
-        "regex": "",
+        "regex": "loadtest-.*",
         "sort": 1,
         "skipUrlSync": false,
         "type": "query"
@@ -2802,7 +2802,7 @@
   },
   "timepicker": {},
   "timezone": "Asia/Seoul",
-  "title": "k6 부하테스트 - 통합",
+  "title": "k6 부하테스트 - 수신",
   "uid": "k6-loadtest-combined",
   "version": 1
 }
