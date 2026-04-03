@@ -74,7 +74,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(rate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval]))",
+          "expr": "sum(rate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval])) or on() vector(0)",
           "legendFormat": "RPS",
           "refId": "A"
         }
@@ -142,7 +142,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "avg(k6_http_req_duration{testid=~\"$testid\", quantile=\"0.5\"})",
+          "expr": "avg(k6_http_req_duration{testid=~\"$testid\", quantile=\"0.5\"}) or on() vector(0)",
           "legendFormat": "Avg",
           "refId": "A"
         }
@@ -210,7 +210,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(rate(k6_http_req_failed{testid=~\"$testid\"}[$__rate_interval])) / sum(rate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval])) * 100",
+          "expr": "(sum(rate(k6_http_req_failed{testid=~\"$testid\"}[$__rate_interval])) / clamp_min(sum(rate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval])), 1)) * 100 or on() vector(0)",
           "legendFormat": "Error %",
           "refId": "A"
         }
@@ -270,7 +270,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(k6_vus{testid=~\"$testid\"})",
+          "expr": "sum(k6_vus{testid=~\"$testid\"}) or on() vector(0)",
           "legendFormat": "VUs",
           "refId": "A"
         }
@@ -3576,7 +3576,7 @@
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
-        "regex": "loadtest-(webs|ai)",
+        "regex": "(loadtest|staging)-(webs|ai)",
         "skipUrlSync": false,
         "sort": 1,
         "type": "query",
@@ -3606,7 +3606,7 @@
         "options": [],
         "query": "label_values(http_server_request_duration_seconds_count{namespace=~\"$namespace\"}, app)",
         "refresh": 1,
-        "regex": "loadtest-.*",
+        "regex": "(loadtest|staging)-.*",
         "sort": 1,
         "skipUrlSync": false,
         "type": "query"
