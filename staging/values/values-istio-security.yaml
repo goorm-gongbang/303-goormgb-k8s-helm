@@ -369,6 +369,5 @@ adminTools:
     protectedHosts:
       - "cloudbeaver.staging.playball.one"
       - "kafka-ui.staging.playball.one"
-      - "prometheus.staging.playball.one"
       - "kiali.staging.playball.one"
       - "grafana.staging.playball.one"
