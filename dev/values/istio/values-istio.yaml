@@ -79,7 +79,6 @@ sharedGateway:
     - "hubble.goormgb.space"
     - "kafka-ui.goormgb.space"
     - "kiali.goormgb.space"
-    - "prometheus.goormgb.space"
     - "redisinsight.goormgb.space"
 
 # ===== Kiali =====

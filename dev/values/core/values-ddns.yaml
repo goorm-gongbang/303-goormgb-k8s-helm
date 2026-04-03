@@ -12,7 +12,6 @@ records:
   - "argocd" # argocd.goormgb.space
   - "grafana" # grafana.goormgb.space
   - "kiali" # kiali.goormgb.space
-  - "prometheus" # prometheus.goormgb.space (k6 remote write)
   - "cloudbeaver" # cloudbeaver.goormgb.space
   # dev.goormgb.space는 Vercel CNAME이라 제외
 
