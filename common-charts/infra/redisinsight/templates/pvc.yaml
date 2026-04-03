@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: redisinsight-data
+  name: {{ include "redisinsight.fullname" . }}-data
   labels:
-    app: redisinsight
+    {{- include "redisinsight.labels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteOnce

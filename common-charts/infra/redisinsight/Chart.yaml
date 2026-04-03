@@ -1,6 +1,6 @@
 apiVersion: v2
 name: redisinsight
-description: RedisInsight - Redis GUI tool by Redis Labs
+description: Redis GUI tool secured by Google OAuth (OAuth2 Proxy sidecar)
 type: application
 version: 1.0.0
 appVersion: "2.68"
