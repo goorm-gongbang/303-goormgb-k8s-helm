@@ -9,6 +9,9 @@ tolerations:
   - key: role
     value: monitoring
     effect: NoSchedule
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
 
 tempo:
   resources:

@@ -45,6 +45,9 @@ singleBinary:
     - key: role
       value: monitoring
       effect: NoSchedule
+    - key: loadtest
+      value: "true"
+      effect: NoSchedule
   persistence:
     enabled: true
     size: 20Gi
