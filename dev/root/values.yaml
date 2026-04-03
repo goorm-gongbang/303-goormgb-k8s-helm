@@ -553,10 +553,10 @@ gitCharts:
 
   redisinsight:
     enabled: true
-    path: dev/charts/data/redisinsight
+    path: common-charts/infra/redisinsight
     namespace: data
     valueFiles:
-      - ../../../values/data/values-redisinsight.yaml
+      - ../../../dev/values/data/values-redisinsight.yaml
 
   # === Messaging (Kafka) ===
   kafka:

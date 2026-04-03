@@ -1,0 +1,14 @@
+{{- if .Values.virtualService.enabled }}
+# Disable mTLS for RedisInsight (no Istio sidecar)
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: {{ include "redisinsight.fullname" . }}
+  labels:
+    {{- include "redisinsight.labels" . | nindent 4 }}
+spec:
+  host: {{ include "redisinsight.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+{{- end }}

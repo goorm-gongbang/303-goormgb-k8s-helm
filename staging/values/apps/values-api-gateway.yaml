@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/api-gateway"
-  tag: "de7ce81.11"
+  tag: "274533b.24"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -100,6 +100,11 @@ env:
       secretKeyRef:
         name: service-config
         key: SPRING_DATA_REDIS_PORT
+  # HikariCP connection pool 크기 조정
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
 
 envFrom:
   - configMapRef:

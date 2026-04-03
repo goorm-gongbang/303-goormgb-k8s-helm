@@ -1,11 +1,11 @@
 # order-core - Load-test 환경
 fullnameOverride: "order-core"
 contextPath: "/order"
-replicaCount: 2
+replicaCount: 1
 
 image:
   name: "staging/playball/web/order-core"
-  tag: "de7ce81.10"
+  tag: "069d0b1.20"
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -17,6 +17,9 @@ tolerations:
   - key: loadtest
     value: "true"
     effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
 
 affinity:
   podAntiAffinity:
@@ -43,6 +46,17 @@ servicePort: &port 8083
 service:
   type: ClusterIP
   port: *port
+
+# HikariCP connection pool 크기 조정 (부하테스트용)
+env:
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
+
+  # 로그 레벨 WARN (부하테스트 시 로그 감소)
+  - name: LOGGING_LEVEL_ROOT
+    value: "WARN"
 
 envFrom:
   - configMapRef:

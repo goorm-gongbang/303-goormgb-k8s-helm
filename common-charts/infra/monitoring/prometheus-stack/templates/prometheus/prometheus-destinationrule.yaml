@@ -1,0 +1,10 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: prom-prometheus-mtls-disable
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: prom-prometheus.{{ .Release.Namespace }}.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

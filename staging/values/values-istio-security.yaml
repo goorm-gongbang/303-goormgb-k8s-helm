@@ -54,6 +54,15 @@ excludePaths:
   # Socket.IO (실시간 폴링 - sid 패턴이 SQL 주입으로 오탐됨)
   - "/socket.io/"
 
+  # 정적 파일 (JS, CSS 등 - 파일명에 특수문자 포함 가능)
+  - "/assets/"
+
+  # Grafana Explore (PromQL/LogQL 쿼리 포함)
+  - "/explore"
+
+  # Grafana 데이터소스 쿼리 API
+  - "/api/ds/query"
+
   # Health checks
   - "/health"
   - "/healthz"
@@ -344,7 +353,7 @@ jwtAuth:
 # ============================================================
 adminTools:
   ipWhitelist:
-    enabled: false  # IP 관리 어려움 - OAuth2 Proxy로 대체 권장
+    enabled: false  # 테스트 후 활성화
     # 허용된 IP 목록 (팀원 IP)
     allowedIPs:
       - "59.12.199.140"
@@ -369,6 +378,6 @@ adminTools:
     protectedHosts:
       - "cloudbeaver.staging.playball.one"
       - "kafka-ui.staging.playball.one"
-      - "prometheus.staging.playball.one"
       - "kiali.staging.playball.one"
       - "grafana.staging.playball.one"
+      - "redis.staging.playball.one"

@@ -8,7 +8,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      {{- if .Values.oauth2Proxy.enabled }}
+      targetPort: http  # OAuth2 Proxy port
+      {{- else }}
+      targetPort: cb-http  # CloudBeaver direct
+      {{- end }}
       protocol: TCP
       name: http
   selector:

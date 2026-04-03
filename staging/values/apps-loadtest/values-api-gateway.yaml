@@ -2,11 +2,11 @@
 # /load-test/ prefix로 라우팅되는 부하 테스트 전용
 fullnameOverride: "api-gateway"
 contextPath: ""
-replicaCount: 2  # 2세트
+replicaCount: 3
 
 image:
   name: "staging/playball/web/api-gateway"
-  tag: "de7ce81.11"
+  tag: "274533b.24"
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -19,6 +19,9 @@ tolerations:
   - key: loadtest
     value: "true"
     effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
 
 # HA: 노드 분산
 affinity:
@@ -33,11 +36,11 @@ affinity:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 512Mi
-  limits:
-    cpu: "1"
+    cpu: 500m
     memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 # Istio - VirtualService는 별도 관리
 istio:
@@ -73,6 +76,14 @@ env:
       secretKeyRef:
         name: service-config
         key: SPRING_DATA_REDIS_PORT
+  # HikariCP connection pool 크기 조정 (부하테스트용)
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
+  # 로그 레벨 WARN (부하테스트 시 로그 감소)
+  - name: LOGGING_LEVEL_ROOT
+    value: "WARN"
 
 envFrom:
   - configMapRef:

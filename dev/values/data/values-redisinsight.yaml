@@ -1,5 +1,6 @@
-# kubeadm-dev - RedisInsight 설정
-# Domain: redisinsight.goormgb.space
+# RedisInsight for Dev (kubeadm-dev)
+# URL: https://redisinsight.goormgb.space
+# Google OAuth 인증 필요
 
 replicaCount: 1
 
@@ -8,7 +9,40 @@ image:
   tag: "2.68"
   pullPolicy: IfNotPresent
 
-# CP 노드에 배치
+# OAuth2 Proxy sidecar
+oauth2Proxy:
+  enabled: true
+  image:
+    repository: quay.io/oauth2-proxy/oauth2-proxy
+    tag: "v7.6.0"
+  port: 4180
+  config:
+    provider: google
+    cookieSecure: true
+    cookieDomain: ".goormgb.space"
+    cookieRefresh: "1h"
+    cookieExpire: "4h"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+  # ESO: dev/infra/oauth/teams-allow
+  eso:
+    enabled: true
+    secretStoreRef:
+      name: "aws-secrets-manager"
+      kind: "ClusterSecretStore"
+    remoteRef:
+      key: "dev/infra/oauth/teams-allow"
+
+service:
+  type: ClusterIP
+  port: 4180
+
+# CP node placement
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
 
@@ -27,15 +61,15 @@ resources:
 
 persistence:
   enabled: true
-  storageClass: local-path
   size: 1Gi
+  storageClass: local-path
 
-# Istio VirtualService
 virtualService:
   enabled: true
-  host: "redisinsight.goormgb.space"
   gateway: "istio-system/goormgb-gateway"
+  hosts:
+    - "redisinsight.goormgb.space"
 
-# Redis connection info (RedisInsight UI에서 직접 연결 설정)
+# Redis connections (UI):
 # redis-cache: redis-cache.data.svc.cluster.local:6379
 # redis-queue: redis-queue.data.svc.cluster.local:6379

@@ -541,6 +541,15 @@ gitCharts:
     valueFiles:
       - ../../../staging/values/values-infra-console.yaml
 
+  # RedisInsight (Redis GUI with Google OAuth)
+  redisinsight:
+    enabled: true
+    path: common-charts/infra/redisinsight
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../staging/values/values-redisinsight.yaml
+
   # === Messaging (Kafka) ===
   kafka:
     enabled: false  # 임시 비활성화
@@ -606,7 +615,7 @@ applicationSets:
 
   # Load-test 전용 서비스 (k6 부하 테스트용)
   loadtest-webs-services:
-    enabled: false  # 부하테스트 시 활성화
+    enabled: true
     syncWave: "15"
     namespace: loadtest-webs
     appNamePrefix: "loadtest"
@@ -625,7 +634,7 @@ applicationSets:
         syncWave: "17"
 
   loadtest-ai-services:
-    enabled: false  # 부하테스트 시 활성화
+    enabled: false  # load-test 경로는 ext_authz에서 제외되므로 AI 서비스 불필요
     syncWave: "15"
     namespace: loadtest-ai
     appNamePrefix: "loadtest"

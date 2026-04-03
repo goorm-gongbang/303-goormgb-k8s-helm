@@ -1,10 +1,12 @@
-# CloudBeaver for Staging
-# Google OAuth via OAuth2 Proxy sidecar
+# RedisInsight for Staging
+# URL: https://redis.staging.playball.one
+# Google OAuth 인증 필요
+
 replicaCount: 1
 
 image:
-  repository: dbeaver/cloudbeaver
-  tag: "24.0.0"
+  repository: redis/redisinsight
+  tag: "2.68"
   pullPolicy: IfNotPresent
 
 # OAuth2 Proxy sidecar
@@ -38,21 +40,9 @@ oauth2Proxy:
 
 service:
   type: ClusterIP
-  port: 4180  # OAuth2 Proxy port
+  port: 4180
 
-resources:
-  requests:
-    cpu: 100m
-    memory: 512Mi
-  limits:
-    cpu: 500m
-    memory: 1536Mi
-
-persistence:
-  enabled: true
-  size: 2Gi
-  storageClass: gp3
-
+# Monitoring node placement
 nodeSelector:
   role: monitoring
 
@@ -61,8 +51,25 @@ tolerations:
     value: monitoring
     effect: NoSchedule
 
-# Istio VirtualService
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: gp3
+
 virtualService:
   enabled: true
-  host: "cloudbeaver.staging.playball.one"
   gateway: "istio-system/api-gateway"
+  hosts:
+    - "redis.staging.playball.one"
+
+# Redis connection (UI): ElastiCache
+# Host: staging 환경의 ElastiCache endpoint
+# Port: 6379

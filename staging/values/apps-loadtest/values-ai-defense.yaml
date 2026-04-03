@@ -1,7 +1,7 @@
 # ai-defense - Load-test 환경
 # Python FastAPI 기반 AI Defense API
 
-replicaCount: 2
+replicaCount: 1
 
 command:
   - "python"
@@ -18,7 +18,7 @@ args:
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
-  tag: "20260401-010708"
+  tag: "4cf452e.5"
   name: "staging/playball/ai/defense"
   pullPolicy: Always
 
@@ -67,6 +67,9 @@ tolerations:
   - key: loadtest
     value: "true"
     effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
 
 resources:
   requests:

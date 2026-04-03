@@ -67,18 +67,30 @@ apiGatewayConfig:
     - "cloudbeaver.staging.playball.one"
     - "console.staging.playball.one"
     - "kafka-ui.staging.playball.one"
-    - "prometheus.staging.playball.one"
+    - "redis.staging.playball.one"
 
 # =============================================================================
 # Kiali - Service Mesh Observability
 # =============================================================================
+# Istio 라벨 설정 - app 라벨 사용 (app.kubernetes.io/name 대신)
+# OTEL service.name이 app 라벨과 일치하도록 설정
+istio_labels:
+  app_label_name: app
+  version_label_name: version
+
 # 멀티클러스터 비활성화 (single cluster 환경)
 # 이게 없으면 Kiali가 trace 쿼리에 istio.cluster_id 필터 추가함
 clustering:
   enabled: false
 
 auth:
-  strategy: anonymous
+  strategy: openid
+  openid:
+    client_id: "1089953130952-jok8g6t718k2g4vl7leufoc4tjmiqgt1.apps.googleusercontent.com"
+    issuer_uri: "https://accounts.google.com"
+    scopes: ["openid", "email", "profile"]
+    username_claim: "email"
+    disable_rbac: true
 
 deployment:
   node_selector:

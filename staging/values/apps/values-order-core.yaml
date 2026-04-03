@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/order-core"
-  tag: "de7ce81.10"
+  tag: "9c44137.21"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -57,6 +57,11 @@ service:
 env:
   - name: KAFKA_CONSUMER_GROUP_ID
     value: "order-core-notification"
+  # HikariCP connection pool 크기 조정
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
 
 envFrom:
   - configMapRef:

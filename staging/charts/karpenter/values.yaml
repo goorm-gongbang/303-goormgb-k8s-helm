@@ -18,8 +18,8 @@ nodePools:
   # api-gateway, auth-guard, order-core, queue, seat
   # -----------------------------------------------------------------------------
   workloads:
-    enabled: true
-    role: app
+    enabled: false  # EKS Managed Nodegroup 사용 (staging-apps-ng)
+    role: karpenter-workloads
 
     # Spot only (staging 비용 절감)
     capacityTypes:

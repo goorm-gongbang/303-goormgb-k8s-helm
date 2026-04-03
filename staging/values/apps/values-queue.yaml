@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/queue"
-  tag: "de7ce81.10"
+  tag: "428a3a6.22"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -52,6 +52,13 @@ servicePort: &port 8081
 service:
   type: ClusterIP
   port: *port
+
+# HikariCP connection pool 크기 조정
+env:
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
 
 envFrom:
   - configMapRef:

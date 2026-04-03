@@ -1,13 +1,12 @@
-# CloudBeaver for Dev
-# Google OAuth via OAuth2 Proxy sidecar
+# RedisInsight with Google OAuth
 replicaCount: 1
 
 image:
-  repository: dbeaver/cloudbeaver
-  tag: "24.0.0"
+  repository: redis/redisinsight
+  tag: "2.68"
   pullPolicy: IfNotPresent
 
-# OAuth2 Proxy sidecar
+# OAuth2 Proxy sidecar (Google OAuth)
 oauth2Proxy:
   enabled: true
   image:
@@ -17,7 +16,7 @@ oauth2Proxy:
   config:
     provider: google
     cookieSecure: true
-    cookieDomain: ".goormgb.space"
+    cookieDomain: ""  # e.g., ".staging.playball.one"
     cookieRefresh: "1h"
     cookieExpire: "4h"
   resources:
@@ -27,14 +26,14 @@ oauth2Proxy:
     limits:
       cpu: 100m
       memory: 128Mi
-  # ESO: dev/infra/oauth/teams-allow
+  # External Secrets for OAuth credentials
   eso:
-    enabled: true
+    enabled: false
     secretStoreRef:
       name: "aws-secrets-manager"
       kind: "ClusterSecretStore"
     remoteRef:
-      key: "dev/infra/oauth/teams-allow"
+      key: ""  # e.g., "staging/infra/oauth/redisinsight"
 
 service:
   type: ClusterIP
@@ -43,30 +42,31 @@ service:
 resources:
   requests:
     cpu: 100m
-    memory: 512Mi
+    memory: 256Mi
   limits:
     cpu: 500m
-    memory: 2Gi
+    memory: 512Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
 
 persistence:
   enabled: true
-  size: 2Gi
+  size: 1Gi
   storageClass: ""
-
-nodeSelector:
-  kubernetes.io/hostname: mini-gmk
-tolerations:
-  - key: "node-role.kubernetes.io/control-plane"
-    operator: "Exists"
-    effect: "NoSchedule"
 
 # Istio VirtualService
 virtualService:
-  enabled: true
-  host: "cloudbeaver.goormgb.space"
-  gateway: "istio-system/goormgb-gateway"
-
-# PostgreSQL connection (data namespace)
-postgresql:
-  host: postgresql.data.svc.cluster.local
-  port: 5432
+  enabled: false
+  gateway: ""  # e.g., "istio-system/api-gateway"
+  hosts: []    # e.g., ["redis.staging.playball.one"]
