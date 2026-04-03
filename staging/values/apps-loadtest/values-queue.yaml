@@ -1,7 +1,7 @@
 # queue - Load-test 환경
 fullnameOverride: "queue"
 contextPath: "/queue"
-replicaCount: 1
+replicaCount: 2
 
 image:
   name: "staging/playball/web/queue"
