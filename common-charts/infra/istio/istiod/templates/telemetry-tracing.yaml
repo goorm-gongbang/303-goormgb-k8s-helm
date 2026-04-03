@@ -15,13 +15,22 @@ spec:
         - name: envoy
       filter:
         expression: "request.headers['x-test-id'] != ''"
-  # Metrics configuration (istio_requests_total 등)
+  # Metrics configuration (istio_requests_total, istio_request_duration_milliseconds)
   metrics:
     - providers:
         - name: prometheus
       overrides:
         - match:
             metric: REQUEST_COUNT
+          tagOverrides:
+            x_test_id:
+              operation: UPSERT
+              value: "request.headers['x-test-id'] | 'unknown'"
+            x_triggered_by:
+              operation: UPSERT
+              value: "request.headers['x-triggered-by'] | 'unknown'"
+        - match:
+            metric: REQUEST_DURATION
           tagOverrides:
             x_test_id:
               operation: UPSERT
