@@ -211,33 +211,33 @@ grafana:
         orgRole: Admin
         isGrafanaAdmin: true
       - email: jusanha17@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: lab.jehyun@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: wnconc@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: jbyun1105@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: sayiamseyoun9@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: jminwook0120@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: siyeon0713@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: cdh4112618@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: rhkdgur120@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: wkdwlgus317@hanyang.ac.kr
-        orgRole: Viewer
+        orgRole: Admin
       - email: yuuijin863@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: hs4734@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: hejwien@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
       - email: niceguy6112@gmail.com
-        orgRole: Viewer
+        orgRole: Admin
     teams:
       - name: DEV
         members:
