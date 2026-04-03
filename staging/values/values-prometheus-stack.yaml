@@ -25,7 +25,7 @@ gateway:
     host: "grafana.staging.playball.one"
     # EKS: TLS는 CloudFront + ACM에서 처리
   prometheus:
-    enabled: true
+    enabled: false
     host: "prometheus.staging.playball.one"
     gatewayRef: "istio-system/api-gateway"
     # Remote Write 인증 (k6, OTel 등 외부 메트릭 전송용)

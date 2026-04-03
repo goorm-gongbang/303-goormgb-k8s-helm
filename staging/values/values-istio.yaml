@@ -67,7 +67,6 @@ apiGatewayConfig:
     - "cloudbeaver.staging.playball.one"
     - "console.staging.playball.one"
     - "kafka-ui.staging.playball.one"
-    - "prometheus.staging.playball.one"
     - "redis.staging.playball.one"
 
 # =============================================================================
