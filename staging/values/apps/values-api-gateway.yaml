@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/api-gateway"
-  tag: "274533b.24"
+  tag: "0dfe3cf.25"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
