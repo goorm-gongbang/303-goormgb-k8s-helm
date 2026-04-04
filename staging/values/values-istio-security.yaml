@@ -232,7 +232,13 @@ rateLimiting:
     - "/ready"
     - "/metrics"
     - "/actuator/health"
-    - "/load-test/"  # 부하 테스트 경로 제외
+    - "/load-test/"
+    # 부하 테스트 대상 API 경로 제외
+    - "/queue/"
+    - "/seat/"
+    - "/order/"
+    - "/auth/"
+    - "/recommendation/"
 
 # ============================================================
 # mTLS 설정 (서비스 간 통신 암호화)
