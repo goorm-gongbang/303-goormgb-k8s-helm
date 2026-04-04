@@ -173,6 +173,10 @@ extAuthz:
 # Rate Limiting 설정
 # ============================================================
 rateLimiting:
+  # Rate limit 제외 경로 (부하 테스트 등)
+  excludePaths:
+    - "/load-test/"
+
   # --- Local Rate Limit (Envoy 내장) ---
   local:
     enabled: true  # Rate limiting 활성화
