@@ -232,13 +232,7 @@ rateLimiting:
     - "/ready"
     - "/metrics"
     - "/actuator/health"
-    - "/load-test/"
-    # 부하 테스트 대상 API 경로 제외
-    - "/queue/"
-    - "/seat/"
-    - "/order/"
-    - "/auth/"
-    - "/recommendation/"
+    - "/load-test/"  # k6 부하테스트 경로만 제외 (일반 API는 rate limit 적용)
 
 # ============================================================
 # mTLS 설정 (서비스 간 통신 암호화)
