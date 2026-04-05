@@ -27,7 +27,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "-4"
     valueFiles:
-      - $values/staging/values/values-istio.yaml
+      - $values/staging/values/istio/values-istio.yaml
     ignoreDifferences:
       - group: admissionregistration.k8s.io
         kind: ValidatingWebhookConfiguration
@@ -43,7 +43,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "-3"
     valueFiles:
-      - $values/staging/values/values-istio.yaml
+      - $values/staging/values/istio/values-istio.yaml
     syncOptions:
       - ServerSideApply=true
       - RespectIgnoreDifferences=true
@@ -79,7 +79,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - $values/staging/values/values-istio-gateway.yaml
+      - $values/staging/values/istio/values-istio-gateway.yaml
 
   kiali-server:
     enabled: true
@@ -89,7 +89,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "-1"
     valueFiles:
-      - $values/staging/values/values-istio.yaml
+      - $values/staging/values/istio/values-istio.yaml
     ignoreDifferences:
       - group: ""
         kind: ConfigMap
@@ -120,7 +120,7 @@ ociCharts:
     namespace: karpenter
     syncWave: "-8"
     valueFiles:
-      - $values/staging/values/values-karpenter.yaml
+      - $values/staging/values/infra/values-karpenter.yaml
     syncOptions:
       - ServerSideApply=true
 
@@ -132,7 +132,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/values-loki.yaml
+      - $values/staging/values/monitoring/logs/values-loki.yaml
     syncOptions:
       - Replace=true
     ignoreDifferences:
@@ -150,7 +150,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - $values/staging/values/values-promtail.yaml
+      - $values/staging/values/monitoring/logs/values-promtail.yaml
 
   kube-prometheus-stack:
     enabled: true
@@ -160,7 +160,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "-1"
     valueFiles:
-      - $values/staging/values/values-prometheus-stack.yaml
+      - $values/staging/values/monitoring/metrics/values-prometheus-stack.yaml
       - $values/staging/values/monitoring/alerting/values-rules-staging.yaml
       - $values/staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
@@ -199,7 +199,7 @@ ociCharts:
     namespace: kube-system
     syncWave: "-9"
     valueFiles:
-      - $values/staging/values/values-aws-lb-controller.yaml
+      - $values/staging/values/infra/values-aws-lb-controller.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -234,7 +234,7 @@ ociCharts:
     namespace: external-secrets
     syncWave: "-9"
     valueFiles:
-      - $values/staging/values/values-eso.yaml
+      - $values/staging/values/infra/values-eso.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -253,7 +253,7 @@ ociCharts:
     namespace: external-dns
     syncWave: "-8"
     valueFiles:
-      - $values/staging/values/values-external-dns.yaml
+      - $values/staging/values/infra/values-external-dns.yaml
 
   alloy:
     enabled: true
@@ -263,7 +263,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/monitoring/values-alloy.yaml
+      - $values/staging/values/monitoring/logs/values-alloy.yaml
 
   k6-operator:
     enabled: false
@@ -282,7 +282,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/values-tempo.yaml
+      - $values/staging/values/monitoring/traces/values-tempo.yaml
     ignoreDifferences:
       - group: ""
         kind: PersistentVolumeClaim
@@ -299,7 +299,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/values-grafana.yaml
+      - $values/staging/values/monitoring/visualization/values-grafana.yaml
 
   opentelemetry-collector:
     enabled: true
@@ -309,7 +309,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - $values/staging/values/values-opentelemetry-collector.yaml
+      - $values/staging/values/monitoring/metrics/values-opentelemetry-collector.yaml
 
   # Tetragon - eBPF (비활성화, VPC CNI 사용)
   tetragon:
@@ -334,7 +334,7 @@ ociCharts:
     namespace: kyverno
     syncWave: "-7"
     valueFiles:
-      - $values/staging/values/values-kyverno.yaml
+      - $values/staging/values/security/values-kyverno.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -365,7 +365,7 @@ gitCharts:
     namespace: default
     syncWave: "-10"
     valueFiles:
-      - ../../../staging/values/values-namespaces.yaml
+      - ../../../staging/values/core/values-namespaces.yaml
 
   # === Security ===
   rbac:
@@ -373,7 +373,7 @@ gitCharts:
     path: common-charts/infra/rbac
     namespace: default
     valueFiles:
-      - ../../../staging/values/values-rbac.yaml
+      - ../../../staging/values/security/values-rbac.yaml
 
   # Network Policies (namespace isolation)
   network-policies:
@@ -434,7 +434,7 @@ gitCharts:
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - ../../../../staging/values/values-istio.yaml
+      - ../../../../staging/values/istio/values-istio.yaml
 
   istio-security:
     enabled: true
@@ -442,7 +442,7 @@ gitCharts:
     namespace: istio-system
     syncWave: "-1"
     valueFiles:
-      - ../../../staging/values/values-istio-security.yaml
+      - ../../../staging/values/istio/values-istio-security.yaml
 
   # === OCI Chart Extras (추가 모니터링/설정) ===
   istiod-monitoring:
@@ -451,7 +451,7 @@ gitCharts:
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - ../../../../staging/values/values-istio.yaml
+      - ../../../../staging/values/istio/values-istio.yaml
 
   prometheus-extras:
     enabled: true
@@ -459,7 +459,7 @@ gitCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - ../../../../staging/values/values-prometheus-stack.yaml
+      - ../../../../staging/values/monitoring/metrics/values-prometheus-stack.yaml
       - ../../../../staging/values/monitoring/alerting/values-rules-staging.yaml
       - ../../../../staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
@@ -472,7 +472,7 @@ gitCharts:
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - ../../../../staging/values/monitoring/values-alloy.yaml
+      - ../../../../staging/values/monitoring/logs/values-alloy.yaml
 
   loki-backup:
     enabled: false  # staging에서 필요시 활성화
@@ -480,7 +480,7 @@ gitCharts:
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - ../../../../staging/values/values-monitoring.yaml
+      - ../../../../staging/values/monitoring/metrics/values-monitoring.yaml
 
   # === ArgoCD Config (OAuth, Applications) ===
   argocd-config:
@@ -497,7 +497,7 @@ gitCharts:
     namespace: kyverno
     syncWave: "-6"
     valueFiles:
-      - ../../../staging/values/values-kyverno-policies.yaml
+      - ../../../staging/values/security/values-kyverno-policies.yaml
     syncOptions:
       - SkipDryRunOnMissingResource=true
 
@@ -516,7 +516,7 @@ gitCharts:
     namespace: monitoring
     syncWave: "5"
     valueFiles:
-      - ../../../../staging/values/monitoring/values-cloudbeaver.yaml
+      - ../../../../staging/values/monitoring/tools/values-cloudbeaver.yaml
 
   # Redis Exporter for AI ElastiCache
   redis-exporter-ai:
@@ -539,7 +539,7 @@ gitCharts:
     namespace: monitoring
     syncWave: "5"
     valueFiles:
-      - ../../../staging/values/values-infra-console.yaml
+      - ../../../staging/values/infra/values-infra-console.yaml
 
   # RedisInsight (Redis GUI with Google OAuth)
   redisinsight:
@@ -548,7 +548,7 @@ gitCharts:
     namespace: monitoring
     syncWave: "5"
     valueFiles:
-      - ../../../staging/values/values-redisinsight.yaml
+      - ../../../staging/values/data/values-redisinsight.yaml
 
   # === Messaging (Kafka) ===
   kafka:
