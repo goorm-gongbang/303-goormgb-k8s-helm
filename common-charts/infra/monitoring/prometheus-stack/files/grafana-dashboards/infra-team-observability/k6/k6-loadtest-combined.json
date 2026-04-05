@@ -1704,91 +1704,12 @@
       },
       "id": 105,
       "panels": [],
-      "title": "AWS Infra (RDS + Redis)",
+      "title": "AWS RDS PostgreSQL",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "cloudwatch",
-        "uid": "cloudwatch"
-      },
-      "description": "RDS CPU / Redis Memory / Redis CPU 사용률\n\n[70% 넘으면 주의]\n[90% 넘으면 조치 필요]",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 90 }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 5, "w": 5, "x": 0, "y": 42 },
-      "id": 200,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "sizing": "auto"
-      },
-      "targets": [
-        {
-          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-          "dimensions": { "DBInstanceIdentifier": "goormgb-staging-postgresql" },
-          "metricName": "CPUUtilization",
-          "namespace": "AWS/RDS",
-          "refId": "A",
-          "region": "ap-northeast-2",
-          "statistic": "Average",
-          "alias": "RDS CPU"
-        },
-        {
-          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-          "dimensions": { "CacheClusterId": "goormgb-staging-redis-001" },
-          "metricName": "DatabaseMemoryUsagePercentage",
-          "namespace": "AWS/ElastiCache",
-          "refId": "B",
-          "region": "ap-northeast-2",
-          "statistic": "Average",
-          "alias": "Redis Mem"
-        },
-        {
-          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-          "dimensions": { "CacheClusterId": "goormgb-staging-redis-001" },
-          "metricName": "EngineCPUUtilization",
-          "namespace": "AWS/ElastiCache",
-          "refId": "C",
-          "region": "ap-northeast-2",
-          "statistic": "Average",
-          "alias": "Redis CPU"
-        }
-      ],
-      "title": "Usage %",
-      "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "cloudwatch",
-        "uid": "cloudwatch"
-      },
-      "description": "RDS + Redis 연결 수\n\n[연결이 계속 늘면 연결 누수 의심]",
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "DB 연결 수\n\n[연결이 가득 차면]\n- 새 요청이 연결 대기\n- 응답시간 급증",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -1805,13 +1726,193 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 3, "x": 5, "y": 42 },
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 42 },
       "id": 50,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
-        "orientation": "horizontal",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "dimensions": { "DBInstanceIdentifier": "goormgb-staging-postgresql" },
+          "metricName": "DatabaseConnections",
+          "namespace": "AWS/RDS",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "statistic": "Average"
+        }
+      ],
+      "title": "DB Connections",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "RDS CPU 사용률\n\n[70% 넘으면]\n- 느린 쿼리 의심\n- 인덱스 누락 확인",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 42 },
+      "id": 51,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "dimensions": { "DBInstanceIdentifier": "goormgb-staging-postgresql" },
+          "metricName": "CPUUtilization",
+          "namespace": "AWS/RDS",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "statistic": "Average"
+        }
+      ],
+      "title": "CPU %",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 47 },
+      "id": 106,
+      "panels": [],
+      "title": "AWS ElastiCache Redis",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "Redis 연결 수\n\n[연결이 계속 늘면 연결 누수 의심]",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 100 },
+              { "color": "red", "value": 500 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 3, "x": 0, "y": 48 },
+      "id": 60,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "dimensions": { "CacheClusterId": "goormgb-staging-redis-001" },
+          "metricName": "CurrConnections",
+          "namespace": "AWS/ElastiCache",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "statistic": "Average"
+        }
+      ],
+      "title": "Connections",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "Redis 메모리 사용률\n\n[80% 넘으면]\n- Eviction 위험\n- 캐시 데이터 삭제됨\n\n[인스턴스별 최대 메모리]\n- cache.t3.micro: 0.5GB\n- cache.t3.small: 1.37GB\n- cache.t3.medium: 3.09GB",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 3, "x": 3, "y": 48 },
+      "id": 61,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "dimensions": { "CacheClusterId": "goormgb-staging-redis-001" },
+          "metricName": "DatabaseMemoryUsagePercentage",
+          "namespace": "AWS/ElastiCache",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "statistic": "Average"
+        }
+      ],
+      "title": "Memory %",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "description": "Redis CPU 사용률\n\n[65% 이상이면]\n- 복잡한 명령어 사용 중\n- KEYS → SCAN으로 대체 필요",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 65 },
+              { "color": "red", "value": 90 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 3, "x": 6, "y": 48 },
+      "id": 62,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
         "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
