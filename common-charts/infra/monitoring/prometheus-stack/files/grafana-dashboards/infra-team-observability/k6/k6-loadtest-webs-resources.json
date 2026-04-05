@@ -125,9 +125,9 @@
       "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Pods" }] },
       "targets": [
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (node) (kube_node_labels{label_node_kubernetes_io_instance_type!=\"\"} * 0 + 1) * on(node) group_left(label_node_kubernetes_io_instance_type) kube_node_labels", "format": "table", "instant": true, "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"cpu\"}", "format": "table", "instant": true, "refId": "C" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"memory\"}", "format": "table", "instant": true, "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_labels * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"cpu\"} * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"memory\"} * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "D" },
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]) * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "E" },
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"} * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "F" }
       ],
