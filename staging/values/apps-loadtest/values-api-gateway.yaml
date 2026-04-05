@@ -1,8 +1,9 @@
 # api-gateway - Load-test 환경
 # /load-test/ prefix로 라우팅되는 부하 테스트 전용
+# 라우팅만 담당, DB 사용 거의 없음 (5000 VU 기준)
 fullnameOverride: "api-gateway"
 contextPath: ""
-replicaCount: 4
+replicaCount: 3
 
 image:
   name: "staging/playball/web/api-gateway"
@@ -76,9 +77,9 @@ env:
       secretKeyRef:
         name: service-config
         key: SPRING_DATA_REDIS_PORT
-  # HikariCP connection pool 크기 조정 (부하테스트용)
+  # HikariCP connection pool - 라우팅만 담당, DB 거의 안 씀
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "5"
+    value: "3"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
     value: "2"
   # 로그 레벨 WARN (부하테스트 시 로그 감소)

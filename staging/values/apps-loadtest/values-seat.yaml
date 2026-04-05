@@ -48,11 +48,13 @@ service:
   port: *port
 
 # HikariCP connection pool 크기 조정 (부하테스트용)
+# Seat - DB 쿼리 많음: 블럭/좌석/온보딩 조회, Hold 생성 (5000 VU 대상)
+# 4 replicas x 15 pool = 60 connections
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "5"
+    value: "15"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "2"
+    value: "5"
 
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
