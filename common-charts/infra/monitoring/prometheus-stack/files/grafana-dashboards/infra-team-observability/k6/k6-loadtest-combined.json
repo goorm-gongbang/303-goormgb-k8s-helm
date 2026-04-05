@@ -27,7 +27,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "애플리케이션이 실제로 수신한 초당 요청 수입니다. 서비스 수신 기준입니다.",
+      "description": "초당 수신 요청 수 (RPS)\n\n[RPS 급락 시 점검]\n- k6 Pod 상태 확인 (OOMKilled, CrashLoop)\n- Istio Ingress Gateway 상태\n- 네트워크 연결 문제\n\n[RPS가 목표보다 낮을 때]\n- VU 수 증가 필요\n- k6 스크립트 sleep/think time 확인\n- 응답시간이 길어 병목 발생",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -87,7 +87,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "서비스 관점 비즈니스 성공 TPS입니다. HTTP 2xx 이면서 응답 body의 code == \"OK\" 인 경우만 집계합니다.",
+      "description": "초당 성공 트랜잭션 (TPS)\n\n[TPS < RPS 일 때]\n- 에러가 발생 중 (5xx, 4xx)\n- TPS/RPS 비율 = 성공률\n\n[TPS 개선 방법]\n- 에러 원인 해결 우선\n- Pod replicas 증가\n- DB 커넥션 풀 확장",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -147,7 +147,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "서비스 관점 평균 응답 시간입니다.",
+      "description": "평균 응답시간\n\n[평균이 높을 때 (>500ms)]\n1. 느린 엔드포인트 테이블 확인\n2. DB 쿼리 성능 점검\n3. 외부 API 호출 시간 확인\n\n[서비스별 기준]\n- Auth-Guard: <100ms (JWT만)\n- Queue: <200ms (Redis)\n- Seat: <300ms (DB 조회)\n- Order: <500ms (결제 연동)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -215,7 +215,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "서비스 관점 P95 응답 시간입니다.",
+      "description": "P95 응답시간 (95%의 요청이 이 시간 내 완료)\n\n[P95 > 1초일 때]\n- 느린 쿼리 존재\n- 특정 엔드포인트 병목\n- Cold start 영향\n\n[P95 vs 평균]\n- P95 >> 평균: 일부 느린 요청 존재\n- P95 ≈ 평균: 균일한 응답시간",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -283,7 +283,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "서비스 관점 5xx 에러율입니다.",
+      "description": "5xx 서버 에러율\n\n[5xx 원인별 점검]\n- 500: 애플리케이션 예외 → 로그 확인\n- 502: 업스트림 연결 실패 → Pod 상태\n- 503: 서비스 과부하 → replicas 증가\n- 504: 타임아웃 → 응답시간 개선\n\n[허용 기준]\n- < 0.1%: 정상\n- 0.1-1%: 주의\n- > 1%: 심각",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -424,7 +424,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "시간에 따른 초당 요청 수 변화",
+      "description": "RPS/TPS 시계열 추이\n\n[그래프 해석]\n- RPS-TPS 갭 = 에러 발생량\n- 급격한 하락 = 장애 발생\n- 점진적 하락 = 리소스 고갈\n\n[패턴 분석]\n- 톱니 모양: GC 또는 스케일링\n- 계단식 하락: 연쇄 장애\n- 플랫: 안정 상태",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -557,7 +557,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "애플리케이션별 RPS",
+      "description": "앱별 RPS 분포\n\n[병목 서비스 식별]\n- RPS가 낮은 서비스 = 병목점\n- 의존성 순서: Auth → Queue → Seat → Order\n\n[서비스별 예상 RPS]\n- Auth-Guard: 가장 높음 (모든 요청 통과)\n- Queue: Auth 다음\n- Seat: 좌석 조회만\n- Order: 결제만 (가장 낮음)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -650,7 +650,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "상태코드별 요청 추이",
+      "description": "HTTP 상태코드 추이\n\n[코드별 의미]\n- 2xx: 성공\n- 4xx: 클라이언트 오류 (토큰만료, 권한없음)\n- 5xx: 서버 오류 (버그, 과부하)\n\n[주의 패턴]\n- 401 급증: 토큰 만료 처리 확인\n- 429 발생: Rate Limit 도달\n- 503 지속: 스케일 아웃 필요",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -795,14 +795,15 @@
       "id": 102,
       "panels": [],
       "title": "응답 시간 분석",
-      "type": "row"
+      "type": "row",
+      "description": "P99 응답 시간 분석 가이드\n\n[지연 위치 파악]\n1. Istio 대시보드 > Service 선택 > Request Duration 확인\n2. 어느 서비스에서 지연 발생하는지 확인\n\n[서비스별 점검 포인트]\n- Auth-Guard: JWT 검증, 토큰 캐시, Redis 연결\n- Queue: Redis 큐 처리, 동시성 제어, 락 경합\n- Seat: DB 쿼리 성능, 인덱스, 커넥션 풀\n- Order: 외부 결제 API, 트랜잭션 시간\n\n[확인 방법]\n1. k6 대시보드에서 P99 추이 확인\n2. 특정 시점에 급등 시 해당 시간대 로그 분석\n3. Prometheus 쿼리:\n   histogram_quantile(0.99, sum(rate(istio_request_duration_ms_bucket[1m])) by (destination_service_name, le))\n\n[흔한 원인]\n- Cold start / Pod 스케일링\n- DB 커넥션 풀 부족\n- GC (Garbage Collection)\n- 네트워크 지연 (cross-AZ)"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "응답 시간 분포 (P50, P95, P99)",
+      "description": "응답시간 백분위수 (P50/P90/P95/P99)\n\n[백분위수 의미]\n- P50: 중앙값 (절반의 요청)\n- P90: 90% 요청 완료 시간\n- P95: SLO 기준으로 많이 사용\n- P99: 최악 케이스 (1%)\n\n[P99 급등 원인]\n- DB 락 경합\n- GC pause\n- Cold start\n- 네트워크 지터",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -967,7 +968,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "느린 엔드포인트 전체 목록 (평균 응답시간 내림차순)",
+      "description": "느린 엔드포인트 순위\n\n[활용법]\n1. P95 높은 엔드포인트 식별\n2. 해당 서비스 로그 확인\n3. DB 쿼리 분석\n\n[개선 우선순위]\n- 호출 빈도 높고 느린 것 먼저\n- P95 > 1초 엔드포인트 집중",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1599,7 +1600,8 @@
         }
       ],
       "title": "CPU 사용량 (Pod별)",
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Pod별 CPU 사용량\n\n[CPU 높을 때 (>80%)]\n- CPU throttling 발생 가능\n- HPA 스케일 아웃 트리거\n\n[서비스별 특성]\n- Auth-Guard: JWT 검증 (CPU 집약)\n- Queue: 낮음 (I/O bound)\n- Seat: 중간 (쿼리 처리)\n\n[조치]\n- limits 증가 또는 replicas 증가"
     },
     {
       "datasource": {
@@ -1689,7 +1691,8 @@
         }
       ],
       "title": "메모리 사용량 (Pod별)",
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Pod별 메모리 사용량\n\n[메모리 높을 때 (>80%)]\n- OOMKilled 위험\n- 메모리 누수 의심\n\n[JVM 서비스]\n- Heap 사용량 모니터링\n- GC 로그 확인\n\n[조치]\n- limits 증가\n- 메모리 누수 수정\n- JVM 힙 사이즈 조정"
     },
     {
       "collapsed": false,
@@ -1709,7 +1712,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "RDS 활성 연결 수",
+      "description": "PostgreSQL 연결 수\n\n[연결 부족 시 증상]\n- Connection timeout 에러\n- 503 에러 증가\n- 응답시간 급증\n\n[점검 사항]\n- HikariCP max pool size\n- Pod 수 x pool size < max_connections\n- 유휴 연결 정리\n\n[RDS 기본값]\n- t3.medium: 약 80 connections",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1789,7 +1792,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "RDS CPU 사용률",
+      "description": "RDS CPU 사용률\n\n[CPU 높을 때 (>70%)]\n- 느린 쿼리 존재\n- 인덱스 누락\n- Full table scan\n\n[점검 방법]\n1. CloudWatch 로그 분석\n2. pg_stat_statements 확인\n3. EXPLAIN ANALYZE 실행\n\n[조치]\n- 인덱스 추가\n- 쿼리 최적화\n- Read Replica 추가",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1869,7 +1872,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "RDS IOPS (Read/Write)",
+      "description": "RDS IOPS (Read/Write)\n\n[IOPS 높을 때]\n- 디스크 병목 가능\n- gp3 IOPS 한도 확인\n\n[패턴 분석]\n- Read 높음: 캐시 미스, 풀스캔\n- Write 높음: 대량 INSERT/UPDATE\n\n[조치]\n- IOPS provisioned 증가\n- 쿼리 최적화\n- 캐싱 전략 검토",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2041,7 +2044,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "ElastiCache 연결된 클라이언트 수",
+      "description": "Redis 연결 수\n\n[연결 많을 때]\n- 연결 풀 관리 확인\n- 연결 누수 의심\n\n[ElastiCache 한도]\n- cache.t3.micro: 65,000\n- 연결당 메모리 사용\n\n[점검]\n- Lettuce/Jedis 풀 설정\n- 연결 타임아웃 설정",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2121,7 +2124,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "ElastiCache 메모리 사용량",
+      "description": "Redis 메모리 사용량\n\n[메모리 높을 때 (>80%)]\n- Eviction 발생 위험\n- 캐시 데이터 손실\n\n[점검 사항]\n- maxmemory-policy 설정\n- TTL 설정 확인\n- 불필요한 키 정리\n\n[조치]\n- 노드 타입 업그레이드\n- TTL 단축\n- 데이터 압축",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2201,7 +2204,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "ElastiCache CPU 사용률",
+      "description": "Redis CPU 사용률\n\n[CPU 높을 때]\n- 복잡한 명령어 사용 (KEYS, SCAN)\n- Lua 스크립트 부하\n- 대용량 값 처리\n\n[조치]\n- KEYS 대신 SCAN 사용\n- 파이프라이닝 적용\n- 클러스터 모드 검토",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2281,7 +2284,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "ElastiCache Cache Hits/Misses",
+      "description": "Redis Cache Hits/Misses\n\n[Hit Rate 낮을 때 (<90%)]\n- 캐시 키 전략 검토\n- TTL 너무 짧음\n- 캐시 워밍 필요\n\n[계산]\n- Hit Rate = Hits / (Hits + Misses)\n\n[개선]\n- TTL 조정\n- 캐시 프리로딩\n- 키 패턴 최적화",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2453,7 +2456,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "애플리케이션 5xx 에러 건수",
+      "description": "5xx 에러 총 건수\n\n[에러 발생 시 즉시 점검]\n1. Pod 로그 확인 (kubectl logs)\n2. Istio access log 확인\n3. 리소스 사용량 확인\n\n[에러 코드별 원인]\n- 500: 애플리케이션 버그\n- 502: Pod 재시작/비정상\n- 503: Circuit breaker/과부하\n- 504: 업스트림 타임아웃",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2521,7 +2524,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "애플리케이션 응답시간 P99",
+      "description": "P99 응답 시간 분석 가이드\n\n[지연 위치 파악]\n1. Istio 대시보드 > Service 선택 > Request Duration\n2. 어느 서비스에서 지연 발생하는지 확인\n\n[서비스별 점검]\n- Auth-Guard: JWT, 토큰 캐시, Redis\n- Queue: Redis 큐, 동시성, 락 경합\n- Seat: DB 쿼리, 인덱스, 커넥션 풀\n- Order: 결제 API, 트랜잭션\n\n[흔한 원인]\n- Cold start / Pod 스케일링\n- DB 커넥션 풀 부족\n- GC (Garbage Collection)\n- 네트워크 지연 (cross-AZ)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2589,7 +2592,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "ElastiCache Engine CPU 사용률",
+      "description": "ElastiCache Engine CPU\n\n[Engine CPU vs Node CPU]\n- Engine CPU: Redis 처리 부하\n- Node CPU: OS 레벨 부하\n\n[높을 때 (>65%)]\n- 복잡한 명령어 최적화\n- 샤딩 검토\n- 클러스터 모드 전환",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2670,7 +2673,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "ElastiCache 메모리 부족 축출 건수",
+      "description": "ElastiCache Evictions\n\n[Eviction 발생 시]\n- 메모리 부족으로 키 삭제됨\n- 캐시 미스 증가\n- 성능 저하\n\n[조치]\n1. maxmemory 증가 (노드 업그레이드)\n2. TTL 설정 검토\n3. 불필요한 데이터 정리\n4. volatile-lru 정책 확인",
       "fieldConfig": {
         "defaults": {
           "color": {
