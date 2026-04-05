@@ -1,88 +1,10 @@
 {{- if and .Values.enabled .Values.rateLimiting .Values.rateLimiting.local .Values.rateLimiting.local.enabled }}
 # ============================================================
-# Local Rate Limit (Envoy 내장)
-# - Pod별 개별 카운트 (분산 환경에서 정확하지 않음)
-# - Redis 불필요, 빠른 1차 방어선
-# - 토큰 버킷 알고리즘 사용
-# ============================================================
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  name: ratelimit-local
-  namespace: istio-system
-  labels:
-    app: istio-security
-    component: ratelimit-local
-spec:
-  workloadSelector:
-    labels:
-      {{- toYaml .Values.selector.labels | nindent 6 }}
-  configPatches:
-    # ===========================================
-    # 1. Local Rate Limit 필터 추가
-    # ===========================================
-    - applyTo: HTTP_FILTER
-      match:
-        context: GATEWAY
-        listener:
-          filterChain:
-            filter:
-              name: envoy.filters.network.http_connection_manager
-              subFilter:
-                name: envoy.filters.http.router
-      patch:
-        operation: INSERT_BEFORE
-        value:
-          name: envoy.filters.http.local_ratelimit
-          typed_config:
-            "@type": type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
-            stat_prefix: http_local_rate_limiter
-
-            {{- if .Values.rateLimiting.local.default.enabled }}
-            # 기본 토큰 버킷 설정 (전체 요청에 적용)
-            token_bucket:
-              max_tokens: {{ .Values.rateLimiting.local.default.maxTokens }}
-              tokens_per_fill: {{ .Values.rateLimiting.local.default.tokensPerFill }}
-              fill_interval: {{ .Values.rateLimiting.local.default.fillInterval }}
-            {{- end }}
-
-            # Rate Limit 헤더 추가
-            response_headers_to_add:
-              {{- range .Values.rateLimiting.local.response.headers }}
-              - append_action: OVERWRITE_IF_EXISTS_OR_ADD
-                header:
-                  key: "{{ .name }}"
-                  value: "{{ .value }}"
-              {{- end }}
-              - append_action: OVERWRITE_IF_EXISTS_OR_ADD
-                header:
-                  key: "X-RateLimit-Remaining"
-                  value: "%DYNAMIC_METADATA(envoy.filters.http.local_ratelimit:tokens_remaining)%"
-
-            # 필터 활성화
-            filter_enabled:
-              runtime_key: local_rate_limit_enabled
-              default_value:
-                numerator: 100
-                denominator: HUNDRED
-
-            # Rate Limit 강제 적용
-            filter_enforced:
-              runtime_key: local_rate_limit_enforced
-              default_value:
-                numerator: 100
-                denominator: HUNDRED
-
-            # Rate Limit 상태 코드
-            status:
-              code: {{ .Values.rateLimiting.local.response.statusCode }}
-
----
-# ===========================================
-# 2. Lua 기반 Rate Limit (IP별 + 경로별)
-# - Envoy 내장 local_ratelimit보다 세밀한 제어
+# Lua 기반 Rate Limit (IP별 + 경로별)
+# - excludePaths 지원 (/load-test/ 등 제외)
 # - IP별 카운팅, 경로별 다른 제한
-# ===========================================
+# - Envoy 내장 local_ratelimit는 excludePaths 미지원으로 제거됨
+# ============================================================
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
