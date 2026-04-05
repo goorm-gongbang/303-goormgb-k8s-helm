@@ -156,20 +156,19 @@
       "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": true }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Pods" }] },
       "targets": [
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (service) (label_replace(kube_pod_info{namespace=\"loadtest-webs\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (service) (label_replace(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"cpu\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (service) (label_replace(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"cpu\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "C" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (service) (label_replace(rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]), \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "D" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (service) (label_replace(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"memory\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "E" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (service) (label_replace(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"memory\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "F" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (service) (label_replace(container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "G" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"cpu\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"cpu\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"memory\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"memory\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "E" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(db_client_connections_max{namespace=\"loadtest-webs\"}, \"service\", \"$1\", \"app\", \"loadtest-(.+)\"))", "format": "table", "instant": true, "refId": "F" }
       ],
-      "title": "서비스별 리소스 현황",
+      "title": "서비스별 설정 현황",
       "transformations": [
         { "id": "joinByField", "options": { "byField": "service", "mode": "outer" } },
         { "id": "filterFieldsByName", "options": { "include": { "pattern": "service|Value.*" } } },
         { "id": "organize", "options": {
-          "indexByName": { "service": 0, "Value #A": 1, "Value #B": 2, "Value #C": 3, "Value #D": 4, "Value #E": 5, "Value #F": 6, "Value #G": 7 },
-          "renameByName": { "service": "Service", "Value #A": "Pods", "Value #B": "CPU Req", "Value #C": "CPU Limit", "Value #D": "CPU Usage", "Value #E": "Mem Req", "Value #F": "Mem Limit", "Value #G": "Mem Usage" }
+          "indexByName": { "service": 0, "Value #A": 1, "Value #B": 2, "Value #C": 3, "Value #D": 4, "Value #E": 5, "Value #F": 6 },
+          "renameByName": { "service": "Service", "Value #A": "Pods", "Value #B": "CPU Req", "Value #C": "CPU Limit", "Value #D": "Mem Req", "Value #E": "Mem Limit", "Value #F": "Pool Max" }
         } }
       ],
       "type": "table"
