@@ -110,29 +110,35 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "노드별 Pod 수, CPU/Memory 사용량 요약",
+      "description": "노드별 사양 및 리소스 사용량",
       "fieldConfig": {
         "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "text", "value": null }] }, "unit": "short" },
         "overrides": [
           { "matcher": { "id": "byName", "options": "Pods" }, "properties": [{ "id": "unit", "value": "short" }] },
-          { "matcher": { "id": "byName", "options": "CPU Usage" }, "properties": [{ "id": "unit", "value": "short" }, { "id": "decimals", "value": 2 }] },
-          { "matcher": { "id": "byName", "options": "Mem Usage" }, "properties": [{ "id": "unit", "value": "bytes" }] }
+          { "matcher": { "id": "byName", "options": "CPU Cap" }, "properties": [{ "id": "unit", "value": "short" }, { "id": "decimals", "value": 0 }] },
+          { "matcher": { "id": "byName", "options": "Mem Cap" }, "properties": [{ "id": "unit", "value": "bytes" }] },
+          { "matcher": { "id": "byName", "options": "CPU Use" }, "properties": [{ "id": "unit", "value": "short" }, { "id": "decimals", "value": 2 }] },
+          { "matcher": { "id": "byName", "options": "Mem Use" }, "properties": [{ "id": "unit", "value": "bytes" }] }
         ]
       },
       "gridPos": { "h": 6, "w": 12, "x": 0, "y": 12 }, "id": 32,
-      "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": true }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Pods" }] },
+      "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Pods" }] },
       "targets": [
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]) * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"} * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "C" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (node) (kube_node_labels{label_node_kubernetes_io_instance_type!=\"\"} * 0 + 1) * on(node) group_left(label_node_kubernetes_io_instance_type) kube_node_labels", "format": "table", "instant": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"cpu\"}", "format": "table", "instant": true, "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"memory\"}", "format": "table", "instant": true, "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]) * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "E" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"} * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "F" }
       ],
-      "title": "노드별 리소스 사용량",
+      "title": "노드별 리소스 현황",
       "transformations": [
         { "id": "joinByField", "options": { "byField": "node", "mode": "outer" } },
-        { "id": "filterFieldsByName", "options": { "include": { "pattern": "node|Value.*" } } },
+        { "id": "filterFieldsByName", "options": { "include": { "pattern": "node|label_node_kubernetes_io_instance_type|Value.*" } } },
         { "id": "organize", "options": {
-          "indexByName": { "node": 0, "Value #A": 1, "Value #B": 2, "Value #C": 3 },
-          "renameByName": { "node": "Node", "Value #A": "Pods", "Value #B": "CPU Usage", "Value #C": "Mem Usage" }
+          "indexByName": { "node": 0, "label_node_kubernetes_io_instance_type": 1, "Value #A": 2, "Value #C": 3, "Value #D": 4, "Value #E": 5, "Value #F": 6 },
+          "excludeByName": { "Value #B": true },
+          "renameByName": { "node": "Node", "label_node_kubernetes_io_instance_type": "Type", "Value #A": "Pods", "Value #C": "CPU Cap", "Value #D": "Mem Cap", "Value #E": "CPU Use", "Value #F": "Mem Use" }
         } }
       ],
       "type": "table"
