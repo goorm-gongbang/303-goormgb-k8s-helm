@@ -1,7 +1,8 @@
 # auth-guard - Load-test 환경
+# CPU 사용량 높음 - JWT 검증/발급 (5000 VU 기준)
 fullnameOverride: "auth-guard"
 contextPath: "/auth"
-replicaCount: 3
+replicaCount: 4
 
 image:
   name: "staging/playball/web/auth-guard"
@@ -47,12 +48,13 @@ service:
   type: ClusterIP
   port: *port
 
-# HikariCP connection pool 크기 조정 (부하테스트용)
+# HikariCP connection pool - JWT 발급 시 user 조회 (5000 VU 기준)
+# 4 replicas x 10 pool = 40 connections
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "15"
+    value: "10"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "5"
+    value: "3"
 
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
