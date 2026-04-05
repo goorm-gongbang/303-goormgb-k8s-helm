@@ -5,7 +5,7 @@ replicaCount: 3
 
 image:
   name: "staging/playball/web/auth-guard"
-  tag: "3da059b.26"
+  tag: "efd21b7.27"
   pullPolicy: Always
 
 imagePullSecrets: []
