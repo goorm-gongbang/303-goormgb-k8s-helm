@@ -27,7 +27,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "초당 들어오는 요청 수\n\n[수치가 기대보다 낮다면]\n- VU 수가 부족하거나 스크립트 대기시간이 길 수 있음\n- 응답이 느려서 다음 요청을 못 보내는 상황일 수 있음\n\n[갑자기 떨어졌다면]\n- k6 테스트 Pod가 죽었는지 확인\n- 네트워크 연결 문제 의심\n- Istio Gateway 상태 점검",
+      "description": "애플리케이션이 실제로 수신한 초당 요청 수입니다. 서비스 수신 기준입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -87,7 +87,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "성공한 요청만 카운트 (2xx 응답)\n\n[TPS가 RPS보다 많이 낮다면]\n- 에러가 많이 발생 중\n- 5xx 에러율 패널과 함께 확인\n\n[TPS 올리는 방법]\n- 먼저 에러 원인 해결\n- Pod 수 늘리기\n- DB 커넥션 풀 확장",
+      "description": "서비스 관점 비즈니스 성공 TPS입니다. HTTP 2xx 이면서 응답 body의 code == \"OK\" 인 경우만 집계합니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -147,7 +147,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "전체 요청의 평균 응답시간\n\n[500ms 넘어가면]\n- 아래 느린 엔드포인트 테이블에서 어디가 느린지 확인\n- DB 쿼리가 느린 경우가 많음\n\n[서비스별 정상 범위]\n- Auth-Guard: 100ms 이하 (토큰 검증만)\n- Queue: 200ms 이하 (Redis 작업)\n- Seat: 300ms 이하 (DB 조회)\n- Order: 500ms 이하 (결제 연동 포함)",
+      "description": "서비스 관점 평균 응답 시간입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -215,7 +215,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "95%의 요청이 이 시간 안에 처리됨\n\n[P95가 1초 넘으면]\n- 일부 요청이 심하게 느림\n- 특정 엔드포인트나 특정 상황에서만 느린 것\n\n[P95가 평균보다 훨씬 높으면]\n- 간헐적으로 느린 요청 존재\n- DB 락 경합이나 GC 영향 의심",
+      "description": "서비스 관점 P95 응답 시간입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -283,7 +283,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "서버 에러 비율 (5xx 응답)\n\n[1% 넘으면 심각]\n- 즉시 원인 파악 필요\n\n[에러 종류별 의심 포인트]\n- 500: 코드 버그, 예외 처리 안됨\n- 502: Pod가 재시작 중이거나 죽음\n- 503: 서버 과부하, Pod 수 부족\n- 504: 응답 시간 초과, DB나 외부 API 느림",
+      "description": "서비스 관점 5xx 에러율입니다.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -424,7 +424,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "시간에 따른 RPS와 TPS 변화\n\n[두 선의 간격이 벌어지면]\n- 그 시점에 에러가 발생한 것\n- 상태코드 패널에서 어떤 에러인지 확인\n\n[계단식으로 떨어지면]\n- 연쇄 장애 의심\n- 하나의 서비스 문제가 다른 서비스로 전파\n\n[톱니 모양으로 흔들리면]\n- GC나 오토스케일링 영향",
+      "description": "시간에 따른 초당 요청 수 변화",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -557,7 +557,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "어떤 앱이 요청을 많이 받는지 확인\n\n[특정 앱만 RPS가 낮다면]\n- 그 앱이 병목\n- 해당 앱의 리소스 사용량 확인\n\n[정상적인 RPS 순서]\n1. Auth-Guard (모든 요청이 통과)\n2. Queue (인증 후 대기열 진입)\n3. Seat (좌석 조회하는 사람만)\n4. Order (결제하는 사람만, 가장 적음)",
+      "description": "애플리케이션별 RPS",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -650,7 +650,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "어떤 HTTP 코드가 언제 발생하는지\n\n[401이 갑자기 늘면]\n- 토큰 만료 처리 확인\n- 테스트 토큰 유효기간 점검\n\n[429가 보이면]\n- Rate Limit에 걸림\n- Istio나 앱 레벨 제한 확인\n\n[5xx가 특정 시점에 몰리면]\n- 그 시점 리소스 사용량 확인\n- Pod 재시작 여부 확인",
+      "description": "상태코드별 요청 추이",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -795,15 +795,14 @@
       "id": 102,
       "panels": [],
       "title": "응답 시간 분석",
-      "type": "row",
-      "description": "응답 시간 분석 섹션\n\n[P99 분석 체크리스트]\n1. 어느 서비스에서 느린지 확인\n2. 해당 서비스의 리소스 사용량 확인\n3. DB/Redis 메트릭 확인\n4. 느린 엔드포인트 테이블 확인\n\n[서비스별 병목 의심 포인트]\n- Auth-Guard: Redis 연결, JWT 검증\n- Queue: Redis 락 경합, 동시성\n- Seat: DB 쿼리, 인덱스\n- Order: 결제 API, 트랜잭션"
+      "type": "row"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "응답시간 분포를 한눈에 보는 그래프\n\n[각 선의 의미]\n- P50 (빨간선): 절반의 요청이 이 시간 안에 완료\n- P90 (주황선): 90%의 요청 완료 시간\n- P95 (노란선): SLO 기준으로 자주 사용\n- P99 (초록선): 가장 느린 1% 요청\n\n[P99만 튀면]\n- DB 락 경합\n- GC pause\n- 콜드 스타트\n- 네트워크 지연",
+      "description": "응답 시간 분포 (P50, P95, P99)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -968,7 +967,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "어떤 엔드포인트가 느린지 순위\n\n[이 테이블 활용법]\n1. P95가 높은 엔드포인트 확인\n2. 해당 서비스의 로그와 메트릭 확인\n3. 관련 DB 쿼리 분석\n\n[개선 우선순위]\n- 호출 많고 + 느린 것 = 먼저 개선\n- 호출 적고 + 느린 것 = 나중에",
+      "description": "느린 엔드포인트 전체 목록 (평균 응답시간 내림차순)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1600,8 +1599,7 @@
         }
       ],
       "title": "CPU 사용량 (Pod별)",
-      "type": "timeseries",
-      "description": "각 Pod의 CPU 사용률\n\n[80% 넘으면]\n- CPU throttling 발생 가능\n- 응답 시간 느려짐\n- HPA가 스케일 아웃 시작\n\n[서비스별 CPU 특성]\n- Auth-Guard: CPU 많이 씀 (JWT 암호화)\n- Queue: CPU 적게 씀 (I/O 위주)\n- Seat: 중간 (DB 쿼리 처리)"
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -1691,8 +1689,7 @@
         }
       ],
       "title": "메모리 사용량 (Pod별)",
-      "type": "timeseries",
-      "description": "각 Pod의 메모리 사용률\n\n[80% 넘으면]\n- OOM으로 Pod 죽을 위험\n- 메모리 누수 의심\n\n[계속 올라가면]\n- 메모리 누수 확인 필요\n- JVM 힙 덤프 분석\n\n[갑자기 떨어졌다면]\n- Pod가 OOM으로 재시작된 것"
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -1704,46 +1701,83 @@
       },
       "id": 105,
       "panels": [],
-      "title": "AWS RDS PostgreSQL",
+      "title": "공유 AWS RDS PostgreSQL",
       "type": "row"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "DB 연결 수\n\n[연결이 가득 차면]\n- 새 요청이 연결 대기\n- 응답시간 급증",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
+      "description": "RDS 활성 연결 수",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 50 },
-              { "color": "red", "value": 100 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
             ]
           },
           "unit": "short"
         },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 42 },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 42
+      },
       "id": 50,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "textMode": "auto"
       },
       "targets": [
         {
-          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-          "dimensions": { "DBInstanceIdentifier": "goormgb-staging-postgresql" },
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "cloudwatch"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "goormgb-staging-postgresql"
+          },
+          "expression": "",
+          "id": "",
+          "matchExact": true,
+          "metricEditorMode": 0,
           "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
           "namespace": "AWS/RDS",
+          "period": "",
           "refId": "A",
           "region": "ap-northeast-2",
+          "sqlExpression": "",
           "statistic": "Average"
         }
       ],
@@ -1751,194 +1785,83 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "RDS CPU 사용률\n\n[70% 넘으면]\n- 느린 쿼리 의심\n- 인덱스 누락 확인",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
+      "description": "RDS CPU 사용률",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 90 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
             ]
           },
           "unit": "percent"
         },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 42 },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 42
+      },
       "id": 51,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "textMode": "auto"
       },
       "targets": [
         {
-          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-          "dimensions": { "DBInstanceIdentifier": "goormgb-staging-postgresql" },
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "cloudwatch"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "goormgb-staging-postgresql"
+          },
+          "expression": "",
+          "id": "",
+          "matchExact": true,
+          "metricEditorMode": 0,
           "metricName": "CPUUtilization",
+          "metricQueryType": 0,
           "namespace": "AWS/RDS",
+          "period": "",
           "refId": "A",
           "region": "ap-northeast-2",
+          "sqlExpression": "",
           "statistic": "Average"
         }
       ],
-      "title": "CPU %",
-      "type": "stat"
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 47 },
-      "id": 106,
-      "panels": [],
-      "title": "AWS ElastiCache Redis",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "Redis 연결 수\n\n[연결이 계속 늘면 연결 누수 의심]",
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 100 },
-              { "color": "red", "value": 500 }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 5, "w": 3, "x": 0, "y": 48 },
-      "id": 60,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-          "dimensions": { "CacheClusterId": "goormgb-staging-redis-001" },
-          "metricName": "CurrConnections",
-          "namespace": "AWS/ElastiCache",
-          "refId": "A",
-          "region": "ap-northeast-2",
-          "statistic": "Average"
-        }
-      ],
-      "title": "Connections",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "Redis 메모리 사용률\n\n[80% 넘으면]\n- Eviction 위험\n- 캐시 데이터 삭제됨\n\n[인스턴스별 최대 메모리]\n- cache.t3.micro: 0.5GB\n- cache.t3.small: 1.37GB\n- cache.t3.medium: 3.09GB",
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 90 }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 5, "w": 3, "x": 3, "y": 48 },
-      "id": 61,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-          "dimensions": { "CacheClusterId": "goormgb-staging-redis-001" },
-          "metricName": "DatabaseMemoryUsagePercentage",
-          "namespace": "AWS/ElastiCache",
-          "refId": "A",
-          "region": "ap-northeast-2",
-          "statistic": "Average"
-        }
-      ],
-      "title": "Memory %",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-      "description": "Redis CPU 사용률\n\n[65% 이상이면]\n- 복잡한 명령어 사용 중\n- KEYS → SCAN으로 대체 필요",
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 65 },
-              { "color": "red", "value": 90 }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 5, "w": 3, "x": 6, "y": 48 },
-      "id": 62,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-          "dimensions": { "DBInstanceIdentifier": "goormgb-staging-postgresql" },
-          "metricName": "DatabaseConnections",
-          "namespace": "AWS/RDS",
-          "refId": "A",
-          "region": "ap-northeast-2",
-          "statistic": "Average",
-          "alias": "RDS"
-        },
-        {
-          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-          "dimensions": { "CacheClusterId": "goormgb-staging-redis-001" },
-          "metricName": "CurrConnections",
-          "namespace": "AWS/ElastiCache",
-          "refId": "B",
-          "region": "ap-northeast-2",
-          "statistic": "Average",
-          "alias": "Redis"
-        }
-      ],
-      "title": "Connections",
+      "title": "CPU Utilization",
       "type": "stat"
     },
     {
@@ -1946,7 +1869,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "DB 디스크 읽기/쓰기 속도\n\n[Read IOPS 높으면]\n- 캐시 미스가 많음\n- 테이블 풀스캔 발생\n\n[Write IOPS 높으면]\n- INSERT/UPDATE 많음\n- 로그 쓰기 부하\n\n[IOPS가 한계에 도달하면]\n- gp3 provisioned IOPS 증가 검토",
+      "description": "RDS IOPS (Read/Write)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2031,8 +1954,8 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 8,
-        "x": 8,
+        "w": 12,
+        "x": 12,
         "y": 42
       },
       "id": 52,
@@ -2101,11 +2024,264 @@
       "type": "timeseries"
     },
     {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 47
+      },
+      "id": 106,
+      "panels": [],
+      "title": "공유 AWS ElastiCache Redis",
+      "type": "row"
+    },
+    {
       "datasource": {
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "캐시 적중률 확인\n\n[Hit이 높아야 좋음]\n- Hit: 캐시에서 데이터 찾음 (빠름)\n- Miss: DB까지 조회 (느림)\n\n[Hit Rate 90% 미만이면]\n- TTL이 너무 짧거나\n- 캐시 키 전략 점검 필요\n- 캐시 워밍 고려",
+      "description": "ElastiCache 연결된 클라이언트 수",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 48
+      },
+      "id": 60,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "cloudwatch"
+          },
+          "dimensions": {
+            "CacheClusterId": "goormgb-staging-redis-001"
+          },
+          "expression": "",
+          "id": "",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "CurrConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/ElastiCache",
+          "period": "",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "sqlExpression": "",
+          "statistic": "Average"
+        }
+      ],
+      "title": "Connections",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
+      "description": "Redis 메모리 사용률 (%)\n\n[인스턴스별 최대 메모리]\n- cache.t3.micro: 0.5GB\n- cache.t3.small: 1.37GB\n- cache.t3.medium: 3.09GB\n\n[80% 넘으면 주의]",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 4,
+        "y": 48
+      },
+      "id": 61,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "cloudwatch"
+          },
+          "dimensions": {
+            "CacheClusterId": "goormgb-staging-redis-001"
+          },
+          "expression": "",
+          "id": "",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DatabaseMemoryUsagePercentage",
+          "metricQueryType": 0,
+          "namespace": "AWS/ElastiCache",
+          "period": "",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "sqlExpression": "",
+          "statistic": "Average"
+        }
+      ],
+      "title": "Memory %",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
+      "description": "ElastiCache CPU 사용률",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 8,
+        "y": 48
+      },
+      "id": 62,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "cloudwatch"
+          },
+          "dimensions": {
+            "CacheClusterId": "goormgb-staging-redis-001"
+          },
+          "expression": "",
+          "id": "",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "EngineCPUUtilization",
+          "metricQueryType": 0,
+          "namespace": "AWS/ElastiCache",
+          "period": "",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "sqlExpression": "",
+          "statistic": "Average"
+        }
+      ],
+      "title": "CPU Utilization",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
+      "description": "ElastiCache Cache Hits/Misses",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2190,9 +2366,9 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 8,
-        "x": 16,
-        "y": 42
+        "w": 12,
+        "x": 12,
+        "y": 48
       },
       "id": 63,
       "options": {
@@ -2277,7 +2453,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "5xx 에러 총 개수\n\n[에러가 보이면 즉시 확인]\n1. 어떤 서비스에서 발생하는지\n2. 해당 시점 리소스 사용량\n3. Pod 상태 (재시작 여부)\n\n[에러별 원인]\n- 500: 코드 버그\n- 502: Pod 죽음/재시작\n- 503: 과부하\n- 504: 타임아웃",
+      "description": "애플리케이션 5xx 에러 건수",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2345,7 +2521,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "가장 느린 1% 요청의 응답시간\n\n[P99가 튀는 원인]\n1. DB 락 경합 - 동시에 같은 데이터 접근\n2. GC pause - JVM 가비지 컬렉션\n3. Cold start - 새 Pod 시작\n4. 네트워크 - AZ간 통신 지연\n\n[분석 방법]\n- Istio 대시보드에서 서비스별 지연 확인\n- 해당 시간대 로그 분석\n- DB 슬로우 쿼리 확인",
+      "description": "애플리케이션 응답시간 P99",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2413,7 +2589,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "Redis 엔진 CPU (실제 Redis 처리 부하)\n\n[65% 넘으면]\n- Redis가 병목이 될 수 있음\n- 명령어 최적화 필요\n\n[원인]\n- 파이프라이닝 미사용\n- 복잡한 데이터 구조\n- 큰 키 처리",
+      "description": "ElastiCache Engine CPU 사용률",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2494,7 +2670,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "메모리 부족으로 삭제된 키 수\n\n[Eviction이 발생하면]\n- 캐시 데이터가 강제 삭제됨\n- 캐시 미스 증가\n- DB 부하 증가\n\n[대응]\n- Redis 노드 업그레이드\n- TTL 조정으로 메모리 확보\n- 불필요한 데이터 정리",
+      "description": "ElastiCache 메모리 부족 축출 건수",
       "fieldConfig": {
         "defaults": {
           "color": {
