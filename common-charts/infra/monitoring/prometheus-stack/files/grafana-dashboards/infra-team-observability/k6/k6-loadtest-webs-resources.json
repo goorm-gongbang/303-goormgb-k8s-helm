@@ -71,24 +71,42 @@
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"memory\"}) or vector(0)", "legendFormat": "Memory", "refId": "A" }],
       "title": "Memory 사용률 (vs Limits)", "type": "gauge"
     },
-    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 }, "id": 103, "panels": [], "title": "노드 분포", "type": "row" },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 }, "id": 103, "panels": [], "title": "노드/서비스 분포", "type": "row" },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "loadtest-webs Pod가 배치된 노드 수",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "purple", "value": null }] }, "unit": "short" }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 3, "x": 0, "y": 6 }, "id": 30,
+      "gridPos": { "h": 3, "w": 3, "x": 0, "y": 6 }, "id": 30,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})) or vector(0)", "legendFormat": "Nodes", "refId": "A" }],
       "title": "노드 수", "type": "stat"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "loadtest-webs의 서비스(app label) 수",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 3, "w": 3, "x": 3, "y": 6 }, "id": 33,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(count by (label_app) (kube_pod_labels{namespace=\"loadtest-webs\", label_app!=\"\"})) or vector(0)", "legendFormat": "Services", "refId": "A" }],
+      "title": "서비스 수", "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "노드별 Pod 분포",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 7, "x": 3, "y": 6 }, "id": 31,
+      "gridPos": { "h": 6, "w": 9, "x": 6, "y": 6 }, "id": 31,
       "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "pie", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "legendFormat": "{{node}}", "refId": "A" }],
       "title": "노드별 Pod 분포", "type": "piechart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "서비스(app label)별 Pod 분포",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 6, "w": 9, "x": 15, "y": 6 }, "id": 34,
+      "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "pie", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (label_app) (kube_pod_labels{namespace=\"loadtest-webs\", label_app!=\"\"})", "legendFormat": "{{label_app}}", "refId": "A" }],
+      "title": "서비스별 Pod 분포", "type": "piechart"
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
@@ -101,7 +119,7 @@
           { "matcher": { "id": "byName", "options": "Mem Usage" }, "properties": [{ "id": "unit", "value": "bytes" }] }
         ]
       },
-      "gridPos": { "h": 8, "w": 14, "x": 10, "y": 6 }, "id": 32,
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 12 }, "id": 32,
       "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": true }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Pods" }] },
       "targets": [
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "A" },
@@ -119,7 +137,44 @@
       ],
       "type": "table"
     },
-    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 }, "id": 101, "panels": [], "title": "Pod/Container 상세", "type": "row" },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "서비스별 Pod 수, CPU/Memory Requests, Limits, 실제 사용량",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "text", "value": null }] }, "unit": "short" },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Pods" }, "properties": [{ "id": "unit", "value": "short" }] },
+          { "matcher": { "id": "byName", "options": "CPU Req" }, "properties": [{ "id": "unit", "value": "short" }, { "id": "decimals", "value": 2 }] },
+          { "matcher": { "id": "byName", "options": "CPU Limit" }, "properties": [{ "id": "unit", "value": "short" }, { "id": "decimals", "value": 2 }] },
+          { "matcher": { "id": "byName", "options": "CPU Usage" }, "properties": [{ "id": "unit", "value": "short" }, { "id": "decimals", "value": 2 }] },
+          { "matcher": { "id": "byName", "options": "Mem Req" }, "properties": [{ "id": "unit", "value": "bytes" }] },
+          { "matcher": { "id": "byName", "options": "Mem Limit" }, "properties": [{ "id": "unit", "value": "bytes" }] },
+          { "matcher": { "id": "byName", "options": "Mem Usage" }, "properties": [{ "id": "unit", "value": "bytes" }] }
+        ]
+      },
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 12 }, "id": 35,
+      "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": true }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Pods" }] },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (label_app) (kube_pod_labels{namespace=\"loadtest-webs\", label_app!=\"\"})", "format": "table", "instant": true, "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (label_app) (kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"cpu\"} * on(pod, namespace) group_left(label_app) kube_pod_labels{namespace=\"loadtest-webs\", label_app!=\"\"})", "format": "table", "instant": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (label_app) (kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"cpu\"} * on(pod, namespace) group_left(label_app) kube_pod_labels{namespace=\"loadtest-webs\", label_app!=\"\"})", "format": "table", "instant": true, "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (label_app) (rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]) * on(pod, namespace) group_left(label_app) kube_pod_labels{namespace=\"loadtest-webs\", label_app!=\"\"})", "format": "table", "instant": true, "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (label_app) (kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"memory\"} * on(pod, namespace) group_left(label_app) kube_pod_labels{namespace=\"loadtest-webs\", label_app!=\"\"})", "format": "table", "instant": true, "refId": "E" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (label_app) (kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"memory\"} * on(pod, namespace) group_left(label_app) kube_pod_labels{namespace=\"loadtest-webs\", label_app!=\"\"})", "format": "table", "instant": true, "refId": "F" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (label_app) (container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"} * on(pod, namespace) group_left(label_app) kube_pod_labels{namespace=\"loadtest-webs\", label_app!=\"\"})", "format": "table", "instant": true, "refId": "G" }
+      ],
+      "title": "서비스별 리소스 현황",
+      "transformations": [
+        { "id": "joinByField", "options": { "byField": "label_app", "mode": "outer" } },
+        { "id": "filterFieldsByName", "options": { "include": { "pattern": "label_app|Value.*" } } },
+        { "id": "organize", "options": {
+          "indexByName": { "label_app": 0, "Value #A": 1, "Value #B": 2, "Value #C": 3, "Value #D": 4, "Value #E": 5, "Value #F": 6, "Value #G": 7 },
+          "renameByName": { "label_app": "Service", "Value #A": "Pods", "Value #B": "CPU Req", "Value #C": "CPU Limit", "Value #D": "CPU Usage", "Value #E": "Mem Req", "Value #F": "Mem Limit", "Value #G": "Mem Usage" }
+        } }
+      ],
+      "type": "table"
+    },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 }, "id": 101, "panels": [], "title": "Pod/Container 상세", "type": "row" },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "각 Pod/Container별 CPU/Memory requests, limits, 실제 사용량",
@@ -136,7 +191,7 @@
           { "matcher": { "id": "byName", "options": "Mem %" }, "properties": [{ "id": "unit", "value": "percent" }, { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] } }, { "id": "custom.cellOptions", "value": { "type": "color-background" } }] }
         ]
       },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 15 }, "id": 10,
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 19 }, "id": 10,
       "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "CPU %" }] },
       "targets": [
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"cpu\", container!=\"\"}", "format": "table", "instant": true, "refId": "A" },
@@ -161,12 +216,12 @@
       ],
       "type": "table"
     },
-    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 25 }, "id": 102, "panels": [], "title": "리소스 추이", "type": "row" },
+    { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 }, "id": 102, "panels": [], "title": "리소스 추이", "type": "row" },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Pod별 CPU 사용량 추이",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short", "min": 0 }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 26 }, "id": 20,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 30 }, "id": 20,
       "options": { "legend": { "calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
       "targets": [
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]))", "legendFormat": "{{pod}}", "refId": "A" }
@@ -177,7 +232,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Pod별 Memory 사용량 추이",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "bytes", "min": 0 }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 26 }, "id": 21,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 30 }, "id": 21,
       "options": { "legend": { "calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
       "targets": [
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"})", "legendFormat": "{{pod}}", "refId": "A" }
@@ -192,7 +247,7 @@
         { "matcher": { "id": "byName", "options": "Limits" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] },
         { "matcher": { "id": "byName", "options": "Usage" }, "properties": [{ "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }] }
       ] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 34 }, "id": 22,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 38 }, "id": 22,
       "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
       "targets": [
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"cpu\"})", "legendFormat": "Requests", "refId": "A" },
@@ -209,7 +264,7 @@
         { "matcher": { "id": "byName", "options": "Limits" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] },
         { "matcher": { "id": "byName", "options": "Usage" }, "properties": [{ "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }] }
       ] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 34 }, "id": 23,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 }, "id": 23,
       "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
       "targets": [
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"memory\"})", "legendFormat": "Requests", "refId": "A" },
