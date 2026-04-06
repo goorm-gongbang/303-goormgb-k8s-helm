@@ -17,10 +17,10 @@ loki:
     retention_stream:
       - selector: '{namespace="k6-tests"}'
         priority: 1
-        period: 12h  # 부하테스트 로그 12시간
+        period: 24h  # 부하테스트 로그 24시간 (Loki 3.x 최소값)
       - selector: '{namespace="loadtest"}'
         priority: 1
-        period: 12h  # 부하테스트 로그 12시간
+        period: 24h  # 부하테스트 로그 24시간 (Loki 3.x 최소값)
 
   storage:
     type: filesystem
