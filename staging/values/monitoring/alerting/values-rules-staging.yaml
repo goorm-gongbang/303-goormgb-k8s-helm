@@ -7,22 +7,22 @@ additionalPrometheusRulesMap:
         rules:
           - alert: StagingHttp5xxWarning
             expr: |
-              100 * sum by (job) (
+              100 * sum by (app) (
                 rate(
-                  http_server_requests_seconds_count{
+                  http_server_request_duration_seconds_count{
                     namespace="staging-webs",
-                    job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)",
-                    status=~"5.."
+                    app=~"staging-(api-gateway|auth-guard|order-core|queue|seat)",
+                    http_response_status_code=~"5.."
                   }[5m]
                 )
               )
               /
               clamp_min(
-                sum by (job) (
+                sum by (app) (
                   rate(
-                    http_server_requests_seconds_count{
+                    http_server_request_duration_seconds_count{
                       namespace="staging-webs",
-                      job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+                      app=~"staging-(api-gateway|auth-guard|order-core|queue|seat)"
                     }[5m]
                   )
                 ),
@@ -39,22 +39,22 @@ additionalPrometheusRulesMap:
 
           - alert: StagingHttp5xxCritical
             expr: |
-              100 * sum by (job) (
+              100 * sum by (app) (
                 rate(
-                  http_server_requests_seconds_count{
+                  http_server_request_duration_seconds_count{
                     namespace="staging-webs",
-                    job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)",
-                    status=~"5.."
+                    app=~"staging-(api-gateway|auth-guard|order-core|queue|seat)",
+                    http_response_status_code=~"5.."
                   }[5m]
                 )
               )
               /
               clamp_min(
-                sum by (job) (
+                sum by (app) (
                   rate(
-                    http_server_requests_seconds_count{
+                    http_server_request_duration_seconds_count{
                       namespace="staging-webs",
-                      job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+                      app=~"staging-(api-gateway|auth-guard|order-core|queue|seat)"
                     }[5m]
                   )
                 ),
@@ -73,11 +73,11 @@ additionalPrometheusRulesMap:
             expr: |
               histogram_quantile(
                 0.99,
-                sum by (job, le) (
+                sum by (app, le) (
                   rate(
-                    http_server_requests_seconds_bucket{
+                    http_server_request_duration_seconds_bucket{
                       namespace="staging-webs",
-                      job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+                      app=~"staging-(api-gateway|auth-guard|order-core|queue|seat)"
                     }[5m]
                   )
                 )
@@ -95,11 +95,11 @@ additionalPrometheusRulesMap:
             expr: |
               histogram_quantile(
                 0.99,
-                sum by (job, le) (
+                sum by (app, le) (
                   rate(
-                    http_server_requests_seconds_bucket{
+                    http_server_request_duration_seconds_bucket{
                       namespace="staging-webs",
-                      job=~"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+                      app=~"staging-(api-gateway|auth-guard|order-core|queue|seat)"
                     }[5m]
                   )
                 )
