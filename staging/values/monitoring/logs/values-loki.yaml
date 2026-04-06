@@ -11,8 +11,16 @@ loki:
     delete_request_store: filesystem
 
   limits_config:
-    retention_period: 24h  # 1일 (부하테스트 대응)
+    retention_period: 72h  # 기본 3일
     allow_structured_metadata: true
+    # Per-stream retention (namespace별 보관 기간)
+    retention_stream:
+      - selector: '{namespace="k6-tests"}'
+        priority: 1
+        period: 12h  # 부하테스트 로그 12시간
+      - selector: '{namespace="loadtest"}'
+        priority: 1
+        period: 12h  # 부하테스트 로그 12시간
 
   storage:
     type: filesystem
