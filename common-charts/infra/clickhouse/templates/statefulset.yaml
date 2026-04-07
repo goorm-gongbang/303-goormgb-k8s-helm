@@ -64,9 +64,6 @@ spec:
             - name: config
               mountPath: /etc/clickhouse-server/config.d/custom.xml
               subPath: custom.xml
-            - name: config
-              mountPath: /etc/clickhouse-server/users.d/custom-users.xml
-              subPath: users.xml
             {{- if .Values.initScripts.enabled }}
             - name: init-scripts
               mountPath: /docker-entrypoint-initdb.d
