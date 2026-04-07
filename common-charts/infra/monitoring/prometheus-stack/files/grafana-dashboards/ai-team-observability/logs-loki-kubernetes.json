@@ -57,7 +57,7 @@
       "id": 2,
       "options": {
         "dedupStrategy": "none",
-        "enableLogDetails": true,
+        "enableLogDetails": false,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
         "showLabels": false,
@@ -69,7 +69,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\"} |~ \"$level\" |~ \"$query\" $healthFilter | line_format \"[{{.pod | trunc 30}}] {{.container}}: {{__line__}}\"",
+          "expr": "{namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\"} $healthFilter | line_format \"[{{.pod | trunc 30}}] {{.container}}: {{__line__}}\"",
           "queryType": "range",
           "refId": "A"
         }
