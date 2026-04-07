@@ -8,9 +8,17 @@ data:
     <clickhouse>
       <max_connections>{{ .Values.config.maxConnections }}</max_connections>
       <max_concurrent_queries>{{ .Values.config.maxConcurrentQueries }}</max_concurrent_queries>
-      <max_memory_usage>{{ .Values.config.maxMemoryUsage }}</max_memory_usage>
-      <max_memory_usage_for_all_queries>{{ .Values.config.maxMemoryUsageForAllQueries }}</max_memory_usage_for_all_queries>
       <listen_host>0.0.0.0</listen_host>
+    </clickhouse>
+  users.xml: |
+    <?xml version="1.0"?>
+    <clickhouse>
+      <profiles>
+        <default>
+          <max_memory_usage>{{ .Values.config.maxMemoryUsage }}</max_memory_usage>
+          <max_memory_usage_for_all_queries>{{ .Values.config.maxMemoryUsageForAllQueries }}</max_memory_usage_for_all_queries>
+        </default>
+      </profiles>
     </clickhouse>
 ---
 {{- if .Values.initScripts.enabled }}
