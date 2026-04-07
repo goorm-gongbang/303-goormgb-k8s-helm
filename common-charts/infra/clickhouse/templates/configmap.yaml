@@ -19,6 +19,9 @@ kind: ConfigMap
 metadata:
   name: clickhouse-init-scripts
 data:
+  # Create database first
+  000_create_database.sql: |
+    CREATE DATABASE IF NOT EXISTS {{ .Values.database }};
   # AI Defense audit events table
   001_defense_audit_events.sql: |
     CREATE TABLE IF NOT EXISTS {{ .Values.database }}.defense_audit_events (
