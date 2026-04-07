@@ -9,7 +9,7 @@ loki:
     retention_enabled: true
     delete_request_store: filesystem
   limits_config:
-    retention_period: 72h
+    retention_period: 48h  # 문서 기준 dev Loki 2일
   storage:
     type: filesystem
   schemaConfig:
