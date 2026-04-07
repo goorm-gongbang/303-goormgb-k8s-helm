@@ -47,3 +47,4 @@ external_services:
 kialiVirtualService:
   enabled: true
   host: kiali.goormgb.space
+  gatewayRef: "istio-system/goormgb-gateway"
