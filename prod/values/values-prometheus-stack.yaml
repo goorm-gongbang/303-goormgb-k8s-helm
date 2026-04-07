@@ -18,6 +18,13 @@
 # ============================================================
 
 # ===== prometheus-extras용 설정 (ExternalSecrets, VirtualService) =====
+# Grafana credentials from AWS Secrets Manager
+grafana:
+  eso:
+    enabled: true
+    secretManagerKey: prod/monitoring/grafana
+    oauthSecretManagerKey: prod/infra/oauth/google
+
 # Grafana Gateway
 gateway:
   grafana:
