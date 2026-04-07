@@ -46,6 +46,9 @@ meshConfig:
       - zipkin
 
   defaultConfig:
+    # ALB 뒤에서 실제 클라이언트 IP 인식 (IP Whitelist용)
+    gatewayTopology:
+      numTrustedProxies: 1
     tracing:
       sampling: 100  # staging은 100% 샘플링
 

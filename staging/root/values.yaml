@@ -21,6 +21,7 @@ destination:
 ociCharts:
   istio-base:
     enabled: true
+    description: "Istio CRD 및 기본 리소스 (Gateway, VirtualService 등 CRD 정의)"
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: base
     version: "1.29.1"
@@ -37,6 +38,7 @@ ociCharts:
 
   istiod:
     enabled: true
+    description: "Istio Control Plane - 서비스 메시 정책, mTLS, 트래픽 관리"
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: istiod
     version: "1.29.1"
@@ -70,9 +72,10 @@ ociCharts:
         jsonPointers:
           - /spec/podMetricsEndpoints
 
-  # Istio IngressGateway (ClusterIP - ALB Ingress에서 라우팅)
+  # Istio IngressGateway (ClusterIP - ALB Ingress에서 라���팅)
   istio-ingressgateway:
     enabled: true
+    description: "Istio Ingress Gateway - ALB에서 트래픽 수신, VirtualService 라���팅"
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: gateway
     version: "1.29.1"
@@ -83,6 +86,7 @@ ociCharts:
 
   kiali-server:
     enabled: true
+    description: "Kiali - Istio 서비스 메시 시각화 및 관리 대시보드"
     repoURL: https://kiali.org/helm-charts
     chart: kiali-server
     version: "2.23.0"
@@ -104,6 +108,7 @@ ociCharts:
 
   tigera-operator:
     enabled: false  # EKS는 VPC CNI 사용
+    description: "Calico CNI Operator (비활성화 - EKS VPC CNI 사용)"
     repoURL: https://docs.tigera.io/calico/charts
     chart: tigera-operator
     version: "v3.29.3"
@@ -114,6 +119,7 @@ ociCharts:
   # Karpenter - Node Auto-scaling
   karpenter:
     enabled: true
+    description: "Karpenter - EKS 노드 자동 스케일링 (NodePool, EC2NodeClass)"
     repoURL: public.ecr.aws/karpenter
     chart: karpenter
     version: "1.10.0"
@@ -126,6 +132,7 @@ ociCharts:
 
   loki:
     enabled: true
+    description: "Loki - 로그 수집/저장 (Promtail에서 전송받음, Grafana에서 조회)"
     repoURL: https://grafana.github.io/helm-charts
     chart: loki
     version: "6.55.0"
@@ -144,6 +151,7 @@ ociCharts:
 
   promtail:
     enabled: true
+    description: "Promtail - Pod 로그 수집 DaemonSet (Loki로 전송)"
     repoURL: https://grafana.github.io/helm-charts
     chart: promtail
     version: "6.17.1"
@@ -154,6 +162,7 @@ ociCharts:
 
   kube-prometheus-stack:
     enabled: true
+    description: "Prometheus + Alertmanager - 메트릭 수집, 알림 규칙, ServiceMonitor"
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
     version: "82.13.6"
@@ -193,6 +202,7 @@ ociCharts:
 
   aws-load-balancer-controller:
     enabled: true
+    description: "AWS Load Balancer Controller - ALB/NLB Ingress 관���"
     repoURL: https://aws.github.io/eks-charts
     chart: aws-load-balancer-controller
     version: "3.1.0"
@@ -228,6 +238,7 @@ ociCharts:
 
   external-secrets:
     enabled: true
+    description: "External Secrets Operator - AWS Secrets Manager 연���"
     repoURL: https://charts.external-secrets.io
     chart: external-secrets
     version: "2.2.0"
@@ -247,6 +258,7 @@ ociCharts:
 
   external-dns:
     enabled: true
+    description: "External DNS - Route53 DNS 레코드 자동 관리"
     repoURL: https://kubernetes-sigs.github.io/external-dns/
     chart: external-dns
     version: "1.20.0"
@@ -257,6 +269,7 @@ ociCharts:
 
   alloy:
     enabled: true
+    description: "Grafana Alloy - OTEL 수집기 (Faro RUM 등)"
     repoURL: https://grafana.github.io/helm-charts
     chart: alloy
     version: "1.6.2"
@@ -267,6 +280,7 @@ ociCharts:
 
   k6-operator:
     enabled: false
+    description: "k6 Operator - 부하테스트 CRD (비활성화)"
     repoURL: https://grafana.github.io/helm-charts
     chart: k6-operator
     version: "4.3.0"
@@ -276,6 +290,7 @@ ociCharts:
 
   tempo:
     enabled: true
+    description: "Tempo - 분산 추적 저장소 (Jaeger/Zipkin 호환)"
     repoURL: https://grafana.github.io/helm-charts
     chart: tempo
     version: "1.24.4"
@@ -293,6 +308,7 @@ ociCharts:
   # Grafana (kube-prometheus-stack에서 분리)
   grafana:
     enabled: true
+    description: "Grafana - 대시보드 시각화 (Prometheus, Loki, Tempo 연동)"
     repoURL: https://grafana.github.io/helm-charts
     chart: grafana
     version: "8.14.0"
@@ -303,6 +319,7 @@ ociCharts:
 
   opentelemetry-collector:
     enabled: true
+    description: "OpenTelemetry Collector - 메트릭/트레이스 수집 파이프라인"
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-collector
     version: "0.147.1"
@@ -314,10 +331,12 @@ ociCharts:
   # Tetragon - eBPF (비활성화, VPC CNI 사용)
   tetragon:
     enabled: false
+    description: "Tetragon eBPF 보안 (비활성화)"
 
   # Metrics Server - kubectl top nodes/pods
   metrics-server:
     enabled: true
+    description: "Metrics Server - kubectl top, HPA 메트릭 제공"
     repoURL: https://kubernetes-sigs.github.io/metrics-server/
     chart: metrics-server
     version: "3.13.0"
@@ -328,6 +347,7 @@ ociCharts:
   # Kyverno - Policy Engine
   kyverno:
     enabled: true
+    description: "Kyverno - K8s 정책 엔진 (리소스 검증/변환)"
     repoURL: https://kyverno.github.io/kyverno/
     chart: kyverno
     version: "3.7.1"
@@ -361,6 +381,7 @@ gitCharts:
   # === Core ===
   namespaces:
     enabled: true
+    description: "Namespace 정의 (staging-webs, staging-ai, monitoring 등)"
     path: common-charts/infra/namespaces
     namespace: default
     syncWave: "-10"
@@ -370,6 +391,7 @@ gitCharts:
   # === Security ===
   rbac:
     enabled: true
+    description: "RBAC - ServiceAccount, Role, RoleBinding 정의"
     path: common-charts/infra/rbac
     namespace: default
     valueFiles:
@@ -378,6 +400,7 @@ gitCharts:
   # Network Policies (namespace isolation)
   network-policies:
     enabled: true
+    description: "NetworkPolicy - Namespace 간 네트워크 격리"
     path: common-charts/infra/network-policies
     namespace: default
     syncWave: "-9"
@@ -387,6 +410,7 @@ gitCharts:
   # ESO ClusterSecretStore (IRSA 기반)
   eso-config:
     enabled: true
+    description: "ESO ClusterSecretStore - AWS Secrets Manager 연결 설정"
     path: staging/charts/eso
     namespace: external-secrets
     syncWave: "-8"
@@ -394,6 +418,7 @@ gitCharts:
   # AI Service Secrets (Redis 연결 정보)
   ai-service-secrets:
     enabled: true
+    description: "AI 서비스 Secret - Redis, PostgreSQL 연결 정보"
     path: staging/charts/security/ai-service-secrets
     namespace: staging-ai
     syncWave: "-6"
@@ -401,6 +426,7 @@ gitCharts:
   # Mail Config (Gmail SMTP)
   mail-config:
     enabled: true
+    description: "메일 설정 - Gmail SMTP Secret"
     path: common-charts/apps/mail-config
     namespace: staging-webs
     syncWave: "-5"
@@ -410,6 +436,7 @@ gitCharts:
   # Karpenter NodePool & EC2NodeClass
   karpenter-config:
     enabled: true
+    description: "Karpenter 설정 - NodePool, EC2NodeClass 정의"
     path: staging/charts/karpenter
     namespace: karpenter
     syncWave: "-6"
@@ -419,6 +446,7 @@ gitCharts:
   # === ALB Ingress (Host-based routing) ===
   alb-ingress:
     enabled: true
+    description: "ALB Ingress - 호스트 기반 라우팅 규칙"
     path: staging/charts/alb-ingress
     namespace: istio-system
     syncWave: "5"
@@ -430,6 +458,7 @@ gitCharts:
   # === Istio ===
   istio-gateway:
     enabled: true
+    description: "Istio Gateway CRD - 도메인별 트래픽 수신 정의"
     path: common-charts/infra/istio/gateway
     namespace: istio-system
     syncWave: "-2"
@@ -438,6 +467,7 @@ gitCharts:
 
   istio-security:
     enabled: true
+    description: "Istio Security - AuthorizationPolicy, PeerAuth, JWT 검증"
     path: common-charts/infra/istio-security
     namespace: istio-system
     syncWave: "-1"
@@ -447,6 +477,7 @@ gitCharts:
   # === OCI Chart Extras (추가 모니터링/설정) ===
   istiod-monitoring:
     enabled: true
+    description: "Istiod 모니터링 - PodMonitor, Telemetry 설정"
     path: common-charts/infra/istio/istiod
     namespace: istio-system
     syncWave: "-2"
@@ -455,6 +486,7 @@ gitCharts:
 
   prometheus-extras:
     enabled: true
+    description: "Prometheus 추가 설정 - Grafana 대시보드 JSON, 추가 규칙"
     path: common-charts/infra/monitoring/prometheus-stack
     namespace: monitoring
     syncWave: "0"
@@ -467,6 +499,7 @@ gitCharts:
 
   alloy-config:
     enabled: true
+    description: "Alloy 설정 - Faro RUM 수집 VirtualService"
     path: common-charts/infra/monitoring/alloy
     releaseName: alloy
     namespace: monitoring
@@ -476,6 +509,7 @@ gitCharts:
 
   loki-backup:
     enabled: false  # staging에서 필요시 활성화
+    description: "Loki 백업 설정 (비활성화)"
     path: common-charts/infra/monitoring/loki
     namespace: monitoring
     syncWave: "1"
@@ -485,6 +519,7 @@ gitCharts:
   # === ArgoCD Config (OAuth, Applications) ===
   argocd-config:
     enabled: true
+    description: "ArgoCD 설정 - Google OAuth, ConfigMap, Notifications"
     path: common-charts/infra/argocd
     namespace: argocd
     valueFiles:
@@ -493,6 +528,7 @@ gitCharts:
   # Kyverno Policies
   kyverno-policies:
     enabled: true
+    description: "Kyverno 정책 - 리소스 제한, latest 태그 금지 등"
     path: common-charts/infra/kyverno-policies
     namespace: kyverno
     syncWave: "-6"
@@ -504,6 +540,7 @@ gitCharts:
   # Tetragon Config (비활성화)
   tetragon-config:
     enabled: false
+    description: "Tetragon 설정 (비활성화)"
 
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
@@ -512,6 +549,7 @@ gitCharts:
   # CloudBeaver (DB 관리 - 부하테스트용)
   cloudbeaver:
     enabled: true
+    description: "CloudBeaver - 웹 기반 DB 관리 도구 (RDS, ClickHouse)"
     path: staging/charts/monitoring/cloudbeaver
     namespace: monitoring
     syncWave: "5"
@@ -521,6 +559,7 @@ gitCharts:
   # Redis Exporter for AI ElastiCache
   redis-exporter-ai:
     enabled: true
+    description: "Redis Exporter - AI ElastiCache 메트릭 수집"
     path: staging/charts/monitoring/redis-exporter-ai
     namespace: staging-ai
     syncWave: "5"
@@ -528,6 +567,7 @@ gitCharts:
   # RDS Backup CronJob (pg_dump -> S3)
   rds-backup:
     enabled: true
+    description: "RDS 백업 - pg_dump CronJob (S3 저장)"
     path: staging/charts/data/rds-backup
     namespace: data
     syncWave: "0"
@@ -535,6 +575,7 @@ gitCharts:
   # Infra Console (Istio & Kyverno 관리 콘솔)
   infra-console:
     enabled: false  # 추후 활성화
+    description: "Infra Console - Istio/Kyverno 관리 웹 UI (비활성화)"
     path: common-charts/infra/infra-console
     namespace: monitoring
     syncWave: "5"
@@ -544,6 +585,7 @@ gitCharts:
   # RedisInsight (Redis GUI with Google OAuth)
   redisinsight:
     enabled: true
+    description: "RedisInsight - Redis GUI 관리 도구"
     path: common-charts/infra/redisinsight
     namespace: monitoring
     syncWave: "5"
@@ -553,6 +595,7 @@ gitCharts:
   # ClickHouse for AI Defense observability warehouse
   clickhouse:
     enabled: true
+    description: "ClickHouse - AI Defense 관측 데이터 웨어하우스"
     path: common-charts/infra/clickhouse
     namespace: data
     syncWave: "-4"
@@ -573,6 +616,7 @@ gitCharts:
   # === Messaging (Kafka) ===
   kafka:
     enabled: false  # 임시 비활성화
+    description: "Kafka - 메시지 브로커 (비활성화)"
     path: common-charts/infra/kafka
     namespace: messaging
     syncWave: "-5"
@@ -592,6 +636,7 @@ gitCharts:
 
   kafka-ui:
     enabled: false  # 임시 비활성화
+    description: "Kafka UI - 웹 기반 Kafka 관리 도구 (비활성화)"
     path: dev/charts/data/kafka-ui
     namespace: messaging
     syncWave: "0"
@@ -613,14 +658,19 @@ applicationSets:
       # 순차 배포: auth-guard → 나머지 서비스 → api-gateway
       - name: auth-guard
         syncWave: "10"
+        description: "Auth Guard - JWT 발급/검증, 로그인/회원가입 API"
       - name: queue
         syncWave: "11"
+        description: "Queue - 대기열 관리, 입장 순서 처리"
       - name: seat
         syncWave: "11"
+        description: "Seat - 좌석 조회/선택, 구역 정보 API"
       - name: order-core
         syncWave: "11"
+        description: "Order Core - 주문 생성/결제, 티켓 발급"
       - name: api-gateway
         syncWave: "12"
+        description: "API Gateway - 라우팅, 인증 필터, Rate Limit"
 
   staging-ai-services:
     enabled: true
@@ -631,7 +681,9 @@ applicationSets:
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
     services:
       - name: ai-defense
+        description: "AI Defense - 봇 탐지, 트래픽 분석, 정책 평가"
       - name: authz-adapter
+        description: "Authz Adapter - Istio ext_authz gRPC 어댑터"
 
   # Load-test 전용 서비스 (k6 부하 테스트용)
   loadtest-webs-services:
@@ -644,14 +696,19 @@ applicationSets:
     services:
       - name: auth-guard
         syncWave: "15"
+        description: "[LoadTest] Auth Guard - 부하테스트용 인증 서비스"
       - name: queue
         syncWave: "16"
+        description: "[LoadTest] Queue - 부하테스트용 대기열 서비스"
       - name: seat
         syncWave: "16"
+        description: "[LoadTest] Seat - 부하테스트용 좌석 서비스"
       - name: order-core
         syncWave: "16"
+        description: "[LoadTest] Order Core - 부하테스트용 주문 서비스"
       - name: api-gateway
         syncWave: "17"
+        description: "[LoadTest] API Gateway - 부하테스트용 게이트웨이"
 
   loadtest-ai-services:
     enabled: false  # load-test 경로는 ext_authz에서 제외되므로 AI 서비스 불필요
@@ -662,7 +719,9 @@ applicationSets:
     valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
     services:
       - name: ai-defense
+        description: "[LoadTest] AI Defense (비활성화)"
       - name: authz-adapter
+        description: "[LoadTest] Authz Adapter (비활성화)"
 
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)

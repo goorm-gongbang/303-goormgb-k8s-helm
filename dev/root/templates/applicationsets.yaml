@@ -22,6 +22,7 @@ spec:
         elements:
           {{- range $appSet.services }}
           - name: {{ .name }}
+            description: {{ .description | default "" | quote }}
           {{- end }}
   template:
     metadata:
@@ -29,6 +30,7 @@ spec:
       labels:
         ns: {{ $appSet.namespace }}
       annotations:
+        argocd.argoproj.io/description: '{{`{{description}}`}}'
         notifications.argoproj.io/subscribe.on-sync-running.discord-app: ""
         notifications.argoproj.io/subscribe.on-deployed.discord-app: ""
         notifications.argoproj.io/subscribe.on-deploy-failed.discord-app: ""
