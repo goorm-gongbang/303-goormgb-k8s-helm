@@ -11,7 +11,7 @@ env:
 
 image:
   name: "dev/goormgb/seat"
-  tag: "fb64b2f"
+  tag: "aca24ba"
   pullPolicy: Always
 
 imagePullSecrets:
