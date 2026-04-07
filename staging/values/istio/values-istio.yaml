@@ -70,7 +70,9 @@ apiGatewayConfig:
     - "api.staging.playball.one"
     - "cloudbeaver.staging.playball.one"
     - "console.staging.playball.one"
+    - "grafana.staging.playball.one"
     - "kafka-ui.staging.playball.one"
+    - "kiali.staging.playball.one"
     - "redis.staging.playball.one"
 
 # =============================================================================
