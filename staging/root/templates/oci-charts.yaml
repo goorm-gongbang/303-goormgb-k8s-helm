@@ -16,6 +16,9 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "{{ $chart.syncWave | default "0" }}"
+    {{- if $chart.description }}
+    argocd.argoproj.io/description: {{ $chart.description | quote }}
+    {{- end }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
