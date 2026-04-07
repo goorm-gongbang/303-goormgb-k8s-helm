@@ -4,6 +4,7 @@
 namespaces:
   - staging-ai
   - loadtest-ai
+  - monitoring  # Grafana PostgreSQL/ClickHouse datasource용
 secretName: ai-service-config
 
 # Secrets Manager 키 prefix
