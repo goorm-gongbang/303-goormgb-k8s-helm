@@ -484,6 +484,16 @@ gitCharts:
     valueFiles:
       - ../../../../staging/values/istio/values-istio.yaml
 
+  # Kiali VirtualService & DestinationRule
+  kiali-route:
+    enabled: true
+    description: "Kiali 라우팅 - VirtualService, DestinationRule (mTLS 비활성화)"
+    path: common-charts/infra/istio/kiali
+    namespace: istio-system
+    syncWave: "-1"
+    valueFiles:
+      - ../../../../staging/values/istio/values-kiali-route.yaml
+
   prometheus-extras:
     enabled: true
     description: "Prometheus 추가 설정 - Grafana 대시보드 JSON, 추가 규칙"
@@ -737,7 +747,5 @@ rawManifests:
     enabled: true
   loadTestRoute:
     enabled: true  # k6 부하테스트 라우팅 (/load-test/* -> api-gateway)
-  grafanaRoute:
-    enabled: true  # Grafana -> Istio IngressGateway (IP Whitelist 적용)
-  kialiRoute:
-    enabled: true  # Kiali -> Istio IngressGateway (IP Whitelist 적용)
+  # grafanaRoute: prometheus-extras gitChart로 이동 (grafana-vs, grafana-dr)
+  # kialiRoute: kiali-route gitChart로 이동 (kiali-vs, kiali-dr)
