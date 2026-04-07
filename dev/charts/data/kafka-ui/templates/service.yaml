@@ -7,9 +7,16 @@ metadata:
 spec:
   type: ClusterIP
   ports:
+    {{- if .Values.oauth2Proxy.enabled }}
+    - port: {{ .Values.oauth2Proxy.port }}
+      targetPort: {{ .Values.oauth2Proxy.port }}
+      protocol: TCP
+      name: http
+    {{- else }}
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort | default 8080 }}
       protocol: TCP
       name: http
+    {{- end }}
   selector:
     app: kafka-ui
