@@ -14,6 +14,8 @@ spec:
     metadata:
       labels:
         app: clickhouse
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       {{- with .Values.nodeSelector }}
       nodeSelector:
