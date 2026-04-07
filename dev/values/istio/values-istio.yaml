@@ -133,6 +133,7 @@ kiali-server:
 kialiVirtualService:
   enabled: true
   host: "kiali.goormgb.space"
+  gatewayRef: "istio-system/goormgb-gateway"
 
 # Hubble UI VirtualService (Cilium 관측성 UI)
 # Cilium은 bootstrap으로 설치, VirtualService만 ArgoCD 관리
