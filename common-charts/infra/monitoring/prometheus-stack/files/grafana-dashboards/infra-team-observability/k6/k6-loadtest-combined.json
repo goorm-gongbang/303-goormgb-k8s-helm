@@ -17,402 +17,6 @@
         "x": 0,
         "y": 0
       },
-      "id": 200,
-      "panels": [],
-      "title": "k6 클라이언트 메트릭",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "k6 클라이언트가 발생시킨 초당 요청 수입니다. 테스트 송신 기준입니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 0,
-        "y": 1
-      },
-      "id": 201,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "sum(rate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval])) or on() vector(0)",
-          "legendFormat": "RPS",
-          "refId": "A"
-        }
-      ],
-      "title": "k6 송신 RPS",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "k6 클라이언트 관점 응답시간 P50입니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 6,
-        "y": 1
-      },
-      "id": 202,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "avg(k6_http_req_duration{testid=~\"$testid\", quantile=\"0.5\"}) or on() vector(0)",
-          "legendFormat": "Avg",
-          "refId": "A"
-        }
-      ],
-      "title": "k6 응답시간 P50",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "k6 클라이언트 관점 요청 실패율입니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 5
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 12,
-        "y": 1
-      },
-      "id": 203,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "(sum(rate(k6_http_req_failed{testid=~\"$testid\"}[$__rate_interval])) / clamp_min(sum(rate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval])), 1)) * 100 or on() vector(0)",
-          "legendFormat": "Error %",
-          "refId": "A"
-        }
-      ],
-      "title": "k6 실패율",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "현재 활성 Virtual Users",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 18,
-        "y": 1
-      },
-      "id": 204,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "sum(k6_vus{testid=~\"$testid\"}) or on() vector(0)",
-          "legendFormat": "VUs",
-          "refId": "A"
-        }
-      ],
-      "title": "k6 VUs",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "k6 RPS 추이 (testid별)",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisLabel": "",
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "lineWidth": 1,
-            "showPoints": "never",
-            "spanNulls": false
-          },
-          "mappings": [],
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 5
-      },
-      "id": 205,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "sum by (testid) (rate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval]))",
-          "legendFormat": "{{testid}}",
-          "refId": "A"
-        }
-      ],
-      "title": "k6 RPS 추이",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "k6 응답시간 추이",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisLabel": "",
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "lineWidth": 1,
-            "showPoints": "never",
-            "spanNulls": false
-          },
-          "mappings": [],
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 5
-      },
-      "id": 206,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "avg(k6_http_req_duration{testid=~\"$testid\", quantile=\"0.95\"})",
-          "legendFormat": "P95",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "avg(k6_http_req_duration{testid=~\"$testid\", quantile=\"0.5\"})",
-          "legendFormat": "P50",
-          "refId": "B"
-        }
-      ],
-      "title": "k6 응답시간 추이",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 14
-      },
       "id": 100,
       "panels": [],
       "title": "서비스 현황 (요약)",
@@ -447,7 +51,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 15
+        "y": 1
       },
       "id": 1,
       "options": {
@@ -507,7 +111,7 @@
         "h": 4,
         "w": 4,
         "x": 4,
-        "y": 15
+        "y": 1
       },
       "id": 2,
       "options": {
@@ -575,7 +179,7 @@
         "h": 4,
         "w": 4,
         "x": 8,
-        "y": 15
+        "y": 1
       },
       "id": 3,
       "options": {
@@ -643,7 +247,7 @@
         "h": 4,
         "w": 4,
         "x": 12,
-        "y": 15
+        "y": 1
       },
       "id": 4,
       "options": {
@@ -711,7 +315,7 @@
         "h": 4,
         "w": 4,
         "x": 16,
-        "y": 15
+        "y": 1
       },
       "id": 5,
       "options": {
@@ -771,7 +375,7 @@
         "h": 4,
         "w": 4,
         "x": 20,
-        "y": 15
+        "y": 1
       },
       "id": 6,
       "options": {
@@ -808,7 +412,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 5
       },
       "id": 101,
       "panels": [],
@@ -907,7 +511,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 20
+        "y": 6
       },
       "id": 10,
       "options": {
@@ -1009,7 +613,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 20
+        "y": 6
       },
       "id": 11,
       "options": {
@@ -1148,7 +752,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 20
+        "y": 6
       },
       "id": 12,
       "options": {
@@ -1186,7 +790,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 14
       },
       "id": 102,
       "panels": [],
@@ -1308,7 +912,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 29
+        "y": 15
       },
       "id": 20,
       "options": {
@@ -1456,7 +1060,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 29
+        "y": 15
       },
       "id": 21,
       "options": {
@@ -1539,7 +1143,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 37
+        "y": 23
       },
       "id": 103,
       "panels": [],
@@ -1604,7 +1208,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 38
+        "y": 24
       },
       "id": 30,
       "options": {
@@ -1694,7 +1298,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 38
+        "y": 24
       },
       "id": 31,
       "options": {
@@ -1863,7 +1467,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 38
+        "y": 24
       },
       "id": 32,
       "options": {
@@ -1900,7 +1504,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 46
+        "y": 32
       },
       "id": 104,
       "panels": [],
@@ -1965,7 +1569,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 47
+        "y": 33
       },
       "id": 40,
       "options": {
@@ -2055,7 +1659,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 47
+        "y": 33
       },
       "id": 41,
       "options": {
@@ -2093,7 +1697,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 55
+        "y": 41
       },
       "id": 105,
       "panels": [],
@@ -2137,7 +1741,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 56
+        "y": 42
       },
       "id": 50,
       "options": {
@@ -2217,7 +1821,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 56
+        "y": 42
       },
       "id": 51,
       "options": {
@@ -2352,7 +1956,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 56
+        "y": 42
       },
       "id": 52,
       "options": {
@@ -2425,7 +2029,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 61
+        "y": 47
       },
       "id": 106,
       "panels": [],
@@ -2469,7 +2073,7 @@
         "h": 5,
         "w": 4,
         "x": 0,
-        "y": 62
+        "y": 48
       },
       "id": 60,
       "options": {
@@ -2517,7 +2121,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "ElastiCache 메모리 사용량",
+      "description": "Redis 메모리 사용률 (%)\n\n[인스턴스별 최대 메모리]\n- cache.t3.micro: 0.5GB\n- cache.t3.small: 1.37GB\n- cache.t3.medium: 3.09GB\n\n[80% 넘으면 주의]",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2533,15 +2137,15 @@
               },
               {
                 "color": "yellow",
-                "value": 536870912
+                "value": 70
               },
               {
                 "color": "red",
-                "value": 1073741824
+                "value": 90
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -2549,7 +2153,7 @@
         "h": 5,
         "w": 4,
         "x": 4,
-        "y": 62
+        "y": 48
       },
       "id": 61,
       "options": {
@@ -2579,7 +2183,7 @@
           "id": "",
           "matchExact": true,
           "metricEditorMode": 0,
-          "metricName": "BytesUsedForCache",
+          "metricName": "DatabaseMemoryUsagePercentage",
           "metricQueryType": 0,
           "namespace": "AWS/ElastiCache",
           "period": "",
@@ -2589,7 +2193,7 @@
           "statistic": "Average"
         }
       ],
-      "title": "Memory Used",
+      "title": "Memory %",
       "type": "stat"
     },
     {
@@ -2629,7 +2233,7 @@
         "h": 5,
         "w": 4,
         "x": 8,
-        "y": 62
+        "y": 48
       },
       "id": 62,
       "options": {
@@ -2764,7 +2368,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 62
+        "y": 48
       },
       "id": 63,
       "options": {
@@ -2837,7 +2441,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 67
+        "y": 53
       },
       "id": 108,
       "panels": [],
@@ -2881,7 +2485,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 68
+        "y": 54
       },
       "id": 80,
       "options": {
@@ -2949,7 +2553,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 68
+        "y": 54
       },
       "id": 81,
       "options": {
@@ -3017,7 +2621,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 68
+        "y": 54
       },
       "id": 82,
       "options": {
@@ -3098,7 +2702,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 68
+        "y": 54
       },
       "id": 83,
       "options": {
@@ -3243,14 +2847,14 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(k6_http_reqs_total, testid)",
+        "definition": "label_values(istio_requests_total{x_test_id!=\"unknown\"}, x_test_id)",
         "hide": 0,
         "includeAll": true,
         "label": "테스트 ID",
         "multi": true,
         "name": "testid",
         "options": [],
-        "query": "label_values(k6_http_reqs_total, testid)",
+        "query": "label_values(istio_requests_total{x_test_id!=\"unknown\"}, x_test_id)",
         "refresh": 2,
         "regex": "",
         "sort": 2,

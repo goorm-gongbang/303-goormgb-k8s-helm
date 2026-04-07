@@ -173,6 +173,15 @@ extAuthz:
 # Rate Limiting 설정
 # ============================================================
 rateLimiting:
+  # Rate limit 제외 경로 (부하 테스트, health check 등)
+  excludePaths:
+    - "/load-test/"  # k6 부하테스트
+    - "/health"
+    - "/healthz"
+    - "/ready"
+    - "/metrics"
+    - "/actuator/health"
+
   # --- Local Rate Limit (Envoy 내장) ---
   local:
     enabled: true  # Rate limiting 활성화
@@ -224,15 +233,6 @@ rateLimiting:
   # --- Global Rate Limit (Redis 기반) ---
   global:
     enabled: false    # EKS에서 ElastiCache 설정 후 활성화
-
-  # 제외 경로
-  excludePaths:
-    - "/health"
-    - "/healthz"
-    - "/ready"
-    - "/metrics"
-    - "/actuator/health"
-    - "/load-test/"  # 부하 테스트 경로 제외
 
 # ============================================================
 # mTLS 설정 (서비스 간 통신 암호화)

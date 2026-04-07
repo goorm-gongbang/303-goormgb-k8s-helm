@@ -1,7 +1,7 @@
 # queue - Load-test 환경
 fullnameOverride: "queue"
 contextPath: "/queue"
-replicaCount: 2
+replicaCount: 4
 
 image:
   name: "staging/playball/web/queue"
@@ -48,11 +48,13 @@ service:
   port: *port
 
 # HikariCP connection pool 크기 조정 (부하테스트용)
+# Queue - Redis 위주, DB는 match 조회만 (5000 VU 대상)
+# 4 replicas x 10 pool = 40 connections
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "5"
+    value: "10"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "2"
+    value: "3"
 
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT

@@ -13,6 +13,7 @@ loki:
   limits_config:
     retention_period: 72h  # 문서 기준 staging 인프라 로그 3일
     allow_structured_metadata: true
+    # Per-stream retention (namespace별 보관 기간)
     retention_stream:
       - selector: '{namespace=~"(staging-webs|staging-ai)"}'
         priority: 1

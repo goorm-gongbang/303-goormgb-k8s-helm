@@ -1,7 +1,7 @@
 # api-gateway - Staging 환경
 fullnameOverride: "api-gateway"
 contextPath: ""  # api-gateway는 context path 없음
-replicaCount: 1
+replicaCount: 2
 
 image:
   name: "staging/playball/web/api-gateway"
@@ -41,11 +41,11 @@ affinity:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 512Mi
-  limits:
-    cpu: "1"
+    cpu: 500m
     memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 # Istio
 istio:
@@ -100,11 +100,6 @@ env:
       secretKeyRef:
         name: service-config
         key: SPRING_DATA_REDIS_PORT
-  # HikariCP connection pool 크기 조정
-  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "5"
-  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "2"
 
 envFrom:
   - configMapRef:

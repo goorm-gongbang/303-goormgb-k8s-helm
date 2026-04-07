@@ -33,10 +33,10 @@ server:
 controller:
   resources:
     requests:
-      cpu: 100m
+      cpu: 500m
       memory: 1Gi
     limits:
-      cpu: "1"
+      cpu: "2"
       memory: 3Gi
 
 # Repo Server 설정 (helm template 렌더링 시 메모리 급증)
