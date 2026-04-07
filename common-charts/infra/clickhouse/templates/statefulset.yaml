@@ -50,9 +50,9 @@ spec:
                   key: CLICKHOUSE_PASSWORD
             {{- else }}
             - name: CLICKHOUSE_USER
-              value: "default"
+              value: {{ .Values.auth.user | default "default" | quote }}
             - name: CLICKHOUSE_PASSWORD
-              value: ""
+              value: {{ .Values.auth.password | default "clickhouse" | quote }}
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
