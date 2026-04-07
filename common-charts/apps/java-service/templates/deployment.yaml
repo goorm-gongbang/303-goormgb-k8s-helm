@@ -97,8 +97,13 @@ spec:
               value: "health,info,metrics,prometheus"
             - name: MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS
               value: "always"
+            - name: MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED
+              value: "true"
             - name: MANAGEMENT_PROMETHEUS_METRICS_EXPORT_ENABLED
               value: "true"
+            # management 포트는 Spring Security 비활성화
+            - name: MANAGEMENT_SECURITY_ENABLED
+              value: "false"
             {{- end }}
             {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
