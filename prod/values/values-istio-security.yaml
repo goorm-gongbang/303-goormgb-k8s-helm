@@ -234,6 +234,43 @@ mtls:
     selector:
       app.kubernetes.io/name: opentelemetry-collector
 
+  metricsScrapeExceptions:
+    - name: auth-guard-metrics
+      namespace: prod-webs
+      selector:
+        app: prod-auth-guard
+      portLevelMtls:
+        8080:
+          mode: DISABLE
+    - name: queue-metrics
+      namespace: prod-webs
+      selector:
+        app: prod-queue
+      portLevelMtls:
+        8081:
+          mode: DISABLE
+    - name: seat-metrics
+      namespace: prod-webs
+      selector:
+        app: prod-seat
+      portLevelMtls:
+        8082:
+          mode: DISABLE
+    - name: order-core-metrics
+      namespace: prod-webs
+      selector:
+        app: prod-order-core
+      portLevelMtls:
+        8083:
+          mode: DISABLE
+    - name: api-gateway-metrics
+      namespace: prod-webs
+      selector:
+        app: prod-api-gateway
+      portLevelMtls:
+        8085:
+          mode: DISABLE
+
 # ============================================================
 # JWT 인증 설정
 # ============================================================

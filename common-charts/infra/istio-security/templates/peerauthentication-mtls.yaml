@@ -44,3 +44,24 @@ spec:
     4318:
       mode: PERMISSIVE
 {{- end }}
+{{- if and .Values.mtls .Values.mtls.metricsScrapeExceptions }}
+{{- range $exception := .Values.mtls.metricsScrapeExceptions }}
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: {{ $exception.name }}
+  namespace: {{ $exception.namespace }}
+spec:
+  selector:
+    matchLabels:
+      {{- toYaml $exception.selector | nindent 6 }}
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    {{- range $port, $config := $exception.portLevelMtls }}
+    {{ $port }}:
+      mode: {{ $config.mode | default "DISABLE" }}
+    {{- end }}
+{{- end }}
+{{- end }}
