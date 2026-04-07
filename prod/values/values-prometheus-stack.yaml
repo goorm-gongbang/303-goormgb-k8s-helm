@@ -32,19 +32,31 @@ gateway:
 # Dashboard 설정 (EKS 환경: Calico, 로컬 exporter 대시보드 제외)
 dashboards:
   infraTeam:
+    folderName: "PROD 플랫폼 관측(인프라)"
+    k6FolderName: "PROD 부하 테스트(k6)"
+    wafFolderName: "PROD WAF 모니터링"
+    cicdFolderName: "PROD CICD 모니터링"
     exclude:
       - "calico-felix.json"
   devTeam:
+    folderName: "PROD 서비스 관측(개발)"
+    namespacePattern: "prod-webs"
+    redisClusterPattern: "goormgb-prod-.*"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
       - "cache-redis-local.json"
+  aiTeam:
+    folderName: "PROD 서비스 관측(AI)"
   alertOps:
     enabled: true
+    folderName: "PROD 알람 현황판"
   businessKpi:
     enabled: true
+    folderName: "PROD 알람 현황판"
   securityOps:
     enabled: true
+    folderName: "PROD 알람 현황판"
 
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
 fullnameOverride: prom
@@ -142,6 +154,76 @@ grafana:
     enabled: true
     secretManagerKey: prod/monitoring/grafana
     oauthSecretManagerKey: prod/infra/oauth/google
+    oauthAllowInsecureEmailLookup: true
+  provisioning:
+    enabled: true
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+    users:
+      - email: 212clab@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: rhuba23@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: chamchi0129@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: jusanha17@gmail.com
+        orgRole: Admin
+      - email: lab.jehyun@gmail.com
+        orgRole: Admin
+      - email: wnconc@gmail.com
+        orgRole: Admin
+      - email: jbyun1105@gmail.com
+        orgRole: Admin
+      - email: sayiamseyoun9@gmail.com
+        orgRole: Admin
+      - email: jminwook0120@gmail.com
+        orgRole: Admin
+      - email: siyeon0713@gmail.com
+        orgRole: Admin
+      - email: cdh4112618@gmail.com
+        orgRole: Admin
+      - email: rhkdgur120@gmail.com
+        orgRole: Admin
+      - email: wkdwlgus317@hanyang.ac.kr
+        orgRole: Admin
+      - email: yuuijin863@gmail.com
+        orgRole: Admin
+      - email: hs4734@gmail.com
+        orgRole: Admin
+      - email: hejwien@gmail.com
+        orgRole: Admin
+      - email: niceguy6112@gmail.com
+        orgRole: Admin
+    teams:
+      - name: DEV
+        members:
+          - yuuijin863@gmail.com
+          - jusanha17@gmail.com
+          - rhkdgur120@gmail.com
+          - siyeon0713@gmail.com
+      - name: AI
+        members:
+          - wkdwlgus317@hanyang.ac.kr
+          - cdh4112618@gmail.com
+      - name: INFR
+        members:
+          - 212clab@gmail.com
+          - chamchi0129@gmail.com
+          - rhuba23@gmail.com
+      - name: SECU
+        members:
+          - wnconc@gmail.com
+          - hejwien@gmail.com
+          - jminwook0120@gmail.com
+      - name: MAN
+        members:
+          - lab.jehyun@gmail.com
+          - jbyun1105@gmail.com
+          - sayiamseyoun9@gmail.com
+          - hs4734@gmail.com
   forceDeployDashboards: true
   sidecar:
     dashboards:
