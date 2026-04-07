@@ -50,7 +50,7 @@ env:
     value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   # CORS 허용 Origin (Frontend)
   - name: TM_CORS_ALLOW_ORIGINS
-    value: "https://dev.goormgb.space"
+    value: "https://dev.goormgb.space,http://localhost:3000,http://127.0.0.1:3000"
   # S3 아카이빙 활성화 (AWS S3 사용)
   - name: TM_S3_BUCKET
     valueFrom:
