@@ -633,8 +633,8 @@ gitCharts:
 
   # === Messaging (Kafka) ===
   kafka:
-    enabled: false  # 임시 비활성화
-    description: "Kafka - 메시지 브로커 (비활성화)"
+    enabled: true
+    description: "Kafka - 메시지 브로커"
     path: common-charts/infra/kafka
     namespace: messaging
     syncWave: "-5"
@@ -653,8 +653,8 @@ gitCharts:
           - /spec/storageClassName
 
   kafka-ui:
-    enabled: false  # 임시 비활성화
-    description: "Kafka UI - 웹 기반 Kafka 관리 도구 (비활성화)"
+    enabled: true
+    description: "Kafka UI - 웹 기반 Kafka 관리 도구"
     path: dev/charts/data/kafka-ui
     namespace: messaging
     syncWave: "0"
