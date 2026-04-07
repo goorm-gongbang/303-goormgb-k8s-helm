@@ -36,6 +36,7 @@ spec:
             - --provider={{ .Values.oauth2Proxy.config.provider }}
             - --email-domain=*
             - --http-address=0.0.0.0:{{ .Values.oauth2Proxy.port }}
+            - --redirect-url=https://{{ .Values.virtualService.host }}/oauth2/callback
             - --cookie-secure={{ .Values.oauth2Proxy.config.cookieSecure }}
             - --cookie-domain={{ .Values.oauth2Proxy.config.cookieDomain }}
             - --cookie-samesite=lax
