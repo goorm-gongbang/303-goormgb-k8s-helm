@@ -16,6 +16,9 @@ spec:
     metadata:
       annotations:
         sidecar.istio.io/inject: "{{ .Values.istio.sidecar }}"
+        {{- if .Values.istio.sidecar }}
+        proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+        {{- end }}
       labels:
         {{- include "java-service.podLabels" . | nindent 8 }}
         {{- include "java-service.versionLabel" . | nindent 8 }}
