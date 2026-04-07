@@ -25,21 +25,23 @@ ingress:
         port: 80
         healthCheckPath: /healthz
 
-    # Grafana - Istio 안 거침 (직접 라우팅)
+    # Grafana - Istio IngressGateway 거침 (IP Whitelist 적용)
     - host: grafana.staging.playball.one
       service:
-        name: grafana
-        namespace: monitoring
+        name: istio-ingressgateway
+        namespace: istio-system
         port: 80
-        healthCheckPath: /api/health
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
 
-    # Kiali - Istio 안 거침 (직접 라우팅)
+    # Kiali - Istio IngressGateway 거침 (IP Whitelist 적용)
     - host: kiali.staging.playball.one
       service:
-        name: kiali
+        name: istio-ingressgateway
         namespace: istio-system
-        port: 20001
-        healthCheckPath: /healthz
+        port: 80
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
 
     # API - Istio IngressGateway 거침
     - host: api.staging.playball.one

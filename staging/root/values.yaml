@@ -737,3 +737,7 @@ rawManifests:
     enabled: true
   loadTestRoute:
     enabled: true  # k6 부하테스트 라우팅 (/load-test/* -> api-gateway)
+  grafanaRoute:
+    enabled: true  # Grafana -> Istio IngressGateway (IP Whitelist 적용)
+  kialiRoute:
+    enabled: true  # Kiali -> Istio IngressGateway (IP Whitelist 적용)
