@@ -16,6 +16,7 @@ spec:
     metadata:
       labels:
         app: clickhouse
+        version: {{ .Values.image.tag | quote }}
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
