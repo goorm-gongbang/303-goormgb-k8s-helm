@@ -413,6 +413,14 @@ gitCharts:
     valueFiles:
       - ../../../../dev/values/istio/values-istio.yaml
 
+  # Swagger OAuth (Gateway + VirtualService + EnvoyFilter)
+  swagger-oauth:
+    enabled: true
+    description: "Swagger OAuth - Gateway, VirtualService, 403 Redirect"
+    path: dev/charts/istio/swagger-oauth
+    namespace: istio-system
+    syncWave: "-1"
+
   istio-security:
     enabled: true
     description: "Istio Security - AuthorizationPolicy, JWT 검증"
@@ -675,12 +683,7 @@ applicationSets:
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)
 # =============================================================================
-rawManifests:
-  apiGateway:
-    enabled: true
-  swaggerGateway:
-    enabled: true
-  swagger403Redirect:
-    enabled: true
-  aiDefenseRoute:
-    enabled: true
+# Raw Manifests - 모두 개별 차트로 이동 완료
+# - apiGateway: istio-gateway gitChart (apiGatewayConfig)
+# - swaggerGateway + swagger403Redirect: swagger-oauth gitChart
+# - aiDefenseRoute: ai-service 차트 내 VirtualService
