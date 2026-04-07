@@ -44,11 +44,11 @@ service:
 
 resources:
   requests:
-    cpu: 50m
-    memory: 128Mi
-  limits:
-    cpu: 200m
+    cpu: 100m
     memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
 
 virtualService:
   enabled: true
@@ -65,8 +65,8 @@ tolerations:
 
 probes:
   liveness:
-    initialDelaySeconds: 30
+    initialDelaySeconds: 120
     periodSeconds: 10
   readiness:
-    initialDelaySeconds: 10
+    initialDelaySeconds: 60
     periodSeconds: 5
