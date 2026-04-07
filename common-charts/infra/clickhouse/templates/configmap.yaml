@@ -8,8 +8,6 @@ data:
     <clickhouse>
       <max_connections>{{ .Values.config.maxConnections }}</max_connections>
       <max_concurrent_queries>{{ .Values.config.maxConcurrentQueries }}</max_concurrent_queries>
-      <max_memory_usage>{{ .Values.config.maxMemoryUsage }}</max_memory_usage>
-      <max_memory_usage_for_all_queries>{{ .Values.config.maxMemoryUsageForAllQueries }}</max_memory_usage_for_all_queries>
       <listen_host>0.0.0.0</listen_host>
     </clickhouse>
 ---
@@ -19,6 +17,9 @@ kind: ConfigMap
 metadata:
   name: clickhouse-init-scripts
 data:
+  # Create database first
+  000_create_database.sql: |
+    CREATE DATABASE IF NOT EXISTS {{ .Values.database }};
   # AI Defense audit events table
   001_defense_audit_events.sql: |
     CREATE TABLE IF NOT EXISTS {{ .Values.database }}.defense_audit_events (

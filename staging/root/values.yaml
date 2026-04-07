@@ -671,9 +671,9 @@ rawManifests:
   apiGateway:
     enabled: false  # staging에서 필요시 활성화
   swaggerGateway:
-    enabled: false
+    enabled: true
   swagger403Redirect:
-    enabled: false
+    enabled: true
   aiDefenseRoute:
     enabled: true
   loadTestRoute:

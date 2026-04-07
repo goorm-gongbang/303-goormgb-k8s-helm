@@ -3,6 +3,10 @@
 
 replicaCount: 1
 
+# OAuth 비활성화 (dev는 Istio OAuth2 Proxy로 보호)
+oauth:
+  enabled: false
+
 image:
   repository: dbeaver/cloudbeaver
   tag: "24.0.0"

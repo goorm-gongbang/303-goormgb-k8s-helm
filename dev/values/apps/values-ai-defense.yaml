@@ -29,6 +29,9 @@ env:
     value: /app/src
   - name: APP_PORT
     value: "8000"
+  # JSON 로깅 활성화 (Loki 멀티라인 문제 해결)
+  - name: TM_LOG_FORMAT
+    value: "json"
   # 런타임 상태 관리를 Redis로 명시 (인메모리 방지)
   - name: TM_RUNTIME_STATE_BACKEND
     value: "redis"
@@ -50,7 +53,7 @@ env:
     value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   # CORS 허용 Origin (Frontend)
   - name: TM_CORS_ALLOW_ORIGINS
-    value: "https://dev.goormgb.space"
+    value: "https://dev.goormgb.space,http://localhost:3000,http://127.0.0.1:3000"
   # S3 아카이빙 활성화 (AWS S3 사용)
   - name: TM_S3_BUCKET
     valueFrom:
@@ -96,9 +99,9 @@ env:
   # PostgreSQL 접속 URL (동적 파싱)
   - name: TM_PG_URL
     value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)"
-  # ClickHouse (클러스터 내부 - dev 환경 인증 없음)
+  # ClickHouse (클러스터 내부 - dev 환경 기본 인증)
   - name: TM_CLICKHOUSE_URL
-    value: "http://clickhouse.data.svc.cluster.local:8123/ai_defense"
+    value: "http://default:clickhouse@clickhouse.data.svc.cluster.local:8123/ai_defense"
   # OpenTelemetry: 새 Semantic Convention 사용 (Java와 통일)
   # http.server.request.duration (seconds), http.response.status_code 등
   - name: OTEL_SEMCONV_STABILITY_OPT_IN

@@ -111,6 +111,8 @@ grafana:
     secretManagerKey: ""  # 예: dev/monitoring/grafana
     oauthSecretManagerKey: ""  # 예: common/google-login/grafana
     oauthAllowInsecureEmailLookup: false
+    oauthRoleAttributePathFromSecret: false
+    oauthRoleAttributeStrictFromSecret: false
 
   provisioning:
     enabled: false
