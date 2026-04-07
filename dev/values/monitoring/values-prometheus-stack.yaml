@@ -8,6 +8,7 @@ gateway:
   grafana:
     enabled: true
     host: "grafana.goormgb.space"
+    gatewayRef: "istio-system/goormgb-gateway"
     tls:
       credentialName: goormgb-tls
   prometheus:
