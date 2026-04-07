@@ -196,7 +196,7 @@ grafana.ini:
     auto_assign_org: true
     auto_assign_org_role: Viewer
   auth:
-    disable_login_form: false
+    disable_login_form: true  # Google OAuth만 허용
 
 # EBS CSI driver 미사용 - persistence 비활성화
 persistence:

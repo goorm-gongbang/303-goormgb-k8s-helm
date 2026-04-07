@@ -65,7 +65,6 @@ pilot:
 # 여기서는 Gateway CRD만 생성
 
 # 공용 Gateway (인프라 서비스용)
-# api.goormgb.space는 api-gateway에서 처리
 sharedGateway:
   enabled: true
   name: goormgb-gateway
@@ -80,6 +79,17 @@ sharedGateway:
     - "kafka-ui.goormgb.space"
     - "kiali.goormgb.space"
     - "redisinsight.goormgb.space"
+
+# API Gateway (api.goormgb.space 전용)
+apiGatewayConfig:
+  enabled: true
+  name: api-gateway
+  tls:
+    enabled: true
+    credentialName: goormgb-tls
+  httpsRedirect: true
+  hosts:
+    - "api.goormgb.space"
 
 # ===== Kiali =====
 kiali-server:

@@ -484,6 +484,24 @@ gitCharts:
     valueFiles:
       - ../../../../staging/values/istio/values-istio.yaml
 
+  # Kiali VirtualService & DestinationRule
+  kiali-route:
+    enabled: true
+    description: "Kiali 라우팅 - VirtualService, DestinationRule (mTLS 비활성화)"
+    path: common-charts/infra/istio/kiali
+    namespace: istio-system
+    syncWave: "-1"
+    valueFiles:
+      - ../../../../staging/values/istio/values-kiali-route.yaml
+
+  # Load Test Route (k6 부하테스트용)
+  loadtest-route:
+    enabled: true
+    description: "Load Test 라우팅 - /load-test/* -> loadtest-webs"
+    path: staging/charts/istio/loadtest-route
+    namespace: istio-system
+    syncWave: "0"
+
   prometheus-extras:
     enabled: true
     description: "Prometheus 추가 설정 - Grafana 대시보드 JSON, 추가 규칙"
@@ -726,14 +744,9 @@ applicationSets:
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)
 # =============================================================================
-rawManifests:
-  apiGateway:
-    enabled: false  # staging에서 필요시 활성화
-  swaggerGateway:
-    enabled: true
-  swagger403Redirect:
-    enabled: true
-  aiDefenseRoute:
-    enabled: true
-  loadTestRoute:
-    enabled: true  # k6 부하테스트 라우팅 (/load-test/* -> api-gateway)
+# Raw Manifests - 모두 개별 차트로 이동 완료
+# - Grafana: prometheus-extras gitChart (grafana-vs, grafana-dr)
+# - Kiali: kiali-route gitChart (kiali-vs, kiali-dr)
+# - AI Defense: ai-service 차트 내 VirtualService
+# - Load Test: loadtest-route gitChart
+# - Swagger: dev 환경 전용 (staging에서 제거)

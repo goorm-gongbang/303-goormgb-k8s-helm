@@ -1,0 +1,4 @@
+apiVersion: v2
+name: swagger-oauth
+description: Swagger Gateway with OAuth2 Proxy and 403 redirect
+version: 1.0.0

@@ -44,6 +44,7 @@ spec:
   gateways:
     - {{ $gatewayRef }}
   http:
+    # Main route
     - match:
         - uri:
             prefix: {{ $contextPath }}
@@ -71,4 +72,14 @@ spec:
             host: {{ include "ai-service.fullname" . }}
             port:
               number: {{ .Values.service.port }}
+    {{- if .Values.istio.gateway.redirect }}
+    {{- if .Values.istio.gateway.redirect.enabled }}
+    # Redirect (e.g., /ai -> /ai/)
+    - match:
+        - uri:
+            exact: {{ .Values.istio.gateway.redirect.from }}
+      redirect:
+        uri: {{ .Values.istio.gateway.redirect.to }}
+    {{- end }}
+    {{- end }}
 {{- end }}

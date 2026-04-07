@@ -34,8 +34,12 @@ externalSecret:
   secretStore: aws-secrets-manager
   remoteRef: staging/goormgb/clickhouse
 
-# Graviton (ARM64) 노드에 배치
+# Graviton (ARM64) 노드에 배치 - apps 노드
 nodeSelector:
   kubernetes.io/arch: arm64
+  role: apps
 
-tolerations: []
+tolerations:
+  - key: role
+    value: apps
+    effect: NoSchedule

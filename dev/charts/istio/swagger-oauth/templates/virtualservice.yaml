@@ -1,0 +1,17 @@
+{{- if .Values.enabled }}
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: swagger-route
+spec:
+  hosts:
+    - {{ .Values.host | quote }}
+  gateways:
+    - swagger-gateway
+  http:
+    - route:
+        - destination:
+            host: {{ .Values.oauth2Proxy.host }}
+            port:
+              number: {{ .Values.oauth2Proxy.port }}
+{{- end }}

@@ -129,10 +129,34 @@ resources:
 
 # Istio
 # /ai/* 라우팅은 rawManifests의 ai-defense-route VirtualService에서 처리
+# Istio VirtualService for /ai/* routing
 istio:
   sidecar: true
   gateway:
-    enabled: false  # rawManifests.aiDefenseRoute 사용
+    enabled: true
+    host: "api.goormgb.space"
+    externalRef: "istio-system/api-gateway"
+    contextPath: "/ai/"
+    redirect:
+      enabled: true
+      from: "/ai"
+      to: "/ai/"
+  cors:
+    enabled: true
+    allowOrigins:
+      - "https://dev.goormgb.space"
+      - "http://localhost:3000"
+      - "http://127.0.0.1:3000"
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allowHeaders:
+      - "*"
+    allowCredentials: true
+    maxAge: "24h"
 
 # Service
 service:

@@ -4,6 +4,8 @@ metadata:
   name: clickhouse
   labels:
     app: clickhouse
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   serviceName: clickhouse
   replicas: 1

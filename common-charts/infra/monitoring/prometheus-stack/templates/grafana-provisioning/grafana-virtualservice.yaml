@@ -8,7 +8,7 @@ spec:
   hosts:
     - {{ .Values.gateway.grafana.host | quote }}
   gateways:
-    - istio-system/goormgb-gateway
+    - {{ .Values.gateway.grafana.gatewayRef | default "istio-system/api-gateway" }}
   http:
     - match:
         - uri:
@@ -19,7 +19,7 @@ spec:
         retryOn: connect-failure,refused-stream,503,reset
       route:
         - destination:
-            host: {{ .Values.grafana.fullnameOverride | default "kube-prometheus-stack-grafana" }}
+            host: {{ .Values.grafana.fullnameOverride | default "grafana" }}
             port:
               number: 80
 {{- end }}
