@@ -162,6 +162,14 @@ admin:
 # Google OAuth 설정 - Secret에서 환경변수 주입
 envFromSecret: google-oauth-credentials
 
+# AI Service DB 연결 정보 (PostgreSQL, ClickHouse datasource용)
+envFromSecrets:
+  - name: ai-service-config
+
+# ClickHouse 플러그인 설치
+plugins:
+  - grafana-clickhouse-datasource
+
 grafana.ini:
   server:
     root_url: https://grafana.staging.playball.one
@@ -254,3 +262,37 @@ datasources:
         jsonData:
           authType: default
           defaultRegion: ap-northeast-2
+
+      # AI Defense PostgreSQL (RDS)
+      - name: PostgreSQL
+        type: postgres
+        uid: postgres
+        access: proxy
+        url: ${AI_PG_HOST}:${AI_PG_PORT}
+        database: ${AI_PG_DBNAME}
+        user: ${AI_PG_USERNAME}
+        isDefault: false
+        editable: false
+        jsonData:
+          sslmode: require
+          maxOpenConns: 5
+          maxIdleConns: 2
+          connMaxLifetime: 14400
+        secureJsonData:
+          password: ${AI_PG_PASSWORD}
+
+      # AI Defense ClickHouse (클러스터 내부)
+      - name: ClickHouse
+        type: grafana-clickhouse-datasource
+        uid: clickhouse
+        access: proxy
+        isDefault: false
+        editable: false
+        jsonData:
+          host: clickhouse.data.svc.cluster.local
+          port: 8123
+          protocol: http
+          defaultDatabase: ai_defense
+          username: ${AI_CLICKHOUSE_USER}
+        secureJsonData:
+          password: ${AI_CLICKHOUSE_PASSWORD}
