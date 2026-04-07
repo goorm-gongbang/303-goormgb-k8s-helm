@@ -1,0 +1,4 @@
+apiVersion: v2
+name: loadtest-route
+description: Load Test VirtualService for k6 load testing
+version: 1.0.0

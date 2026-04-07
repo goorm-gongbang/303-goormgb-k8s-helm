@@ -1,0 +1,43 @@
+{{- if .Values.enabled }}
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: load-test-route
+spec:
+  hosts:
+    - {{ .Values.host | quote }}
+  gateways:
+    - {{ .Values.gatewayRef }}
+  http:
+    - match:
+        - uri:
+            prefix: {{ .Values.sourcePath }}
+        - headers:
+            x-load-test:
+              exact: "true"
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: {{ .Values.destination.host }}
+            port:
+              number: {{ .Values.destination.port }}
+      {{- if .Values.cors.enabled }}
+      corsPolicy:
+        allowOrigins:
+          {{- range .Values.cors.allowOrigins }}
+          - exact: {{ . | quote }}
+          {{- end }}
+        allowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - OPTIONS
+        allowHeaders:
+          - "*"
+        allowCredentials: true
+        maxAge: "24h"
+      {{- end }}
+{{- end }}
