@@ -40,10 +40,10 @@ data:
 {{- end }}
 {{- end }}
 ---
-{{/* Part 2: Smaller dashboards (authz-adapter는 ai-telemetry-overview에 통합됨) */}}
+{{/* Part 2: Smaller dashboards */}}
 {{- $part2Files := list
   "files/grafana-dashboards/ai-team-observability/ai-telemetry-overview.json"
-  "files/grafana-dashboards/ai-team-observability/realtime-polling-monitoring.json"
+  "files/grafana-dashboards/ai-team-observability/ai-post-review-results.json"
   "files/grafana-dashboards/ai-team-observability/logs-loki-kubernetes.json"
 -}}
 apiVersion: v1
