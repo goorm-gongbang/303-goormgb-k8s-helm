@@ -42,7 +42,7 @@
       "targets": [
         {
           "datasource": {"type": "loki", "uid": "loki"},
-          "expr": "sum by (pod) (count_over_time({namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\"} ${healthFilter:raw} [$__interval]))",
+          "expr": "sum by (pod) (count_over_time({namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\"} ${healthFilter:raw} ${queryType:raw} [$__interval]))",
           "legendFormat": "{{pod}}",
           "refId": "A"
         }
@@ -69,7 +69,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\"} ${healthFilter:raw}",
+          "expr": "{namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\"} ${healthFilter:raw} ${queryType:raw}",
           "queryType": "range",
           "refId": "A"
         }
@@ -119,6 +119,22 @@
           {"selected": false, "text": "Health/Metrics 제외", "value": "!~ `/healthz|/readyz|/livez|/health|/ready|/metrics|/actuator`"},
           {"selected": false, "text": "ERROR만 보기", "value": "|~ `ERROR|error`"},
           {"selected": false, "text": "WARN 이상", "value": "|~ `ERROR|error|WARN|warn|WARNING`"}
+        ],
+        "query": "",
+        "type": "custom"
+      },
+      {
+        "current": {"selected": true, "text": "전체", "value": ""},
+        "hide": 0,
+        "includeAll": false,
+        "label": "쿼리 타입",
+        "multi": false,
+        "name": "queryType",
+        "options": [
+          {"selected": true, "text": "전체", "value": ""},
+          {"selected": false, "text": "DB 쿼리", "value": "|~ `(?i)(select|insert|update|delete|query|sql|database|postgres|clickhouse|execute)`"},
+          {"selected": false, "text": "서비스 쿼리", "value": "|~ `(?i)(http|request|response|endpoint|api|handler|grpc|evaluate|telemetry|challenge)`"},
+          {"selected": false, "text": "Istio 쿼리", "value": "|~ `(?i)(istio|envoy|upstream|downstream|xds|pilot|proxy|ext_authz)`"}
         ],
         "query": "",
         "type": "custom"
