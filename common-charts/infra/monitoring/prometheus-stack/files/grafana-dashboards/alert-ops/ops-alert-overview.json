@@ -98,7 +98,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "100 * sum(rate(http_server_requests_seconds_count{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\", status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])), 1)",
+          "expr": "100 * sum(rate(http_server_requests_seconds_count{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\", status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])), 1)",
           "legendFormat": "5xx 비율",
           "refId": "A"
         }
@@ -162,7 +162,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])))",
           "legendFormat": "P99",
           "refId": "A"
         }
@@ -218,7 +218,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m]))",
           "legendFormat": "RPS",
           "refId": "A"
         }
@@ -296,7 +296,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"staging-webs\"}[10m])) or vector(0)",
+          "expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"prod-webs\"}[10m])) or vector(0)",
           "legendFormat": "CrashLoop",
           "refId": "A"
         }
@@ -823,7 +823,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "100 * sum(rate(http_server_requests_seconds_count{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\", status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])), 1)",
+          "expr": "100 * sum(rate(http_server_requests_seconds_count{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\", status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])), 1)",
           "legendFormat": "5xx 비율",
           "refId": "A"
         }
@@ -913,7 +913,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"staging-webs\", job=~\"staging-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])))",
           "legendFormat": "P99",
           "refId": "A"
         }
@@ -928,7 +928,7 @@
   "tags": [
     "ops",
     "alerts",
-    "staging"
+    "prod"
   ],
   "templating": {
     "list": [
@@ -950,8 +950,8 @@
       {
         "current": {
           "selected": true,
-          "text": "goormgb-staging-postgresql",
-          "value": "goormgb-staging-postgresql"
+          "text": "goormgb-prod-postgresql",
+          "value": "goormgb-prod-postgresql"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -974,14 +974,14 @@
           "region": "ap-northeast-2"
         },
         "refresh": 1,
-        "regex": "goormgb-staging-postgresql",
+        "regex": "goormgb-prod-postgresql",
         "type": "query"
       },
       {
         "current": {
           "selected": true,
-          "text": "goormgb-staging-redis-001",
-          "value": "goormgb-staging-redis-001"
+          "text": "goormgb-prod-redis-001",
+          "value": "goormgb-prod-redis-001"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -1004,7 +1004,7 @@
           "region": "ap-northeast-2"
         },
         "refresh": 1,
-        "regex": "goormgb-staging-redis-001",
+        "regex": "goormgb-prod-redis-001",
         "type": "query"
       }
     ]

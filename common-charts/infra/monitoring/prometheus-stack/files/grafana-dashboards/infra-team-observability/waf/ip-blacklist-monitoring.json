@@ -1,0 +1,455 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "description": "IP Blacklist 차단 현황 및 관리 대시보드",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+      "id": 100,
+      "title": "Blacklist 차단 현황",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "블랙리스트에 의해 차단된 총 요청 수",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 100},
+              {"color": "red", "value": 500}
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 1},
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"}[$__range])) or vector(0)",
+          "legendFormat": "Blacklist Blocks",
+          "refId": "A"
+        }
+      ],
+      "title": "차단된 요청 (선택 기간)",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "현재 차단 속도 (요청/분)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 5},
+              {"color": "red", "value": 20}
+            ]
+          },
+          "unit": "reqpm"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 1},
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"}[5m])) * 60 or vector(0)",
+          "legendFormat": "Blocks/min",
+          "refId": "A"
+        }
+      ],
+      "title": "차단 속도 (req/min)",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "블랙리스트 체크된 고유 IP 수",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "blue", "value": null}
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 1},
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "count(count by (client_ip) (authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"})) or vector(0)",
+          "legendFormat": "Unique IPs",
+          "refId": "A"
+        }
+      ],
+      "title": "차단된 고유 IP 수",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "AI 차단 vs 블랙리스트 차단 비율",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "orange", "value": null}
+            ]
+          },
+          "unit": "percentunit"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 18, "y": 1},
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"}[$__range])) / (sum(increase(authz_adapter_check_requests_total{result=\"block\"}[$__range])) + 0.001) or vector(0)",
+          "legendFormat": "Blacklist Ratio",
+          "refId": "A"
+        }
+      ],
+      "title": "블랙리스트 차단 비율",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "시간별 블랙리스트 차단 추이",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "showPoints": "never",
+            "stacking": {"group": "A", "mode": "none"}
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{"color": "green", "value": null}]
+          },
+          "unit": "reqps"
+        }
+      },
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 6},
+      "id": 5,
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "multi", "sort": "desc"}
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"}[$__rate_interval])) or vector(0)",
+          "legendFormat": "Blacklist 차단",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(authz_adapter_check_requests_total{path_prefix!=\"blacklist\", result=\"block\"}[$__rate_interval])) or vector(0)",
+          "legendFormat": "AI 차단",
+          "refId": "B"
+        }
+      ],
+      "title": "차단 추이 (Blacklist vs AI)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 14},
+      "id": 101,
+      "title": "차단 로그 (Loki)",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "loki", "uid": "loki"},
+      "description": "블랙리스트 차단 로그 스트림",
+      "gridPos": {"h": 10, "w": 24, "x": 0, "y": 15},
+      "id": 6,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": true,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {"type": "loki", "uid": "loki"},
+          "editorMode": "code",
+          "expr": "{namespace=\"prod-ai\", app=\"prod-authz-adapter\"} |= \"blacklist\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Blacklist 차단 로그",
+      "type": "logs"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 25},
+      "id": 102,
+      "title": "경로별 분석",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "블랙리스트에 의해 차단된 요청의 경로별 분포",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "hideFrom": {"legend": false, "tooltip": false, "viz": false}
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 26},
+      "id": 7,
+      "options": {
+        "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]},
+        "pieType": "pie",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "tooltip": {"mode": "single", "sort": "none"}
+      },
+      "targets": [
+        {
+          "expr": "topk(10, sum by (method, path) (increase(authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"}[$__range])))",
+          "legendFormat": "{{method}} {{path}}",
+          "refId": "A"
+        }
+      ],
+      "title": "차단된 요청 경로 분포",
+      "type": "piechart"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "경로별 차단 현황 테이블",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{"color": "green", "value": null}]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {"id": "byName", "options": "Value"},
+            "properties": [{"id": "custom.cellOptions", "value": {"mode": "gradient", "type": "gauge"}}, {"id": "min", "value": 0}]
+          }
+        ]
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 26},
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false},
+        "showHeader": true,
+        "sortBy": [{"desc": true, "displayName": "Value"}]
+      },
+      "targets": [
+        {
+          "expr": "topk(20, sum by (method, path) (increase(authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"}[$__range])))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "경로별 차단 현황 (Top 20)",
+      "transformations": [
+        {"id": "organize", "options": {"excludeByName": {"Time": true}, "renameByName": {"method": "Method", "path": "Path", "Value": "Blocked"}}}
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 34},
+      "id": 103,
+      "title": "Blacklist IP 목록",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "loki", "uid": "loki"},
+      "description": "블랙리스트에 추가된 IP와 사유",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+        },
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "Count"}, "properties": [{"id": "custom.width", "value": 80}]},
+          {"matcher": {"id": "byName", "options": "IP"}, "properties": [{"id": "custom.width", "value": 150}]},
+          {"matcher": {"id": "byName", "options": "Reason"}, "properties": [{"id": "custom.width", "value": 150}]}
+        ]
+      },
+      "gridPos": {"h": 10, "w": 12, "x": 0, "y": 35},
+      "id": 10,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false},
+        "showHeader": true,
+        "sortBy": [{"desc": true, "displayName": "Count"}]
+      },
+      "targets": [
+        {
+          "datasource": {"type": "loki", "uid": "loki"},
+          "editorMode": "code",
+          "expr": "sum by (ip, reason) (count_over_time({namespace=\"prod-ai\", app=\"prod-authz-adapter\"} |= \"IP added to blacklist\" | json | __error__=\"\" [$__range]))",
+          "legendFormat": "",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "title": "Blacklist 추가된 IP 목록",
+      "transformations": [
+        {"id": "sortBy", "options": {"fields": {}, "sort": [{"desc": true, "field": "Value"}]}},
+        {"id": "limit", "options": {"limitField": 20}},
+        {"id": "organize", "options": {"renameByName": {"ip": "IP", "reason": "Reason", "Value": "Count"}}}
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "loki", "uid": "loki"},
+      "description": "블랙리스트 추가 상세 로그 (IP, reason, TTL)",
+      "gridPos": {"h": 10, "w": 12, "x": 12, "y": 35},
+      "id": 11,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {"type": "loki", "uid": "loki"},
+          "editorMode": "code",
+          "expr": "{namespace=\"prod-ai\", app=\"prod-authz-adapter\"} |= \"IP added to blacklist\" | json | line_format \"IP: {{.ip}} | Reason: {{.reason}} | TTL: {{.ttl}}\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Blacklist 추가 로그 (authz-adapter)",
+      "type": "logs"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 45},
+      "id": 104,
+      "title": "상세 로그",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "loki", "uid": "loki"},
+      "description": "블랙리스트 차단 상세 로그",
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 46},
+      "id": 9,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": true,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {"type": "loki", "uid": "loki"},
+          "editorMode": "code",
+          "expr": "{namespace=\"prod-ai\", app=\"prod-authz-adapter\"} |= \"blacklist\" | json | line_format \"[{{.level}}] {{.client_ip}} - {{.msg}} - {{.path}}\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "차단 로그 (authz-adapter)",
+      "type": "logs"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 40,
+  "tags": ["waf", "blacklist", "security"],
+  "templating": {
+    "list": []
+  },
+  "time": {"from": "now-1h", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "[WAF] IP Blacklist 모니터링",
+  "uid": "waf-ip-blacklist",
+  "version": 1
+}

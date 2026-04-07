@@ -285,7 +285,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*telemetry.*ingest.*\"}[$__range]))",
+          "expr": "sum(increase(ai_defense_telemetry_ingest_total{namespace=\"__AI_NAMESPACE__\"}[$__range]))",
           "legendFormat": "수집건수",
           "range": true,
           "refId": "A"
@@ -352,7 +352,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "100 * sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*precheck.*\", response_code=\"200\"}[$__rate_interval])) / clamp_min(sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*precheck.*\"}[$__rate_interval])), 1)",
+          "expr": "100 * sum(rate(ai_defense_precheck_total{namespace=\"__AI_NAMESPACE__\", result=\"pass\"}[$__rate_interval])) / clamp_min(sum(rate(ai_defense_precheck_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval])), 1)",
           "legendFormat": "통과율",
           "range": true,
           "refId": "A"
@@ -419,7 +419,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "100 * sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*challenge.*verify.*\", response_code=\"200\"}[$__rate_interval])) / clamp_min(sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*challenge.*verify.*\"}[$__rate_interval])), 1)",
+          "expr": "100 * sum(rate(ai_defense_challenge_verify_total{namespace=\"__AI_NAMESPACE__\", result=\"pass\"}[$__rate_interval])) / clamp_min(sum(rate(ai_defense_challenge_verify_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval])), 1)",
           "legendFormat": "성공률",
           "range": true,
           "refId": "A"
@@ -519,21 +519,21 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*telemetry.*ingest.*\"}[$__rate_interval]))",
+          "expr": "sum(rate(ai_defense_telemetry_ingest_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))",
           "legendFormat": "텔레메트리 수집",
           "range": true,
           "refId": "A"
         },
         {
           "editorMode": "code",
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*precheck.*\"}[$__rate_interval]))",
+          "expr": "sum(rate(ai_defense_precheck_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))",
           "legendFormat": "Precheck 요청",
           "range": true,
           "refId": "B"
         },
         {
           "editorMode": "code",
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*challenge.*\"}[$__rate_interval]))",
+          "expr": "sum(rate(ai_defense_challenge_start_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval])) + sum(rate(ai_defense_challenge_verify_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))",
           "legendFormat": "챌린지 요청",
           "range": true,
           "refId": "C"
@@ -592,28 +592,28 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*telemetry.*ingest.*\"}[$__range]))",
+          "expr": "sum(increase(ai_defense_telemetry_ingest_total{namespace=\"__AI_NAMESPACE__\"}[$__range]))",
           "legendFormat": "텔레메트리",
           "range": true,
           "refId": "A"
         },
         {
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*precheck.*\"}[$__range]))",
+          "expr": "sum(increase(ai_defense_precheck_total{namespace=\"__AI_NAMESPACE__\"}[$__range]))",
           "legendFormat": "Precheck",
           "range": true,
           "refId": "B"
         },
         {
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*challenge.*start.*\"}[$__range]))",
+          "expr": "sum(increase(ai_defense_challenge_start_total{namespace=\"__AI_NAMESPACE__\"}[$__range]))",
           "legendFormat": "챌린지 시작",
           "range": true,
           "refId": "C"
         },
         {
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*challenge.*verify.*\"}[$__range]))",
+          "expr": "sum(increase(ai_defense_challenge_verify_total{namespace=\"__AI_NAMESPACE__\"}[$__range]))",
           "legendFormat": "챌린지 검증",
           "range": true,
           "refId": "D"
@@ -761,7 +761,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai.*\", request_path=~\".*telemetry.*ingest.*\"}[$__rate_interval])) by (stage)",
+          "expr": "sum by (stage) (rate(ai_defense_telemetry_ingest_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))",
           "legendFormat": "{{stage}}",
           "range": true,
           "refId": "A"
@@ -922,28 +922,28 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\", response_code=\"200\"}[$__rate_interval]))",
+          "expr": "sum(rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"NONE\"}[$__rate_interval]))",
           "legendFormat": "NONE (정상)",
           "range": true,
           "refId": "A"
         },
         {
           "editorMode": "code",
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\", response_code=\"429\"}[$__rate_interval]))",
+          "expr": "sum(rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"THROTTLE\"}[$__rate_interval]))",
           "legendFormat": "THROTTLE",
           "range": true,
           "refId": "B"
         },
         {
           "editorMode": "code",
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\", response_code=\"428\"}[$__rate_interval]))",
+          "expr": "sum(rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"REQUIRE_S3\"}[$__rate_interval]))",
           "legendFormat": "REQUIRE_S3",
           "range": true,
           "refId": "C"
         },
         {
           "editorMode": "code",
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\", response_code=\"403\"}[$__rate_interval]))",
+          "expr": "sum(rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"BLOCK\"}[$__rate_interval]))",
           "legendFormat": "BLOCK",
           "range": true,
           "refId": "D"
@@ -1063,28 +1063,28 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\", response_code=\"200\"}[$__range]))",
+          "expr": "sum(increase(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"NONE\"}[$__range]))",
           "legendFormat": "정상 (NONE)",
           "range": true,
           "refId": "A"
         },
         {
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\", response_code=\"429\"}[$__range]))",
+          "expr": "sum(increase(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"THROTTLE\"}[$__range]))",
           "legendFormat": "속도제한 (THROTTLE)",
           "range": true,
           "refId": "B"
         },
         {
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\", response_code=\"428\"}[$__range]))",
+          "expr": "sum(increase(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"REQUIRE_S3\"}[$__range]))",
           "legendFormat": "챌린지 필요 (S3)",
           "range": true,
           "refId": "C"
         },
         {
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\", response_code=\"403\"}[$__range]))",
+          "expr": "sum(increase(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"BLOCK\"}[$__range]))",
           "legendFormat": "차단 (BLOCK)",
           "range": true,
           "refId": "D"
@@ -1217,21 +1217,21 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "100 * sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\", response_code=\"403\"}[$__range])) / clamp_min(sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\"}[$__range])), 1)",
+          "expr": "100 * sum(increase(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"BLOCK\"}[$__range])) / clamp_min(sum(increase(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\"}[$__range])), 1)",
           "legendFormat": "차단률",
           "range": true,
           "refId": "A"
         },
         {
           "editorMode": "code",
-          "expr": "100 * sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\", response_code=\"428\"}[$__range])) / clamp_min(sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\"}[$__range])), 1)",
+          "expr": "100 * sum(increase(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"REQUIRE_S3\"}[$__range])) / clamp_min(sum(increase(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\"}[$__range])), 1)",
           "legendFormat": "챌린지 발급률",
           "range": true,
           "refId": "B"
         },
         {
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*authz.*\"}[$__range]))",
+          "expr": "sum(increase(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\"}[$__range]))",
           "legendFormat": "총 검사 건수",
           "range": true,
           "refId": "C"
@@ -1268,7 +1268,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", destination_workload_namespace=\"__AI_NAMESPACE__\"}[1m])) by (grpc_code)",
+          "expr": "sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"__AI_NAMESPACE__\"}[1m])) by (grpc_code)",
           "legendFormat": "{{grpc_code}}",
           "refId": "A"
         }
@@ -1296,12 +1296,12 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", destination_workload_namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
+          "expr": "histogram_quantile(0.95, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
           "legendFormat": "p95",
           "refId": "A"
         },
         {
-          "expr": "histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", destination_workload_namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
+          "expr": "histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
           "legendFormat": "p99",
           "refId": "B"
         }
@@ -1329,8 +1329,8 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(authz_adapter_ai_defense_requests_total{destination_workload_namespace=\"__AI_NAMESPACE__\"}[1m])) by (status)",
-          "legendFormat": "AI Defense {{status}}",
+          "expr": "sum by (decision) (rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))",
+          "legendFormat": "{{decision}}",
           "refId": "A"
         }
       ],
@@ -1362,7 +1362,7 @@
       },
       "targets": [
         {
-          "expr": "100 * sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", grpc_code=\"OK\", destination_workload_namespace=\"__AI_NAMESPACE__\"}[5m])) / clamp_min(sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", destination_workload_namespace=\"__AI_NAMESPACE__\"}[5m])), 1)",
+          "expr": "100 * sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", grpc_code=\"OK\", namespace=\"__AI_NAMESPACE__\"}[5m])) / clamp_min(sum(rate(grpc_server_handled_total{grpc_service=\"envoy.service.auth.v3.Authorization\", namespace=\"__AI_NAMESPACE__\"}[5m])), 1)",
           "legendFormat": "",
           "refId": "A"
         }
@@ -1395,7 +1395,7 @@
       },
       "targets": [
         {
-          "expr": "sum(up{job=~\".*authz-adapter.*\", destination_workload_namespace=\"__AI_NAMESPACE__\"})",
+          "expr": "sum(up{job=~\".*authz-adapter.*\", namespace=\"__AI_NAMESPACE__\"})",
           "legendFormat": "",
           "refId": "A"
         }
@@ -1423,9 +1423,14 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(authz_adapter_ai_defense_duration_seconds_bucket{destination_workload_namespace=\"__AI_NAMESPACE__\"}[5m])) by (le)) * 1000",
+          "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai-defense.*\"}[5m])) by (le))",
           "legendFormat": "p95",
           "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace=\"__AI_NAMESPACE__\", destination_service=~\".*ai-defense.*\"}[5m])) by (le))",
+          "legendFormat": "p99",
+          "refId": "B"
         }
       ],
       "title": "AI Defense API 지연시간 (ms)",
