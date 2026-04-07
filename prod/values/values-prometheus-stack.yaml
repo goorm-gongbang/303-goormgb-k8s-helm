@@ -165,7 +165,7 @@ grafana:
     oauthAllowInsecureEmailLookup: true
     oauthRoleAttributePathFromSecret: true
     oauthRoleAttributeStrictFromSecret: true
-  forceDeployDashboards: true
+  forceDeployDashboards: false
   provisioning:
     enabled: true
     users:
