@@ -1,6 +1,6 @@
 # auth-guard - Dev 환경
 contextPath: "/auth"
-replicaCount: 2
+replicaCount: 1
 
 image:
   name: "dev/goormgb/auth-guard"
