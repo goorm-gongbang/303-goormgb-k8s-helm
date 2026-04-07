@@ -130,6 +130,7 @@ kiali-server:
       use_grpc: false
 
 # Kiali VirtualService (공용 Gateway 사용)
+# NOTE: 실제 VirtualService는 kiali-config에서 values-kiali.yaml 사용
 kialiVirtualService:
   enabled: true
   host: "kiali.goormgb.space"
