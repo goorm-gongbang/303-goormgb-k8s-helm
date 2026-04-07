@@ -46,6 +46,7 @@ spec:
             - --skip-provider-button=false
             - --reverse-proxy=true
             - --proxy-prefix=/oauth2
+            - --skip-auth-route=/api/ws
             - --upstream=http://127.0.0.1:8978
           ports:
             - name: http
