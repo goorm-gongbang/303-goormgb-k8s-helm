@@ -22,6 +22,26 @@ spec:
 ---
 {{- end }}
 {{- end }}
+{{- if and .Values.mtls .Values.mtls.metricsScrapeExceptions }}
+# App 서비스 - Prometheus 메트릭 스크래핑 예외 설정
+{{- range $svc := .Values.mtls.metricsScrapeExceptions }}
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: {{ $svc.name }}
+  namespace: {{ $svc.namespace | default "staging-webs" }}
+spec:
+  selector:
+    matchLabels:
+      {{- toYaml $svc.selector | nindent 6 }}
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    {{ $svc.metricsPort }}:
+      mode: {{ $svc.mode | default "DISABLE" }}
+{{- end }}
+{{- end }}
 {{- if and .Values.mtls .Values.mtls.otelCollector .Values.mtls.otelCollector.enabled }}
 # OTEL Collector - mTLS PERMISSIVE 설정
 # OTEL Java agent는 Istio sidecar를 거치지 않고 직접 연결하므로

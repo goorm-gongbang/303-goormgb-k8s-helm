@@ -270,6 +270,41 @@ mtls:
           app: staging-authz-adapter
         metricsPort: 9090
 
+  # App 서비스 예외 설정
+  # monitoring namespace의 Prometheus가 plain HTTP로 actuator를 scrape할 수 있도록
+  # 앱 메트릭 포트에만 mTLS 비활성화
+  metricsScrapeExceptions:
+    - name: auth-guard-metrics
+      namespace: staging-webs
+      selector:
+        app: staging-auth-guard
+      metricsPort: 8080
+      mode: DISABLE
+    - name: queue-metrics
+      namespace: staging-webs
+      selector:
+        app: staging-queue
+      metricsPort: 8081
+      mode: DISABLE
+    - name: seat-metrics
+      namespace: staging-webs
+      selector:
+        app: staging-seat
+      metricsPort: 8082
+      mode: DISABLE
+    - name: order-core-metrics
+      namespace: staging-webs
+      selector:
+        app: staging-order-core
+      metricsPort: 8083
+      mode: DISABLE
+    - name: api-gateway-metrics
+      namespace: staging-webs
+      selector:
+        app: staging-api-gateway
+      metricsPort: 8085
+      mode: DISABLE
+
 # ============================================================
 # JWT 인증 설정
 # ============================================================
