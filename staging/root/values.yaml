@@ -550,6 +550,26 @@ gitCharts:
     valueFiles:
       - ../../../staging/values/data/values-redisinsight.yaml
 
+  # ClickHouse for AI Defense observability warehouse
+  clickhouse:
+    enabled: true
+    path: common-charts/infra/clickhouse
+    namespace: data
+    syncWave: "-4"
+    valueFiles:
+      - ../../../staging/values/data/values-clickhouse.yaml
+    retry:
+      limit: 5
+      duration: "10s"
+      maxDuration: "3m"
+      factor: 2
+    ignoreDifferences:
+      - group: ""
+        kind: PersistentVolumeClaim
+        jsonPointers:
+          - /spec/volumeName
+          - /spec/storageClassName
+
   # === Messaging (Kafka) ===
   kafka:
     enabled: false  # 임시 비활성화

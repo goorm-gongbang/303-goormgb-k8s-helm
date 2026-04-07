@@ -28,6 +28,7 @@ image:
 
 databases:
   - goormgb
+  - ai_defense
 
 externalSecret:
   enabled: true

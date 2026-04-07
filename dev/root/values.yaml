@@ -558,6 +558,25 @@ gitCharts:
     valueFiles:
       - ../../../dev/values/data/values-redisinsight.yaml
 
+  clickhouse:
+    enabled: true
+    path: common-charts/infra/clickhouse
+    namespace: data
+    syncWave: "-4"
+    valueFiles:
+      - ../../../dev/values/data/values-clickhouse.yaml
+    retry:
+      limit: 5
+      duration: "10s"
+      maxDuration: "3m"
+      factor: 2
+    ignoreDifferences:
+      - group: ""
+        kind: PersistentVolumeClaim
+        jsonPointers:
+          - /spec/volumeName
+          - /spec/storageClassName
+
   # === Messaging (Kafka) ===
   kafka:
     enabled: true

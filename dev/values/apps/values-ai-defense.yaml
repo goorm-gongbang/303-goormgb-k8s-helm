@@ -96,9 +96,9 @@ env:
   # PostgreSQL 접속 URL (동적 파싱)
   - name: TM_PG_URL
     value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)"
-  # ClickHouse/PostgreSQL 비활성화 (MVP/dev)
+  # ClickHouse (클러스터 내부 - dev 환경 인증 없음)
   - name: TM_CLICKHOUSE_URL
-    value: ""
+    value: "http://clickhouse.data.svc.cluster.local:8123/ai_defense"
   # OpenTelemetry: 새 Semantic Convention 사용 (Java와 통일)
   # http.server.request.duration (seconds), http.response.status_code 등
   - name: OTEL_SEMCONV_STABILITY_OPT_IN
