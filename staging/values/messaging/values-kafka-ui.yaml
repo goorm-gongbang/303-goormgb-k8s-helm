@@ -1,4 +1,5 @@
 # Kafka UI Staging Environment
+# Google OAuth 인증 필요
 
 image:
   repository: provectuslabs/kafka-ui
@@ -8,6 +9,38 @@ image:
 kafka:
   bootstrapServers: kafka-headless.messaging.svc.cluster.local:9092
   clusterName: goormgb-staging
+
+# OAuth2 Proxy sidecar (Google 로그인 필수)
+oauth2Proxy:
+  enabled: true
+  image:
+    repository: quay.io/oauth2-proxy/oauth2-proxy
+    tag: "v7.6.0"
+  port: 4180
+  config:
+    provider: google
+    cookieSecure: true
+    cookieDomain: ".staging.playball.one"
+    cookieRefresh: "1h"
+    cookieExpire: "4h"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+  # ESO: staging/infra/oauth/teams-allow
+  eso:
+    enabled: true
+    secretStoreRef:
+      name: "aws-secrets-manager"
+      kind: "ClusterSecretStore"
+    remoteRef:
+      key: "staging/infra/oauth/teams-allow"
+
+service:
+  port: 4180
 
 resources:
   requests:
@@ -22,5 +55,18 @@ virtualService:
   host: kafka-ui.staging.playball.one
   gateway: istio-system/api-gateway
 
-nodeSelector: {}
-tolerations: []
+nodeSelector:
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
+probes:
+  liveness:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readiness:
+    initialDelaySeconds: 10
+    periodSeconds: 5

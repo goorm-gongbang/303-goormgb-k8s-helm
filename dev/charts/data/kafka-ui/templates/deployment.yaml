@@ -26,12 +26,57 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
+        {{- if .Values.oauth2Proxy.enabled }}
+        # OAuth2 Proxy sidecar
+        - name: oauth2-proxy
+          image: "{{ .Values.oauth2Proxy.image.repository }}:{{ .Values.oauth2Proxy.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          args:
+            - --provider={{ .Values.oauth2Proxy.config.provider }}
+            - --email-domain=*
+            - --http-address=0.0.0.0:{{ .Values.oauth2Proxy.port }}
+            - --cookie-secure={{ .Values.oauth2Proxy.config.cookieSecure }}
+            - --cookie-domain={{ .Values.oauth2Proxy.config.cookieDomain }}
+            - --cookie-samesite=lax
+            - --cookie-refresh={{ .Values.oauth2Proxy.config.cookieRefresh }}
+            - --cookie-expire={{ .Values.oauth2Proxy.config.cookieExpire }}
+            - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails.txt
+            - --skip-provider-button=false
+            - --reverse-proxy=true
+            - --proxy-prefix=/oauth2
+            - --upstream=http://127.0.0.1:8080
+          ports:
+            - name: http
+              containerPort: {{ .Values.oauth2Proxy.port }}
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: kafka-ui-oauth
+          resources:
+            {{- toYaml .Values.oauth2Proxy.resources | nindent 12 }}
+          volumeMounts:
+            - name: oauth-emails
+              mountPath: /etc/oauth2-proxy
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+        {{- end }}
         - name: kafka-ui
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.targetPort | default 8080 }}
-              name: http
+              name: kafka-http
               protocol: TCP
           env:
             - name: KAFKA_CLUSTERS_0_NAME
@@ -47,12 +92,18 @@ spec:
           livenessProbe:
             httpGet:
               path: /actuator/health
-              port: http
+              port: kafka-http
             initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
           readinessProbe:
             httpGet:
               path: /actuator/health
-              port: http
+              port: kafka-http
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+      {{- if .Values.oauth2Proxy.enabled }}
+      volumes:
+        - name: oauth-emails
+          secret:
+            secretName: kafka-ui-emails
+      {{- end }}
