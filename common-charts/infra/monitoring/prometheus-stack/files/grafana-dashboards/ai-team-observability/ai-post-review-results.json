@@ -35,7 +35,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 0, "y": 1},
       "id": 1,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT COUNT(*) as count FROM post_review_runs WHERE created_at >= NOW() - INTERVAL '$__range_s seconds'", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT COUNT(*) as count FROM post_review_runs WHERE $__timeFilter(created_at)", "refId": "A"}],
       "title": "Run 수",
       "type": "stat"
     },
@@ -46,7 +46,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 4, "y": 1},
       "id": 2,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT COALESCE(SUM(candidate_count), 0) as count FROM post_review_runs WHERE created_at >= NOW() - INTERVAL '$__range_s seconds'", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT COALESCE(SUM(candidate_count), 0) as count FROM post_review_runs WHERE $__timeFilter(created_at)", "refId": "A"}],
       "title": "검토 세션 수",
       "type": "stat"
     },
@@ -57,7 +57,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 8, "y": 1},
       "id": 3,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT COALESCE(SUM(suspicious_count), 0) as count FROM post_review_runs WHERE created_at >= NOW() - INTERVAL '$__range_s seconds'", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT COALESCE(SUM(suspicious_count), 0) as count FROM post_review_runs WHERE $__timeFilter(created_at)", "refId": "A"}],
       "title": "의심 세션 수",
       "type": "stat"
     },
@@ -68,7 +68,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 12, "y": 1},
       "id": 4,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT CASE WHEN SUM(candidate_count) > 0 THEN 100.0 * SUM(suspicious_count) / SUM(candidate_count) ELSE 0 END as rate FROM post_review_runs WHERE created_at >= NOW() - INTERVAL '$__range_s seconds'", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT CASE WHEN SUM(candidate_count) > 0 THEN 100.0 * SUM(suspicious_count) / SUM(candidate_count) ELSE 0 END as rate FROM post_review_runs WHERE $__timeFilter(created_at)", "refId": "A"}],
       "title": "의심 비율",
       "type": "stat"
     },
@@ -79,7 +79,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 16, "y": 1},
       "id": 5,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT COUNT(*) as count FROM post_review_session_results WHERE backend_delivery_status = 'FAILED' AND created_at >= NOW() - INTERVAL '$__range_s seconds'", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT COUNT(*) as count FROM post_review_session_results WHERE backend_delivery_status = 'FAILED' AND $__timeFilter(created_at)", "refId": "A"}],
       "title": "전달 실패 수",
       "type": "stat"
     },
@@ -90,7 +90,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 20, "y": 1},
       "id": 6,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT CASE WHEN COUNT(*) > 0 THEN 100.0 * SUM(CASE WHEN raw_fallback = true THEN 1 ELSE 0 END) / COUNT(*) ELSE 0 END as rate FROM post_review_runs WHERE created_at >= NOW() - INTERVAL '$__range_s seconds'", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT CASE WHEN COUNT(*) > 0 THEN 100.0 * SUM(CASE WHEN raw_fallback = true THEN 1 ELSE 0 END) / COUNT(*) ELSE 0 END as rate FROM post_review_runs WHERE $__timeFilter(created_at)", "refId": "A"}],
       "title": "Raw Fallback 비율",
       "type": "stat"
     },
@@ -139,7 +139,7 @@
       "gridPos": {"h": 7, "w": 6, "x": 0, "y": 14},
       "id": 20,
       "options": {"displayLabels": ["name", "percent"], "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "values": ["value", "percent"]}, "pieType": "pie", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "tooltip": {"mode": "single", "sort": "none"}},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT status, COUNT(*) as count FROM post_review_runs WHERE created_at >= NOW() - INTERVAL '$__range_s seconds' GROUP BY status", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT status, COUNT(*) as count FROM post_review_runs WHERE $__timeFilter(created_at) GROUP BY status", "refId": "A"}],
       "title": "Run 상태 분포",
       "transformations": [{"id": "rowsToFields", "options": {"mappings": [{"fieldName": "status", "handlerKey": "field.name"}, {"fieldName": "count", "handlerKey": "field.value"}]}}],
       "type": "piechart"
@@ -151,7 +151,7 @@
       "gridPos": {"h": 7, "w": 6, "x": 6, "y": 14},
       "id": 21,
       "options": {"displayLabels": ["name", "percent"], "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "values": ["value", "percent"]}, "pieType": "pie", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "tooltip": {"mode": "single", "sort": "none"}},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT review_result, COUNT(*) as count FROM post_review_session_results WHERE created_at >= NOW() - INTERVAL '$__range_s seconds' GROUP BY review_result", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT review_result, COUNT(*) as count FROM post_review_session_results WHERE $__timeFilter(created_at) GROUP BY review_result", "refId": "A"}],
       "title": "판정 결과 분포",
       "transformations": [{"id": "rowsToFields", "options": {"mappings": [{"fieldName": "review_result", "handlerKey": "field.name"}, {"fieldName": "count", "handlerKey": "field.value"}]}}],
       "type": "piechart"
@@ -163,7 +163,7 @@
       "gridPos": {"h": 7, "w": 6, "x": 12, "y": 14},
       "id": 22,
       "options": {"displayLabels": ["name", "percent"], "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "values": ["value", "percent"]}, "pieType": "pie", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "tooltip": {"mode": "single", "sort": "none"}},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT backend_delivery_status, COUNT(*) as count FROM post_review_session_results WHERE review_result = 'SUSPICIOUS' AND created_at >= NOW() - INTERVAL '$__range_s seconds' GROUP BY backend_delivery_status", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT backend_delivery_status, COUNT(*) as count FROM post_review_session_results WHERE review_result = 'SUSPICIOUS' AND $__timeFilter(created_at) GROUP BY backend_delivery_status", "refId": "A"}],
       "title": "전달 상태 분포",
       "transformations": [{"id": "rowsToFields", "options": {"mappings": [{"fieldName": "backend_delivery_status", "handlerKey": "field.name"}, {"fieldName": "count", "handlerKey": "field.value"}]}}],
       "type": "piechart"
@@ -205,7 +205,7 @@
       "gridPos": {"h": 7, "w": 12, "x": 12, "y": 22},
       "id": 31,
       "options": {"cellHeight": "sm", "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false}, "showHeader": true, "sortBy": [{"desc": true, "displayName": "count"}]},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT unnest(suspicious_signals) as signal, COUNT(*) as count FROM post_review_session_results WHERE review_result = 'SUSPICIOUS' AND created_at >= NOW() - INTERVAL '$__range_s seconds' GROUP BY 1 ORDER BY 2 DESC LIMIT 10", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT unnest(suspicious_signals) as signal, COUNT(*) as count FROM post_review_session_results WHERE review_result = 'SUSPICIOUS' AND $__timeFilter(created_at) GROUP BY 1 ORDER BY 2 DESC LIMIT 10", "refId": "A"}],
       "title": "Top 의심 시그널",
       "type": "table"
     },
@@ -224,7 +224,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 30},
       "id": 40,
       "options": {"cellHeight": "sm", "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false}, "showHeader": true, "sortBy": [{"desc": true, "displayName": "created_at"}]},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT match_id as \"경기 ID\", candidate_count as \"검토 수\", suspicious_count as \"의심 수\", status as \"상태\", created_at as \"시간\" FROM post_review_runs WHERE suspicious_count > 0 AND created_at >= NOW() - INTERVAL '$__range_s seconds' ORDER BY created_at DESC LIMIT 20", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT match_id as \"경기 ID\", candidate_count as \"검토 수\", suspicious_count as \"의심 수\", status as \"상태\", created_at as \"시간\" FROM post_review_runs WHERE suspicious_count > 0 AND $__timeFilter(created_at) ORDER BY created_at DESC LIMIT 20", "refId": "A"}],
       "title": "최근 의심 경기 목록",
       "type": "table"
     },
@@ -235,7 +235,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 30},
       "id": 41,
       "options": {"cellHeight": "sm", "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false}, "showHeader": true, "sortBy": [{"desc": true, "displayName": "created_at"}]},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT r.match_id as \"경기 ID\", s.session_id as \"세션 ID\", s.review_result as \"판정\", s.backend_delivery_status as \"전달 상태\", s.evidence_summary as \"판단 근거\", s.created_at as \"시간\" FROM post_review_session_results s JOIN post_review_runs r ON s.run_id = r.id WHERE s.review_result = 'SUSPICIOUS' AND s.created_at >= NOW() - INTERVAL '$__range_s seconds' ORDER BY s.created_at DESC LIMIT 20", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT r.match_id as \"경기 ID\", s.session_id as \"세션 ID\", s.review_result as \"판정\", s.backend_delivery_status as \"전달 상태\", s.evidence_summary as \"판단 근거\", s.created_at as \"시간\" FROM post_review_session_results s JOIN post_review_runs r ON s.run_id = r.id WHERE s.review_result = 'SUSPICIOUS' AND $__timeFilter(s.created_at) ORDER BY s.created_at DESC LIMIT 20", "refId": "A"}],
       "title": "최근 의심 세션 목록",
       "type": "table"
     },
@@ -254,7 +254,7 @@
       "gridPos": {"h": 8, "w": 24, "x": 0, "y": 39},
       "id": 50,
       "options": {"cellHeight": "sm", "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false}, "showHeader": true, "sortBy": [{"desc": true, "displayName": "created_at"}]},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT r.match_id as \"경기 ID\", s.session_id as \"세션 ID\", s.evidence_summary as \"판단 근거\", r.window_start_ms as \"구간 시작\", r.window_end_ms as \"구간 끝\", s.created_at as \"시간\" FROM post_review_session_results s JOIN post_review_runs r ON s.run_id = r.id WHERE s.review_result = 'SUSPICIOUS' AND s.backend_delivery_status = 'FAILED' AND s.created_at >= NOW() - INTERVAL '$__range_s seconds' ORDER BY s.created_at DESC LIMIT 50", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT r.match_id as \"경기 ID\", s.session_id as \"세션 ID\", s.evidence_summary as \"판단 근거\", r.window_start_ms as \"구간 시작\", r.window_end_ms as \"구간 끝\", s.created_at as \"시간\" FROM post_review_session_results s JOIN post_review_runs r ON s.run_id = r.id WHERE s.review_result = 'SUSPICIOUS' AND s.backend_delivery_status = 'FAILED' AND $__timeFilter(s.created_at) ORDER BY s.created_at DESC LIMIT 50", "refId": "A"}],
       "title": "전달 실패 세션 목록",
       "type": "table"
     }
