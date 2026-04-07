@@ -147,8 +147,8 @@ otel:
 # 기본 비활성화 - 환경별 values에서 활성화
 metrics:
   enabled: false
-  # Service port name (deployment에서 정의한 포트명)
-  portName: http
+  # Management 포트 (서비스 포트와 분리하여 mTLS 이슈 방지)
+  port: 9090
   # Actuator prometheus 엔드포인트
   path: /actuator/prometheus
   # 스크레이핑 주기

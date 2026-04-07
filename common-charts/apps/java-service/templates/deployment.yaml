@@ -59,6 +59,11 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: management
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           env:
             - name: JAVA_OPTS
               value: {{ .Values.javaOpts | quote }}
@@ -86,6 +91,8 @@ spec:
               value: "15000"
             {{- end }}
             {{- if .Values.metrics.enabled }}
+            - name: MANAGEMENT_SERVER_PORT
+              value: {{ .Values.metrics.port | quote }}
             - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
               value: "health,info,metrics,prometheus"
             - name: MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS
