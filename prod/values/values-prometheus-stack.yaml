@@ -307,6 +307,11 @@ prometheus:
           path: /metrics
 
 alertmanager:
+  discord:
+    eso:
+      enabled: true
+      secretManagerKey: "prod/monitoring/discord-webhook-alerts"
+      securityWebhooksEnabled: false
   alertmanagerSpec:
     nodeSelector:
       role: monitoring
