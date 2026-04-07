@@ -125,7 +125,7 @@ spec:
             {{- end }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.contextPath }}{{ .Values.livenessProbe.httpGet.path }}
+              path: {{ if .Values.metrics.enabled }}{{ .Values.livenessProbe.httpGet.path }}{{ else }}{{ .Values.contextPath }}{{ .Values.livenessProbe.httpGet.path }}{{ end }}
               port: {{ if .Values.metrics.enabled }}{{ .Values.metrics.port }}{{ else }}{{ .Values.livenessProbe.httpGet.port }}{{ end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 90 }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds | default 10 }}
@@ -133,7 +133,7 @@ spec:
             failureThreshold: {{ .Values.livenessProbe.failureThreshold | default 3 }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.contextPath }}{{ .Values.readinessProbe.httpGet.path }}
+              path: {{ if .Values.metrics.enabled }}{{ .Values.readinessProbe.httpGet.path }}{{ else }}{{ .Values.contextPath }}{{ .Values.readinessProbe.httpGet.path }}{{ end }}
               port: {{ if .Values.metrics.enabled }}{{ .Values.metrics.port }}{{ else }}{{ .Values.readinessProbe.httpGet.port }}{{ end }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 45 }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds | default 5 }}
