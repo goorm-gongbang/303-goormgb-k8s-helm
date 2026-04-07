@@ -155,8 +155,6 @@ grafana:
     secretManagerKey: prod/monitoring/grafana
     oauthSecretManagerKey: prod/infra/oauth/google
     oauthAllowInsecureEmailLookup: true
-    oauthRoleAttributePathFromSecret: true
-    oauthRoleAttributeStrictFromSecret: true
   provisioning:
     enabled: true
     successfulJobsHistoryLimit: 1
