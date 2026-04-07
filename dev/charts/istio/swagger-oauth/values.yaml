@@ -1,0 +1,17 @@
+# Swagger OAuth defaults
+enabled: true
+
+host: "swagger.goormgb.space"
+
+tls:
+  enabled: true
+  credentialName: goormgb-tls
+
+# OAuth2 Proxy destination
+oauth2Proxy:
+  host: "oauth2-proxy.istio-system.svc.cluster.local"
+  port: 4180
+
+# 403 redirect to OAuth login
+redirect403:
+  enabled: true

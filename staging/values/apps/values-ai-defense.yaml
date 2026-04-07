@@ -122,12 +122,34 @@ resources:
     cpu: "2"
     memory: 2Gi
 
-# Istio
-# /ai/* 라우팅은 rawManifests의 ai-defense-route VirtualService에서 처리
+# Istio VirtualService for /ai/* routing
 istio:
   sidecar: true
   gateway:
-    enabled: false  # rawManifests.aiDefenseRoute 사용
+    enabled: true
+    host: "api.staging.playball.one"
+    externalRef: "istio-system/api-gateway"
+    contextPath: "/ai/"
+    redirect:
+      enabled: true
+      from: "/ai"
+      to: "/ai/"
+  cors:
+    enabled: true
+    allowOrigins:
+      - "https://staging.playball.one"
+      - "https://www.staging.playball.one"
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+      - OPTIONS
+    allowHeaders:
+      - "*"
+    allowCredentials: true
+    maxAge: "24h"
 
 # Service
 service:

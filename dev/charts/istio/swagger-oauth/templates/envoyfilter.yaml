@@ -1,0 +1,52 @@
+{{- if and .Values.enabled .Values.redirect403.enabled }}
+# 403 -> OAuth2 login redirect
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: swagger-403-redirect
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inlineCode: |
+              function envoy_on_request(request_handle)
+                local host = request_handle:headers():get(":authority") or ""
+                local path = request_handle:headers():get(":path") or "/"
+                if string.find(host, "swagger") then
+                  request_handle:streamInfo():dynamicMetadata():set("swagger_filter", "is_swagger", "true")
+                  request_handle:streamInfo():dynamicMetadata():set("swagger_filter", "original_path", path)
+                end
+              end
+
+              function envoy_on_response(response_handle)
+                local status = response_handle:headers():get(":status")
+                local metadata = response_handle:streamInfo():dynamicMetadata():get("swagger_filter")
+                if metadata and metadata["is_swagger"] == "true" then
+                  response_handle:headers():remove("cache-control")
+                  response_handle:headers():add("cache-control", "no-cache, no-store, must-revalidate, max-age=0")
+                  response_handle:headers():add("pragma", "no-cache")
+                  if status == "403" then
+                    local path = metadata["original_path"] or "/"
+                    local redirect_url = "/oauth2/start?rd=" .. path
+                    response_handle:headers():replace(":status", "302")
+                    response_handle:headers():add("location", redirect_url)
+                  end
+                end
+              end
+{{- end }}

@@ -1,0 +1,20 @@
+# Load Test Route defaults
+enabled: true
+
+host: "api.staging.playball.one"
+gatewayRef: "istio-system/api-gateway"
+
+# Source path prefix (will be stripped)
+sourcePath: "/load-test/"
+
+# Destination service
+destination:
+  host: "api-gateway.loadtest-webs.svc.cluster.local"
+  port: 8085
+
+# CORS settings
+cors:
+  enabled: true
+  allowOrigins:
+    - "https://staging.playball.one"
+    - "https://loadtest.playball.one"

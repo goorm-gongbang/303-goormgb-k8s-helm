@@ -1,0 +1,31 @@
+{{- if .Values.enabled }}
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: swagger-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    {{- if .Values.tls.enabled }}
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: {{ .Values.tls.credentialName }}
+      hosts:
+        - {{ .Values.host | quote }}
+    {{- end }}
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - {{ .Values.host | quote }}
+      {{- if .Values.tls.enabled }}
+      tls:
+        httpsRedirect: true
+      {{- end }}
+{{- end }}
