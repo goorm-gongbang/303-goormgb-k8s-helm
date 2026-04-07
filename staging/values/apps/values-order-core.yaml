@@ -91,9 +91,11 @@ otel:
   enabled: true
 
 # Prometheus metrics (PodMonitor)
+# management 포트 분리로 context path 없이 /actuator/prometheus 사용
 metrics:
   enabled: true
-  path: /order/actuator/prometheus
+  port: 9090
+  path: /actuator/prometheus
   interval: 30s
 
 # PodDisruptionBudget - 최소 1개 유지
