@@ -353,7 +353,7 @@ jwtAuth:
 # ============================================================
 adminTools:
   ipWhitelist:
-    enabled: false  # 테스트 후 활성화
+    enabled: true
     # 허용된 IP 목록 (팀원 IP)
     allowedIPs:
       - "59.12.199.140"
@@ -376,8 +376,12 @@ adminTools:
       - "121.175.144.99"
     # IP 제한 적용 대상 호스트
     protectedHosts:
+      - "argocd.staging.playball.one"
       - "cloudbeaver.staging.playball.one"
+      - "console.staging.playball.one"
+      - "grafana.staging.playball.one"
       - "kafka-ui.staging.playball.one"
       - "kiali.staging.playball.one"
-      - "grafana.staging.playball.one"
+      - "prometheus.staging.playball.one"
       - "redis.staging.playball.one"
+      - "swagger.staging.playball.one"

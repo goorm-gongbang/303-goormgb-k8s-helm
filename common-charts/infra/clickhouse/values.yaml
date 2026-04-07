@@ -46,3 +46,8 @@ externalSecret:
   enabled: false
   secretStore: ""
   remoteRef: ""
+
+# Default auth (used when externalSecret.enabled: false)
+auth:
+  user: "default"
+  password: "clickhouse"
