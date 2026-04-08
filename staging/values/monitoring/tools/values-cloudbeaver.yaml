@@ -58,9 +58,35 @@ resources:
     memory: 1536Mi
 
 persistence:
+  enabled: false  # emptyDir 사용 (EBS AZ 종속성 제거)
+
+# Pod 시작 시 DB 연결 설정 자동 주입
+initialConfig:
   enabled: true
-  size: 2Gi
-  storageClass: gp3
+  dataSources: |
+    {
+      "folders": {},
+      "connections": {
+        "staging-rds": {
+          "provider": "postgresql",
+          "driver": "postgres-jdbc",
+          "name": "Staging RDS (PostgreSQL)",
+          "save-password": false,
+          "show-system-objects": false,
+          "read-only": false,
+          "configuration": {
+            "host": "goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com",
+            "port": "5432",
+            "database": "goormgb",
+            "url": "jdbc:postgresql://goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com:5432/goormgb",
+            "type": "dev",
+            "provider-properties": {
+              "@dbeaver-show-non-default-db@": "true"
+            }
+          }
+        }
+      }
+    }
 
 # Istio VirtualService
 virtualService:
