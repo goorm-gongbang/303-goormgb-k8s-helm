@@ -680,6 +680,16 @@ applicationSets:
       - name: authz-adapter
         description: "Authz Adapter - Istio ext_authz 어댑터"
 
+  dev-ai-etl:
+    enabled: true
+    syncWave: "11"
+    namespace: dev-ai
+    chartPath: common-charts/apps/ai-etl
+    valueFilesPattern: ../../../dev/values/apps/values-{{name}}.yaml
+    services:
+      - name: ai-etl
+        description: "AI ETL - S3 Audit -> ClickHouse 적재 CronJob"
+
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)
 # =============================================================================
