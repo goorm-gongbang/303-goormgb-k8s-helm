@@ -1,0 +1,10 @@
+# AI Service Secrets 설정
+# AWS Secrets Manager에서 값을 가져옴
+
+namespaces:
+  - prod-ai
+  - monitoring  # Grafana PostgreSQL/ClickHouse datasource용
+secretName: ai-service-config
+
+# Secrets Manager 키 prefix
+secretManagerPrefix: prod/ai-service

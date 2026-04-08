@@ -1,0 +1,47 @@
+# Kyverno Policies - Staging Environment
+# ValidatingPolicy (CEL based) - Kyverno 1.17+
+# staging 환경에서는 Audit 모드로 위반 로깅만 수행
+
+# failurePolicy: 웹훅 실패 시 동작 (Ignore: 허용, Fail: 차단)
+failurePolicy: Ignore
+
+# validationAction: 정책 위반 시 동작
+# Audit: 로깅만, 리소스 생성 허용 (staging)
+# Deny: 리소스 생성 차단 (production)
+validationAction: Deny
+
+policies:
+  requireLabels:
+    enabled: true
+    requiredLabels:
+      - app
+      - version
+
+  disallowPrivileged:
+    enabled: true
+
+  disallowLatestTag:
+    enabled: true
+
+  requireResourceLimits:
+    enabled: true
+
+  requireProbes:
+    enabled: true
+
+excludeNamespaces:
+  # Kubernetes system
+  - kube-system
+  - kube-public
+  - kube-node-lease
+  # Infrastructure
+  - kyverno
+  - argocd
+  - istio-system
+  - monitoring
+  - external-secrets
+  - external-dns
+  - karpenter
+  - cert-manager
+  # Data
+  - messaging

@@ -1,0 +1,45 @@
+# ClickHouse for AI Defense - Prod 환경
+
+image:
+  repository: clickhouse/clickhouse-server
+  tag: "24.3-alpine"
+
+database: ai_defense
+
+config:
+  maxConnections: 100
+  maxConcurrentQueries: 100
+  maxMemoryUsage: 2000000000  # 2GB
+  maxMemoryUsageForAllQueries: 3000000000  # 3GB
+
+persistence:
+  enabled: true
+  storageClass: gp3
+  size: 20Gi
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 4Gi
+
+initScripts:
+  enabled: true
+
+# Prod 환경: Secrets Manager에서 인증 정보 로드
+externalSecret:
+  enabled: true
+  secretStore: aws-secrets-manager
+  remoteRef: prod/goormgb/clickhouse
+
+# Graviton (ARM64) 노드에 배치 - monitoring 노드
+nodeSelector:
+  kubernetes.io/arch: arm64
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
