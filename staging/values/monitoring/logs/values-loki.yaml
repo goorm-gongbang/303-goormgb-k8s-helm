@@ -1,5 +1,5 @@
 # EKS Staging - Loki Configuration
-# SingleBinary 모드 (S3 백엔드)
+# SingleBinary 모드 (S3 백엔드, 환경별 버킷 분리)
 
 deploymentMode: SingleBinary
 
@@ -28,9 +28,9 @@ loki:
   storage:
     type: s3
     bucketNames:
-      chunks: goormgb-loki
-      ruler: goormgb-loki
-      admin: goormgb-loki
+      chunks: goormgb-staging-loki
+      ruler: goormgb-staging-loki
+      admin: goormgb-staging-loki
     s3:
       region: ap-northeast-2
       # IRSA로 인증 (access_key/secret_key 불필요)
@@ -46,34 +46,8 @@ loki:
         object_store: s3
         schema: v13
         index:
-          prefix: staging/index_
+          prefix: index_
           period: 24h
-
-  # structuredConfig: Helm chart가 무시하는 설정을 raw config로 주입
-  structuredConfig:
-    compactor:
-      retention_enabled: true
-      delete_request_store: s3
-      shared_store: s3
-      shared_store_key_prefix: staging/compactor
-      working_directory: /var/loki/compactor
-    storage_config:
-      tsdb_shipper:
-        shared_store: s3
-        shared_store_key_prefix: staging/index
-      hedging:
-        at: 250ms
-        max_per_second: 20
-        up_to: 3
-    ruler:
-      storage:
-        type: s3
-        s3:
-          bucketnames: goormgb-loki
-          region: ap-northeast-2
-      wal:
-        dir: /var/loki/ruler-wal
-      rule_path: /var/loki/rules
 
 serviceAccount:
   create: true
