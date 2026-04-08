@@ -3,6 +3,13 @@
 
 replicaCount: 1
 
+# IRSA ServiceAccount (S3 접근용)
+serviceAccountName: ai-defense
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-ai-defense
+
 # Uvicorn 실행 명령어 (root-path 설정 for /ai prefix)
 command:
   - "python"
@@ -54,9 +61,9 @@ env:
   # CORS 허용 Origin (Frontend)
   - name: TM_CORS_ALLOW_ORIGINS
     value: "https://staging.playball.one"
-  # S3 아카이빙 비활성화 (로컬 파일 모드 - staging)
+  # S3 아카이빙 활성화 (IRSA로 접근 - credentials 불필요)
   - name: TM_S3_BUCKET
-    value: ""
+    value: "goormgb-staging-ai-audit"
   # PostgreSQL (RDS - Secrets Manager에서 가져옴)
   - name: AI_PG_HOST
     valueFrom:
