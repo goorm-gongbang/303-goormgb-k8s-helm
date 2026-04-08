@@ -151,7 +151,7 @@ dashboards:
         - name: DS_PROMETHEUS
           value: Prometheus
 
-  # Security Ops 대시보드는 staging/charts/monitoring/security-dashboards에서 ConfigMap으로 배포
+  # Security Ops 대시보드는 prod/charts/monitoring/security-dashboards에서 ConfigMap으로 배포
 
 # ESO에서 생성한 secret 사용
 admin:

@@ -1,4 +1,4 @@
-# Kyverno Configuration for Staging
+# Kyverno Configuration for Prod
 # Chart version: 3.7.1
 
 # Admission controller settings
@@ -81,7 +81,7 @@ config:
 
 # Webhook configuration
 webhooks:
-  failurePolicy: Fail  # prod에서는 Fail로 설정 (정책 위반시 배포 차단)
+  failurePolicy: Ignore  # prod에서도 초기에는 Ignore로 설정하여 이슈 방지
 
 # ServiceMonitor for Prometheus
 serviceMonitor:

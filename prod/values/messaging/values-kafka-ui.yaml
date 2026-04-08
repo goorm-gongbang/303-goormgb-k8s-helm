@@ -30,7 +30,7 @@ oauth2Proxy:
     limits:
       cpu: 100m
       memory: 128Mi
-  # ESO: staging/infra/oauth/teams-allow
+  # ESO: prod/infra/oauth/teams-allow
   eso:
     enabled: true
     secretStoreRef:

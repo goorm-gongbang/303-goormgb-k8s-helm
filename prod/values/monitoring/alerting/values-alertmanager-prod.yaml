@@ -1,10 +1,10 @@
-# Alertmanager routing/receivers (staging)
+# Alertmanager routing/receivers (prod)
 
 alertmanager:
   discord:
     eso:
       enabled: true
-      secretManagerKey: "staging/monitoring/discord-webhook-alerts"
+      secretManagerKey: "prod/monitoring/discord-webhook-alerts"
   alertmanagerSpec:
     secrets:
       - alertmanager-discord-webhooks
@@ -22,40 +22,40 @@ alertmanager:
       routes:
         - match:
             team: security
-            environment: staging
+            environment: prod
             severity: critical
           receiver: 'discord-security-critical'
           repeat_interval: 30m
         - match:
-            alertname: StagingAuthFailureRateWarning
+            alertname: ProdAuthFailureRateWarning
             team: security
-            environment: staging
+            environment: prod
           receiver: 'discord-security-warning'
           repeat_interval: 30m
         - match:
-            alertname: StagingWafBlockedRequestsWarning
+            alertname: ProdWafBlockedRequestsWarning
             team: security
-            environment: staging
+            environment: prod
           receiver: 'discord-security-warning'
           repeat_interval: 30m
         - match:
-            environment: staging
+            environment: prod
             severity: critical
           receiver: 'discord-critical'
           repeat_interval: 30m
         - match:
-            alertname: StagingHttp5xxWarning
-            environment: staging
+            alertname: ProdHttp5xxWarning
+            environment: prod
           receiver: 'discord-warning'
           repeat_interval: 30m
         - match:
-            alertname: StagingApiP99Warning
-            environment: staging
+            alertname: ProdApiP99Warning
+            environment: prod
           receiver: 'discord-warning'
           repeat_interval: 30m
         - match:
-            alertname: StagingPostgresConnectionsWarning
-            environment: staging
+            alertname: ProdPostgresConnectionsWarning
+            environment: prod
           receiver: 'discord-warning'
           repeat_interval: 30m
         - match:
@@ -70,7 +70,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs'
+            title_link: 'https://grafana.playball.one/d/cfevec81ezw8wc?var-namespace=prod-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -106,7 +106,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/warning-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/ops-alert-overview'
+            title_link: 'https://grafana.playball.one/d/ops-alert-overview'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -141,7 +141,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/info-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/ops-alert-overview'
+            title_link: 'https://grafana.playball.one/d/ops-alert-overview'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -176,7 +176,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-critical-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title_link: 'https://grafana.playball.one/d/security-alert-overview'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -211,7 +211,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-warning-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title_link: 'https://grafana.playball.one/d/security-alert-overview'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -246,7 +246,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-info-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title_link: 'https://grafana.playball.one/d/security-alert-overview'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
