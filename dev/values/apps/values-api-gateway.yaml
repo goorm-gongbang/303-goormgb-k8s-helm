@@ -32,6 +32,10 @@ istio:
     enabled: true
     externalRef: "istio-system/api-gateway"  # 외부 Gateway 참조 (Gateway CRD 생성 안 함)
     host: "api.goormgb.space"
+  # Swagger 외부 노출 차단 - OAuth 보호된 swagger.goormgb.space로 리다이렉트
+  swaggerRedirect:
+    enabled: true
+    host: "swagger.goormgb.space"
   # CORS 설정 - Istio VirtualService 레벨
   cors:
     enabled: true

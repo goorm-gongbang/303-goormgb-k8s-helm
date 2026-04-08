@@ -1,0 +1,109 @@
+# ai-defense - Prod 환경
+# Python FastAPI 기반 AI Defense API
+
+replicaCount: 1
+
+# Uvicorn 실행 명령어 (root-path 설정 for /ai prefix)
+command:
+  - "python"
+args:
+  - "-m"
+  - "uvicorn"
+  - "traffic_master_ai.defense.api.main:app"
+  - "--host"
+  - "0.0.0.0"
+  - "--port"
+  - "8000"
+  - "--root-path"
+  - "/ai"
+
+image:
+  name: "playball/ai-defense"
+  tag: "1.0.0"
+  pullPolicy: Always
+
+# Python 모듈 경로 설정 + AI Defense 환경변수
+env:
+  - name: PYTHONPATH
+    value: /app/src
+  - name: APP_PORT
+    value: "8000"
+  # 런타임 상태 관리를 Redis로 명시
+  - name: TM_RUNTIME_STATE_BACKEND
+    value: "redis"
+  - name: TM_DEFENSE_POLICY_VERSION
+    value: "def-pol-1.0.0"
+  # Audit Log 권한 픽스 (Staging 최신 패치 반영)
+  - name: TM_DEFENSE_AUDIT_LOG_PATH
+    value: "/app/logs/audit.log"
+  # Redis 연결 (prod/services/redis)
+  - name: AI_REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: SPRING_DATA_REDIS_HOST
+  - name: AI_REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: SPRING_DATA_REDIS_PORT
+  # 런타임 캐시용 Redis URL
+  - name: TM_REDIS_URL
+    value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+
+# IRSA (imagePullSecrets 비활성화)
+imagePullSecrets: []
+
+# Prod: HA 및 노드 선호도 설정
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: role
+              operator: In
+              values: ["app"]
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+# Istio
+istio:
+  sidecar: true
+
+# Service
+service:
+  type: ClusterIP
+  port: 8000
+
+# Health checks
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 8000
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  failureThreshold: 3
+
+# Prometheus Metrics
+metrics:
+  enabled: true
+  port: 8000
+  path: /actuator/prometheus  # ai-service 차트의 템플릿에 따라 다를 수 있음. 통상 fastapi는 /metrics
+  interval: 30s
+
+otel:
+  enabled: true
