@@ -29,15 +29,15 @@ server:
       cpu: 200m
       memory: 256Mi
 
-# Controller 설정 (25+ apps reconcile로 메모리 증가 필요)
+# Controller 설정 (50+ apps reconcile로 메모리 증가 필요)
 controller:
   resources:
     requests:
-      cpu: 50m
-      memory: 512Mi
-    limits:
       cpu: 500m
       memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 3Gi
 
 # Repo Server 설정 (helm template 렌더링 시 메모리 급증)
 repoServer:

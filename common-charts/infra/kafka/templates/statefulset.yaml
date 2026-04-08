@@ -1,0 +1,203 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "kafka.fullname" . }}
+  labels:
+    {{- include "kafka.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "kafka.headless" . }}
+  replicas: {{ .Values.replicas }}
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      {{- include "kafka.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kafka.labels" . | nindent 8 }}
+        version: "{{ .Values.image.tag }}"
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: kafka-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - /scripts/init-kraft.sh
+          env:
+            - name: KAFKA_CLUSTER_ID
+              value: "{{ .Values.kraft.clusterId }}"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/kafka/data
+            - name: scripts
+              mountPath: /scripts
+      containers:
+        - name: kafka
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              name: kafka
+              protocol: TCP
+            - containerPort: {{ .Values.service.controllerPort }}
+              name: controller
+              protocol: TCP
+            {{- if .Values.jmx.enabled }}
+            - containerPort: {{ .Values.jmx.port }}
+              name: jmx
+              protocol: TCP
+            {{- end }}
+          command:
+            - /bin/bash
+            - -c
+            - |
+              export KAFKA_NODE_ID=${HOSTNAME##*-}
+              exec /etc/kafka/docker/run
+          env:
+            - name: CLUSTER_ID
+              value: "{{ .Values.kraft.clusterId }}"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KAFKA_PROCESS_ROLES
+              value: "{{ .Values.config.processRoles }}"
+            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+              value: "{{ include "kafka.controllerQuorumVoters" . }}"
+            - name: KAFKA_LISTENERS
+              value: "{{ .Values.config.listeners }}"
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "{{ include "kafka.advertisedListeners" . }}"
+            - name: KAFKA_CONTROLLER_LISTENER_NAMES
+              value: "{{ .Values.config.controllerListenerNames }}"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "{{ .Values.config.interBrokerListenerName }}"
+            # 토픽 설정
+            - name: KAFKA_NUM_PARTITIONS
+              value: "{{ .Values.config.numPartitions }}"
+            - name: KAFKA_DEFAULT_REPLICATION_FACTOR
+              value: "{{ .Values.config.defaultReplicationFactor }}"
+            - name: KAFKA_MIN_INSYNC_REPLICAS
+              value: "{{ .Values.config.minInsyncReplicas }}"
+            # 로그 보존
+            - name: KAFKA_LOG_RETENTION_HOURS
+              value: "{{ .Values.config.logRetentionHours }}"
+            - name: KAFKA_LOG_RETENTION_BYTES
+              value: "{{ int .Values.config.logRetentionBytes }}"
+            # 오프셋 토픽
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "{{ .Values.config.offsetsTopicReplicationFactor }}"
+            - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+              value: "{{ .Values.config.transactionStateLogReplicationFactor }}"
+            - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+              value: "{{ .Values.config.transactionStateLogMinIsr }}"
+            # 성능 튜닝
+            - name: KAFKA_NUM_NETWORK_THREADS
+              value: "{{ .Values.config.numNetworkThreads }}"
+            - name: KAFKA_NUM_IO_THREADS
+              value: "{{ .Values.config.numIoThreads }}"
+            - name: KAFKA_SOCKET_SEND_BUFFER_BYTES
+              value: "{{ int .Values.config.socketSendBufferBytes }}"
+            - name: KAFKA_SOCKET_RECEIVE_BUFFER_BYTES
+              value: "{{ int .Values.config.socketReceiveBufferBytes }}"
+            - name: KAFKA_SOCKET_REQUEST_MAX_BYTES
+              value: "{{ int .Values.config.socketRequestMaxBytes }}"
+            # 데이터 디렉토리
+            - name: KAFKA_LOG_DIRS
+              value: /var/lib/kafka/data
+            {{- if .Values.jmx.enabled }}
+            - name: KAFKA_JMX_PORT
+              value: "{{ .Values.jmx.port }}"
+            - name: KAFKA_JMX_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/kafka/data
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: kafka
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          readinessProbe:
+            tcpSocket:
+              port: kafka
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+        {{- if .Values.exporter.enabled }}
+        - name: kafka-exporter
+          image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
+          imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
+          args:
+            - --kafka.server=localhost:{{ .Values.service.port }}
+            - --web.listen-address=:{{ .Values.exporter.port }}
+            - --topic.filter=.*
+            - --group.filter=.*
+          ports:
+            - containerPort: {{ .Values.exporter.port }}
+              name: metrics
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.exporter.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+            initialDelaySeconds: 10
+            periodSeconds: 5
+        {{- end }}
+      volumes:
+        - name: scripts
+          configMap:
+            name: {{ include "kafka.fullname" . }}-config
+            defaultMode: 0755
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        {{- if .Values.persistence.storageClass }}
+        storageClassName: {{ .Values.persistence.storageClass }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+  {{- end }}

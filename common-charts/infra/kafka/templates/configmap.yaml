@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kafka.fullname" . }}-config
+  labels:
+    {{- include "kafka.labels" . | nindent 4 }}
+data:
+  # KRaft 초기화 스크립트
+  init-kraft.sh: |
+    #!/bin/bash
+    set -e
+
+    # apache/kafka 이미지의 bin 경로
+    KAFKA_BIN="/opt/kafka/bin"
+
+    KRAFT_CLUSTER_ID="${KAFKA_CLUSTER_ID}"
+    DATA_DIR="/var/lib/kafka/data"
+    META_PROPERTIES="$DATA_DIR/meta.properties"
+
+    # hostname에서 node ID 추출 (kafka-0 -> 0, kafka-1 -> 1)
+    NODE_ID=${HOSTNAME##*-}
+    echo "Node ID: $NODE_ID"
+
+    # 클러스터 ID가 없으면 생성
+    if [ -z "$KRAFT_CLUSTER_ID" ]; then
+      KRAFT_CLUSTER_ID=$($KAFKA_BIN/kafka-storage.sh random-uuid)
+      echo "Generated new cluster ID: $KRAFT_CLUSTER_ID"
+    fi
+
+    # 이미 포맷된 경우 스킵
+    if [ -f "$META_PROPERTIES" ]; then
+      echo "Kafka data directory already formatted"
+      exit 0
+    fi
+
+    echo "Formatting Kafka storage with cluster ID: $KRAFT_CLUSTER_ID, node ID: $NODE_ID"
+
+    # lost+found 디렉토리 삭제 (EBS 볼륨에 자동 생성되는데 Kafka가 싫어함)
+    rm -rf "$DATA_DIR/lost+found" 2>/dev/null || true
+
+    # 기본 config 복사 후 설정 수정
+    CONFIG_FILE="/tmp/server.properties"
+    cp /opt/kafka/config/kraft/server.properties $CONFIG_FILE
+    sed -i 's|log.dirs=.*|log.dirs=/var/lib/kafka/data|' $CONFIG_FILE
+    sed -i "s|node.id=.*|node.id=$NODE_ID|" $CONFIG_FILE
+    # controller.quorum.voters 수정 (node 0 기준)
+    sed -i "s|controller.quorum.voters=.*|controller.quorum.voters=$NODE_ID@localhost:9093|" $CONFIG_FILE
+
+    $KAFKA_BIN/kafka-storage.sh format -t "$KRAFT_CLUSTER_ID" -c $CONFIG_FILE --ignore-formatted

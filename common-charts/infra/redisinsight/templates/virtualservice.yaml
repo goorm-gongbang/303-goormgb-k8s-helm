@@ -1,0 +1,21 @@
+{{- if .Values.virtualService.enabled }}
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: {{ include "redisinsight.fullname" . }}
+  labels:
+    {{- include "redisinsight.labels" . | nindent 4 }}
+spec:
+  hosts:
+    {{- range .Values.virtualService.hosts }}
+    - {{ . | quote }}
+    {{- end }}
+  gateways:
+    - {{ .Values.virtualService.gateway }}
+  http:
+    - route:
+        - destination:
+            host: {{ include "redisinsight.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+            port:
+              number: {{ .Values.service.port }}
+{{- end }}

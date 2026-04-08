@@ -81,7 +81,7 @@ otel:
 # Prometheus metrics (PodMonitor)
 metrics:
   enabled: true
-  path: /order/actuator/prometheus
+  path: /actuator/prometheus
   interval: 30s
 
 # PodDisruptionBudget - 최소 1개 유지

@@ -43,6 +43,26 @@ spec:
   gateways:
     - {{ $gatewayRef }}
   http:
+    {{- if .Values.istio.swaggerRedirect }}
+    {{- if .Values.istio.swaggerRedirect.enabled }}
+    # Swagger 경로를 OAuth 보호된 호스트로 리다이렉트 (경로 유지)
+    - match:
+        - uri:
+            prefix: /swagger-ui
+      redirect:
+        authority: {{ .Values.istio.swaggerRedirect.host | quote }}
+    - match:
+        - uri:
+            prefix: /v3/api-docs
+      redirect:
+        authority: {{ .Values.istio.swaggerRedirect.host | quote }}
+    - match:
+        - uri:
+            prefix: /swagger-resources
+      redirect:
+        authority: {{ .Values.istio.swaggerRedirect.host | quote }}
+    {{- end }}
+    {{- end }}
     - match:
         - uri:
             prefix: /

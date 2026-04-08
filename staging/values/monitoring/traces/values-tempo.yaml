@@ -1,0 +1,67 @@
+# Grafana Tempo - Staging 환경
+# 분산 추적 저장소 (S3 백엔드)
+
+# 노드 배치: monitoring 노드
+nodeSelector:
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
+
+serviceAccount:
+  create: true
+  name: tempo
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-staging-tempo"
+
+tempo:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 512Mi
+    limits:
+      cpu: 300m
+      memory: 2Gi
+
+  # 트레이스 수신 설정
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:4317"
+        http:
+          endpoint: "0.0.0.0:4318"
+
+  # S3 스토리지
+  storage:
+    trace:
+      backend: s3
+      s3:
+        bucket: goormgb-tempo
+        endpoint: s3.ap-northeast-2.amazonaws.com
+        region: ap-northeast-2
+        prefix: staging
+      wal:
+        path: /var/tempo/wal
+      block:
+        bloom_filter_false_positive: 0.05
+
+  # 보존 기간 (7일)
+  retention: 168h
+
+# PVC 비활성화, WAL은 emptyDir 사용
+persistence:
+  enabled: false
+
+extraVolumes:
+  - name: tempo-wal
+    emptyDir: {}
+
+extraVolumeMounts:
+  - name: tempo-wal
+    mountPath: /var/tempo

@@ -1,0 +1,41 @@
+# ClickHouse for AI Defense - Dev 환경
+
+image:
+  repository: clickhouse/clickhouse-server
+  tag: "24.3-alpine"
+
+database: ai_defense
+
+config:
+  maxConnections: 50
+  maxConcurrentQueries: 50
+  maxMemoryUsage: 1000000000  # 1GB
+  maxMemoryUsageForAllQueries: 1500000000  # 1.5GB
+
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 5Gi
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 2Gi
+
+initScripts:
+  enabled: true
+
+# Dev 환경: 인증 없이 사용 (클러스터 내부 전용)
+externalSecret:
+  enabled: false
+
+nodeSelector:
+  kubernetes.io/hostname: mini-gmk
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"

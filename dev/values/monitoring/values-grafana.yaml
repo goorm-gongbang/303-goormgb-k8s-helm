@@ -32,6 +32,14 @@ admin:
 # Google OAuth 설정 - Secret에서 환경변수 주입
 envFromSecret: google-oauth-credentials
 
+# AI Service DB 연결 정보 (PostgreSQL datasource용)
+envFromSecrets:
+  - name: ai-service-config
+
+# ClickHouse 플러그인 설치
+plugins:
+  - grafana-clickhouse-datasource
+
 grafana.ini:
   server:
     root_url: https://grafana.goormgb.space
@@ -54,8 +62,8 @@ grafana.ini:
     # 이메일 기반 역할 할당
     role_attribute_path: >-
       contains(['212clab@gmail.com', 'rhuba23@gmail.com', 'chamchi0129@gmail.com'], email) && 'Admin' ||
-      contains(['jusanha17@gmail.com', 'lab.jehyun@gmail.com', 'wnconc@gmail.com', 'jbyun1105@gmail.com', 'sayiamseyoun9@gmail.com', 'jminwook0120@gmail.com', 'siyeon0713@gmail.com', 'cdh4112618@gmail.com', 'rhkdgur120@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'yuuijin863@gmail.com', 'hs4734@gmail.com', 'hejwien@gmail.com', 'niceguy6112@gmail.com'], email) && 'Viewer' ||
-      ''
+      contains(['jusanha17@gmail.com', 'lab.jehyun@gmail.com', 'wnconc@gmail.com', 'jbyun1105@gmail.com', 'sayiamseyoun9@gmail.com', 'jminwook0120@gmail.com', 'siyeon0713@gmail.com', 'cdh4112618@gmail.com', 'rhkdgur120@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'yuuijin863@gmail.com', 'hs4734@gmail.com', 'hejwien@gmail.com', 'niceguy6112@gmail.com'], email) && 'Admin' ||
+      'Viewer'
   users:
     auto_assign_org: true
     auto_assign_org_role: Viewer
@@ -115,3 +123,37 @@ datasources:
             spanEndTimeShift: "1h"
             filterByTraceID: true
             filterBySpanID: true
+
+      # AI Defense PostgreSQL (클러스터 내부)
+      - name: PostgreSQL
+        type: postgres
+        uid: postgres
+        access: proxy
+        url: ${AI_PG_HOST}:${AI_PG_PORT}
+        database: ${AI_PG_DBNAME}
+        user: ${AI_PG_USERNAME}
+        isDefault: false
+        editable: false
+        jsonData:
+          sslmode: disable
+          maxOpenConns: 5
+          maxIdleConns: 2
+          connMaxLifetime: 14400
+        secureJsonData:
+          password: ${AI_PG_PASSWORD}
+
+      # AI Defense ClickHouse (클러스터 내부 - 기본 인증)
+      - name: ClickHouse
+        type: grafana-clickhouse-datasource
+        uid: clickhouse
+        access: proxy
+        isDefault: false
+        editable: false
+        jsonData:
+          host: clickhouse.data.svc.cluster.local
+          port: 8123
+          protocol: http
+          defaultDatabase: ai_defense
+          username: default
+        secureJsonData:
+          password: clickhouse

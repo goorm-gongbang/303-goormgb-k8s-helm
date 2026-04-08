@@ -25,6 +25,21 @@ alertmanager:
           receiver: 'discord-critical'
           repeat_interval: 30m
         - match:
+            environment: dev
+            severity: critical
+          receiver: 'discord-critical'
+          repeat_interval: 30m
+        - match:
+            alertname: DevApiP99Warning
+            environment: dev
+          receiver: 'discord-warning'
+          repeat_interval: 30m
+        - match:
+            alertname: DevPostgresConnectionsWarning
+            environment: dev
+          receiver: 'discord-warning'
+          repeat_interval: 30m
+        - match:
             alertname: Watchdog
           receiver: 'null'
         - match:
@@ -36,11 +51,26 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.goormgb.space/d/dfevjtvzho5q8d'
+            title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
             title: |-
-              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 5xx 복구{{ else }}🚨 5xx 발생{{ end }} [{{ with index .Alerts 0 }}{{ .StartsAt | tz "Asia/Seoul" | date "20060102-150405" }}{{ else }}unknown{{ end }}]
+              {{- $incidentId := "" -}}
+              {{- range .Alerts -}}
+              {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+              {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+              {{- end -}}
+              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 장애 복구{{ else }}🚨 장애 감지{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
             text: |-
               {{ if ne .Status "resolved" }}@개발팀 @admins{{ end }}
+              {{- $startedAt := "" -}}
+              {{- $resolvedAt := "" -}}
+              {{- range .Alerts -}}
+              {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+              {{- if eq $.Status "resolved" -}}
+              {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+              {{- end -}}
+              {{- end }}
               ```text
               알림: {{ if eq .CommonLabels.alertname "DevHttp5xxDetected" }}HTTP 5xx 오류 감지{{ else }}{{ or .CommonLabels.alertname "N/A" }}{{ end }}
               서비스: {{ or .CommonLabels.service_name "N/A" }}
@@ -48,8 +78,8 @@ alertmanager:
               대상건수: {{ len .Alerts }}
               {{ with index .Alerts 0 -}}
               인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
-              발생(KST): {{ .StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}
-              {{ if eq $.Status "resolved" }}복구(KST): {{ .EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}{{ end }}
+              발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+              {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
               {{- end }}
               ```
 
@@ -59,17 +89,32 @@ alertmanager:
             send_resolved: true
             title_link: 'https://grafana.goormgb.space/d/dLsDQIUnzb'
             title: |-
-              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 경고 복구 알림{{ else }}🟡 경고 알림{{ end }}
+              {{- $incidentId := "" -}}
+              {{- range .Alerts -}}
+              {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+              {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+              {{- end -}}
+              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 경고 복구{{ else }}🟡 경고 발생{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
             text: |-
+              {{- $startedAt := "" -}}
+              {{- $resolvedAt := "" -}}
+              {{- range .Alerts -}}
+              {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+              {{- if eq $.Status "resolved" -}}
+              {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+              {{- end -}}
+              {{- end }}
               ```text
-              🏷 알림        | {{ if eq .CommonLabels.alertname "DevHttp5xxDetected" }}HTTP 5xx 오류 감지{{ else }}{{ or .CommonLabels.alertname "N/A" }}{{ end }}
-              🧩 서비스      | {{ or .CommonLabels.service_name "N/A" }}
-              📦 네임스페이스 | {{ or .CommonLabels.namespace "N/A" }}
-              🔢 대상건수    | {{ len .Alerts }}
+              알림: {{ if eq .CommonLabels.alertname "DevHttp5xxDetected" }}HTTP 5xx 오류 감지{{ else }}{{ or .CommonLabels.alertname "N/A" }}{{ end }}
+              서비스: {{ or .CommonLabels.service_name "N/A" }}
+              네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+              대상건수: {{ len .Alerts }}
               {{ with index .Alerts 0 -}}
-              🖥 인스턴스    | {{ or .Labels.instance .Labels.node "N/A" }}
-              🕒 발생(KST)   | {{ .StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}
-              {{ if eq $.Status "resolved" }}✅ 복구(KST)   | {{ .EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}{{ end }}
+              인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
+              발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+              {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
               {{- end }}
               ```
 
@@ -79,17 +124,32 @@ alertmanager:
             send_resolved: true
             title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc'
             title: |-
-              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 정보 처리 완료 알림{{ else }}🔵 정보 알림{{ end }}
+              {{- $incidentId := "" -}}
+              {{- range .Alerts -}}
+              {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+              {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+              {{- end -}}
+              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 정보 복구{{ else }}🔵 정보 발생{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
             text: |-
+              {{- $startedAt := "" -}}
+              {{- $resolvedAt := "" -}}
+              {{- range .Alerts -}}
+              {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+              {{- if eq $.Status "resolved" -}}
+              {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+              {{- end -}}
+              {{- end }}
               ```text
-              🏷 알림        | {{ if eq .CommonLabels.alertname "DevHttp5xxDetected" }}HTTP 5xx 오류 감지{{ else }}{{ or .CommonLabels.alertname "N/A" }}{{ end }}
-              🧩 서비스      | {{ or .CommonLabels.service_name "N/A" }}
-              📦 네임스페이스 | {{ or .CommonLabels.namespace "N/A" }}
-              🔢 대상건수    | {{ len .Alerts }}
+              알림: {{ if eq .CommonLabels.alertname "DevHttp5xxDetected" }}HTTP 5xx 오류 감지{{ else }}{{ or .CommonLabels.alertname "N/A" }}{{ end }}
+              서비스: {{ or .CommonLabels.service_name "N/A" }}
+              네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+              대상건수: {{ len .Alerts }}
               {{ with index .Alerts 0 -}}
-              🖥 인스턴스    | {{ or .Labels.instance .Labels.node "N/A" }}
-              🕒 발생(KST)   | {{ .StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}
-              {{ if eq $.Status "resolved" }}✅ 종료(KST)   | {{ .EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}{{ end }}
+              인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
+              발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+              {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
               {{- end }}
               ```
 
@@ -119,10 +179,25 @@ kube-prometheus-stack:
         repeat_interval: 5m
         receiver: 'null'
         routes:
-          # Dev 임시 정책: 5xx 알람만 Discord 전송
+          # Dev 운영 정책: 5xx는 기존 규칙 유지, 그 외 알람은 환경/심각도 기준 라우팅
           - match:
               alertname: DevHttp5xxDetected
             receiver: 'discord-critical'
+            repeat_interval: 30m
+          - match:
+              environment: dev
+              severity: critical
+            receiver: 'discord-critical'
+            repeat_interval: 30m
+          - match:
+              alertname: DevApiP99Warning
+              environment: dev
+            receiver: 'discord-warning'
+            repeat_interval: 30m
+          - match:
+              alertname: DevPostgresConnectionsWarning
+              environment: dev
+            receiver: 'discord-warning'
             repeat_interval: 30m
           - match:
               alertname: Watchdog
@@ -136,11 +211,26 @@ kube-prometheus-stack:
           slack_configs:
             - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
               send_resolved: true
-              title_link: 'https://grafana.goormgb.space/d/dfevjtvzho5q8d'
+              title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
               title: |-
-                [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 5xx 복구{{ else }}🚨 5xx 발생{{ end }} [{{ with index .Alerts 0 }}{{ .StartsAt | tz "Asia/Seoul" | date "20060102-150405" }}{{ else }}unknown{{ end }}]
+                {{- $incidentId := "" -}}
+                {{- range .Alerts -}}
+                {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+                {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+                {{- end -}}
+                [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 장애 복구{{ else }}🚨 장애 감지{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
               text: |-
                 {{ if ne .Status "resolved" }}@개발팀 @admins{{ end }}
+                {{- $startedAt := "" -}}
+                {{- $resolvedAt := "" -}}
+                {{- range .Alerts -}}
+                {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+                {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+                {{- if eq $.Status "resolved" -}}
+                {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+                {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+                {{- end -}}
+                {{- end }}
                 ```text
                 알림: {{ if eq .CommonLabels.alertname "DevHttp5xxDetected" }}HTTP 5xx 오류 감지{{ else }}{{ or .CommonLabels.alertname "N/A" }}{{ end }}
                 서비스: {{ or .CommonLabels.service_name "N/A" }}
@@ -148,8 +238,8 @@ kube-prometheus-stack:
                 대상건수: {{ len .Alerts }}
                 {{ with index .Alerts 0 -}}
                 인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
-                발생(KST): {{ .StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}
-                {{ if eq $.Status "resolved" }}복구(KST): {{ .EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}{{ end }}
+                발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+                {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
                 {{- end }}
                 ```
 
@@ -160,17 +250,32 @@ kube-prometheus-stack:
               send_resolved: true
               title_link: 'https://grafana.goormgb.space/d/dLsDQIUnzb'
               title: |-
-                [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 경고 복구 알림{{ else }}🟡 경고 알림{{ end }}
+                {{- $incidentId := "" -}}
+                {{- range .Alerts -}}
+                {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+                {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+                {{- end -}}
+                [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 경고 복구{{ else }}🟡 경고 발생{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
               text: |-
+                {{- $startedAt := "" -}}
+                {{- $resolvedAt := "" -}}
+                {{- range .Alerts -}}
+                {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+                {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+                {{- if eq $.Status "resolved" -}}
+                {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+                {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+                {{- end -}}
+                {{- end }}
                 ```text
-                🏷 알림        | {{ if eq .CommonLabels.alertname "DevHttp5xxDetected" }}HTTP 5xx 오류 감지{{ else }}{{ or .CommonLabels.alertname "N/A" }}{{ end }}
-                🧩 서비스      | {{ or .CommonLabels.service_name "N/A" }}
-                📦 네임스페이스 | {{ or .CommonLabels.namespace "N/A" }}
-                🔢 대상건수    | {{ len .Alerts }}
+                알림: {{ if eq .CommonLabels.alertname "DevHttp5xxDetected" }}HTTP 5xx 오류 감지{{ else }}{{ or .CommonLabels.alertname "N/A" }}{{ end }}
+                서비스: {{ or .CommonLabels.service_name "N/A" }}
+                네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+                대상건수: {{ len .Alerts }}
                 {{ with index .Alerts 0 -}}
-                🖥 인스턴스    | {{ or .Labels.instance .Labels.node "N/A" }}
-                🕒 발생(KST)   | {{ .StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}
-                {{ if eq $.Status "resolved" }}✅ 복구(KST)   | {{ .EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}{{ end }}
+                인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
+                발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+                {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
                 {{- end }}
                 ```
 
@@ -181,17 +286,32 @@ kube-prometheus-stack:
               send_resolved: true
               title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc'
               title: |-
-                [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 정보 처리 완료 알림{{ else }}🔵 정보 알림{{ end }}
+                {{- $incidentId := "" -}}
+                {{- range .Alerts -}}
+                {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+                {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+                {{- end -}}
+                [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 정보 복구{{ else }}🔵 정보 발생{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
               text: |-
+                {{- $startedAt := "" -}}
+                {{- $resolvedAt := "" -}}
+                {{- range .Alerts -}}
+                {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+                {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+                {{- if eq $.Status "resolved" -}}
+                {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+                {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+                {{- end -}}
+                {{- end }}
                 ```text
-                🏷 알림        | {{ if eq .CommonLabels.alertname "DevHttp5xxDetected" }}HTTP 5xx 오류 감지{{ else }}{{ or .CommonLabels.alertname "N/A" }}{{ end }}
-                🧩 서비스      | {{ or .CommonLabels.service_name "N/A" }}
-                📦 네임스페이스 | {{ or .CommonLabels.namespace "N/A" }}
-                🔢 대상건수    | {{ len .Alerts }}
+                알림: {{ if eq .CommonLabels.alertname "DevHttp5xxDetected" }}HTTP 5xx 오류 감지{{ else }}{{ or .CommonLabels.alertname "N/A" }}{{ end }}
+                서비스: {{ or .CommonLabels.service_name "N/A" }}
+                네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+                대상건수: {{ len .Alerts }}
                 {{ with index .Alerts 0 -}}
-                🖥 인스턴스    | {{ or .Labels.instance .Labels.node "N/A" }}
-                🕒 발생(KST)   | {{ .StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}
-                {{ if eq $.Status "resolved" }}✅ 종료(KST)   | {{ .EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}{{ end }}
+                인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
+                발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+                {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
                 {{- end }}
                 ```
 

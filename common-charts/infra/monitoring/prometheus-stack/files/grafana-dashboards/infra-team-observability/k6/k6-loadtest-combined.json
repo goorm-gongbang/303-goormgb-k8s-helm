@@ -1765,7 +1765,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "DBInstanceIdentifier": "goormgb-prod-postgresql"
+            "DBInstanceIdentifier": "goormgb-staging-postgresql"
           },
           "expression": "",
           "id": "",
@@ -1845,7 +1845,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "DBInstanceIdentifier": "goormgb-prod-postgresql"
+            "DBInstanceIdentifier": "goormgb-staging-postgresql"
           },
           "expression": "",
           "id": "",
@@ -1980,7 +1980,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "DBInstanceIdentifier": "goormgb-prod-postgresql"
+            "DBInstanceIdentifier": "goormgb-staging-postgresql"
           },
           "expression": "",
           "id": "",
@@ -2002,7 +2002,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "DBInstanceIdentifier": "goormgb-prod-postgresql"
+            "DBInstanceIdentifier": "goormgb-staging-postgresql"
           },
           "expression": "",
           "hide": false,
@@ -2097,7 +2097,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "CacheClusterId": "goormgb-prod-redis-001"
+            "CacheClusterId": "goormgb-staging-redis-001"
           },
           "expression": "",
           "id": "",
@@ -2177,7 +2177,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "CacheClusterId": "goormgb-prod-redis-001"
+            "CacheClusterId": "goormgb-staging-redis-001"
           },
           "expression": "",
           "id": "",
@@ -2257,7 +2257,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "CacheClusterId": "goormgb-prod-redis-001"
+            "CacheClusterId": "goormgb-staging-redis-001"
           },
           "expression": "",
           "id": "",
@@ -2392,7 +2392,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "CacheClusterId": "goormgb-prod-redis-001"
+            "CacheClusterId": "goormgb-staging-redis-001"
           },
           "expression": "",
           "id": "",
@@ -2414,7 +2414,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "CacheClusterId": "goormgb-prod-redis-001"
+            "CacheClusterId": "goormgb-staging-redis-001"
           },
           "expression": "",
           "hide": false,
@@ -2646,7 +2646,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "CacheClusterId": "goormgb-prod-redis-001"
+            "CacheClusterId": "goormgb-staging-redis-001"
           },
           "expression": "",
           "id": "",
@@ -2727,7 +2727,7 @@
             "uid": "cloudwatch"
           },
           "dimensions": {
-            "CacheClusterId": "goormgb-prod-redis-001"
+            "CacheClusterId": "goormgb-staging-redis-001"
           },
           "expression": "",
           "id": "",

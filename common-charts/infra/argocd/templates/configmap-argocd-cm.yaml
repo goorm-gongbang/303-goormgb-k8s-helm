@@ -8,8 +8,10 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
 data:
-  # ArgoCD URL (VirtualService host 사용)
-  {{- if .Values.gateway.host }}
+  # ArgoCD URL (server.url 우선, 없으면 gateway.host 사용)
+  {{- if .Values.server.url }}
+  url: {{ .Values.server.url }}
+  {{- else if .Values.gateway.host }}
   url: https://{{ .Values.gateway.host }}
   {{- end }}
   # OIDC Configuration

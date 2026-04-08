@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   name: "dev/goormgb/order-core"
-  tag: "8608193"
+  tag: "64a49ee"
   pullPolicy: Always
 
 imagePullSecrets:
@@ -52,8 +52,10 @@ readinessProbe:
   failureThreshold: 3
 
 # Prometheus Metrics (Spring Boot Actuator)
+# management 포트 분리 (서비스 포트와 별도로 actuator 노출)
 metrics:
   enabled: true
+  port: 9090
   path: /actuator/prometheus
   interval: 15s
 
@@ -62,3 +64,17 @@ otel:
   enabled: true
   agentVersion: "2.11.0"
   collectorEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"
+
+# Kafka consumer group ID (서비스별 고유값)
+env:
+  - name: KAFKA_CONSUMER_GROUP_ID
+    value: "order-core-notification"
+
+# DB, Redis, JWT, Kafka, Mail - envFrom으로 주입
+envFrom:
+  - configMapRef:
+      name: service-config
+  - secretRef:
+      name: service-config
+  - secretRef:
+      name: mail-config

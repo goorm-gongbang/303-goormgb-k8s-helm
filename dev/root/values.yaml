@@ -21,6 +21,7 @@ destination:
 ociCharts:
   istio-base:
     enabled: true
+    description: "Istio CRD 및 기본 리소스"
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: base
     version: "1.29.1"
@@ -37,6 +38,7 @@ ociCharts:
 
   istiod:
     enabled: true
+    description: "Istio Control Plane - 서비스 메시, mTLS"
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: istiod
     version: "1.29.1"
@@ -72,6 +74,7 @@ ociCharts:
 
   kiali-server:
     enabled: true
+    description: "Kiali - Istio 서비스 메시 시각화"
     repoURL: https://kiali.org/helm-charts
     chart: kiali-server
     version: "2.23.0"
@@ -79,9 +82,29 @@ ociCharts:
     syncWave: "-1"
     valueFiles:
       - $values/dev/values/istio/values-kiali.yaml
+    syncOptions:
+      - RespectIgnoreDifferences=true
+      - ServerSideApply=true
+    ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+          - .metadata.annotations
+          - .spec.template.metadata.annotations
+          - .spec.template.spec.containers[].resources
+      - group: ""
+        kind: ConfigMap
+        jqPathExpressions:
+          - .data
+      - group: ""
+        kind: Service
+        jqPathExpressions:
+          - .spec.clusterIP
+          - .spec.clusterIPs
 
+  # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   tigera-operator:
-    enabled: true
+    enabled: false  # Cilium eBPF로 대체
     repoURL: https://docs.tigera.io/calico/charts
     chart: tigera-operator
     version: "v3.29.3"
@@ -113,6 +136,7 @@ ociCharts:
 
   loki:
     enabled: true
+    description: "Loki - 로그 저장소"
     repoURL: https://grafana.github.io/helm-charts
     chart: loki
     version: "6.55.0"
@@ -131,6 +155,7 @@ ociCharts:
 
   promtail:
     enabled: true
+    description: "Promtail - Pod 로그 수집"
     repoURL: https://grafana.github.io/helm-charts
     chart: promtail
     version: "6.17.1"
@@ -141,6 +166,7 @@ ociCharts:
 
   kube-prometheus-stack:
     enabled: true
+    description: "Prometheus + Alertmanager - 메트릭 수집/알림"
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
     version: "82.13.6"
@@ -151,6 +177,7 @@ ociCharts:
       - $values/dev/values/monitoring/values-prometheus-stack.yaml
       - $values/dev/values/monitoring/alerting/values-alertmanager-dev.yaml
       - $values/dev/values/monitoring/alerting/values-rules-dev-5xx.yaml
+      - $values/dev/values/monitoring/alerting/values-rules-dev.yaml
     syncOptions:
       - SkipDryRunOnMissingResource=true
       - PruneLast=true
@@ -189,6 +216,7 @@ ociCharts:
 
   alloy:
     enabled: true  # Faro 프론트엔드 RUM 활성화
+    description: "Grafana Alloy - Faro RUM 수집"
     repoURL: https://grafana.github.io/helm-charts
     chart: alloy
     version: "1.6.2"
@@ -199,6 +227,7 @@ ociCharts:
 
   k6-operator:
     enabled: false  # 필요시 활성화
+    description: "k6 Operator - 부하테스트 (비활성화)"
     repoURL: https://grafana.github.io/helm-charts
     chart: k6-operator
     version: "4.3.0"
@@ -208,6 +237,7 @@ ociCharts:
 
   tempo:
     enabled: true
+    description: "Tempo - 분산 추적 저장소"
     repoURL: https://grafana.github.io/helm-charts
     chart: tempo
     version: "1.24.4"
@@ -225,6 +255,7 @@ ociCharts:
   # Grafana (kube-prometheus-stack에서 분리)
   grafana:
     enabled: true
+    description: "Grafana - 대시보드 시각화"
     repoURL: https://grafana.github.io/helm-charts
     chart: grafana
     version: "8.14.0"
@@ -241,6 +272,7 @@ ociCharts:
 
   opentelemetry-collector:
     enabled: true
+    description: "OpenTelemetry Collector - 메트릭/트레이스 파이프라인"
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-collector
     version: "0.147.1"
@@ -249,6 +281,26 @@ ociCharts:
     valueFiles:
       - $values/dev/values/monitoring/values-opentelemetry-collector.yaml
 
+  # Tetragon - eBPF-based runtime security (L3/L4 threat detection)
+  tetragon:
+    enabled: true
+    description: "Tetragon - eBPF 런타임 보안 모니터링"
+    repoURL: https://helm.cilium.io
+    chart: tetragon
+    version: "1.6.0"
+    namespace: kube-system
+    syncWave: "-8"
+    valueFiles:
+      - $values/dev/values/infra/values-tetragon-oci.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+    ignoreDifferences:
+      - group: cilium.io
+        kind: TracingPolicy
+        jsonPointers:
+          - /status
+
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
 # =============================================================================
@@ -256,6 +308,7 @@ gitCharts:
   # === Core ===
   namespaces:
     enabled: true
+    description: "Namespace 정의 (dev-webs, dev-ai, monitoring 등)"
     path: common-charts/infra/namespaces
     namespace: default
     syncWave: "-10"
@@ -264,6 +317,7 @@ gitCharts:
 
   argocd-config:
     enabled: true
+    description: "ArgoCD 설정 - OAuth, ConfigMap, Notifications"
     path: common-charts/infra/argocd
     namespace: argocd
     valueFiles:
@@ -279,6 +333,7 @@ gitCharts:
 
   ddns-cloudflare:
     enabled: true
+    description: "DDNS - Cloudflare DNS 자동 업데이트"
     path: dev/charts/core/ddns
     namespace: istio-system
     valueFiles:
@@ -286,6 +341,7 @@ gitCharts:
 
   ecr-creds:
     enabled: true
+    description: "ECR Credentials - cross-account 이미지 Pull"
     path: dev/charts/core/ecr-creds
     namespace: istio-system
     syncWave: "-8"
@@ -295,6 +351,7 @@ gitCharts:
   # === Security ===
   cert-manager-config:
     enabled: true
+    description: "Cert-Manager - Let's Encrypt 인증서 자동 갱신"
     path: dev/charts/security/cert-manager
     namespace: cert-manager
     syncWave: "-7"
@@ -308,6 +365,7 @@ gitCharts:
 
   rbac:
     enabled: true
+    description: "RBAC - ServiceAccount, Role 정의"
     path: common-charts/infra/rbac
     namespace: default
     valueFiles:
@@ -315,18 +373,30 @@ gitCharts:
 
   service-secrets:
     enabled: true
+    description: "서비스 Secret - DB, Redis 연결 정보"
     path: dev/charts/security/service-secrets
     namespace: dev-webs
     syncWave: "-6"
 
   ai-service-secrets:
     enabled: true
+    description: "AI 서비스 Secret - Redis, PostgreSQL 연결"
     path: dev/charts/security/ai-service-secrets
     namespace: dev-ai
     syncWave: "-6"
 
+  mail-config:
+    enabled: true
+    description: "메일 설정 - Gmail SMTP Secret"
+    path: common-charts/apps/mail-config
+    namespace: dev-webs
+    syncWave: "-5"
+    valueFiles:
+      - ../../../dev/values/apps/values-mail-config.yaml
+
   oauth2-proxy:
     enabled: true
+    description: "OAuth2 Proxy - Google OAuth 인증 프록시"
     path: dev/charts/security/oauth2-proxy
     namespace: istio-system
     syncWave: "-5"
@@ -336,14 +406,24 @@ gitCharts:
   # === Istio ===
   istio-gateway:
     enabled: true
+    description: "Istio Gateway CRD - 도메인별 트래픽 수신"
     path: common-charts/infra/istio/gateway
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
       - ../../../../dev/values/istio/values-istio.yaml
 
+  # Swagger OAuth (Gateway + VirtualService + EnvoyFilter)
+  swagger-oauth:
+    enabled: true
+    description: "Swagger OAuth - Gateway, VirtualService, 403 Redirect"
+    path: dev/charts/istio/swagger-oauth
+    namespace: istio-system
+    syncWave: "-1"
+
   istio-security:
     enabled: true
+    description: "Istio Security - AuthorizationPolicy, JWT 검증"
     path: common-charts/infra/istio-security
     namespace: istio-system
     syncWave: "-1"
@@ -367,8 +447,9 @@ gitCharts:
     valueFiles:
       - ../../../../dev/values/istio/values-kiali.yaml
 
+  # [DEPRECATED] Calico → Cilium으로 전환됨 (2026-03-28)
   calico-config:
-    enabled: true
+    enabled: false  # Cilium eBPF로 대체
     path: common-charts/infra/calico
     namespace: calico-system
     syncWave: "-9"
@@ -406,6 +487,35 @@ gitCharts:
     valueFiles:
       - ../../../../dev/values/monitoring/values-alloy.yaml
 
+  # === Infra Console ===
+  infra-console:
+    enabled: true
+    path: common-charts/infra/infra-console
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../dev/values/infra/values-infra-console.yaml
+
+  # === Kyverno Policies ===
+  kyverno-policies:
+    enabled: true
+    path: common-charts/infra/kyverno-policies
+    namespace: kyverno
+    syncWave: "0"
+    valueFiles:
+      - ../../../dev/values/infra/values-kyverno-policies.yaml
+
+  # === Tetragon TracingPolicy (L3/L4 threat detection) ===
+  tetragon-config:
+    enabled: true
+    path: common-charts/infra/tetragon
+    namespace: kube-system
+    syncWave: "-7"
+    valueFiles:
+      - ../../../dev/values/infra/values-tetragon.yaml
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
+
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
@@ -413,6 +523,7 @@ gitCharts:
   # === Data ===
   postgresql:
     enabled: true
+    description: "PostgreSQL - 메인 RDB (goormgb, ai_defense)"
     path: dev/charts/data/postgresql
     namespace: data
     syncWave: "-5"
@@ -426,6 +537,7 @@ gitCharts:
 
   redis-cache:
     enabled: true
+    description: "Redis Cache - 세션/캐시 저장소"
     path: dev/charts/data/redis
     namespace: data
     syncWave: "-5"
@@ -440,6 +552,7 @@ gitCharts:
 
   redis-queue:
     enabled: true
+    description: "Redis Queue - 대기열 상태 저장"
     path: dev/charts/data/redis
     namespace: data
     syncWave: "-5"
@@ -454,6 +567,7 @@ gitCharts:
 
   redis-ai:
     enabled: true
+    description: "Redis AI - AI 서비스 런타임 캐시"
     path: dev/charts/data/redis
     namespace: data
     syncWave: "-5"
@@ -468,6 +582,7 @@ gitCharts:
 
   cloudbeaver:
     enabled: true
+    description: "CloudBeaver - 웹 기반 DB 관리 도구"
     path: dev/charts/data/cloudbeaver
     namespace: data
     valueFiles:
@@ -475,10 +590,61 @@ gitCharts:
 
   redisinsight:
     enabled: true
-    path: dev/charts/data/redisinsight
+    description: "RedisInsight - Redis GUI 관리 도구"
+    path: common-charts/infra/redisinsight
     namespace: data
     valueFiles:
-      - ../../../values/data/values-redisinsight.yaml
+      - ../../../dev/values/data/values-redisinsight.yaml
+
+  clickhouse:
+    enabled: true
+    description: "ClickHouse - AI Defense 관측 데이터 웨어하우스"
+    path: common-charts/infra/clickhouse
+    namespace: data
+    syncWave: "-4"
+    valueFiles:
+      - ../../../dev/values/data/values-clickhouse.yaml
+    retry:
+      limit: 5
+      duration: "10s"
+      maxDuration: "3m"
+      factor: 2
+    ignoreDifferences:
+      - group: ""
+        kind: PersistentVolumeClaim
+        jsonPointers:
+          - /spec/volumeName
+          - /spec/storageClassName
+
+  # === Messaging (Kafka) ===
+  kafka:
+    enabled: true
+    description: "Kafka - 메시지 브로커"
+    path: common-charts/infra/kafka
+    namespace: messaging
+    syncWave: "-5"
+    valueFiles:
+      - ../../../dev/values/messaging/values-kafka.yaml
+    retry:
+      limit: 5
+      duration: "10s"
+      maxDuration: "3m"
+      factor: 2
+    ignoreDifferences:
+      - group: ""
+        kind: PersistentVolumeClaim
+        jsonPointers:
+          - /spec/volumeName
+          - /spec/storageClassName
+
+  kafka-ui:
+    enabled: true
+    description: "Kafka UI - 웹 기반 Kafka 관리 도구"
+    path: dev/charts/data/kafka-ui
+    namespace: messaging
+    syncWave: "0"
+    valueFiles:
+      - ../../../../dev/values/messaging/values-kafka-ui.yaml
 
 # =============================================================================
 # ApplicationSets
@@ -492,10 +658,15 @@ applicationSets:
     valueFilesPattern: ../../../dev/values/apps/values-{{name}}.yaml
     services:
       - name: api-gateway
+        description: "API Gateway - 라우팅, 인증 필터"
       - name: auth-guard
+        description: "Auth Guard - JWT 발급/검증, 로그인"
       - name: order-core
+        description: "Order Core - 주문 생성/결제"
       - name: queue
+        description: "Queue - 대기열 관리"
       - name: seat
+        description: "Seat - 좌석 조회/선택"
 
   dev-ai-services:
     enabled: true
@@ -505,17 +676,24 @@ applicationSets:
     valueFilesPattern: ../../../dev/values/apps/values-{{name}}.yaml
     services:
       - name: ai-defense
+        description: "AI Defense - 봇 탐지, 정책 평가"
       - name: authz-adapter
+        description: "Authz Adapter - Istio ext_authz 어댑터"
+
+  dev-ai-etl:
+    enabled: true
+    syncWave: "11"
+    namespace: dev-ai
+    chartPath: common-charts/apps/ai-etl
+    valueFilesPattern: ../../../dev/values/apps/values-{{name}}.yaml
+    services:
+      - name: ai-etl
+        description: "AI ETL - S3 Audit -> ClickHouse 적재 CronJob"
 
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)
 # =============================================================================
-rawManifests:
-  apiGateway:
-    enabled: true
-  swaggerGateway:
-    enabled: true
-  swagger403Redirect:
-    enabled: true
-  aiDefenseRoute:
-    enabled: true
+# Raw Manifests - 모두 개별 차트로 이동 완료
+# - apiGateway: istio-gateway gitChart (apiGatewayConfig)
+# - swaggerGateway + swagger403Redirect: swagger-oauth gitChart
+# - aiDefenseRoute: ai-service 차트 내 VirtualService

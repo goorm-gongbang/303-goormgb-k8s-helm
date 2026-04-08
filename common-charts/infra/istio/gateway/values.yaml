@@ -5,6 +5,10 @@
 sharedGateway:
   enabled: false
   name: goormgb-gateway
+  # Phase 3: istio-ingress 분리 시 namespace 변경
+  # namespace: istio-ingress
+  namespace: istio-system
+  selector: ingressgateway
   tls:
     credentialName: goormgb-tls
   hosts:

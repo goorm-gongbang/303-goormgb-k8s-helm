@@ -1,0 +1,13 @@
+{{- if .Values.gateway.grafana.enabled }}
+# Disable mTLS for Grafana (no Istio sidecar)
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: grafana-dr
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: {{ .Values.grafana.fullnameOverride | default "grafana" }}
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+{{- end }}

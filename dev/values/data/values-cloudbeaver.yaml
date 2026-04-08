@@ -3,6 +3,10 @@
 
 replicaCount: 1
 
+# OAuth 비활성화 (dev는 Istio OAuth2 Proxy로 보호)
+oauth:
+  enabled: false
+
 image:
   repository: dbeaver/cloudbeaver
   tag: "24.0.0"
@@ -15,10 +19,10 @@ nodeSelector:
 resources:
   requests:
     cpu: 100m
-    memory: 512Mi
+    memory: 768Mi
   limits:
     cpu: 500m
-    memory: 1536Mi
+    memory: 2Gi
 
 persistence:
   enabled: true

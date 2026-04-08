@@ -1,0 +1,21 @@
+# Mail Config - Default Values
+# Override in environment-specific values files
+
+enabled: true
+
+# Kubernetes Secret name (created by ExternalSecret)
+secretName: mail-config
+
+# Target namespace
+namespace: staging-webs
+
+# AWS Secrets Manager reference
+secretManager:
+  # ClusterSecretStore name
+  secretStoreRef:
+    name: aws-secrets-manager
+    kind: ClusterSecretStore
+  # Secrets Manager key path (e.g., dev/services/mail, staging/services/mail)
+  key: staging/services/mail
+  # Refresh interval
+  refreshInterval: 1h

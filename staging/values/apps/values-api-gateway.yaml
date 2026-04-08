@@ -1,11 +1,11 @@
 # api-gateway - Staging 환경
 fullnameOverride: "api-gateway"
 contextPath: ""  # api-gateway는 context path 없음
-replicaCount: 1
+replicaCount: 2
 
 image:
   name: "staging/playball/web/api-gateway"
-  tag: "de7ce81.11"
+  tag: "274533b.24"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -41,11 +41,11 @@ affinity:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 512Mi
-  limits:
-    cpu: "1"
+    cpu: 500m
     memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 # Istio
 istio:
@@ -127,8 +127,10 @@ otel:
   enabled: true
 
 # Prometheus metrics (PodMonitor)
+# management 포트 분리 (mTLS 예외 적용)
 metrics:
   enabled: true
+  port: 9090
   path: /actuator/prometheus
   interval: 30s
 

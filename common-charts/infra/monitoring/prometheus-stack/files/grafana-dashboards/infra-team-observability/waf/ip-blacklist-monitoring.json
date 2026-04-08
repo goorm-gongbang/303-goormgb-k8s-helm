@@ -240,7 +240,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"prod-ai\", app=\"prod-authz-adapter\"} |= \"blacklist\"",
+          "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"blacklist\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -364,7 +364,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "sum by (ip, reason) (count_over_time({namespace=\"prod-ai\", app=\"prod-authz-adapter\"} |= \"IP added to blacklist\" | json | __error__=\"\" [$__range]))",
+          "expr": "sum by (ip, reason) (count_over_time({namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"IP added to blacklist\" | json | __error__=\"\" [$__range]))",
           "legendFormat": "",
           "queryType": "instant",
           "refId": "A"
@@ -397,7 +397,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"prod-ai\", app=\"prod-authz-adapter\"} |= \"IP added to blacklist\" | json | line_format \"IP: {{.ip}} | Reason: {{.reason}} | TTL: {{.ttl}}\"",
+          "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"IP added to blacklist\" | json | line_format \"IP: {{.ip}} | Reason: {{.reason}} | TTL: {{.ttl}}\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -431,7 +431,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"prod-ai\", app=\"prod-authz-adapter\"} |= \"blacklist\" | json | line_format \"[{{.level}}] {{.client_ip}} - {{.msg}} - {{.path}}\"",
+          "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"blacklist\" | json | line_format \"[{{.level}}] {{.client_ip}} - {{.msg}} - {{.path}}\"",
           "queryType": "range",
           "refId": "A"
         }

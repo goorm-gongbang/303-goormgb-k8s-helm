@@ -16,5 +16,19 @@ clusterSecretStore:
 #   - staging/services/jwt      : JWT + Admission 토큰 설정 (통합)
 serviceConfig:
   enabled: true
-  namespace: staging-webs
+  namespaces:
+    - staging-webs
+    - loadtest-webs
+    - loadtest-ai
   secretManagerPrefix: staging/services
+  environment: staging
+
+# GHCR Secret - Private container registry access
+# 시크릿 구조:
+#   - staging/infra/ghcr : username, token
+ghcrSecret:
+  enabled: true
+  secretManagerKey: staging/infra/ghcr
+  # ghcr-secret이 필요한 네임스페이스 목록
+  namespaces:
+    - monitoring
