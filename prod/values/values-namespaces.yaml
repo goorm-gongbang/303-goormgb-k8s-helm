@@ -4,6 +4,8 @@
 namespaces:
   - name: prod-webs
     istio: true
+  - name: data
+    istio: false
   - name: monitoring
     istio: false  # 모니터링은 sidecar 불필요
   - name: external-dns

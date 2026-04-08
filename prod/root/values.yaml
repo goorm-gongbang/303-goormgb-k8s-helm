@@ -351,6 +351,13 @@ gitCharts:
     syncOptions:
       - SkipDryRunOnMissingResource=true
 
+  # PostgreSQL 보조 백업 (pg_dump -> S3)
+  rds-backup:
+    enabled: true
+    path: prod/charts/data/rds-backup
+    namespace: data
+    syncWave: "-5"
+
   # === ALB Ingress (Host-based routing) ===
   alb-ingress:
     enabled: true

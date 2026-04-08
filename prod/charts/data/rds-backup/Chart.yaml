@@ -1,0 +1,5 @@
+apiVersion: v2
+name: rds-backup
+description: RDS PostgreSQL backup to S3 using pg_dump
+version: 1.0.0
+appVersion: "16"
