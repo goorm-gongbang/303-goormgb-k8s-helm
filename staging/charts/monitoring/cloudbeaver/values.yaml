@@ -53,6 +53,11 @@ persistence:
   size: 2Gi
   storageClass: gp3
 
+initialConfig:
+  enabled: false
+  dataSources: |
+    {"folders":{},"connections":{}}
+
 nodeSelector:
   role: monitoring
 
