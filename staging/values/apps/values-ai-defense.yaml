@@ -36,6 +36,8 @@ env:
     value: /app/src
   - name: APP_PORT
     value: "8000"
+  - name: TM_REDEPLOY_TRIGGER_AT
+    value: "2026-04-08T04:10:16Z"
   # JSON 로깅 활성화 (Loki 멀티라인 문제 해결)
   - name: TM_LOG_FORMAT
     value: "json"
