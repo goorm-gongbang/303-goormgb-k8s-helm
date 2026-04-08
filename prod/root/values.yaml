@@ -19,34 +19,6 @@ destination:
 # OCI Charts (ECR에서 직접 참조) - Multi-source Application
 # =============================================================================
 ociCharts:
-  # Kyverno - Policy Engine
-  kyverno:
-    enabled: true
-    repoURL: https://kyverno.github.io/kyverno/
-    chart: kyverno
-    version: "3.2.6"
-    namespace: kyverno
-    syncWave: "-7"
-    valueFiles:
-      - $values/prod/values/security/values-kyverno.yaml
-    syncOptions:
-      - ServerSideApply=true
-      - SkipDryRunOnMissingResource=true
-    ignoreDifferences:
-      - group: admissionregistration.k8s.io
-        kind: ValidatingWebhookConfiguration
-        jsonPointers:
-          - /webhooks
-      - group: admissionregistration.k8s.io
-        kind: MutatingWebhookConfiguration
-        jsonPointers:
-          - /webhooks
-      - group: apiextensions.k8s.io
-        kind: CustomResourceDefinition
-        jsonPointers:
-          - /status
-          - /metadata/annotations
-          - /metadata/labels
   istio-base:
     enabled: true
     repoURL: https://istio-release.storage.googleapis.com/charts
@@ -55,7 +27,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "1"
     valueFiles:
-      - $values/prod/values/istio/values-istio.yaml
+      - $values/prod/values/values-istio.yaml
     ignoreDifferences:
       - group: admissionregistration.k8s.io
         kind: ValidatingWebhookConfiguration
@@ -71,7 +43,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "1"
     valueFiles:
-      - $values/prod/values/istio/values-istio.yaml
+      - $values/prod/values/values-istio.yaml
     syncOptions:
       - ServerSideApply=true
       - RespectIgnoreDifferences=true
@@ -107,7 +79,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "2"
     valueFiles:
-      - $values/prod/values/istio/values-istio-gateway.yaml
+      - $values/prod/values/values-istio-gateway.yaml
 
   kiali-server:
     enabled: true
@@ -117,7 +89,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "3"
     valueFiles:
-      - $values/prod/values/istio/values-istio.yaml
+      - $values/prod/values/values-istio.yaml
     ignoreDifferences:
       - group: ""
         kind: ConfigMap
@@ -148,7 +120,7 @@ ociCharts:
     namespace: karpenter
     syncWave: "2"
     valueFiles:
-      - $values/prod/values/infra/values-karpenter.yaml
+      - $values/prod/values/values-karpenter.yaml
     syncOptions:
       - ServerSideApply=true
 
@@ -160,7 +132,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "3"
     valueFiles:
-      - $values/prod/values/monitoring/logs/values-loki.yaml
+      - $values/prod/values/values-loki.yaml
     syncOptions:
       - Replace=true
     ignoreDifferences:
@@ -178,7 +150,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - $values/prod/values/monitoring/logs/values-promtail.yaml
+      - $values/prod/values/values-promtail.yaml
 
   kube-prometheus-stack:
     enabled: true
@@ -188,7 +160,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "3"
     valueFiles:
-      - $values/prod/values/monitoring/metrics/values-prometheus-stack.yaml
+      - $values/prod/values/values-prometheus-stack.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -218,7 +190,7 @@ ociCharts:
     namespace: kube-system
     syncWave: "1"
     valueFiles:
-      - $values/prod/values/infra/values-aws-lb-controller.yaml
+      - $values/prod/values/values-aws-lb-controller.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -253,7 +225,7 @@ ociCharts:
     namespace: external-secrets
     syncWave: "0"
     valueFiles:
-      - $values/prod/values/infra/values-eso.yaml
+      - $values/prod/values/values-eso.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -272,7 +244,7 @@ ociCharts:
     namespace: external-dns
     syncWave: "2"
     valueFiles:
-      - $values/prod/values/infra/values-external-dns.yaml
+      - $values/prod/values/values-external-dns.yaml
 
   alloy:
     enabled: true
@@ -282,7 +254,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "3"
     valueFiles:
-      - $values/prod/values/monitoring/logs/values-alloy.yaml
+      - $values/prod/values/monitoring/values-alloy.yaml
 
   k6-operator:
     enabled: false
@@ -301,7 +273,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "3"
     valueFiles:
-      - $values/prod/values/monitoring/traces/values-tempo.yaml
+      - $values/prod/values/values-tempo.yaml
     ignoreDifferences:
       - group: ""
         kind: PersistentVolumeClaim
@@ -318,7 +290,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/prod/values/monitoring/visualization/values-grafana.yaml
+      - $values/prod/values/values-grafana.yaml
 
   opentelemetry-collector:
     enabled: true
@@ -328,7 +300,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - $values/prod/values/monitoring/metrics/values-opentelemetry-collector.yaml
+      - $values/prod/values/values-opentelemetry-collector.yaml
 
   # Metrics Server - kubectl top nodes/pods
   metrics-server:
@@ -351,38 +323,7 @@ gitCharts:
     namespace: default
     syncWave: "-10"
     valueFiles:
-      - ../../../prod/values/core/values-namespaces.yaml
-
-  # === Security ===
-  kyverno-policies:
-    enabled: true
-    path: common-charts/infra/namespaces  # namespace 생성용 차튇 재사용 (raw yaml 배포용)
-    namespace: default
-    syncWave: "-6"
-    valueFiles:
-      - ../../../prod/values/security/values-kyverno-policies.yaml
-
-  network-policies:
-    enabled: true
-    path: common-charts/infra/namespaces
-    namespace: default
-    syncWave: "-5"
-    valueFiles:
-      - ../../../prod/values/security/values-network-policies.yaml
-
-  ai-service-secrets:
-    enabled: true
-    path: prod/charts/security/ai-service-secrets
-    namespace: prod-ai
-    syncWave: "-4"
-
-  mail-config:
-    enabled: true
-    path: common-charts/infra/namespaces
-    namespace: prod-webs
-    syncWave: "2"
-    valueFiles:
-      - ../../../prod/values/apps/values-mail-config.yaml
+      - ../../../prod/values/values-namespaces.yaml
 
   # === Security ===
   rbac:
@@ -390,7 +331,7 @@ gitCharts:
     path: common-charts/infra/rbac
     namespace: default
     valueFiles:
-      - ../../../prod/values/security/values-rbac.yaml
+      - ../../../prod/values/values-rbac.yaml
 
   # ESO ClusterSecretStore (IRSA 기반)
   eso-config:
@@ -433,7 +374,7 @@ gitCharts:
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - ../../../../prod/values/istio/values-istio.yaml
+      - ../../../../prod/values/values-istio.yaml
 
   istio-security:
     enabled: true
@@ -441,7 +382,7 @@ gitCharts:
     namespace: istio-system
     syncWave: "-1"
     valueFiles:
-      - ../../../prod/values/istio/values-istio-security.yaml
+      - ../../../prod/values/values-istio-security.yaml
 
   # === OCI Chart Extras (추가 모니터링/설정) ===
   istiod-monitoring:
@@ -450,7 +391,7 @@ gitCharts:
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - ../../../../prod/values/istio/values-istio.yaml
+      - ../../../../prod/values/values-istio.yaml
 
   prometheus-extras:
     enabled: true
@@ -458,58 +399,18 @@ gitCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - ../../../../prod/values/monitoring/metrics/values-prometheus-stack.yaml
-      - ../../../../prod/values/monitoring/alerting/values-alertmanager-prod.yaml
-      - ../../../../prod/values/monitoring/alerting/values-rules-prod.yaml
+      - ../../../../prod/values/values-prometheus-stack.yaml
     syncOptions:
       - Replace=true
 
-  redis-exporter-ai:
-    enabled: true
-    path: prod/charts/monitoring/redis-exporter-ai
-    namespace: monitoring
-    syncWave: "3"
-
-  # === Data ===
-  clickhouse:
-    enabled: true
-    path: common-charts/data/clickhouse
-    namespace: data
-    syncWave: "3"
-    valueFiles:
-      - ../../../prod/values/data/values-clickhouse.yaml
-
-  redisinsight:
-    enabled: true
-    path: common-charts/data/redisinsight
-    namespace: data
-    syncWave: "3"
-    valueFiles:
-      - ../../../prod/values/data/values-redisinsight.yaml
-
-  # === Messaging ===
-  kafka:
-    enabled: true
-    path: common-charts/messaging/kafka
-    namespace: messaging
-    syncWave: "4"
-    valueFiles:
-      - ../../../prod/values/messaging/values-kafka.yaml
-
-  kafka-ui:
-    enabled: true
-    path: common-charts/messaging/kafka-ui
-    namespace: messaging
-    syncWave: "5"
-    valueFiles:
-      - ../../../prod/values/messaging/values-kafka-ui.yaml
+  alloy-config:
     enabled: true
     path: common-charts/infra/monitoring/alloy
     releaseName: alloy
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - ../../../../prod/values/monitoring/logs/values-alloy.yaml
+      - ../../../../prod/values/monitoring/values-alloy.yaml
 
   loki-backup:
     enabled: false  # prod에서 필요시 활성화
@@ -517,7 +418,7 @@ gitCharts:
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - ../../../../prod/values/monitoring/metrics/values-monitoring.yaml
+      - ../../../../prod/values/values-monitoring.yaml
 
   # === ArgoCD Config (OAuth, Applications) ===
   argocd-config:
@@ -560,21 +461,7 @@ applicationSets:
     namespace: prod-ai
     chartPath: common-charts/apps/ai-service
     valueFilesPattern: ../../../prod/values/apps/values-{{name}}.yaml
-    services:
-      - name: authz-adapter
-        syncWave: "10"
-      - name: ai-defense
-        syncWave: "11"
-
-  prod-ai-etl:
-    enabled: true
-    syncWave: "15"
-    namespace: prod-ai
-    chartPath: common-charts/apps/cronjob
-    valueFilesPattern: ../../../prod/values/apps/values-{{name}}.yaml
-    services:
-      - name: ai-etl
-        syncWave: "15"
+    services: []  # prod AI 서비스 추가 시 여기에
 
 
 # =============================================================================
