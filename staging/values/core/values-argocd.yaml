@@ -1,23 +1,14 @@
 # ArgoCD Config - EKS Staging
 # Domain: playball.one
 
-# ArgoCD Server Service - NLB + HTTPS (Istio 안 거침)
+# ArgoCD Server Service - ClusterIP (ALB Ingress에서 직접 라우팅)
 server:
   # 외부 URL (OAuth redirect용)
   url: https://argocd.staging.playball.one
-  # NLB에서 SSL 종료하므로 ArgoCD는 HTTP로 실행
+  # ALB에서 SSL 종료하므로 ArgoCD는 HTTP로 실행
   insecure: true
   service:
-    type: LoadBalancer
-    annotations:
-      # AWS Load Balancer Controller 사용 (external)
-      service.beta.kubernetes.io/aws-load-balancer-type: external
-      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
-      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-      # TODO: ACM 인증서 생성 후 ARN 설정
-      # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:ap-northeast-2:497012402578:certificate/CERTIFICATE_ID"
-      # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-      # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    type: ClusterIP
 
 # Istio Gateway 비활성화 (NLB 직접 노출)
 gateway:

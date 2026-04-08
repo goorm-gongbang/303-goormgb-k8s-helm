@@ -1,10 +1,10 @@
 # auth-guard - Dev 환경
 contextPath: "/auth"
-replicaCount: 2
+replicaCount: 1
 
 image:
   name: "dev/goormgb/auth-guard"
-  tag: "8608193"
+  tag: "c67c431"
   pullPolicy: Always
 
 imagePullSecrets:
@@ -52,8 +52,10 @@ readinessProbe:
   failureThreshold: 3
 
 # Prometheus Metrics (Spring Boot Actuator)
+# management 포트 분리 (서비스 포트와 별도로 actuator 노출)
 metrics:
   enabled: true
+  port: 9090
   path: /actuator/prometheus
   interval: 15s
 

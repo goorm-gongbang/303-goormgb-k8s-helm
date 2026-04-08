@@ -1,0 +1,16 @@
+{{- if .Values.faro.virtualService.enabled }}
+# Alloy Faro Receiver - mTLS 비활성화 (plain HTTP)
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: alloy-faro-disable-mtls
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: {{ .Values.faro.virtualService.destinationHost | default "alloy" }}.{{ .Release.Namespace }}.svc.cluster.local
+  trafficPolicy:
+    portLevelSettings:
+      - port:
+          number: 12347
+        tls:
+          mode: DISABLE
+{{- end }}

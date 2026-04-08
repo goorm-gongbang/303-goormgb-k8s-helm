@@ -7,10 +7,10 @@ tempo:
   resources:
     requests:
       cpu: 50m
-      memory: 128Mi
+      memory: 256Mi
     limits:
-      cpu: 200m
-      memory: 768Mi
+      cpu: 500m
+      memory: 1536Mi
 
   # 트레이스 수신 설정
   receivers:
@@ -20,6 +20,8 @@ tempo:
           endpoint: "0.0.0.0:4317"
         http:
           endpoint: "0.0.0.0:4318"
+    zipkin:
+      endpoint: "0.0.0.0:9411"
 
   # 로컬 스토리지 (dev)
   storage:

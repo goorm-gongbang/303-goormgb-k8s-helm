@@ -23,14 +23,16 @@ spec:
           {{- range $appSet.services }}
           - name: {{ .name }}
             syncWave: "{{ .syncWave | default $appSet.syncWave | default "10" }}"
+            description: {{ .description | default "" | quote }}
           {{- end }}
   template:
     metadata:
-      name: 'staging-{{`{{name}}`}}'
+      name: '{{ $appSet.appNamePrefix | default "staging" }}-{{`{{name}}`}}'
       labels:
         ns: {{ $appSet.namespace }}
       annotations:
         argocd.argoproj.io/sync-wave: '{{`{{syncWave}}`}}'
+        argocd.argoproj.io/description: '{{`{{description}}`}}'
         notifications.argoproj.io/subscribe.on-deployed.discord-app: ""
         notifications.argoproj.io/subscribe.on-deploy-failed.discord-app: ""
         notifications.argoproj.io/subscribe.on-health-degraded.discord-app: ""

@@ -1,0 +1,45 @@
+{{- if .Values.detection.timingPattern.enabled }}
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: timing-pattern-detector
+  labels:
+    app.kubernetes.io/name: tetragon-policy
+    app.kubernetes.io/component: timing-pattern
+spec:
+  # Monitor network transmit events for timing analysis
+  tracepoints:
+  - subsystem: "net"
+    event: "net_dev_xmit"
+    args:
+    - index: 0
+      type: "skb"
+    selectors:
+    - matchActions:
+      {{- range index .Values.actions .Values.mode }}
+      - action: {{ . }}
+      {{- end }}
+---
+# Monitor socket send for request timing
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: socket-send-monitor
+  labels:
+    app.kubernetes.io/name: tetragon-policy
+    app.kubernetes.io/component: socket-send
+spec:
+  kprobes:
+  - call: "tcp_sendmsg"
+    syscall: false
+    args:
+    - index: 0
+      type: "sock"
+    - index: 2
+      type: "int"
+    selectors:
+    - matchActions:
+      {{- range index .Values.actions .Values.mode }}
+      - action: {{ . }}
+      {{- end }}
+{{- end }}

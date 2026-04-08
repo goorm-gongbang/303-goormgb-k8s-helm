@@ -1,0 +1,7 @@
+apiVersion: v2
+name: tetragon-config
+description: Tetragon TracingPolicy configuration for threat detection
+type: application
+version: 1.0.0
+appVersion: "1.6.0"
+# OCI dependency removed - using direct OCI reference in ArgoCD

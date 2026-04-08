@@ -1,0 +1,287 @@
+# Alertmanager routing/receivers (staging)
+
+alertmanager:
+  discord:
+    eso:
+      enabled: true
+      secretManagerKey: "staging/monitoring/discord-webhook-alerts"
+  alertmanagerSpec:
+    secrets:
+      - alertmanager-discord-webhooks
+
+  config:
+    global:
+      resolve_timeout: 5m
+
+    route:
+      group_by: ['alertname', 'namespace', 'job', 'service_name']
+      group_wait: 5s
+      group_interval: 5m
+      repeat_interval: 10m
+      receiver: 'null'
+      routes:
+        - match:
+            team: security
+            environment: staging
+            severity: critical
+          receiver: 'discord-security-critical'
+          repeat_interval: 30m
+        - match:
+            alertname: StagingAuthFailureRateWarning
+            team: security
+            environment: staging
+          receiver: 'discord-security-warning'
+          repeat_interval: 30m
+        - match:
+            alertname: StagingWafBlockedRequestsWarning
+            team: security
+            environment: staging
+          receiver: 'discord-security-warning'
+          repeat_interval: 30m
+        - match:
+            environment: staging
+            severity: critical
+          receiver: 'discord-critical'
+          repeat_interval: 30m
+        - match:
+            alertname: StagingHttp5xxWarning
+            environment: staging
+          receiver: 'discord-warning'
+          repeat_interval: 30m
+        - match:
+            alertname: StagingApiP99Warning
+            environment: staging
+          receiver: 'discord-warning'
+          repeat_interval: 30m
+        - match:
+            alertname: StagingPostgresConnectionsWarning
+            environment: staging
+          receiver: 'discord-warning'
+          repeat_interval: 30m
+        - match:
+            alertname: Watchdog
+          receiver: 'null'
+        - match:
+            alertname: InfoInhibitor
+          receiver: 'null'
+
+    receivers:
+      - name: 'discord-critical'
+        slack_configs:
+          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
+            send_resolved: true
+            title_link: 'https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs'
+            title: |-
+              {{- $incidentId := "" -}}
+              {{- range .Alerts -}}
+              {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+              {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+              {{- end -}}
+              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 장애 복구{{ else }}🚨 장애 감지{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
+            text: |-
+              {{ if ne .Status "resolved" }}@개발팀 @admins{{ end }}
+              {{- $startedAt := "" -}}
+              {{- $resolvedAt := "" -}}
+              {{- range .Alerts -}}
+              {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+              {{- if eq $.Status "resolved" -}}
+              {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+              {{- end -}}
+              {{- end }}
+              ```text
+              알림: {{ or .CommonLabels.alertname "N/A" }}
+              서비스: {{ or .CommonLabels.service_name .CommonLabels.job "N/A" }}
+              네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+              대상건수: {{ len .Alerts }}
+              {{ with index .Alerts 0 -}}
+              인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
+              발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+              {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
+              {{- end }}
+              ```
+
+      - name: 'discord-warning'
+        slack_configs:
+          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/warning-webhook-url'
+            send_resolved: true
+            title_link: 'https://grafana.staging.playball.one/d/ops-alert-overview'
+            title: |-
+              {{- $incidentId := "" -}}
+              {{- range .Alerts -}}
+              {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+              {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+              {{- end -}}
+              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 경고 복구{{ else }}🟡 경고 발생{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
+            text: |-
+              {{- $startedAt := "" -}}
+              {{- $resolvedAt := "" -}}
+              {{- range .Alerts -}}
+              {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+              {{- if eq $.Status "resolved" -}}
+              {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+              {{- end -}}
+              {{- end }}
+              ```text
+              알림: {{ or .CommonLabels.alertname "N/A" }}
+              서비스: {{ or .CommonLabels.service_name .CommonLabels.job "N/A" }}
+              네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+              대상건수: {{ len .Alerts }}
+              {{ with index .Alerts 0 -}}
+              인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
+              발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+              {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
+              {{- end }}
+              ```
+
+      - name: 'discord-info'
+        slack_configs:
+          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/info-webhook-url'
+            send_resolved: true
+            title_link: 'https://grafana.staging.playball.one/d/ops-alert-overview'
+            title: |-
+              {{- $incidentId := "" -}}
+              {{- range .Alerts -}}
+              {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+              {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+              {{- end -}}
+              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 정보 복구{{ else }}🔵 정보 발생{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
+            text: |-
+              {{- $startedAt := "" -}}
+              {{- $resolvedAt := "" -}}
+              {{- range .Alerts -}}
+              {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+              {{- if eq $.Status "resolved" -}}
+              {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+              {{- end -}}
+              {{- end }}
+              ```text
+              알림: {{ or .CommonLabels.alertname "N/A" }}
+              서비스: {{ or .CommonLabels.service_name .CommonLabels.job "N/A" }}
+              네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+              대상건수: {{ len .Alerts }}
+              {{ with index .Alerts 0 -}}
+              인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
+              발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+              {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
+              {{- end }}
+              ```
+
+      - name: 'discord-security-critical'
+        slack_configs:
+          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-critical-webhook-url'
+            send_resolved: true
+            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title: |-
+              {{- $incidentId := "" -}}
+              {{- range .Alerts -}}
+              {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+              {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+              {{- end -}}
+              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 보안 알림 복구{{ else }}🚨 보안 알림{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
+            text: |-
+              {{- $startedAt := "" -}}
+              {{- $resolvedAt := "" -}}
+              {{- range .Alerts -}}
+              {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+              {{- if eq $.Status "resolved" -}}
+              {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+              {{- end -}}
+              {{- end }}
+              ```text
+              알림: {{ or .CommonLabels.alertname "N/A" }}
+              서비스: {{ or .CommonLabels.service_name .CommonLabels.job "N/A" }}
+              네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+              대상건수: {{ len .Alerts }}
+              {{ with index .Alerts 0 -}}
+              인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
+              발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+              {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
+              {{- end }}
+              ```
+
+      - name: 'discord-security-warning'
+        slack_configs:
+          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-warning-webhook-url'
+            send_resolved: true
+            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title: |-
+              {{- $incidentId := "" -}}
+              {{- range .Alerts -}}
+              {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+              {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+              {{- end -}}
+              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 보안 경고 복구{{ else }}🟡 보안 경고 발생{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
+            text: |-
+              {{- $startedAt := "" -}}
+              {{- $resolvedAt := "" -}}
+              {{- range .Alerts -}}
+              {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+              {{- if eq $.Status "resolved" -}}
+              {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+              {{- end -}}
+              {{- end }}
+              ```text
+              알림: {{ or .CommonLabels.alertname "N/A" }}
+              서비스: {{ or .CommonLabels.service_name .CommonLabels.job "N/A" }}
+              네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+              대상건수: {{ len .Alerts }}
+              {{ with index .Alerts 0 -}}
+              인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
+              발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+              {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
+              {{- end }}
+              ```
+
+      - name: 'discord-security-info'
+        slack_configs:
+          - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-info-webhook-url'
+            send_resolved: true
+            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title: |-
+              {{- $incidentId := "" -}}
+              {{- range .Alerts -}}
+              {{- $ts := (.StartsAt | tz "Asia/Seoul" | date "20060102-150405") -}}
+              {{- if or (eq $incidentId "") (lt $ts $incidentId) -}}{{- $incidentId = $ts -}}{{- end -}}
+              {{- end -}}
+              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}✅ 보안 정보 복구{{ else }}🔵 보안 정보 발생{{ end }} [{{ if ne $incidentId "" }}{{ $incidentId }}{{ else }}unknown{{ end }}]
+            text: |-
+              {{- $startedAt := "" -}}
+              {{- $resolvedAt := "" -}}
+              {{- range .Alerts -}}
+              {{- $startTs := (.StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $startedAt "") (lt $startTs $startedAt) -}}{{- $startedAt = $startTs -}}{{- end -}}
+              {{- if eq $.Status "resolved" -}}
+              {{- $endTs := (.EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST") -}}
+              {{- if or (eq $resolvedAt "") (lt $resolvedAt $endTs) -}}{{- $resolvedAt = $endTs -}}{{- end -}}
+              {{- end -}}
+              {{- end }}
+              ```text
+              알림: {{ or .CommonLabels.alertname "N/A" }}
+              서비스: {{ or .CommonLabels.service_name .CommonLabels.job "N/A" }}
+              네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+              대상건수: {{ len .Alerts }}
+              {{ with index .Alerts 0 -}}
+              인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
+              발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
+              {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
+              {{- end }}
+              ```
+
+      - name: 'null'
+
+    inhibit_rules:
+      - source_match:
+          severity: 'critical'
+        target_match:
+          severity: 'warning'
+        equal: ['alertname', 'namespace', 'job']

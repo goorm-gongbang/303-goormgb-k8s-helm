@@ -3,7 +3,7 @@ apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: {{ .Values.sharedGateway.name | default "goormgb-gateway" }}
-  namespace: istio-system
+  namespace: {{ .Values.sharedGateway.namespace | default "istio-system" }}
 spec:
   selector:
     istio: {{ .Values.sharedGateway.selector | default "ingressgateway" }}
@@ -32,17 +32,33 @@ spec:
 {{- end }}
 ---
 {{- if and .Values.apiGatewayConfig .Values.apiGatewayConfig.enabled }}
-# API Gateway - ALB → Istio IngressGateway → VirtualService
+# API Gateway - Istio IngressGateway → VirtualService
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: {{ .Values.apiGatewayConfig.name | default "api-gateway" }}
-  namespace: istio-system
+  namespace: {{ .Values.apiGatewayConfig.namespace | default .Values.sharedGateway.namespace | default "istio-system" }}
 spec:
   selector:
     istio: {{ .Values.apiGatewayConfig.selector | default "ingressgateway" }}
   servers:
-    # HTTP only (TLS는 ALB에서 종료)
+    {{- if .Values.apiGatewayConfig.tls }}
+    {{- if .Values.apiGatewayConfig.tls.enabled }}
+    # HTTPS (Direct TLS termination)
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: {{ .Values.apiGatewayConfig.tls.credentialName | default "goormgb-tls" }}
+      hosts:
+        {{- range .Values.apiGatewayConfig.hosts }}
+        - {{ . | quote }}
+        {{- end }}
+    {{- end }}
+    {{- end }}
+    # HTTP
     - port:
         number: 80
         name: http
@@ -51,4 +67,8 @@ spec:
         {{- range .Values.apiGatewayConfig.hosts }}
         - {{ . | quote }}
         {{- end }}
+      {{- if .Values.apiGatewayConfig.httpsRedirect }}
+      tls:
+        httpsRedirect: true
+      {{- end }}
 {{- end }}

@@ -40,11 +40,9 @@ spec:
             - --skip-provider-button=false
             - --reverse-proxy=true
             - --proxy-prefix=/oauth2
-            # 모든 요청을 api.dev.goormgb.space로 프록시
-            # 거기서 기존 Istio VirtualService 라우팅 적용됨
-            - --upstream=https://api.dev.goormgb.space
+            # 클러스터 내부 서비스로 직접 프록시 (무한 리다이렉트 방지)
+            - --upstream={{ .Values.upstreams.apiGateway }}
             - --pass-host-header=false
-            - --ssl-upstream-insecure-skip-verify=true
           envFrom:
             - secretRef:
                 name: oauth2-proxy-secrets

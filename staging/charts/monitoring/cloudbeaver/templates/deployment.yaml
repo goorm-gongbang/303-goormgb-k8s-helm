@@ -27,11 +27,57 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
+        {{- if .Values.oauth2Proxy.enabled }}
+        # OAuth2 Proxy sidecar
+        - name: oauth2-proxy
+          image: "{{ .Values.oauth2Proxy.image.repository }}:{{ .Values.oauth2Proxy.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          args:
+            - --provider={{ .Values.oauth2Proxy.config.provider }}
+            - --email-domain=*
+            - --http-address=0.0.0.0:{{ .Values.oauth2Proxy.port }}
+            - --cookie-secure={{ .Values.oauth2Proxy.config.cookieSecure }}
+            - --cookie-domain={{ .Values.oauth2Proxy.config.cookieDomain }}
+            - --cookie-samesite=lax
+            - --cookie-refresh={{ .Values.oauth2Proxy.config.cookieRefresh }}
+            - --cookie-expire={{ .Values.oauth2Proxy.config.cookieExpire }}
+            - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails.txt
+            - --skip-provider-button=false
+            - --reverse-proxy=true
+            - --proxy-prefix=/oauth2
+            - --upstream=http://127.0.0.1:8978
+          ports:
+            - name: http
+              containerPort: {{ .Values.oauth2Proxy.port }}
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: cloudbeaver-oauth
+          resources:
+            {{- toYaml .Values.oauth2Proxy.resources | nindent 12 }}
+          volumeMounts:
+            - name: oauth-emails
+              mountPath: /etc/oauth2-proxy
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+        {{- end }}
+        # CloudBeaver
         - name: cloudbeaver
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: cb-http
               containerPort: 8978
               protocol: TCP
           env:
@@ -45,13 +91,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: cb-http
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: cb-http
             initialDelaySeconds: 10
             periodSeconds: 5
       volumes:
@@ -62,3 +108,8 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+        {{- if .Values.oauth2Proxy.enabled }}
+        - name: oauth-emails
+          secret:
+            secretName: cloudbeaver-emails
+        {{- end }}

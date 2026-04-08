@@ -1,0 +1,26 @@
+# AI ETL CronJob - Default Values
+enabled: true
+
+# CronJob schedule (매 시간 15분에 실행)
+schedule: "15 * * * *"
+
+image:
+  repository: ""
+  tag: ""
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+# ETL 환경변수는 values 파일에서 오버라이드
+env: []
+
+nodeSelector: {}
+tolerations: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

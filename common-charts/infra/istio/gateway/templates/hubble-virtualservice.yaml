@@ -1,0 +1,30 @@
+{{- if .Values.hubbleVirtualService }}
+{{- if .Values.hubbleVirtualService.enabled }}
+# Hubble UI VirtualService (Cilium Network Observability)
+# Cilium은 bootstrap으로 설치되므로 VirtualService만 ArgoCD에서 관리
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: hubble-ui
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts:
+    - {{ .Values.hubbleVirtualService.host | quote }}
+  gateways:
+    - istio-system/{{ .Values.sharedGateway.name | default "goormgb-gateway" }}
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: hubble-ui.kube-system.svc.cluster.local
+            port:
+              number: 80
+      timeout: 30s
+      retries:
+        attempts: 3
+        perTryTimeout: 10s
+        retryOn: connect-failure,refused-stream,503
+{{- end }}
+{{- end }}

@@ -1,0 +1,93 @@
+# Network Policies Configuration
+# Namespace isolation with allowed exceptions
+
+# Default deny all ingress/egress
+defaultDeny:
+  enabled: true
+
+# Application namespaces with policies
+namespaces:
+  staging-webs:
+    # Allow ingress from istio-system (ingress gateway)
+    allowIngressFrom:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: istio-system
+      # Allow from same namespace
+      - podSelector: {}
+    # Allow egress to specific namespaces
+    allowEgressTo:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: data
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-ai
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-webs
+      # Allow DNS
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system
+        podSelector:
+          matchLabels:
+            k8s-app: kube-dns
+
+  staging-ai:
+    allowIngressFrom:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: istio-system
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-webs
+      - podSelector: {}
+    allowEgressTo:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: data
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-webs
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-ai
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system
+        podSelector:
+          matchLabels:
+            k8s-app: kube-dns
+
+  data:
+    allowIngressFrom:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-webs
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-ai
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: monitoring
+      - podSelector: {}
+    allowEgressTo:
+      - podSelector: {}
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system
+        podSelector:
+          matchLabels:
+            k8s-app: kube-dns
+
+  monitoring:
+    # Monitoring needs to scrape all namespaces
+    allowIngressFrom:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: istio-system
+      - podSelector: {}
+    allowEgressTo:
+      # Allow egress to all namespaces for metrics scraping
+      - namespaceSelector: {}

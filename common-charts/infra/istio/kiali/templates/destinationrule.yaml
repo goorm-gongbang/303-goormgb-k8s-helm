@@ -1,0 +1,13 @@
+{{- if .Values.kialiVirtualService.enabled }}
+# Disable mTLS for Kiali (no Istio sidecar)
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: kiali-dr
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: kiali
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+{{- end }}

@@ -1,6 +1,11 @@
 # kubeadm-dev - ArgoCD 설정
 # Domain: goormgb.space
 
+# ArgoCD Server - Istio Gateway에서 TLS 종료
+server:
+  url: https://argocd.goormgb.space
+  insecure: true
+
 # ECR 설정 (applications에 주입)
 ecr:
   accountId: "497012402578"

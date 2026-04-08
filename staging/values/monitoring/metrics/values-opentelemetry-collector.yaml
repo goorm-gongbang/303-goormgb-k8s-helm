@@ -1,0 +1,115 @@
+# OpenTelemetry Collector - Staging 환경
+# Tail-based Sampling으로 스토리지 최적화
+
+fullnameOverride: otel-collector
+mode: deployment
+replicaCount: 1
+
+# 0.147.1 버전부터 필수
+image:
+  repository: otel/opentelemetry-collector-contrib
+
+# Monitoring 노드에 배치
+nodeSelector:
+  role: monitoring
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 2000m
+    memory: 1Gi
+
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+
+  processors:
+    batch:
+      timeout: 5s
+      send_batch_size: 1024
+
+    # OTel → Prometheus 라벨 변환 (대시보드 호환)
+    transform:
+      metric_statements:
+        - context: datapoint
+          statements:
+            # Resource attributes → metric labels
+            - set(attributes["service_name"], resource.attributes["service.name"])
+            - set(attributes["namespace"], resource.attributes["service.namespace"])
+            # app 라벨 설정 (Promtail/Loki와 통일, 대시보드 호환)
+            - set(attributes["app"], resource.attributes["service.name"])
+
+    # Tail-based Sampling
+    tail_sampling:
+      decision_wait: 10s
+      num_traces: 100000
+      expected_new_traces_per_sec: 100
+      policies:
+        # 에러 Trace: 100% 수집
+        - name: error-policy
+          type: status_code
+          status_code:
+            status_codes: [ERROR]
+        # 느린 요청 (>3초): 100% 수집
+        - name: latency-policy
+          type: latency
+          latency:
+            threshold_ms: 3000
+        # 정상 요청: 10% 샘플링
+        - name: probabilistic-policy
+          type: probabilistic
+          probabilistic:
+            sampling_percentage: 10
+
+  exporters:
+    # Traces → Tempo
+    otlp/tempo:
+      endpoint: tempo.monitoring.svc.cluster.local:4317
+      tls:
+        insecure: true
+
+    # Metrics → Prometheus (remote write)
+    prometheusremotewrite:
+      endpoint: http://prom-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
+      tls:
+        insecure: true
+
+    # Logs → Loki (OTLP)
+    otlphttp/loki:
+      endpoint: http://loki.monitoring.svc.cluster.local:3100/otlp
+      tls:
+        insecure: true
+
+    debug:
+      verbosity: basic
+
+  extensions:
+    health_check:
+      endpoint: 0.0.0.0:13133
+
+  service:
+    extensions: [health_check]
+    pipelines:
+      traces:
+        receivers: [otlp]
+        processors: [tail_sampling, batch]  # tail_sampling이 먼저 (완전한 trace 수집 후 샘플링)
+        exporters: [otlp/tempo, debug]
+      metrics:
+        receivers: [otlp]
+        processors: [transform, batch]
+        exporters: [prometheusremotewrite, debug]
+      logs:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [otlphttp/loki, debug]

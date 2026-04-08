@@ -5,7 +5,7 @@
 faro:
   virtualService:
     enabled: true
-    host: "api.dev.goormgb.space"
+    host: "api.goormgb.space"
     gateway: "istio-system/api-gateway"
   cors:
     allowOrigins:

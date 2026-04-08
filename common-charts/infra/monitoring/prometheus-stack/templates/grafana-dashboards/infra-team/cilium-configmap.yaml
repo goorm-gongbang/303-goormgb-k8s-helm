@@ -1,0 +1,36 @@
+{{- $ciliumEnabled := true -}}
+{{- if and .Values.dashboards .Values.dashboards.infraTeam -}}
+{{- if .Values.dashboards.infraTeam.ciliumExclude -}}
+{{- $ciliumEnabled = false -}}
+{{- end -}}
+{{- end -}}
+{{- if $ciliumEnabled -}}
+{{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/infra-team-observability/cilium/*.json" -}}
+{{- $excludeList := list -}}
+{{- $folderName := "DEV 플랫폼 관측(인프라)" -}}
+{{- if and .Values.dashboards .Values.dashboards.infraTeam -}}
+{{- $excludeList = .Values.dashboards.infraTeam.exclude | default list -}}
+{{- $folderName = .Values.dashboards.infraTeam.folderName | default "DEV 플랫폼 관측(인프라)" -}}
+{{- end -}}
+{{- if gt (len $dashboardFiles) 0 }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-infra-team-cilium
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: monitoring
+    grafana_dashboard: "1"
+  annotations:
+    grafana_folder: {{ $folderName | quote }}
+data:
+{{- range $path, $_ := $dashboardFiles }}
+{{- $filename := base $path -}}
+{{- if not (has $filename $excludeList) }}
+  {{ $filename }}: |-
+{{ $.Files.Get $path | nindent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

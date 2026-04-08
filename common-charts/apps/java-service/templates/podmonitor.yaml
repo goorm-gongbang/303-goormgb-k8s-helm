@@ -13,7 +13,7 @@ spec:
     matchLabels:
       {{- include "java-service.selectorLabels" . | nindent 6 }}
   podMetricsEndpoints:
-    - port: {{ .Values.metrics.portName | default "http" }}
+    - port: management
       path: {{ .Values.metrics.path | default "/actuator/prometheus" }}
       interval: {{ .Values.metrics.interval | default "30s" }}
       {{- if .Values.metrics.relabelings }}

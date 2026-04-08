@@ -8,56 +8,63 @@ base:
     istioNamespace: istio-system
 
 # ===== Istiod =====
-istiod:
-  global:
-    istioNamespace: istio-system
+# Istio 공식 Helm chart는 meshConfig, pilot, global을 루트 레벨에서 기대함
 
-    # Sidecar Proxy 기본 리소스 설정
-    proxy:
-      resources:
-        requests:
-          cpu: 50m
-          memory: 64Mi
-        limits:
-          cpu: 500m
-          memory: 256Mi
-
-  meshConfig:
-    enableTracing: true
-    defaultConfig:
-      tracing:
-        sampling: 100 # 100% 샘플링 (kubeadm-dev 환경)
-        zipkin:
-          address: "tempo.monitoring.svc.cluster.local:9411"
-
-    # Access logging
-    accessLogFile: /dev/stdout
-
-    # External Authorization - 비활성화 (추후 Policy Controller 방식으로 전환)
-    # extensionProviders: []
-
-  pilot:
-    # CP 노드에 배치
-    nodeSelector:
-      kubernetes.io/hostname: mini-gmk
-
+global:
+  istioNamespace: istio-system
+  # Sidecar Proxy 기본 리소스 설정
+  proxy:
     resources:
       requests:
         cpu: 50m
-        memory: 128Mi
+        memory: 64Mi
       limits:
-        cpu: 200m
-        memory: 512Mi
+        cpu: 500m
+        memory: 256Mi
 
-    autoscaleEnabled: false
-    replicaCount: 1
+meshConfig:
+  enableTracing: true
+
+  # Istio 1.22+ extensionProviders 방식 (Telemetry API 연동)
+  extensionProviders:
+    - name: zipkin
+      zipkin:
+        service: tempo.monitoring.svc.cluster.local
+        port: 9411
+
+  # 기본 tracing provider 설정
+  defaultProviders:
+    tracing:
+      - zipkin
+
+  defaultConfig:
+    tracing:
+      sampling: 100  # 100% 샘플링 (kubeadm-dev 환경)
+
+  # Access logging
+  accessLogFile: /dev/stdout
+
+pilot:
+  # CP 노드에 배치
+  nodeSelector:
+    kubernetes.io/hostname: mini-gmk
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+
+  autoscaleEnabled: false
+  replicaCount: 1
 
 # ===== Shared Gateway =====
 # istio-ingressgateway는 istioctl로 설치됨 (scripts/istio/install.sh)
 # 여기서는 Gateway CRD만 생성
 
 # 공용 Gateway (인프라 서비스용)
-# api.dev.goormgb.space는 api-gateway에서 처리
 sharedGateway:
   enabled: true
   name: goormgb-gateway
@@ -66,10 +73,23 @@ sharedGateway:
   hosts:
     - "argocd.goormgb.space"
     - "cloudbeaver.goormgb.space"
+    - "console.goormgb.space"
     - "grafana.goormgb.space"
+    - "hubble.goormgb.space"
+    - "kafka-ui.goormgb.space"
     - "kiali.goormgb.space"
-    - "prometheus.goormgb.space"
     - "redisinsight.goormgb.space"
+
+# API Gateway (api.goormgb.space 전용)
+apiGatewayConfig:
+  enabled: true
+  name: api-gateway
+  tls:
+    enabled: true
+    credentialName: goormgb-tls
+  httpsRedirect: true
+  hosts:
+    - "api.goormgb.space"
 
 # ===== Kiali =====
 kiali-server:
@@ -106,13 +126,20 @@ kiali-server:
     tracing:
       enabled: true
       provider: tempo
-      in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3100"
+      in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3200"
       use_grpc: false
 
 # Kiali VirtualService (공용 Gateway 사용)
+# NOTE: 실제 VirtualService는 kiali-config에서 values-kiali.yaml 사용
 kialiVirtualService:
   enabled: true
   host: "kiali.goormgb.space"
+
+# Hubble UI VirtualService (Cilium 관측성 UI)
+# Cilium은 bootstrap으로 설치, VirtualService만 ArgoCD 관리
+hubbleVirtualService:
+  enabled: true
+  host: "hubble.goormgb.space"
 
 # Kiali OIDC (Google OAuth) - 비활성화
 oidc:

@@ -1,0 +1,32 @@
+# Kafka UI Dev Environment
+
+image:
+  repository: provectuslabs/kafka-ui
+  tag: v0.7.2
+  pullPolicy: IfNotPresent
+
+kafka:
+  bootstrapServers: kafka-headless.messaging.svc.cluster.local:9092
+  clusterName: goormgb-dev
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+virtualService:
+  enabled: true
+  host: kafka-ui.goormgb.space
+  gateway: istio-system/goormgb-gateway
+
+# Control Plane 노드에 배치
+nodeSelector:
+  kubernetes.io/hostname: mini-gmk
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: ai-etl
+description: AI Defense Audit ETL CronJob (S3 -> ClickHouse)
+version: 0.1.0
+appVersion: "1.0.0"

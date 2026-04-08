@@ -1,0 +1,23 @@
+{{- if .Values.vpcCniMetrics }}
+{{- if .Values.vpcCniMetrics.enabled }}
+# VPC CNI Metrics Service (EKS only)
+# aws-node DaemonSet에서 메트릭 수집을 위한 Headless Service
+# ENABLE_PROMETHEUS_METRICS=true 설정 필요 (Terraform vpc-cni addon)
+apiVersion: v1
+kind: Service
+metadata:
+  name: aws-node-metrics
+  namespace: kube-system
+  labels:
+    k8s-app: aws-node
+spec:
+  selector:
+    k8s-app: aws-node
+  ports:
+    - name: metrics
+      port: 61678
+      targetPort: 61678
+      protocol: TCP
+  clusterIP: None
+{{- end }}
+{{- end }}

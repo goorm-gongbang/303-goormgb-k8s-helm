@@ -13,9 +13,14 @@ kind: Application
 metadata:
   name: {{ $name }}
   namespace: argocd
-  {{- if $chart.syncWave }}
+  {{- if or $chart.syncWave $chart.description }}
   annotations:
+    {{- if $chart.syncWave }}
     argocd.argoproj.io/sync-wave: "{{ $chart.syncWave }}"
+    {{- end }}
+    {{- if $chart.description }}
+    argocd.argoproj.io/description: {{ $chart.description | quote }}
+    {{- end }}
   {{- end }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
