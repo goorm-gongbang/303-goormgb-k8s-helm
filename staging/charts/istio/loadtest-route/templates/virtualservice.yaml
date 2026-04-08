@@ -9,12 +9,10 @@ spec:
   gateways:
     - {{ .Values.gatewayRef }}
   http:
+    # /load-test/ prefix로 시작하는 요청만 loadtest로 라우팅
     - match:
         - uri:
             prefix: {{ .Values.sourcePath }}
-        - headers:
-            x-load-test:
-              exact: "true"
       rewrite:
         uri: /
       route:
