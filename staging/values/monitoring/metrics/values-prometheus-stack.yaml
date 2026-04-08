@@ -129,6 +129,19 @@ kubeProxy:
   enabled: true
 
 prometheus:
+  # Thanos sidecar SA (IRSA)
+  serviceAccount:
+    create: true
+    name: prometheus-prom
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-staging-thanos"
+
+  # Thanos sidecar 활성화
+  thanosService:
+    enabled: true
+  thanosServiceMonitor:
+    enabled: true
+
   prometheusSpec:
     # 모든 namespace 메트릭 수집
     serviceMonitorSelectorNilUsesHelmValues: false
@@ -156,17 +169,16 @@ prometheus:
         cpu: 1000m
         memory: 3Gi
 
-    # EBS CSI driver 미사용 - emptyDir 사용
-    # storageSpec:
-    #   volumeClaimTemplate:
-    #     metadata:
-    #       name: data
-    #     spec:
-    #       storageClassName: gp2
-    #       accessModes: ["ReadWriteOnce"]
-    #       resources:
-    #         requests:
-    #           storage: 30Gi
+    # Thanos sidecar 설정
+    thanos:
+      objectStorageConfig:
+        secret:
+          type: S3
+          config:
+            bucket: goormgb-thanos
+            endpoint: s3.ap-northeast-2.amazonaws.com
+            region: ap-northeast-2
+            prefix: staging
 
   # VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
   # Service는 prometheus-stack 차트에서 생성 (vpc-cni-service.yaml)

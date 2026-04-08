@@ -1,5 +1,5 @@
 # EKS Staging - Loki Configuration
-# SingleBinary 모드 (S3 불필요, 로컬 스토리지 사용)
+# SingleBinary 모드 (S3 백엔드)
 
 deploymentMode: SingleBinary
 
@@ -8,7 +8,7 @@ loki:
 
   compactor:
     retention_enabled: true
-    delete_request_store: filesystem
+    delete_request_store: s3
 
   limits_config:
     retention_period: 72h  # 문서 기준 staging 인프라 로그 3일
@@ -26,7 +26,15 @@ loki:
         period: 24h  # 부하테스트 로그 24시간 (Loki 3.x 최소값)
 
   storage:
-    type: filesystem
+    type: s3
+    bucketNames:
+      chunks: goormgb-loki
+      ruler: goormgb-loki
+      admin: goormgb-loki
+    s3:
+      region: ap-northeast-2
+      # IRSA로 인증 (access_key/secret_key 불필요)
+    storage_prefix: staging
 
   commonConfig:
     replication_factor: 1
@@ -35,11 +43,17 @@ loki:
     configs:
       - from: "2024-01-01"
         store: tsdb
-        object_store: filesystem
+        object_store: s3
         schema: v13
         index:
           prefix: index_
           period: 24h
+
+serviceAccount:
+  create: true
+  name: loki
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-staging-loki"
 
 singleBinary:
   replicas: 1
@@ -60,9 +74,14 @@ singleBinary:
       value: "true"
       effect: NoSchedule
   persistence:
-    enabled: true
-    size: 20Gi
-    storageClassName: gp3
+    enabled: false
+  # WAL/index 캐시용 emptyDir
+  extraVolumes:
+    - name: data
+      emptyDir: {}
+  extraVolumeMounts:
+    - name: data
+      mountPath: /var/loki
 
 # 불필요한 컴포넌트 비활성화 (SingleBinary 모드)
 backend:
