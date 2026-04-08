@@ -1,0 +1,46 @@
+# ai-etl - Dev 환경
+# S3 -> ClickHouse ETL CronJob
+
+enabled: true
+
+# 매 시간 15분에 실행
+schedule: "15 * * * *"
+
+image:
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/dev/goormgb/ai
+  tag: "779625e"
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: ecr-pull-secret
+
+env:
+  - name: TM_S3_BUCKET
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_S3_BUCKET
+  - name: AWS_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AWS_ACCESS_KEY_ID
+  - name: AWS_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AWS_SECRET_ACCESS_KEY
+  - name: TM_CLICKHOUSE_URL
+    value: "http://default:clickhouse@clickhouse.data.svc.cluster.local:8123/ai_defense"
+
+# Worker 노드에 배치
+nodeSelector:
+  kubernetes.io/hostname: mini-might
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
