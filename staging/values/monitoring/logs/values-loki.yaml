@@ -9,6 +9,9 @@ loki:
   compactor:
     retention_enabled: true
     delete_request_store: s3
+    shared_store: s3
+    shared_store_key_prefix: staging/compactor
+    working_directory: /var/loki/compactor
 
   limits_config:
     retention_period: 72h  # 문서 기준 staging 인프라 로그 3일
@@ -34,10 +37,20 @@ loki:
     s3:
       region: ap-northeast-2
       # IRSA로 인증 (access_key/secret_key 불필요)
-    storage_prefix: staging
+
+  # 모든 경로를 staging/ prefix 아래로 격리
+  storage_config:
+    tsdb_shipper:
+      shared_store: s3
+      shared_store_key_prefix: staging/index
+    hedging:
+      at: 250ms
+      max_per_second: 20
+      up_to: 3
 
   commonConfig:
     replication_factor: 1
+    path_prefix: /var/loki
 
   schemaConfig:
     configs:
@@ -46,8 +59,19 @@ loki:
         object_store: s3
         schema: v13
         index:
-          prefix: index_
+          prefix: staging/index_
           period: 24h
+
+  # ruler WAL도 staging prefix
+  ruler:
+    storage:
+      type: s3
+      s3:
+        bucketnames: goormgb-loki
+        region: ap-northeast-2
+    wal:
+      dir: /var/loki/ruler-wal
+    rule_path: /var/loki/rules
 
 serviceAccount:
   create: true
