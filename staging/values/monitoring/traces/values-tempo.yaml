@@ -42,10 +42,10 @@ tempo:
     trace:
       backend: s3
       s3:
-        bucket: goormgb-tempo
+        bucket: goormgb-staging-tempo
         endpoint: s3.ap-northeast-2.amazonaws.com
         region: ap-northeast-2
-        prefix: staging
+        # 환경별 버킷이므로 prefix 불필요
       wal:
         path: /var/tempo/wal
       block:
