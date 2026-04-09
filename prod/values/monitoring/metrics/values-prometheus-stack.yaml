@@ -175,6 +175,20 @@ prometheus:
           name: thanos-objstore-secret
           key: objstore.yml
 
+  additionalServiceMonitors:
+    - name: aws-vpc-cni
+      jobLabel: k8s-app
+      namespaceSelector:
+        matchNames:
+          - kube-system
+      selector:
+        matchLabels:
+          k8s-app: aws-node
+      endpoints:
+        - port: metrics
+          interval: 30s
+          path: /metrics
+
     # EBS CSI driver 미사용 - emptyDir 사용
     # storageSpec:
     #   volumeClaimTemplate:
@@ -326,22 +340,6 @@ grafana:
       jsonData:
         authType: default  # IRSA 사용
         defaultRegion: ap-northeast-2
-
-# VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
-prometheus:
-  additionalServiceMonitors:
-    - name: aws-vpc-cni
-      jobLabel: k8s-app
-      namespaceSelector:
-        matchNames:
-          - kube-system
-      selector:
-        matchLabels:
-          k8s-app: aws-node
-      endpoints:
-        - port: metrics
-          interval: 30s
-          path: /metrics
 
 alertmanager:
   alertmanagerSpec:
