@@ -10,11 +10,7 @@ spec:
     metadata:
       labels:
         nodepool: {{ $name }}
-        {{- if eq $name "system" }}
-        role: infra
-        {{- else }}
-        role: app
-        {{- end }}
+        role: {{ $pool.role | default "app" }}
     spec:
       nodeClassRef:
         group: karpenter.k8s.aws

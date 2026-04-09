@@ -38,12 +38,16 @@ spec:
           !(c.image.matches('^[^:]+$'))
         )
       message: "이미지 태그 ':latest' 또는 태그 미지정은 허용되지 않습니다. 명시적인 버전 태그를 사용하세요. (container)"
+      validationActions:
+        - {{ .Values.validationAction | default "Deny" }}
     - expression: |
         variables.initContainers.all(c,
           !c.image.endsWith(':latest') &&
           !(c.image.matches('^[^:]+$'))
         )
       message: "이미지 태그 ':latest' 또는 태그 미지정은 허용되지 않습니다. 명시적인 버전 태그를 사용하세요. (initContainer)"
+      validationActions:
+        - {{ .Values.validationAction | default "Deny" }}
   auditAnnotations:
     - key: "policy-violation"
       valueExpression: "'disallow-latest-tag'"

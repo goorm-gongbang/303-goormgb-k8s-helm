@@ -1,0 +1,53 @@
+# ClickHouse for AI Defense observability warehouse
+
+image:
+  repository: clickhouse/clickhouse-server
+  tag: "24.3-alpine"
+  pullPolicy: IfNotPresent
+
+# Default database for AI Defense
+database: ai_defense
+
+# ClickHouse server config
+config:
+  maxConnections: 100
+  maxConcurrentQueries: 100
+  # Memory limits
+  maxMemoryUsage: 2000000000  # 2GB
+  maxMemoryUsageForAllQueries: 3000000000  # 3GB
+
+persistence:
+  enabled: true
+  storageClass: ""
+  size: 10Gi
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 4Gi
+
+service:
+  httpPort: 8123
+  nativePort: 9000
+
+# Init SQL scripts for AI Defense tables
+initScripts:
+  enabled: true
+
+nodeSelector: {}
+
+tolerations: []
+
+# Credentials from external secret
+externalSecret:
+  enabled: false
+  secretStore: ""
+  remoteRef: ""
+
+# Default auth (used when externalSecret.enabled: false)
+auth:
+  user: "default"
+  password: "clickhouse"

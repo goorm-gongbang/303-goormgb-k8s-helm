@@ -1,0 +1,13 @@
+{{- if .Values.virtualService.enabled }}
+# Disable mTLS for Kafka UI (OAuth2 Proxy sidecar, no Istio sidecar)
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: kafka-ui-dr
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: kafka-ui.{{ .Release.Namespace }}.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+{{- end }}

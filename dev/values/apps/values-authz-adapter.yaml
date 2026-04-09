@@ -7,7 +7,7 @@ replicaCount: 1
 
 image:
   name: "dev/goormgb/authz-adapter"
-  tag: "67a1d53"
+  tag: "c80379e"
   pullPolicy: Always
 
 imagePullSecrets:
@@ -20,6 +20,7 @@ service:
   portName: grpc
   grpc:
     enabled: false  # 메인 포트가 이미 gRPC
+    port: 9001      # GRPC_PORT 환경변수용
 
 # Prometheus Metrics
 metrics:
@@ -35,6 +36,21 @@ authzAdapter:
   aiDefenseUrl: "http://dev-ai-defense.dev-ai.svc.cluster.local:8000/ai/evaluate"
   aiDefenseTimeoutMs: 800
   logLevel: info
+
+# Redis Blacklist 설정
+env:
+  - name: REDIS_BLACKLIST_ENABLED
+    value: "true"
+  - name: REDIS_HOST
+    value: "redis-cache.data.svc.cluster.local"
+  - name: REDIS_PORT
+    value: "6379"
+  - name: REDIS_PASSWORD
+    value: ""
+  - name: REDIS_DB
+    value: "2"
+  - name: BLACKLIST_TTL_SECS
+    value: "3600"
 
 # OpenTelemetry
 otel:

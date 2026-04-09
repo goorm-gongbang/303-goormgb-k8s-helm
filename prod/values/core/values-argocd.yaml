@@ -1,4 +1,4 @@
-# ArgoCD Config - EKS Staging
+# ArgoCD Config - EKS Prod
 # Domain: playball.one
 
 # ArgoCD Server Service - NLB + HTTPS (Istio 안 거침)
@@ -29,7 +29,7 @@ oidc:
   enabled: true
   name: Google
   issuer: https://accounts.google.com
-  secretManagerKey: staging/infra/oauth/google
+  secretManagerKey: prod/argocd/oauth
   requestedScopes:
     - openid
     - profile
@@ -39,7 +39,7 @@ oidc:
 rbac:
   eso:
     enabled: true
-    secretManagerKey: staging/oauth/rbac/argocd
+    secretManagerKey: prod/oauth/rbac/argocd
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
 
@@ -47,7 +47,7 @@ rbac:
 # 앱 서비스는 ApplicationSet (prod-webs-services)으로 관리
 # 중복 방지를 위해 여기서는 비활성화
 applications: []
-  # ApplicationSet 사용: staging/root/values.yaml → applicationSets.prod-webs-services
+  # ApplicationSet 사용: prod/root/values.yaml → applicationSets.prod-webs-services
 
 # Prometheus 메트릭 수집 (Prometheus 설치 후 enabled: true로 변경)
 metrics:
@@ -59,4 +59,4 @@ notifications:
   discord:
     eso:
       enabled: true
-      secretManagerKey: staging/argocd/discord-webhook
+      secretManagerKey: prod/argocd/discord-webhook

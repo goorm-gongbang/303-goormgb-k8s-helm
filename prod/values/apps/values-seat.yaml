@@ -1,11 +1,11 @@
-# seat - Staging 환경
+# seat - Prod 환경
 fullnameOverride: "seat"
 contextPath: "/seat"
 replicaCount: 1
 
 image:
-  name: "prod/playball/web/seat"
-  tag: "08a50e4"
+  name: "playball/web/seat"
+  tag: "8119799.1"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -54,6 +54,8 @@ service:
   port: *port
 
 envFrom:
+  - configMapRef:
+      name: service-config
   - secretRef:
       name: service-config
 

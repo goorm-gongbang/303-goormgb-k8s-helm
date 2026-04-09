@@ -1,0 +1,86 @@
+# Network Policies for Staging Environment
+# Namespace isolation configuration
+
+defaultDeny:
+  enabled: true
+
+namespaces:
+  staging-webs:
+    allowIngressFrom:
+      # Istio IngressGateway
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: istio-system
+      # Same namespace (inter-service communication)
+      - podSelector: {}
+    allowEgressTo:
+      # Data namespace (Kafka, Redis)
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: data
+      # AI services
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-ai
+      # Same namespace
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-webs
+
+  staging-ai:
+    allowIngressFrom:
+      # Istio IngressGateway
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: istio-system
+      # Web services (internal API calls)
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-webs
+      # Same namespace
+      - podSelector: {}
+    allowEgressTo:
+      # Data namespace (Redis)
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: data
+      # Web services (callback)
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-webs
+      # Same namespace
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-ai
+
+  data:
+    allowIngressFrom:
+      # Web services
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-webs
+      # AI services
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: staging-ai
+      # Monitoring (metrics scraping)
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: monitoring
+      # Same namespace (Kafka inter-broker)
+      - podSelector: {}
+    allowEgressTo:
+      # Same namespace only
+      - podSelector: {}
+
+  monitoring:
+    allowIngressFrom:
+      # Istio IngressGateway (Grafana, etc.)
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: istio-system
+      # Same namespace
+      - podSelector: {}
+    allowEgressTo:
+      # All namespaces (for Prometheus scraping)
+      - namespaceSelector: {}

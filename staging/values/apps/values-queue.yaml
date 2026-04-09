@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/queue"
-  tag: "de7ce81.10"
+  tag: "7302e85.26"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -40,7 +40,7 @@ affinity:
 resources:
   requests:
     cpu: 500m
-    memory: 512Mi
+    memory: 1Gi
   limits:
     cpu: "2"
     memory: 2Gi
@@ -52,6 +52,13 @@ servicePort: &port 8081
 service:
   type: ClusterIP
   port: *port
+
+# HikariCP connection pool 크기 조정
+env:
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
 
 envFrom:
   - configMapRef:
@@ -79,8 +86,10 @@ otel:
   enabled: true
 
 # Prometheus metrics (PodMonitor)
+# management 포트 분리로 context path 없이 /actuator/prometheus 사용
 metrics:
   enabled: true
+  port: 9090
   path: /actuator/prometheus
   interval: 30s
 

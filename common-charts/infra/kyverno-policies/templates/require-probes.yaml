@@ -33,9 +33,13 @@ spec:
     - expression: |
         variables.containers.all(c, has(c.readinessProbe))
       message: "컨테이너에 readinessProbe가 필요합니다."
+      validationActions:
+        - {{ .Values.validationAction | default "Deny" }}
     - expression: |
         variables.containers.all(c, has(c.livenessProbe))
       message: "컨테이너에 livenessProbe가 필요합니다."
+      validationActions:
+        - {{ .Values.validationAction | default "Deny" }}
   auditAnnotations:
     - key: "policy-violation"
       valueExpression: "'require-probes'"

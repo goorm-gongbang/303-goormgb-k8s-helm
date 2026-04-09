@@ -1,0 +1,392 @@
+# Alert rule set (prod)
+
+additionalPrometheusRulesMap:
+  prod-ops-and-security:
+    groups:
+      - name: prod.ops.rules
+        rules:
+          - alert: ProdHttp5xxWarning
+            expr: |
+              100 * sum by (app) (
+                rate(
+                  http_server_request_duration_seconds_count{
+                    namespace="prod-webs",
+                    app=~"prod-(api-gateway|auth-guard|order-core|queue|seat)",
+                    http_response_status_code=~"5.."
+                  }[5m]
+                )
+              )
+              /
+              clamp_min(
+                sum by (app) (
+                  rate(
+                    http_server_request_duration_seconds_count{
+                      namespace="prod-webs",
+                      app=~"prod-(api-gateway|auth-guard|order-core|queue|seat)"
+                    }[5m]
+                  )
+                ),
+                1
+              ) > 1
+            for: 5m
+            labels:
+              severity: warning
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod 환경 5xx 에러율 경고"
+              description: "최근 5m 동안 prod 웹 서비스의 5xx 에러율이 1%를 초과했습니다."
+
+          - alert: ProdHttp5xxCritical
+            expr: |
+              100 * sum by (app) (
+                rate(
+                  http_server_request_duration_seconds_count{
+                    namespace="prod-webs",
+                    app=~"prod-(api-gateway|auth-guard|order-core|queue|seat)",
+                    http_response_status_code=~"5.."
+                  }[5m]
+                )
+              )
+              /
+              clamp_min(
+                sum by (app) (
+                  rate(
+                    http_server_request_duration_seconds_count{
+                      namespace="prod-webs",
+                      app=~"prod-(api-gateway|auth-guard|order-core|queue|seat)"
+                    }[5m]
+                  )
+                ),
+                1
+              ) > 3
+            for: 5m
+            labels:
+              severity: critical
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod 환경 5xx 에러율 치명"
+              description: "최근 5m 동안 prod 웹 서비스의 5xx 에러율이 3%를 초과했습니다."
+
+          - alert: ProdApiP99Warning
+            expr: |
+              histogram_quantile(
+                0.99,
+                sum by (app, le) (
+                  rate(
+                    http_server_request_duration_seconds_bucket{
+                      namespace="prod-webs",
+                      app=~"prod-(api-gateway|auth-guard|order-core|queue|seat)"
+                    }[5m]
+                  )
+                )
+              ) > 3
+            for: 5m
+            labels:
+              severity: warning
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod 환경 API P99 지연 경고"
+              description: "최근 5m 동안 prod 웹 서비스의 P99 응답시간이 3초를 초과했습니다."
+
+          - alert: ProdApiP99Critical
+            expr: |
+              histogram_quantile(
+                0.99,
+                sum by (app, le) (
+                  rate(
+                    http_server_request_duration_seconds_bucket{
+                      namespace="prod-webs",
+                      app=~"prod-(api-gateway|auth-guard|order-core|queue|seat)"
+                    }[5m]
+                  )
+                )
+              ) > 5
+            for: 5m
+            labels:
+              severity: critical
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod 환경 API P99 지연 치명"
+              description: "최근 5m 동안 prod 웹 서비스의 P99 응답시간이 5초를 초과했습니다."
+
+          - alert: ProdPodCrashLoopCritical
+            expr: |
+              sum by (namespace, pod) (
+                increase(kube_pod_container_status_restarts_total{namespace="prod-webs"}[10m])
+              ) > 3
+            for: 0m
+            labels:
+              severity: critical
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod 환경 Pod 재시작 급증"
+              description: "최근 10m 동안 prod 웹 서비스 Pod 재시작이 3회를 초과했습니다."
+
+          - alert: ProdNodeNotReadyCritical
+            expr: |
+              sum(kube_node_status_condition{condition="Ready", status="true"} == bool 0) > 0
+            for: 5m
+            labels:
+              severity: critical
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod 환경 Node NotReady 감지"
+              description: "Ready가 아닌 노드가 5m 이상 지속되고 있습니다."
+
+          - alert: ProdClusterCpuWarning
+            expr: |
+              100 * sum(rate(container_cpu_usage_seconds_total{container!="", container!="POD"}[5m]))
+              /
+              sum(kube_node_status_allocatable{resource="cpu"}) > 65
+            for: 5m
+            labels:
+              severity: warning
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod 클러스터 CPU 사용률 경고"
+              description: "최근 5m 기준 클러스터 CPU 사용률이 65%를 초과했습니다."
+
+          - alert: ProdClusterCpuCritical
+            expr: |
+              100 * sum(rate(container_cpu_usage_seconds_total{container!="", container!="POD"}[5m]))
+              /
+              sum(kube_node_status_allocatable{resource="cpu"}) > 80
+            for: 5m
+            labels:
+              severity: critical
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod 클러스터 CPU 사용률 치명"
+              description: "최근 5m 기준 클러스터 CPU 사용률이 80%를 초과했습니다."
+
+          - alert: ProdClusterMemoryWarning
+            expr: |
+              100 * sum(container_memory_working_set_bytes{container!="", container!="POD"})
+              /
+              sum(kube_node_status_allocatable{resource="memory"}) > 70
+            for: 5m
+            labels:
+              severity: warning
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod 클러스터 메모리 사용률 경고"
+              description: "클러스터 메모리 사용률이 70%를 초과했습니다."
+
+          - alert: ProdClusterMemoryCritical
+            expr: |
+              100 * sum(container_memory_working_set_bytes{container!="", container!="POD"})
+              /
+              sum(kube_node_status_allocatable{resource="memory"}) > 90
+            for: 5m
+            labels:
+              severity: critical
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod 클러스터 메모리 사용률 치명"
+              description: "클러스터 메모리 사용률이 90%를 초과했습니다."
+
+          - alert: ProdPostgresConnectionsWarning
+            expr: |
+              100 * sum(pg_stat_activity_count{namespace="data"})
+              /
+              clamp_min(max(pg_settings_max_connections{namespace="data"}), 1) > 70
+            for: 5m
+            labels:
+              severity: warning
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod PostgreSQL 연결 사용률 경고"
+              description: "PostgreSQL 연결 사용률이 70%를 초과했습니다."
+
+          - alert: ProdPostgresConnectionsCritical
+            expr: |
+              100 * sum(pg_stat_activity_count{namespace="data"})
+              /
+              clamp_min(max(pg_settings_max_connections{namespace="data"}), 1) > 90
+            for: 5m
+            labels:
+              severity: critical
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod PostgreSQL 연결 사용률 치명"
+              description: "PostgreSQL 연결 사용률이 90%를 초과했습니다."
+
+          - alert: ProdRedisDownCritical
+            expr: |
+              min(redis_up{namespace="data"}) == 0
+            for: 1m
+            labels:
+              severity: critical
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod Redis 비가용 감지"
+              description: "Redis 인스턴스가 응답하지 않습니다."
+
+          - alert: ProdRedisMemoryWarning
+            expr: |
+              100 * sum(redis_memory_used_bytes{namespace="data"})
+              /
+              clamp_min(sum(redis_memory_max_bytes{namespace="data"}), 1) > 80
+            for: 5m
+            labels:
+              severity: warning
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod Redis 메모리 사용률 경고"
+              description: "Redis 메모리 사용률이 80%를 초과했습니다."
+
+          - alert: ProdRedisMemoryCritical
+            expr: |
+              100 * sum(redis_memory_used_bytes{namespace="data"})
+              /
+              clamp_min(sum(redis_memory_max_bytes{namespace="data"}), 1) > 90
+            for: 5m
+            labels:
+              severity: critical
+              environment: prod
+              team: dev
+            annotations:
+              summary: "prod Redis 메모리 사용률 치명"
+              description: "Redis 메모리 사용률이 90%를 초과했습니다."
+
+      - name: prod.security.rules
+        rules:
+          - alert: ProdMacroDetectedWarning
+            expr: |
+              increase(ticketing_security_macro_detected_total[5m]) > 50
+            for: 0m
+            labels:
+              severity: warning
+              environment: prod
+              team: security
+            annotations:
+              summary: "prod 매크로/봇 탐지 경고"
+              description: "최근 5m 동안 매크로/봇 탐지 수가 50건을 초과했습니다."
+
+          - alert: ProdMacroDetectedCritical
+            expr: |
+              increase(ticketing_security_macro_detected_total[5m]) > 200
+            for: 0m
+            labels:
+              severity: critical
+              environment: prod
+              team: security
+            annotations:
+              summary: "prod 매크로/봇 탐지 치명"
+              description: "최근 5m 동안 매크로/봇 탐지 수가 200건을 초과했습니다."
+
+          - alert: ProdBlockedIpWarning
+            expr: |
+              increase(ticketing_security_blocked_ip_total[5m]) > 100
+            for: 0m
+            labels:
+              severity: warning
+              environment: prod
+              team: security
+            annotations:
+              summary: "prod 차단 IP 수 경고"
+              description: "최근 5m 동안 차단 IP 수가 100건을 초과했습니다."
+
+          - alert: ProdBlockedIpCritical
+            expr: |
+              increase(ticketing_security_blocked_ip_total[5m]) > 500
+            for: 0m
+            labels:
+              severity: critical
+              environment: prod
+              team: security
+            annotations:
+              summary: "prod 차단 IP 수 치명"
+              description: "최근 5m 동안 차단 IP 수가 500건을 초과했습니다."
+
+          - alert: ProdAuthFailureRateWarning
+            expr: |
+              (
+                1 - (
+                  sum(rate(ticketing_auth_success_total[5m]))
+                  /
+                  clamp_min(sum(rate(ticketing_auth_attempts_total[5m])), 1)
+                )
+              ) * 100 > 30
+            for: 5m
+            labels:
+              severity: warning
+              environment: prod
+              team: security
+            annotations:
+              summary: "prod 인증 실패율 경고"
+              description: "최근 5m 동안 인증 실패율이 30%를 초과했습니다."
+
+          - alert: ProdAuthFailureRateCritical
+            expr: |
+              (
+                1 - (
+                  sum(rate(ticketing_auth_success_total[5m]))
+                  /
+                  clamp_min(sum(rate(ticketing_auth_attempts_total[5m])), 1)
+                )
+              ) * 100 > 50
+            for: 5m
+            labels:
+              severity: critical
+              environment: prod
+              team: security
+            annotations:
+              summary: "prod 인증 실패율 치명"
+              description: "최근 5m 동안 인증 실패율이 50%를 초과했습니다."
+
+          - alert: ProdWafBlockedRequestsWarning
+            expr: |
+              sum(
+                increase(
+                  istio_requests_total{
+                    reporter="destination",
+                    destination_workload_namespace="istio-system",
+                    destination_workload="istio-ingressgateway",
+                    response_code=~"403|429"
+                  }[15m]
+                )
+              ) > 200
+            for: 5m
+            labels:
+              severity: warning
+              environment: prod
+              team: security
+            annotations:
+              summary: "prod WAF 차단 요청 급증 경고"
+              description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청 수가 200건을 초과했습니다."
+
+          - alert: ProdWafBlockedRequestsCritical
+            expr: |
+              sum(
+                increase(
+                  istio_requests_total{
+                    reporter="destination",
+                    destination_workload_namespace="istio-system",
+                    destination_workload="istio-ingressgateway",
+                    response_code=~"403|429"
+                  }[15m]
+                )
+              ) > 1000
+            for: 5m
+            labels:
+              severity: critical
+              environment: prod
+              team: security
+            annotations:
+              summary: "prod WAF 차단 요청 급증 치명"
+              description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청 수가 1000건을 초과했습니다."

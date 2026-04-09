@@ -1,0 +1,72 @@
+# RedisInsight with Google OAuth
+replicaCount: 1
+
+image:
+  repository: redis/redisinsight
+  tag: "2.68"
+  pullPolicy: IfNotPresent
+
+# OAuth2 Proxy sidecar (Google OAuth)
+oauth2Proxy:
+  enabled: true
+  image:
+    repository: quay.io/oauth2-proxy/oauth2-proxy
+    tag: "v7.6.0"
+  port: 4180
+  config:
+    provider: google
+    cookieSecure: true
+    cookieDomain: ""  # e.g., ".staging.playball.one"
+    cookieRefresh: "1h"
+    cookieExpire: "4h"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+  # External Secrets for OAuth credentials
+  eso:
+    enabled: false
+    secretStoreRef:
+      name: "aws-secrets-manager"
+      kind: "ClusterSecretStore"
+    remoteRef:
+      key: ""  # e.g., "staging/infra/oauth/redisinsight"
+
+service:
+  type: ClusterIP
+  port: 4180  # OAuth2 Proxy port
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: ""
+
+# Istio VirtualService
+virtualService:
+  enabled: false
+  gateway: ""  # e.g., "istio-system/api-gateway"
+  hosts: []    # e.g., ["redis.staging.playball.one"]

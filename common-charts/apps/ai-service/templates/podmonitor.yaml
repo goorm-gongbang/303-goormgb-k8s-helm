@@ -13,6 +13,19 @@ spec:
     - port: {{ .Values.metrics.portName | default "metrics" }}
       path: {{ .Values.metrics.path | default "/metrics" }}
       interval: {{ .Values.metrics.interval | default "30s" }}
+      relabelings:
+        # Pod의 app 라벨을 메트릭에 추가
+        - sourceLabels: [__meta_kubernetes_pod_label_app]
+          targetLabel: app
+        # Pod의 version 라벨을 메트릭에 추가
+        - sourceLabels: [__meta_kubernetes_pod_label_version]
+          targetLabel: version
+        # namespace 라벨 추가
+        - sourceLabels: [__meta_kubernetes_namespace]
+          targetLabel: namespace
+        # service 라벨 추가 (app.kubernetes.io/name)
+        - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+          targetLabel: service
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}

@@ -24,13 +24,13 @@ spec:
         mode: SIMPLE
         credentialName: goormgb-tls
       hosts:
-        - "api.dev.goormgb.space"
+        - "api.playball.one"
     - port:
         number: 80
         name: http
         protocol: HTTP
       hosts:
-        - "api.dev.goormgb.space"
+        - "api.playball.one"
       tls:
         httpsRedirect: true
 {{- end }}
@@ -38,7 +38,7 @@ spec:
 {{- if .Values.rawManifests.swaggerGateway.enabled }}
 ---
 # Swagger Gateway + VirtualService
-# swagger.dev.goormgb.space -> OAuth2 Proxy -> 실제 서비스
+# swagger.playball.one -> OAuth2 Proxy -> 실제 서비스
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
@@ -56,13 +56,13 @@ spec:
         mode: SIMPLE
         credentialName: goormgb-tls
       hosts:
-        - "swagger.dev.goormgb.space"
+        - "swagger.playball.one"
     - port:
         number: 80
         name: http
         protocol: HTTP
       hosts:
-        - "swagger.dev.goormgb.space"
+        - "swagger.playball.one"
       tls:
         httpsRedirect: true
 ---
@@ -73,7 +73,7 @@ metadata:
   namespace: istio-system
 spec:
   hosts:
-    - "swagger.dev.goormgb.space"
+    - "swagger.playball.one"
   gateways:
     - swagger-gateway
   http:
@@ -153,15 +153,15 @@ spec:
 {{- if .Values.rawManifests.aiDefenseRoute.enabled }}
 ---
 # AI Defense 서비스 라우팅
-# api.dev.goormgb.space/ai/* -> ai-defense 서비스
+# api.playball.one/ai/* -> ai-defense 서비스
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: ai-defense-route
-  namespace: dev-ai
+  namespace: prod-ai
 spec:
   hosts:
-    - "api.dev.goormgb.space"
+    - "api.playball.one"
   gateways:
     - istio-system/api-gateway
   http:
@@ -173,7 +173,7 @@ spec:
         uri: /
       route:
         - destination:
-            host: dev-ai-defense.dev-ai.svc.cluster.local
+            host: prod-ai-defense.prod-ai.svc.cluster.local
             port:
               number: 8000
     # /ai (trailing slash 없이) -> /ai/로 리다이렉트

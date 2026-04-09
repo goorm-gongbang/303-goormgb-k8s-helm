@@ -1,0 +1,31 @@
+{{- if and .Values.enabled .Values.adminTools .Values.adminTools.ipWhitelist .Values.adminTools.ipWhitelist.enabled }}
+# Admin Tools IP Whitelist
+# CloudBeaver, Kafka-UI, Grafana, Kiali, RedisInsight 접근 제한
+# remoteIpBlocks: X-Forwarded-For 헤더의 클라이언트 IP (ALB 뒤에서 필수)
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: admin-tools-ip-whitelist
+  namespace: istio-system
+  labels:
+    app: istio-security
+    component: admin-tools-whitelist
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+  action: DENY
+  rules:
+    - from:
+        - source:
+            notRemoteIpBlocks:
+              {{- range .Values.adminTools.ipWhitelist.allowedIPs }}
+              - "{{ . }}/32"
+              {{- end }}
+      to:
+        - operation:
+            hosts:
+              {{- range .Values.adminTools.ipWhitelist.protectedHosts }}
+              - {{ . | quote }}
+              {{- end }}
+{{- end }}

@@ -21,13 +21,14 @@ destination:
 ociCharts:
   istio-base:
     enabled: true
+    description: "Istio CRD 및 기본 리소스 (Gateway, VirtualService 등 CRD 정의)"
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: base
     version: "1.29.1"
     namespace: istio-system
     syncWave: "-4"
     valueFiles:
-      - $values/staging/values/values-istio.yaml
+      - $values/staging/values/istio/values-istio.yaml
     ignoreDifferences:
       - group: admissionregistration.k8s.io
         kind: ValidatingWebhookConfiguration
@@ -37,13 +38,14 @@ ociCharts:
 
   istiod:
     enabled: true
+    description: "Istio Control Plane - 서비스 메시 정책, mTLS, 트래픽 관리"
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: istiod
     version: "1.29.1"
     namespace: istio-system
     syncWave: "-3"
     valueFiles:
-      - $values/staging/values/values-istio.yaml
+      - $values/staging/values/istio/values-istio.yaml
     syncOptions:
       - ServerSideApply=true
       - RespectIgnoreDifferences=true
@@ -70,26 +72,28 @@ ociCharts:
         jsonPointers:
           - /spec/podMetricsEndpoints
 
-  # Istio IngressGateway (ClusterIP - ALB Ingress에서 라우팅)
+  # Istio IngressGateway (ClusterIP - ALB Ingress에서 라���팅)
   istio-ingressgateway:
     enabled: true
+    description: "Istio Ingress Gateway - ALB에서 트래픽 수신, VirtualService 라���팅"
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: gateway
     version: "1.29.1"
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - $values/staging/values/values-istio-gateway.yaml
+      - $values/staging/values/istio/values-istio-gateway.yaml
 
   kiali-server:
     enabled: true
+    description: "Kiali - Istio 서비스 메시 시각화 및 관리 대시보드"
     repoURL: https://kiali.org/helm-charts
     chart: kiali-server
     version: "2.23.0"
     namespace: istio-system
     syncWave: "-1"
     valueFiles:
-      - $values/staging/values/values-istio.yaml
+      - $values/staging/values/istio/values-istio.yaml
     ignoreDifferences:
       - group: ""
         kind: ConfigMap
@@ -104,6 +108,7 @@ ociCharts:
 
   tigera-operator:
     enabled: false  # EKS는 VPC CNI 사용
+    description: "Calico CNI Operator (비활성화 - EKS VPC CNI 사용)"
     repoURL: https://docs.tigera.io/calico/charts
     chart: tigera-operator
     version: "v3.29.3"
@@ -114,25 +119,27 @@ ociCharts:
   # Karpenter - Node Auto-scaling
   karpenter:
     enabled: true
+    description: "Karpenter - EKS 노드 자동 스케일링 (NodePool, EC2NodeClass)"
     repoURL: public.ecr.aws/karpenter
     chart: karpenter
     version: "1.10.0"
     namespace: karpenter
     syncWave: "-8"
     valueFiles:
-      - $values/staging/values/values-karpenter.yaml
+      - $values/staging/values/infra/values-karpenter.yaml
     syncOptions:
       - ServerSideApply=true
 
   loki:
     enabled: true
+    description: "Loki - 로그 수집/저장 (Promtail에서 전송받음, Grafana에서 조회)"
     repoURL: https://grafana.github.io/helm-charts
     chart: loki
     version: "6.55.0"
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/values-loki.yaml
+      - $values/staging/values/monitoring/logs/values-loki.yaml
     syncOptions:
       - Replace=true
     ignoreDifferences:
@@ -144,23 +151,25 @@ ociCharts:
 
   promtail:
     enabled: true
+    description: "Promtail - Pod 로그 수집 DaemonSet (Loki로 전송)"
     repoURL: https://grafana.github.io/helm-charts
     chart: promtail
     version: "6.17.1"
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - $values/staging/values/values-promtail.yaml
+      - $values/staging/values/monitoring/logs/values-promtail.yaml
 
   kube-prometheus-stack:
     enabled: true
+    description: "Prometheus + Alertmanager - 메트릭 수집, 알림 규칙, ServiceMonitor"
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
     version: "82.13.6"
     namespace: monitoring
     syncWave: "-1"
     valueFiles:
-      - $values/staging/values/values-prometheus-stack.yaml
+      - $values/staging/values/monitoring/metrics/values-prometheus-stack.yaml
       - $values/staging/values/monitoring/alerting/values-rules-staging.yaml
       - $values/staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
@@ -193,13 +202,14 @@ ociCharts:
 
   aws-load-balancer-controller:
     enabled: true
+    description: "AWS Load Balancer Controller - ALB/NLB Ingress 관���"
     repoURL: https://aws.github.io/eks-charts
     chart: aws-load-balancer-controller
     version: "3.1.0"
     namespace: kube-system
     syncWave: "-9"
     valueFiles:
-      - $values/staging/values/values-aws-lb-controller.yaml
+      - $values/staging/values/infra/values-aws-lb-controller.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -228,13 +238,14 @@ ociCharts:
 
   external-secrets:
     enabled: true
+    description: "External Secrets Operator - AWS Secrets Manager 연���"
     repoURL: https://charts.external-secrets.io
     chart: external-secrets
     version: "2.2.0"
     namespace: external-secrets
     syncWave: "-9"
     valueFiles:
-      - $values/staging/values/values-eso.yaml
+      - $values/staging/values/infra/values-eso.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -247,26 +258,29 @@ ociCharts:
 
   external-dns:
     enabled: true
+    description: "External DNS - Route53 DNS 레코드 자동 관리"
     repoURL: https://kubernetes-sigs.github.io/external-dns/
     chart: external-dns
     version: "1.20.0"
     namespace: external-dns
     syncWave: "-8"
     valueFiles:
-      - $values/staging/values/values-external-dns.yaml
+      - $values/staging/values/infra/values-external-dns.yaml
 
   alloy:
     enabled: true
+    description: "Grafana Alloy - OTEL 수집기 (Faro RUM 등)"
     repoURL: https://grafana.github.io/helm-charts
     chart: alloy
     version: "1.6.2"
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/monitoring/values-alloy.yaml
+      - $values/staging/values/monitoring/logs/values-alloy.yaml
 
   k6-operator:
     enabled: false
+    description: "k6 Operator - 부하테스트 CRD (비활성화)"
     repoURL: https://grafana.github.io/helm-charts
     chart: k6-operator
     version: "4.3.0"
@@ -276,13 +290,14 @@ ociCharts:
 
   tempo:
     enabled: true
+    description: "Tempo - 분산 추적 저장소 (Jaeger/Zipkin 호환)"
     repoURL: https://grafana.github.io/helm-charts
     chart: tempo
     version: "1.24.4"
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/values-tempo.yaml
+      - $values/staging/values/monitoring/traces/values-tempo.yaml
     ignoreDifferences:
       - group: ""
         kind: PersistentVolumeClaim
@@ -293,47 +308,35 @@ ociCharts:
   # Grafana (kube-prometheus-stack에서 분리)
   grafana:
     enabled: true
+    description: "Grafana - 대시보드 시각화 (Prometheus, Loki, Tempo 연동)"
     repoURL: https://grafana.github.io/helm-charts
     chart: grafana
     version: "8.14.0"
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/values-grafana.yaml
+      - $values/staging/values/monitoring/visualization/values-grafana.yaml
 
   opentelemetry-collector:
     enabled: true
+    description: "OpenTelemetry Collector - 메트릭/트레이스 수집 파이프라인"
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-collector
     version: "0.147.1"
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - $values/staging/values/values-opentelemetry-collector.yaml
+      - $values/staging/values/monitoring/metrics/values-opentelemetry-collector.yaml
 
-  # Tetragon - eBPF-based runtime security (L3/L4 threat detection)
-  # Works independently with AWS VPC CNI (no Cilium required)
+  # Tetragon - eBPF (비활성화, VPC CNI 사용)
   tetragon:
-    enabled: false  # eBPF 비활성화 - cni-eBPF 브랜치에서 활성화
-    repoURL: https://helm.cilium.io
-    chart: tetragon
-    version: "1.3.0"
-    namespace: kube-system
-    syncWave: "-8"
-    valueFiles:
-      - $values/staging/values/values-tetragon-oci.yaml
-    syncOptions:
-      - ServerSideApply=true
-      - RespectIgnoreDifferences=true
-    ignoreDifferences:
-      - group: cilium.io
-        kind: TracingPolicy
-        jsonPointers:
-          - /status
+    enabled: false
+    description: "Tetragon eBPF 보안 (비활성화)"
 
   # Metrics Server - kubectl top nodes/pods
   metrics-server:
     enabled: true
+    description: "Metrics Server - kubectl top, HPA 메트릭 제공"
     repoURL: https://kubernetes-sigs.github.io/metrics-server/
     chart: metrics-server
     version: "3.13.0"
@@ -344,13 +347,14 @@ ociCharts:
   # Kyverno - Policy Engine
   kyverno:
     enabled: true
+    description: "Kyverno - K8s 정책 엔진 (리소스 검증/변환)"
     repoURL: https://kyverno.github.io/kyverno/
     chart: kyverno
     version: "3.7.1"
     namespace: kyverno
     syncWave: "-7"
     valueFiles:
-      - $values/staging/values/values-kyverno.yaml
+      - $values/staging/values/security/values-kyverno.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -368,6 +372,7 @@ ociCharts:
         jsonPointers:
           - /status
           - /metadata/annotations
+          - /metadata/labels
 
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
@@ -376,23 +381,36 @@ gitCharts:
   # === Core ===
   namespaces:
     enabled: true
+    description: "Namespace 정의 (staging-webs, staging-ai, monitoring 등)"
     path: common-charts/infra/namespaces
     namespace: default
     syncWave: "-10"
     valueFiles:
-      - ../../../staging/values/values-namespaces.yaml
+      - ../../../staging/values/core/values-namespaces.yaml
 
   # === Security ===
   rbac:
     enabled: true
+    description: "RBAC - ServiceAccount, Role, RoleBinding 정의"
     path: common-charts/infra/rbac
     namespace: default
     valueFiles:
-      - ../../../staging/values/values-rbac.yaml
+      - ../../../staging/values/security/values-rbac.yaml
+
+  # Network Policies (namespace isolation)
+  network-policies:
+    enabled: true
+    description: "NetworkPolicy - Namespace 간 네트워크 격리"
+    path: common-charts/infra/network-policies
+    namespace: default
+    syncWave: "-9"
+    valueFiles:
+      - ../../../staging/values/security/values-network-policies.yaml
 
   # ESO ClusterSecretStore (IRSA 기반)
   eso-config:
     enabled: true
+    description: "ESO ClusterSecretStore - AWS Secrets Manager 연결 설정"
     path: staging/charts/eso
     namespace: external-secrets
     syncWave: "-8"
@@ -400,13 +418,25 @@ gitCharts:
   # AI Service Secrets (Redis 연결 정보)
   ai-service-secrets:
     enabled: true
+    description: "AI 서비스 Secret - Redis, PostgreSQL 연결 정보"
     path: staging/charts/security/ai-service-secrets
     namespace: staging-ai
     syncWave: "-6"
 
+  # Mail Config (Gmail SMTP)
+  mail-config:
+    enabled: true
+    description: "메일 설정 - Gmail SMTP Secret"
+    path: common-charts/apps/mail-config
+    namespace: staging-webs
+    syncWave: "-5"
+    valueFiles:
+      - ../../../staging/values/apps/values-mail-config.yaml
+
   # Karpenter NodePool & EC2NodeClass
   karpenter-config:
     enabled: true
+    description: "Karpenter 설정 - NodePool, EC2NodeClass 정의"
     path: staging/charts/karpenter
     namespace: karpenter
     syncWave: "-6"
@@ -416,6 +446,7 @@ gitCharts:
   # === ALB Ingress (Host-based routing) ===
   alb-ingress:
     enabled: true
+    description: "ALB Ingress - 호스트 기반 라우팅 규칙"
     path: staging/charts/alb-ingress
     namespace: istio-system
     syncWave: "5"
@@ -427,36 +458,58 @@ gitCharts:
   # === Istio ===
   istio-gateway:
     enabled: true
+    description: "Istio Gateway CRD - 도메인별 트래픽 수신 정의"
     path: common-charts/infra/istio/gateway
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - ../../../../staging/values/values-istio.yaml
+      - ../../../../staging/values/istio/values-istio.yaml
 
   istio-security:
     enabled: true
+    description: "Istio Security - AuthorizationPolicy, PeerAuth, JWT 검증"
     path: common-charts/infra/istio-security
     namespace: istio-system
     syncWave: "-1"
     valueFiles:
-      - ../../../staging/values/values-istio-security.yaml
+      - ../../../staging/values/istio/values-istio-security.yaml
 
   # === OCI Chart Extras (추가 모니터링/설정) ===
   istiod-monitoring:
     enabled: true
+    description: "Istiod 모니터링 - PodMonitor, Telemetry 설정"
     path: common-charts/infra/istio/istiod
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - ../../../../staging/values/values-istio.yaml
+      - ../../../../staging/values/istio/values-istio.yaml
+
+  # Kiali VirtualService & DestinationRule
+  kiali-route:
+    enabled: true
+    description: "Kiali 라우팅 - VirtualService, DestinationRule (mTLS 비활성화)"
+    path: common-charts/infra/istio/kiali
+    namespace: istio-system
+    syncWave: "-1"
+    valueFiles:
+      - ../../../../staging/values/istio/values-kiali-route.yaml
+
+  # Load Test Route (k6 부하테스트용)
+  loadtest-route:
+    enabled: true
+    description: "Load Test 라우팅 - /load-test/* -> loadtest-webs"
+    path: staging/charts/istio/loadtest-route
+    namespace: istio-system
+    syncWave: "0"
 
   prometheus-extras:
     enabled: true
+    description: "Prometheus 추가 설정 - Grafana 대시보드 JSON, 추가 규칙"
     path: common-charts/infra/monitoring/prometheus-stack
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - ../../../../staging/values/values-prometheus-stack.yaml
+      - ../../../../staging/values/monitoring/metrics/values-prometheus-stack.yaml
       - ../../../../staging/values/monitoring/alerting/values-rules-staging.yaml
       - ../../../../staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
@@ -464,24 +517,27 @@ gitCharts:
 
   alloy-config:
     enabled: true
+    description: "Alloy 설정 - Faro RUM 수집 VirtualService"
     path: common-charts/infra/monitoring/alloy
     releaseName: alloy
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - ../../../../staging/values/monitoring/values-alloy.yaml
+      - ../../../../staging/values/monitoring/logs/values-alloy.yaml
 
   loki-backup:
     enabled: false  # staging에서 필요시 활성화
+    description: "Loki 백업 설정 (비활성화)"
     path: common-charts/infra/monitoring/loki
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - ../../../../staging/values/values-monitoring.yaml
+      - ../../../../staging/values/monitoring/metrics/values-monitoring.yaml
 
   # === ArgoCD Config (OAuth, Applications) ===
   argocd-config:
     enabled: true
+    description: "ArgoCD 설정 - Google OAuth, ConfigMap, Notifications"
     path: common-charts/infra/argocd
     namespace: argocd
     valueFiles:
@@ -490,24 +546,19 @@ gitCharts:
   # Kyverno Policies
   kyverno-policies:
     enabled: true
+    description: "Kyverno 정책 - 리소스 제한, latest 태그 금지 등"
     path: common-charts/infra/kyverno-policies
     namespace: kyverno
     syncWave: "-6"
     valueFiles:
-      - ../../../staging/values/values-kyverno-policies.yaml
+      - ../../../staging/values/security/values-kyverno-policies.yaml
     syncOptions:
       - SkipDryRunOnMissingResource=true
 
-  # === Tetragon TracingPolicy (L3/L4 threat detection) ===
+  # Tetragon Config (비활성화)
   tetragon-config:
-    enabled: false  # eBPF 비활성화 - cni-eBPF 브랜치에서 활성화
-    path: common-charts/infra/tetragon
-    namespace: kube-system
-    syncWave: "-7"
-    valueFiles:
-      - ../../../staging/values/values-tetragon.yaml
-    syncOptions:
-      - SkipDryRunOnMissingResource=true
+    enabled: false
+    description: "Tetragon 설정 (비활성화)"
 
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
@@ -516,29 +567,79 @@ gitCharts:
   # CloudBeaver (DB 관리 - 부하테스트용)
   cloudbeaver:
     enabled: true
+    description: "CloudBeaver - 웹 기반 DB 관리 도구 (RDS, ClickHouse)"
     path: staging/charts/monitoring/cloudbeaver
     namespace: monitoring
     syncWave: "5"
     valueFiles:
-      - ../../../../staging/values/monitoring/values-cloudbeaver.yaml
+      - ../../../../staging/values/monitoring/tools/values-cloudbeaver.yaml
+
+  # Redis Exporter for AI ElastiCache
+  redis-exporter-ai:
+    enabled: true
+    description: "Redis Exporter - AI ElastiCache 메트릭 수집"
+    path: staging/charts/monitoring/redis-exporter-ai
+    namespace: staging-ai
+    syncWave: "5"
+
+  # RDS Backup CronJob (pg_dump -> S3)
+  rds-backup:
+    enabled: true
+    description: "RDS 백업 - pg_dump CronJob (S3 저장)"
+    path: staging/charts/data/rds-backup
+    namespace: data
+    syncWave: "0"
 
   # Infra Console (Istio & Kyverno 관리 콘솔)
   infra-console:
-    enabled: true
+    enabled: false  # 추후 활성화
+    description: "Infra Console - Istio/Kyverno 관리 웹 UI (비활성화)"
     path: common-charts/infra/infra-console
     namespace: monitoring
     syncWave: "5"
     valueFiles:
-      - ../../../staging/values/values-infra-console.yaml
+      - ../../../staging/values/infra/values-infra-console.yaml
 
-  # === Data (Kafka) ===
+  # RedisInsight (Redis GUI with Google OAuth)
+  redisinsight:
+    enabled: true
+    description: "RedisInsight - Redis GUI 관리 도구"
+    path: common-charts/infra/redisinsight
+    namespace: monitoring
+    syncWave: "5"
+    valueFiles:
+      - ../../../staging/values/data/values-redisinsight.yaml
+
+  # ClickHouse for AI Defense observability warehouse
+  clickhouse:
+    enabled: true
+    description: "ClickHouse - AI Defense 관측 데이터 웨어하우스"
+    path: common-charts/infra/clickhouse
+    namespace: data
+    syncWave: "-4"
+    valueFiles:
+      - ../../../staging/values/data/values-clickhouse.yaml
+    retry:
+      limit: 5
+      duration: "10s"
+      maxDuration: "3m"
+      factor: 2
+    ignoreDifferences:
+      - group: ""
+        kind: PersistentVolumeClaim
+        jsonPointers:
+          - /spec/volumeName
+          - /spec/storageClassName
+
+  # === Messaging (Kafka) ===
   kafka:
     enabled: true
+    description: "Kafka - 메시지 브로커"
     path: common-charts/infra/kafka
-    namespace: data
+    namespace: messaging
     syncWave: "-5"
     valueFiles:
-      - ../../../staging/values/data/values-kafka.yaml
+      - ../../../staging/values/messaging/values-kafka.yaml
     retry:
       limit: 5
       duration: "10s"
@@ -553,11 +654,12 @@ gitCharts:
 
   kafka-ui:
     enabled: true
+    description: "Kafka UI - 웹 기반 Kafka 관리 도구"
     path: dev/charts/data/kafka-ui
-    namespace: data
+    namespace: messaging
     syncWave: "0"
     valueFiles:
-      - ../../../staging/values/data/values-kafka-ui.yaml
+      - ../../../../staging/values/messaging/values-kafka-ui.yaml
 
 # =============================================================================
 # ApplicationSets
@@ -567,40 +669,95 @@ applicationSets:
     enabled: true
     syncWave: "10"
     namespace: staging-webs
+    appNamePrefix: "staging"
     chartPath: common-charts/apps/java-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
     services:
       # 순차 배포: auth-guard → 나머지 서비스 → api-gateway
       - name: auth-guard
         syncWave: "10"
+        description: "Auth Guard - JWT 발급/검증, 로그인/회원가입 API"
       - name: queue
         syncWave: "11"
+        description: "Queue - 대기열 관리, 입장 순서 처리"
       - name: seat
         syncWave: "11"
+        description: "Seat - 좌석 조회/선택, 구역 정보 API"
       - name: order-core
         syncWave: "11"
+        description: "Order Core - 주문 생성/결제, 티켓 발급"
       - name: api-gateway
         syncWave: "12"
+        description: "API Gateway - 라우팅, 인증 필터, Rate Limit"
 
   staging-ai-services:
     enabled: true
     syncWave: "10"
     namespace: staging-ai
+    appNamePrefix: "staging"
     chartPath: common-charts/apps/ai-service
     valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
     services:
       - name: ai-defense
+        description: "AI Defense - 봇 탐지, 트래픽 분석, 정책 평가"
       - name: authz-adapter
+        description: "Authz Adapter - Istio ext_authz gRPC 어댑터"
+
+  staging-ai-etl:
+    enabled: true
+    syncWave: "11"
+    namespace: staging-ai
+    appNamePrefix: "staging"
+    chartPath: common-charts/apps/ai-etl
+    valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
+    services:
+      - name: ai-etl
+        description: "AI ETL - S3 Audit -> ClickHouse 적재 CronJob"
+
+  # Load-test 전용 서비스 (k6 부하 테스트용)
+  loadtest-webs-services:
+    enabled: true
+    syncWave: "15"
+    namespace: loadtest-webs
+    appNamePrefix: "loadtest"
+    chartPath: common-charts/apps/java-service
+    valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
+    services:
+      - name: auth-guard
+        syncWave: "15"
+        description: "[LoadTest] Auth Guard - 부하테스트용 인증 서비스"
+      - name: queue
+        syncWave: "16"
+        description: "[LoadTest] Queue - 부하테스트용 대기열 서비스"
+      - name: seat
+        syncWave: "16"
+        description: "[LoadTest] Seat - 부하테스트용 좌석 서비스"
+      - name: order-core
+        syncWave: "16"
+        description: "[LoadTest] Order Core - 부하테스트용 주문 서비스"
+      - name: api-gateway
+        syncWave: "17"
+        description: "[LoadTest] API Gateway - 부하테스트용 게이트웨이"
+
+  loadtest-ai-services:
+    enabled: false  # load-test 경로는 ext_authz에서 제외되므로 AI 서비스 불필요
+    syncWave: "15"
+    namespace: loadtest-ai
+    appNamePrefix: "loadtest"
+    chartPath: common-charts/apps/ai-service
+    valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
+    services:
+      - name: ai-defense
+        description: "[LoadTest] AI Defense (비활성화)"
+      - name: authz-adapter
+        description: "[LoadTest] Authz Adapter (비활성화)"
 
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)
 # =============================================================================
-rawManifests:
-  apiGateway:
-    enabled: false  # staging에서 필요시 활성화
-  swaggerGateway:
-    enabled: false
-  swagger403Redirect:
-    enabled: false
-  aiDefenseRoute:
-    enabled: true
+# Raw Manifests - 모두 개별 차트로 이동 완료
+# - Grafana: prometheus-extras gitChart (grafana-vs, grafana-dr)
+# - Kiali: kiali-route gitChart (kiali-vs, kiali-dr)
+# - AI Defense: ai-service 차트 내 VirtualService
+# - Load Test: loadtest-route gitChart
+# - Swagger: dev 환경 전용 (staging에서 제거)

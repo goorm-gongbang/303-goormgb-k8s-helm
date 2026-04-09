@@ -2,9 +2,15 @@
 # Kyverno 1.17+ 호환
 
 # Policy failure mode: Ignore | Fail
-# Ignore: 정책 평가 실패 시 리소스 생성 허용 (audit 모드와 유사)
-# Fail: 정책 평가 실패 시 리소스 생성 차단 (enforce 모드와 유사)
+# Ignore: 정책 평가 실패 시 리소스 생성 허용
+# Fail: 정책 평가 실패 시 리소스 생성 차단
 failurePolicy: Ignore
+
+# Validation action: Deny | Audit | Warn
+# Deny: 정책 위반 시 리소스 생성 차단 (enforce)
+# Audit: 정책 위반 로깅만, 리소스 생성 허용 (audit)
+# Warn: 경고 메시지 표시, 리소스 생성 허용
+validationAction: Deny
 
 # 정책별 활성화
 policies:
@@ -53,4 +59,5 @@ excludeNamespaces:
   - karpenter
   - cert-manager
   - local-path-storage
+  - database
   # CNI: Cilium (kube-system), VPC CNI (kube-system) - 이미 위에서 제외

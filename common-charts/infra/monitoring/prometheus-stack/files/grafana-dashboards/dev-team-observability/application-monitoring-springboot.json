@@ -46,7 +46,7 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 8,
+        "w": 6,
         "x": 0,
         "y": 1
       },
@@ -102,8 +102,8 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 8,
-        "x": 8,
+        "w": 6,
+        "x": 6,
         "y": 1
       },
       "id": 2,
@@ -158,8 +158,8 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 8,
-        "x": 16,
+        "w": 6,
+        "x": 12,
         "y": 1
       },
       "id": 3,
@@ -186,6 +186,66 @@
         }
       ],
       "title": "초당 성공 트랜잭션 (TPS)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "선택 기간 동안 발생한 5xx 서버 에러 건수입니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": true,
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_response_status_code=~\"5..\"}[$__range])) or on() vector(0)",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "5xx 에러 건수",
       "type": "stat"
     },
     {
@@ -439,12 +499,12 @@
           "refId": "A"
         },
         {
-          "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_response_status_code=~\"4..\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_response_status_code=~\"4..\"}[$__rate_interval])) or on() vector(0)",
           "legendFormat": "4xx",
           "refId": "B"
         },
         {
-          "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_response_status_code=~\"5..\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_response_status_code=~\"5..\"}[$__rate_interval])) or on() vector(0)",
           "legendFormat": "5xx",
           "refId": "C"
         }
@@ -797,12 +857,12 @@
       },
       "targets": [
         {
-          "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_response_status_code=~\"5..\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\"}[$__rate_interval])), 1)",
+          "expr": "(100 * sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_response_status_code=~\"5..\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\"}[$__rate_interval])), 1)) or on() vector(0)",
           "legendFormat": "5xx 에러율",
           "refId": "A"
         },
         {
-          "expr": "100 * sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_response_status_code=~\"4..\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\"}[$__rate_interval])), 1)",
+          "expr": "(100 * sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\", http_response_status_code=~\"4..\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_request_duration_seconds_count{namespace=~\"$namespace\", app=~\"$app_name\"}[$__rate_interval])), 1)) or on() vector(0)",
           "legendFormat": "4xx 에러율",
           "refId": "B"
         }

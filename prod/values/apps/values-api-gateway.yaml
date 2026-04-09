@@ -1,11 +1,11 @@
-# api-gateway - Staging 환경
+# api-gateway - Prod 환경
 fullnameOverride: "api-gateway"
 contextPath: ""  # api-gateway는 context path 없음
 replicaCount: 1
 
 image:
-  name: "prod/playball/web/api-gateway"
-  tag: "08a50e4"
+  name: "playball/web/api-gateway"
+  tag: "8119799.1"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -101,6 +101,8 @@ env:
         key: SPRING_DATA_REDIS_PORT
 
 envFrom:
+  - configMapRef:
+      name: service-config
   - secretRef:
       name: service-config
 
@@ -126,6 +128,7 @@ otel:
 # Prometheus metrics (PodMonitor)
 metrics:
   enabled: true
+  port: 9090
   path: /actuator/prometheus
   interval: 30s
 

@@ -1,5 +1,5 @@
 # ArgoCD Installation Values (argo/argo-cd chart)
-# EKS Staging - ClusterIP (ALB Ingress로 노출)
+# EKS Prod - ClusterIP (ALB Ingress로 노출)
 
 # Global 노드 배치 설정 (Infra 노드에 배치)
 global:
@@ -20,7 +20,7 @@ server:
   service:
     type: ClusterIP
 
-  # 리소스 제한 (staging 환경)
+  # 리소스 제한 (prod 환경)
   resources:
     requests:
       cpu: 50m

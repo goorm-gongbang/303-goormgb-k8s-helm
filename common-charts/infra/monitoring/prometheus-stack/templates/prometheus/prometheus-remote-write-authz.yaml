@@ -1,5 +1,5 @@
-{{- if .Values.gateway.prometheus.enabled }}
-{{- if .Values.gateway.prometheus.remoteWriteAuth.enabled }}
+{{- if and .Values.gateway .Values.gateway.prometheus .Values.gateway.prometheus.enabled }}
+{{- if and .Values.gateway.prometheus.remoteWriteAuth .Values.gateway.prometheus.remoteWriteAuth.enabled }}
 ---
 # Remote Write 인증용 AuthorizationPolicy
 # k6, OTel Collector 등 외부에서 메트릭 전송 시 토큰 검증

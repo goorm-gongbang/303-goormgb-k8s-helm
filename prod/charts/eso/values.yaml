@@ -1,4 +1,4 @@
-# ClusterSecretStore for EKS staging
+# ClusterSecretStore for EKS prod
 # IRSA 기반 - ServiceAccount를 통해 IAM Role 인증
 
 clusterSecretStore:
@@ -12,9 +12,10 @@ clusterSecretStore:
 
 # Service Config - 앱 서비스용 환경변수
 # 시크릿 구조:
-#   - staging/services/db       : DB + Redis 연결정보
-#   - staging/services/jwt      : JWT + Admission 토큰 설정 (통합)
+#   - prod/services/db       : DB + Redis 연결정보
+#   - prod/services/jwt      : JWT + Admission 토큰 설정 (통합)
+#   - prod/services/smtp     : 이메일 발송용 SMTP 자격증명
 serviceConfig:
   enabled: true
   namespace: prod-webs
-  secretManagerPrefix: staging/services
+  secretManagerPrefix: prod/services

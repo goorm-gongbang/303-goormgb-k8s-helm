@@ -1,0 +1,337 @@
+# EKS Prod - kube-prometheus-stack Configuration
+# Domain: playball.one
+# Note: kube-prometheus-stack을 직접 OCI 배포하므로 prefix 없이 root level에 값 설정
+#
+# ============================================================
+# dev vs EKS 차이점:
+# ------------------------------------------------------------
+# [제거됨 - EKS 불필요]
+# - nodeSelector/tolerations (kubeadm Control Plane 노드 배치용)
+# - kubeControllerManager/kubeScheduler/kubeEtcd 모니터링 (kubeadm 전용)
+# - etcd-client-cert secret 마운트 (kubeadm 전용)
+# - endpoints 설정 (kubeadm 전용)
+#
+# [변경됨 - EKS 환경]
+# - 도메인: goormgb.space -> playball.one
+# - 리소스: 스케일 업 (EKS 환경에 맞게)
+# - retention: 7일로 증가
+# ============================================================
+
+# ===== prometheus-extras용 설정 (ExternalSecrets, VirtualService) =====
+# Grafana Gateway
+gateway:
+  grafana:
+    enabled: true
+    host: "grafana.playball.one"
+    # EKS: TLS는 CloudFront + ACM에서 처리
+  prometheus:
+    enabled: true
+    host: "prometheus.playball.one"
+    gatewayRef: "istio-system/api-gateway"
+
+# Dashboard 설정 (EKS 환경: Calico, 로컬 exporter 대시보드 제외)
+dashboards:
+  infraTeam:
+    folderName: "PROD 플랫폼 관측(인프라)"
+    k6Enabled: false
+    k6FolderName: "PROD 부하 테스트(k6)"
+    wafFolderName: "PROD WAF 모니터링"
+    cicdFolderName: "PROD CICD 모니터링"
+    exclude:
+      - "calico-felix.json"
+    ciliumExclude:
+      - "cilium-overview.json"
+      - "hubble-overview.json"
+  devTeam:
+    folderName: "PROD 서비스 관측(개발)"
+    namespacePattern: "prod-webs"
+    defaultNamespace: "prod-webs"
+    namespaceRegex: "/(prod-webs)/"
+    redisClusterPattern: "goormgb-prod-.*"
+    dbInstancePattern: "goormgb-prod-postgresql"
+    exclude:
+      # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
+      - "database-postgresql-local.json"
+      - "cache-redis-local.json"
+  aiTeam:
+    folderName: "PROD 서비스 관측(AI)"
+    aiNamespace: "prod-ai"
+    websNamespace: "prod-webs"
+  alertOps:
+    enabled: true
+    folderName: "PROD 알람 현황판"
+    envName: "prod"
+    appNamespace: "prod-webs"
+    appJobPattern: "prod-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+    dbInstanceName: "goormgb-prod-postgresql"
+    redisClusterName: "goormgb-prod-redis-001"
+  businessKpi:
+    enabled: true
+    folderName: "PROD 알람 현황판"
+  businessPm:
+    folderName: "PROD 사용자 행동 분석(PM)"
+  securityOps:
+    enabled: true
+    folderName: "PROD 알람 현황판"
+
+# ===== kube-prometheus-stack 직접 배포용 설정 =====
+fullnameOverride: prom
+cleanPrometheusOperatorObjectNames: true
+
+# Admission webhook 비활성화 (TLS 인증서 문제 방지)
+prometheusOperator:
+  admissionWebhooks:
+    enabled: false
+  tls:
+    enabled: false
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# kube-state-metrics
+kube-state-metrics:
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# EKS: kubeadm 전용 컴포넌트 모니터링 비활성화
+kubeControllerManager:
+  enabled: false  # EKS managed
+kubeScheduler:
+  enabled: false  # EKS managed
+kubeEtcd:
+  enabled: false  # EKS managed
+kubeProxy:
+  enabled: true
+
+prometheus:
+  prometheusSpec:
+    # 모든 namespace 메트릭 수집
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+    # OTel Collector에서 메트릭 수신 (remote write)
+    enableRemoteWriteReceiver: true
+
+    retention: 7d
+    retentionSize: "20GB"
+
+    nodeSelector:
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
+
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 3Gi
+
+    # EBS CSI driver 미사용 - emptyDir 사용
+    # storageSpec:
+    #   volumeClaimTemplate:
+    #     metadata:
+    #       name: data
+    #     spec:
+    #       storageClassName: gp2
+    #       accessModes: ["ReadWriteOnce"]
+    #       resources:
+    #         requests:
+    #           storage: 30Gi
+
+grafana:
+  enabled: false
+  forceDeployDashboards: false
+  eso:
+    enabled: true
+    secretManagerKey: prod/monitoring/grafana
+    oauthSecretManagerKey: prod/infra/oauth/google
+    oauthAllowInsecureEmailLookup: true
+    oauthRoleAttributePathFromSecret: true
+    oauthRoleAttributeStrictFromSecret: true
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: monitoring
+  provisioning:
+    enabled: true
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+    users:
+      - email: 212clab@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: rhuba23@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: chamchi0129@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: jusanha17@gmail.com
+        orgRole: Admin
+      - email: lab.jehyun@gmail.com
+        orgRole: Admin
+      - email: wnconc@gmail.com
+        orgRole: Admin
+      - email: jbyun1105@gmail.com
+        orgRole: Admin
+      - email: sayiamseyoun9@gmail.com
+        orgRole: Admin
+      - email: jminwook0120@gmail.com
+        orgRole: Admin
+      - email: siyeon0713@gmail.com
+        orgRole: Admin
+      - email: cdh4112618@gmail.com
+        orgRole: Admin
+      - email: rhkdgur120@gmail.com
+        orgRole: Admin
+      - email: wkdwlgus317@hanyang.ac.kr
+        orgRole: Admin
+      - email: yuuijin863@gmail.com
+        orgRole: Admin
+      - email: hs4734@gmail.com
+        orgRole: Admin
+      - email: hejwien@gmail.com
+        orgRole: Admin
+    teams:
+      - name: DEV
+        members:
+          - yuuijin863@gmail.com
+          - jusanha17@gmail.com
+          - rhkdgur120@gmail.com
+          - siyeon0713@gmail.com
+      - name: AI
+        members:
+          - wkdwlgus317@hanyang.ac.kr
+          - cdh4112618@gmail.com
+      - name: INFR
+        members:
+          - 212clab@gmail.com
+          - chamchi0129@gmail.com
+          - rhuba23@gmail.com
+      - name: SECU
+        members:
+          - wnconc@gmail.com
+          - hejwien@gmail.com
+          - jminwook0120@gmail.com
+      - name: MAN
+        members:
+          - lab.jehyun@gmail.com
+          - jbyun1105@gmail.com
+          - sayiamseyoun9@gmail.com
+          - hs4734@gmail.com
+
+
+  # EBS CSI driver 미사용 - persistence 비활성화
+  persistence:
+    enabled: false
+
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+  # Loki + Tempo + CloudWatch datasource
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      uid: loki
+      access: proxy
+      url: http://loki.monitoring.svc.cluster.local:3100
+      isDefault: false
+      jsonData:
+        maxLines: 1000
+
+    - name: Tempo
+      type: tempo
+      uid: tempo
+      access: proxy
+      url: http://tempo.monitoring.svc.cluster.local:3100
+      isDefault: false
+      jsonData:
+        tracesToLogsV2:
+          datasourceUid: loki
+          spanStartTimeShift: "-1h"
+          spanEndTimeShift: "1h"
+          filterByTraceID: true
+          filterBySpanID: true
+
+    # CloudWatch Data Source (RDS, ElastiCache 메트릭)
+    - name: CloudWatch
+      type: cloudwatch
+      uid: cloudwatch
+      access: proxy
+      isDefault: false
+      editable: true
+      jsonData:
+        authType: default  # IRSA 사용
+        defaultRegion: ap-northeast-2
+
+# VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
+prometheus:
+  additionalServiceMonitors:
+    - name: aws-vpc-cni
+      jobLabel: k8s-app
+      namespaceSelector:
+        matchNames:
+          - kube-system
+      selector:
+        matchLabels:
+          k8s-app: aws-node
+      endpoints:
+        - port: metrics
+          interval: 30s
+          path: /metrics
+
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi

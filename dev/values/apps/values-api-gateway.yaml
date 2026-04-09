@@ -7,7 +7,7 @@ replicaCount: 2
 
 image:
   name: "dev/goormgb/api-gateway"
-  tag: "8608193"
+  tag: "fee0413"
   pullPolicy: Always
 
 imagePullSecrets:
@@ -32,6 +32,10 @@ istio:
     enabled: true
     externalRef: "istio-system/api-gateway"  # 외부 Gateway 참조 (Gateway CRD 생성 안 함)
     host: "api.goormgb.space"
+  # Swagger 외부 노출 차단 - OAuth 보호된 swagger.goormgb.space로 리다이렉트
+  swaggerRedirect:
+    enabled: true
+    host: "swagger.goormgb.space"
   # CORS 설정 - Istio VirtualService 레벨
   cors:
     enabled: true
@@ -107,8 +111,10 @@ readinessProbe:
   failureThreshold: 3
 
 # Prometheus Metrics (Spring Boot Actuator)
+# management 포트 분리 (서비스 포트와 별도로 actuator 노출)
 metrics:
   enabled: true
+  port: 9090
   path: /actuator/prometheus
   interval: 15s
 

@@ -48,11 +48,11 @@ spec:
 
   tags:
     {{- if eq (index $pool.capacityTypes 0) "on-demand" }}
-    Name: "goormgb-staging-ondemand"
+    Name: "goormgb-prod-ondemand"
     {{- else }}
-    Name: "goormgb-staging-spot"
+    Name: "goormgb-prod-spot"
     {{- end }}
-    Environment: staging
+    Environment: prod
     ManagedBy: karpenter
     NodePool: {{ $name }}
 {{- end }}

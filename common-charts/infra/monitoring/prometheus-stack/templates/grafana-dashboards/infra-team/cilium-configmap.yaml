@@ -1,3 +1,10 @@
+{{- $ciliumEnabled := true -}}
+{{- if and .Values.dashboards .Values.dashboards.infraTeam -}}
+{{- if .Values.dashboards.infraTeam.ciliumExclude -}}
+{{- $ciliumEnabled = false -}}
+{{- end -}}
+{{- end -}}
+{{- if $ciliumEnabled -}}
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/infra-team-observability/cilium/*.json" -}}
 {{- $excludeList := list -}}
 {{- $folderName := "DEV 플랫폼 관측(인프라)" -}}
@@ -23,6 +30,7 @@ data:
 {{- if not (has $filename $excludeList) }}
   {{ $filename }}: |-
 {{ $.Files.Get $path | nindent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

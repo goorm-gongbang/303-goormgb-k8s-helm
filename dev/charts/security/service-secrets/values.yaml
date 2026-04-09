@@ -3,6 +3,7 @@
 
 namespace: dev-webs
 secretName: service-config
+environment: dev
 
 # Secrets Manager 키 prefix
 secretManagerPrefix: dev/services

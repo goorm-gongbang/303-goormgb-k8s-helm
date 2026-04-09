@@ -1,4 +1,4 @@
-# ALB Ingress - EKS Staging
+# ALB Ingress - EKS Prod
 # Host-based routing for all services
 
 ingress:
@@ -13,8 +13,8 @@ ingress:
     # ExternalDNS
     external-dns.alpha.kubernetes.io/hostname: argocd.playball.one,grafana.playball.one,kiali.playball.one,api.playball.one,prometheus.playball.one
 
-  # TLS 설정 (ACM 인증서)
-  certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/86c2157d-b449-4af4-8b8a-c1ac9271d6d9
+  # TLS 설정 (ACM 인증서) - *.playball.one
+  certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/2b440690-29ed-451b-a32a-24417cbb0473
 
   rules:
     # ArgoCD - Istio 안 거침 (직접 라우팅)
