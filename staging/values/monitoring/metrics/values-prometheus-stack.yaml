@@ -236,8 +236,6 @@ grafana:
         orgRole: Admin
       - email: hejwien@gmail.com
         orgRole: Admin
-      - email: niceguy6112@gmail.com
-        orgRole: Admin
     teams:
       - name: DEV
         members:
