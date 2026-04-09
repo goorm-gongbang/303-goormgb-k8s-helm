@@ -234,6 +234,41 @@ mtls:
     selector:
       app.kubernetes.io/name: opentelemetry-collector
 
+  # App 서비스 예외 설정
+  # monitoring namespace의 Prometheus가 plain HTTP로 actuator를 scrape할 수 있도록
+  # 앱 메트릭 포트에만 mTLS 비활성화 (management 포트 9090 분리)
+  metricsScrapeExceptions:
+    - name: auth-guard-metrics
+      namespace: prod-webs
+      selector:
+        app: prod-auth-guard
+      metricsPort: 9090
+      mode: DISABLE
+    - name: queue-metrics
+      namespace: prod-webs
+      selector:
+        app: prod-queue
+      metricsPort: 9090
+      mode: DISABLE
+    - name: seat-metrics
+      namespace: prod-webs
+      selector:
+        app: prod-seat
+      metricsPort: 9090
+      mode: DISABLE
+    - name: order-core-metrics
+      namespace: prod-webs
+      selector:
+        app: prod-order-core
+      metricsPort: 9090
+      mode: DISABLE
+    - name: api-gateway-metrics
+      namespace: prod-webs
+      selector:
+        app: prod-api-gateway
+      metricsPort: 9090
+      mode: DISABLE
+
 # ============================================================
 # JWT 인증 설정
 # ============================================================
