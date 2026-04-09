@@ -1,13 +1,21 @@
 # Grafana Tempo - Prod 환경
-# 분산 추적 저장소
+# 분산 추적 저장소 (S3 백엔드)
+
+nodeSelector:
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
+serviceAccount:
+  create: true
+  name: tempo
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-prod-tempo"
 
 tempo:
-  nodeSelector:
-    role: monitoring
-  tolerations:
-    - key: role
-      value: monitoring
-      effect: NoSchedule
   resources:
     requests:
       cpu: 50m
@@ -25,12 +33,14 @@ tempo:
         http:
           endpoint: "0.0.0.0:4318"
 
-  # 로컬 스토리지
+  # S3 스토리지
   storage:
     trace:
-      backend: local
-      local:
-        path: /var/tempo/traces
+      backend: s3
+      s3:
+        bucket: goormgb-prod-tempo
+        endpoint: s3.ap-northeast-2.amazonaws.com
+        region: ap-northeast-2
       wal:
         path: /var/tempo/wal
       block:
@@ -40,6 +50,12 @@ tempo:
   retention: 168h
 
 persistence:
-  enabled: true
-  size: 20Gi
-  storageClassName: gp3
+  enabled: false
+
+extraVolumes:
+  - name: tempo-wal
+    emptyDir: {}
+
+extraVolumeMounts:
+  - name: tempo-wal
+    mountPath: /var/tempo

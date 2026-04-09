@@ -80,6 +80,12 @@ dashboards:
     enabled: true
     folderName: "STAGING 알람 현황판"
 
+thanosObjstore:
+  enabled: true
+  secretName: "thanos-objstore-secret"
+  bucket: "goormgb-staging-thanos"
+  region: "ap-northeast-2"
+
 # VPC CNI Metrics (EKS eBPF)
 vpcCniMetrics:
   enabled: true
