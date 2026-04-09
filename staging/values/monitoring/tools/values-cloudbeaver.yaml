@@ -124,8 +124,7 @@ virtualService:
   host: "cloudbeaver.staging.playball.one"
   gateway: "istio-system/api-gateway"
 
-# RDS 연결 정보 (CloudBeaver UI에서 직접 연결 설정)
-# Host: goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com
-# Port: 5432
-# Database: goormgb
-# Username: goormgb_admin
+# RDS 연결 정보
+# PlayBall DB: user=playball, db=goormgb
+# AI Defense DB: user=ai_defense_user, db=ai_defense
+# ClickHouse: user=default, host=clickhouse.data.svc.cluster.local:8123
