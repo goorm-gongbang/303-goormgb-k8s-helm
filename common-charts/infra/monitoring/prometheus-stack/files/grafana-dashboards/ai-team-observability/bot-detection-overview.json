@@ -1,0 +1,272 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Blocklist Size (CDN + AI)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        {
+          "refId": "A",
+          "namespace": "PlayBall/RealtimeStats",
+          "metricName": "BlocklistSize",
+          "dimensions": { "Environment": ["${environment}"] },
+          "statistics": ["Maximum"],
+          "period": "60"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 },
+              { "color": "red", "value": 50 }
+            ]
+          },
+          "unit": "short",
+          "displayName": "Blocked IPs"
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 2,
+      "title": "New Blocked (per batch)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        {
+          "refId": "A",
+          "namespace": "PlayBall/RealtimeStats",
+          "metricName": "NewBlocked",
+          "dimensions": { "Environment": ["${environment}"] },
+          "statistics": ["Sum"],
+          "period": "60"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          },
+          "unit": "short",
+          "displayName": "New Blocks/min"
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      }
+    },
+    {
+      "id": 3,
+      "title": "Req/Visitor Ratio",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        {
+          "refId": "A",
+          "namespace": "PlayBall/RealtimeStats",
+          "metricName": "ReqPerVisitorRatio",
+          "dimensions": { "Environment": ["${environment}"] },
+          "statistics": ["Maximum"],
+          "period": "60"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 },
+              { "color": "red", "value": 50 }
+            ]
+          },
+          "unit": "short",
+          "displayName": "Ratio"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Unique Visitors vs Total Requests",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        {
+          "refId": "A",
+          "namespace": "PlayBall/RealtimeStats",
+          "metricName": "UniqueVisitors1Min",
+          "dimensions": { "Environment": ["${environment}"] },
+          "statistics": ["Maximum"],
+          "period": "60",
+          "alias": "Unique IPs"
+        },
+        {
+          "refId": "B",
+          "namespace": "PlayBall/RealtimeStats",
+          "metricName": "TotalRequests1Min",
+          "dimensions": { "Environment": ["${environment}"] },
+          "statistics": ["Sum"],
+          "period": "60",
+          "alias": "Total Requests"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short" }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "id": 10,
+      "title": "authz-adapter: Bot Detection Actions",
+      "type": "timeseries",
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 6 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(authz_check_requests_total{reason=~\"cdn_blocklist|bot_token|blacklist\"}[5m])) by (reason)",
+          "legendFormat": "{{reason}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "bars", "fillOpacity": 50, "stacking": { "mode": "normal" } },
+          "color": { "mode": "palette-classic" },
+          "unit": "reqps"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "title": "Req/Visitor Ratio Timeline",
+      "type": "timeseries",
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 6 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        {
+          "refId": "A",
+          "namespace": "PlayBall/RealtimeStats",
+          "metricName": "ReqPerVisitorRatio",
+          "dimensions": { "Environment": ["${environment}"] },
+          "statistics": ["Maximum"],
+          "period": "60",
+          "alias": "Ratio"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "thresholdsStyle": { "mode": "line+area" }
+          },
+          "thresholds": {
+            "steps": [
+              { "color": "transparent", "value": null },
+              { "color": "red", "value": 50 }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 20,
+      "title": "Blocklist Size Timeline",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        {
+          "refId": "A",
+          "namespace": "PlayBall/RealtimeStats",
+          "metricName": "BlocklistSize",
+          "dimensions": { "Environment": ["${environment}"] },
+          "statistics": ["Maximum"],
+          "period": "60",
+          "alias": "Blocked IPs"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "line", "fillOpacity": 20 },
+          "color": { "mode": "fixed", "fixedColor": "red" },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 21,
+      "title": "New Blocked IPs Timeline",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        {
+          "refId": "A",
+          "namespace": "PlayBall/RealtimeStats",
+          "metricName": "NewBlocked",
+          "dimensions": { "Environment": ["${environment}"] },
+          "statistics": ["Sum"],
+          "period": "60",
+          "alias": "New Blocked"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "bars", "fillOpacity": 50 },
+          "color": { "mode": "fixed", "fixedColor": "orange" },
+          "unit": "short"
+        }
+      }
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["ai", "bot-detection", "security"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": false, "text": "staging", "value": "staging" },
+        "label": "Environment",
+        "name": "environment",
+        "options": [
+          { "selected": true, "text": "staging", "value": "staging" },
+          { "selected": false, "text": "prod", "value": "prod" }
+        ],
+        "type": "custom"
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "timezone": "Asia/Seoul",
+  "title": "Bot Detection Overview",
+  "uid": "bot-detection-overview",
+  "version": 1
+}
