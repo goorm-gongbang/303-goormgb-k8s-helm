@@ -32,19 +32,47 @@ gateway:
 # Dashboard 설정 (EKS 환경: Calico, 로컬 exporter 대시보드 제외)
 dashboards:
   infraTeam:
+    folderName: "PROD 플랫폼 관측(인프라)"
+    k6Enabled: false
+    k6FolderName: "PROD 부하 테스트(k6)"
+    wafFolderName: "PROD WAF 모니터링"
+    cicdFolderName: "PROD CICD 모니터링"
     exclude:
       - "calico-felix.json"
+    ciliumExclude:
+      - "cilium-overview.json"
+      - "hubble-overview.json"
   devTeam:
+    folderName: "PROD 서비스 관측(개발)"
+    namespacePattern: "prod-webs"
+    defaultNamespace: "prod-webs"
+    namespaceRegex: "/(prod-webs)/"
+    redisClusterPattern: "goormgb-prod-.*"
+    dbInstancePattern: "goormgb-prod-postgresql"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
       - "cache-redis-local.json"
+  aiTeam:
+    folderName: "PROD 서비스 관측(AI)"
+    aiNamespace: "prod-ai"
+    websNamespace: "prod-webs"
   alertOps:
     enabled: true
+    folderName: "PROD 알람 현황판"
+    envName: "prod"
+    appNamespace: "prod-webs"
+    appJobPattern: "prod-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+    dbInstanceName: "goormgb-prod-postgresql"
+    redisClusterName: "goormgb-prod-redis-001"
   businessKpi:
     enabled: true
+    folderName: "PROD 알람 현황판"
+  businessPm:
+    folderName: "PROD 사용자 행동 분석(PM)"
   securityOps:
     enabled: true
+    folderName: "PROD 알람 현황판"
 
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
 fullnameOverride: prom
