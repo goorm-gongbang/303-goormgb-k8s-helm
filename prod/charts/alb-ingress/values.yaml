@@ -14,7 +14,8 @@ ingress:
     external-dns.alpha.kubernetes.io/hostname: argocd.playball.one,grafana.playball.one,kiali.playball.one,api.playball.one,prometheus.playball.one
 
   # TLS 설정 (ACM 인증서) - *.playball.one
-  certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/2b440690-29ed-451b-a32a-24417cbb0473
+  # [수정됨] 기존의 안정적인 인증서 ARN으로 원복 완료
+  certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/ee27ff43-5be6-4f96-bccd-091b45663091
 
   rules:
     # ArgoCD - Istio 안 거침 (직접 라우팅)
@@ -24,6 +25,8 @@ ingress:
         namespace: argocd
         port: 80
         healthCheckPath: /healthz
+
+    # 나머지 설정은 동일...
 
     # Grafana - Istio 안 거침 (직접 라우팅)
     - host: grafana.playball.one
