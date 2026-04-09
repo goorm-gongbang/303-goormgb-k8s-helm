@@ -18,31 +18,29 @@ ingress:
   certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/ee27ff43-5be6-4f96-bccd-091b45663091
 
   rules:
-    # ArgoCD - Istio 안 거침 (직접 라우팅)
+    # ArgoCD - Istio 보안 정책 적용을 위해 IngressGateway 경유
     - host: argocd.playball.one
       service:
-        name: argocd-server
-        namespace: argocd
+        name: istio-ingressgateway
+        namespace: istio-system
         port: 80
-        healthCheckPath: /healthz
+        healthCheckPath: /healthz/ready
 
-    # 나머지 설정은 동일...
-
-    # Grafana - Istio 안 거침 (직접 라우팅)
+    # Grafana - Istio 보안 정책 적용을 위해 IngressGateway 경유
     - host: grafana.playball.one
       service:
-        name: grafana
-        namespace: monitoring
+        name: istio-ingressgateway
+        namespace: istio-system
         port: 80
-        healthCheckPath: /api/health
+        healthCheckPath: /healthz/ready
 
-    # Kiali - Istio 안 거침 (직접 라우팅)
+    # Kiali - Istio 보안 정책 적용을 위해 IngressGateway 경유
     - host: kiali.playball.one
       service:
-        name: kiali
+        name: istio-ingressgateway
         namespace: istio-system
-        port: 20001
-        healthCheckPath: /healthz
+        port: 80
+        healthCheckPath: /healthz/ready
 
     # API - Istio IngressGateway 거침
     - host: api.playball.one

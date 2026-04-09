@@ -376,6 +376,12 @@ gitCharts:
     namespace: prod-ai
     syncWave: "-4"
 
+  kiali-auth:
+    enabled: true
+    path: prod/charts/security/kiali-auth
+    namespace: istio-system
+    syncWave: "-4"
+
   mail-config:
     enabled: true
     path: common-charts/infra/namespaces

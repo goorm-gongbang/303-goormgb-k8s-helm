@@ -345,3 +345,20 @@ jwtAuth:
 
   unauthorizedResponse:
     enabled: true
+
+# ============================================================
+# 관리 도구 IP 화이트리스트 (WAF 대신 Istio Policy 사용)
+# ============================+===============================
+adminTools:
+  ipWhitelist:
+    enabled: true
+    # 허용할 공인 IP 리스트 (사무실, VPN 등)
+    allowedIPs:
+      - "122.34.166.131/32"
+    # 보호할 도메인 리스트
+    protectedHosts:
+      - "argocd.playball.one"
+      - "grafana.playball.one"
+      - "kiali.playball.one"
+      - "prometheus.playball.one"
+      - "swagger.playball.one"
