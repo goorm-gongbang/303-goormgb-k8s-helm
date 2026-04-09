@@ -74,6 +74,12 @@ dashboards:
     enabled: true
     folderName: "PROD 알람 현황판"
 
+thanosObjstore:
+  enabled: true
+  secretName: "thanos-objstore-secret"
+  bucket: "goormgb-prod-thanos"
+  region: "ap-northeast-2"
+
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
 fullnameOverride: prom
 cleanPrometheusOperatorObjectNames: true
@@ -125,6 +131,17 @@ kubeProxy:
   enabled: true
 
 prometheus:
+  serviceAccount:
+    create: true
+    name: prometheus-prom
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-prod-thanos"
+
+  thanosService:
+    enabled: true
+  thanosServiceMonitor:
+    enabled: true
+
   prometheusSpec:
     # 모든 namespace 메트릭 수집
     serviceMonitorSelectorNilUsesHelmValues: false
@@ -151,6 +168,12 @@ prometheus:
       limits:
         cpu: 1000m
         memory: 3Gi
+
+    thanos:
+      objectStorageConfig:
+        existingSecret:
+          name: thanos-objstore-secret
+          key: objstore.yml
 
     # EBS CSI driver 미사용 - emptyDir 사용
     # storageSpec:
