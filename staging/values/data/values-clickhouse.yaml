@@ -34,12 +34,12 @@ externalSecret:
   secretStore: aws-secrets-manager
   remoteRef: staging/goormgb/clickhouse
 
-# Graviton (ARM64) 노드에 배치 - monitoring 노드
+# Infra on-demand 노드에 배치 (Spot 회수 방지)
 nodeSelector:
   kubernetes.io/arch: arm64
-  role: monitoring
+  role: infra
 
 tolerations:
   - key: role
-    value: monitoring
+    value: infra
     effect: NoSchedule
