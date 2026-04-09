@@ -61,6 +61,13 @@ env:
     value: "604800"  # 7일
   - name: WHITELIST_TTL_SECS
     value: "2592000"  # 30일
+  # CDN Blocklist (Lambda가 쓰는 Redis DB 3)
+  - name: CDN_BLOCKLIST_ENABLED
+    value: "true"
+  - name: CDN_BLOCKLIST_DB
+    value: "3"
+  - name: ENVIRONMENT
+    value: "staging"
 
 # OpenTelemetry
 otel:
@@ -84,11 +91,11 @@ readinessProbe:
 
 resources:
   requests:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 100m
+    memory: 128Mi
   limits:
-    cpu: "2"
-    memory: 2Gi
+    cpu: "1"
+    memory: 1Gi
 
 # Istio sidecar 비활성화 (ext_authz는 sidecar 없이 동작)
 istio:

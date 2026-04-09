@@ -37,6 +37,7 @@ dashboards:
     k6FolderName: "PROD 부하 테스트(k6)"
     wafFolderName: "PROD WAF 모니터링"
     cicdFolderName: "PROD CICD 모니터링"
+    cdnFolderName: "PROD CDN 실시간 통계"
     exclude:
       - "calico-felix.json"
     ciliumExclude:

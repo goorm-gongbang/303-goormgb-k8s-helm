@@ -51,6 +51,13 @@ env:
     value: "2"
   - name: BLACKLIST_TTL_SECS
     value: "3600"
+  # CDN Blocklist + X-Bot-Token 검증 (Redis DB 3)
+  - name: CDN_BLOCKLIST_ENABLED
+    value: "true"
+  - name: CDN_BLOCKLIST_DB
+    value: "3"
+  - name: ENVIRONMENT
+    value: "dev"
 
 # OpenTelemetry
 otel:
