@@ -5,6 +5,7 @@ alertmanager:
     eso:
       enabled: true
       secretManagerKey: "prod/monitoring/discord-webhook-alerts"
+      securityWebhooksEnabled: true
   alertmanagerSpec:
     secrets:
       - alertmanager-discord-webhooks
