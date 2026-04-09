@@ -21,8 +21,9 @@ extraArgs:
   - --domain-filter=playball.one
   - --domain-filter=staging.playball.one
 
-# 정책: sync (레코드 삭제도 허용)
-policy: sync
+# 정책: upsert-only (레코드 생성/갱신만, 삭제 안 함)
+# sync는 EKS 축소/재기동 시 Route53 레코드가 삭제되는 위험이 있음
+policy: upsert-only
 
 # 로그 레벨
 logLevel: info
