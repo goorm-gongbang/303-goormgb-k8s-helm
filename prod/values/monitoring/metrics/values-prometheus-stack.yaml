@@ -166,7 +166,7 @@ prometheus:
 
 grafana:
   enabled: false
-  forceDeployDashboards: true
+  forceDeployDashboards: false
   eso:
     enabled: true
     secretManagerKey: prod/monitoring/grafana
@@ -219,8 +219,6 @@ grafana:
       - email: hs4734@gmail.com
         orgRole: Admin
       - email: hejwien@gmail.com
-        orgRole: Admin
-      - email: niceguy6112@gmail.com
         orgRole: Admin
     teams:
       - name: DEV
