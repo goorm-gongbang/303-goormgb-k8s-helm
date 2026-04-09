@@ -23,6 +23,7 @@ server:
 gateway:
   enabled: true
   host: "argocd.playball.one"
+  gatewayRef: "istio-system/api-gateway"
 
 # Google OAuth 설정
 oidc:

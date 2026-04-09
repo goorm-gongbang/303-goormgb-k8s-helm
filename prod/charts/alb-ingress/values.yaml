@@ -10,6 +10,7 @@ ingress:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/success-codes: "200,404"
     # ExternalDNS
     external-dns.alpha.kubernetes.io/hostname: argocd.playball.one,grafana.playball.one,kiali.playball.one,api.playball.one,prometheus.playball.one
 
@@ -24,7 +25,7 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
 
     # Grafana - Istio 보안 정책 적용을 위해 IngressGateway 경유
     - host: grafana.playball.one
@@ -32,7 +33,7 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
 
     # Kiali - Istio 보안 정책 적용을 위해 IngressGateway 경유
     - host: kiali.playball.one
@@ -40,7 +41,7 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
 
     # API - Istio IngressGateway 거침
     - host: api.playball.one
@@ -48,7 +49,7 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
 
     # Prometheus Remote Write - Istio IngressGateway 거침
     - host: prometheus.playball.one
@@ -56,4 +57,4 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
