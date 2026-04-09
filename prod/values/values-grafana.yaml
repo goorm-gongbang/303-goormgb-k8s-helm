@@ -61,6 +61,15 @@ dashboardProviders:
         options:
           path: /var/lib/grafana/dashboards/infra-team-observability-templates
 
+      - name: "security-ops"
+        orgId: 1
+        folder: "Security Ops"
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/security-ops
+
 # Grafana.com 대시보드
 dashboards:
   dev-team-observability-templates:
@@ -100,7 +109,6 @@ dashboards:
         - name: DS_PROMETHEUS
           value: Prometheus
 
-    # EKS Karpenter Dashboard
     platform-karpenter:
       gnetId: 20398
       revision: 1
@@ -143,6 +151,8 @@ dashboards:
         - name: DS_PROMETHEUS
           value: Prometheus
 
+  # Security Ops 대시보드는 prod/charts/monitoring/security-dashboards에서 ConfigMap으로 배포
+
 # ESO에서 생성한 secret 사용
 admin:
   existingSecret: grafana-admin-credentials
@@ -151,6 +161,14 @@ admin:
 
 # Google OAuth 설정 - Secret에서 환경변수 주입
 envFromSecret: google-oauth-credentials
+
+# AI Service DB 연결 정보 (PostgreSQL, ClickHouse datasource용)
+envFromSecrets:
+  - name: ai-service-config
+
+# ClickHouse 플러그인 설치
+plugins:
+  - grafana-clickhouse-datasource
 
 grafana.ini:
   server:
@@ -166,21 +184,14 @@ grafana.ini:
     scopes: openid email profile
     allow_assign_grafana_admin: true
     skip_org_role_sync: false
-    role_attribute_strict: true
     auth_url: https://accounts.google.com/o/oauth2/auth
     token_url: https://oauth2.googleapis.com/token
     api_url: https://openidconnect.googleapis.com/v1/userinfo
-    # 이메일 기반 역할 할당 (Staging과 동일 유지)
-    role_attribute_path: >-
-      contains(['212clab@gmail.com', 'rhuba23@gmail.com', 'chamchi0129@gmail.com'], email) && 'Admin' ||
-      contains(['jusanha17@gmail.com', 'lab.jehyun@gmail.com', 'wnconc@gmail.com', 'jbyun1105@gmail.com', 'sayiamseyoun9@gmail.com', 'jminwook0120@gmail.com', 'siyeon0713@gmail.com', 'cdh4112618@gmail.com', 'rhkdgur120@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'yuuijin863@gmail.com', 'hs4734@gmail.com', 'hejwien@gmail.com', 'niceguy6112@gmail.com'], email) && 'Viewer' ||
-      ''
   users:
-    allow_sign_up: true
     auto_assign_org: true
     auto_assign_org_role: Viewer
   auth:
-    disable_login_form: false
+    disable_login_form: true  # Google OAuth만 허용
 
 # EBS CSI driver 미사용 - persistence 비활성화
 persistence:
@@ -188,6 +199,7 @@ persistence:
 
 nodeSelector:
   role: monitoring
+
 tolerations:
   - key: role
     value: monitoring
@@ -226,7 +238,7 @@ datasources:
         type: tempo
         uid: tempo
         access: proxy
-        url: http://tempo.monitoring.svc.cluster.local:3100
+        url: http://tempo.monitoring.svc.cluster.local:3200
         isDefault: false
         jsonData:
           tracesToLogsV2:
@@ -236,7 +248,6 @@ datasources:
             filterByTraceID: true
             filterBySpanID: true
 
-      # CloudWatch Data Source (RDS, ElastiCache 메트릭)
       - name: CloudWatch
         type: cloudwatch
         uid: cloudwatch
@@ -244,5 +255,39 @@ datasources:
         isDefault: false
         editable: true
         jsonData:
-          authType: default  # IRSA 사용
+          authType: default
           defaultRegion: ap-northeast-2
+
+      # AI Defense PostgreSQL (RDS)
+      - name: PostgreSQL
+        type: postgres
+        uid: postgres
+        access: proxy
+        url: ${AI_PG_HOST}:${AI_PG_PORT}
+        database: ${AI_PG_DBNAME}
+        user: ${AI_PG_USERNAME}
+        isDefault: false
+        editable: false
+        jsonData:
+          sslmode: require
+          maxOpenConns: 5
+          maxIdleConns: 2
+          connMaxLifetime: 14400
+        secureJsonData:
+          password: ${AI_PG_PASSWORD}
+
+      # AI Defense ClickHouse (클러스터 내부)
+      - name: ClickHouse
+        type: grafana-clickhouse-datasource
+        uid: clickhouse
+        access: proxy
+        isDefault: false
+        editable: false
+        jsonData:
+          host: clickhouse.data.svc.cluster.local
+          port: 8123
+          protocol: http
+          defaultDatabase: ai_defense
+          username: ${AI_CLICKHOUSE_USER}
+        secureJsonData:
+          password: ${AI_CLICKHOUSE_PASSWORD}

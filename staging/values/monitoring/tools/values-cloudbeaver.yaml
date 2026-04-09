@@ -5,14 +5,11 @@
 replicaCount: 1
 
 nodeSelector:
-  role: monitoring
+  role: infra
 
 tolerations:
   - key: role
-    value: monitoring
-    effect: NoSchedule
-  - key: loadtest
-    value: "true"
+    value: infra
     effect: NoSchedule
 
 image:

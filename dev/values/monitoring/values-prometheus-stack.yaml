@@ -24,6 +24,11 @@ dashboards:
       - "vpc-cni.json"
       - "calico-felix.json"  # Cilium eBPF로 대체됨
   devTeam:
+    namespacePattern: "dev-webs"
+    defaultNamespace: "dev-webs"
+    namespaceRegex: "/(dev-webs)/"
+    redisClusterPattern: "goormgb-.*"
+    dbInstancePattern: "goormgb-dev-postgresql"
     exclude:
       # CloudWatch 기반 대시보드 제외 (Dev는 로컬 exporter 사용)
       - "database-rds-postgresql.json"
