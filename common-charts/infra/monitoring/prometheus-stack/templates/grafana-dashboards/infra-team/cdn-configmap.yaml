@@ -1,0 +1,23 @@
+{{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/infra-team-observability/cdn/*.json" -}}
+{{- $folderName := "DEV CDN 실시간 통계" -}}
+{{- if and .Values.dashboards .Values.dashboards.infraTeam .Values.dashboards.infraTeam.cdnFolderName -}}
+{{- $folderName = .Values.dashboards.infraTeam.cdnFolderName -}}
+{{- end -}}
+{{- if gt (len $dashboardFiles) 0 }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-infra-team-cdn
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: monitoring
+    grafana_dashboard: "1"
+  annotations:
+    grafana_folder: {{ $folderName | quote }}
+data:
+{{- range $path, $_ := $dashboardFiles }}
+  {{ base $path }}: |-
+{{ $.Files.Get $path | nindent 4 }}
+{{- end }}
+{{- end }}
