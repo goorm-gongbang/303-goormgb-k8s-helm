@@ -26,6 +26,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.initialConfig.enabled }}
+      initContainers:
+        - name: init-workspace
+          image: busybox:1.36
+          command: ['sh', '-c']
+          args:
+            - |
+              mkdir -p /workspace/GlobalConfiguration/.dbeaver
+              cp /config/data-sources.json /workspace/GlobalConfiguration/.dbeaver/data-sources.json
+              cp /config/.project /workspace/GlobalConfiguration/.project
+          volumeMounts:
+            - name: data
+              mountPath: /workspace
+            - name: initial-config
+              mountPath: /config
+      {{- end }}
       containers:
         {{- if .Values.oauth2Proxy.enabled }}
         # OAuth2 Proxy sidecar
@@ -112,4 +128,9 @@ spec:
         - name: oauth-emails
           secret:
             secretName: cloudbeaver-emails
+        {{- end }}
+        {{- if .Values.initialConfig.enabled }}
+        - name: initial-config
+          configMap:
+            name: cloudbeaver-initial-config
         {{- end }}

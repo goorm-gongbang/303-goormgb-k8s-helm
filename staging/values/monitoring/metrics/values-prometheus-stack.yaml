@@ -50,7 +50,10 @@ dashboards:
   devTeam:
     folderName: "STAGING 서비스 관측(개발)"
     namespacePattern: "staging-webs"
+    defaultNamespace: "staging-webs"
+    namespaceRegex: "/(staging-webs)/"
     redisClusterPattern: "goormgb-staging-.*"
+    dbInstancePattern: "goormgb-staging-postgresql"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
@@ -63,6 +66,11 @@ dashboards:
   alertOps:
     enabled: true
     folderName: "STAGING 알람 현황판"
+    envName: "staging"
+    appNamespace: "staging-webs"
+    appJobPattern: "staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+    dbInstanceName: "goormgb-staging-postgresql"
+    redisClusterName: "goormgb-staging-redis-001"
   businessKpi:
     enabled: true
     folderName: "STAGING 알람 현황판"
@@ -71,6 +79,12 @@ dashboards:
   securityOps:
     enabled: true
     folderName: "STAGING 알람 현황판"
+
+thanosObjstore:
+  enabled: true
+  secretName: "thanos-objstore-secret"
+  bucket: "goormgb-staging-thanos"
+  region: "ap-northeast-2"
 
 # VPC CNI Metrics (EKS eBPF)
 vpcCniMetrics:
@@ -129,6 +143,19 @@ kubeProxy:
   enabled: true
 
 prometheus:
+  # Thanos sidecar SA (IRSA)
+  serviceAccount:
+    create: true
+    name: prometheus-prom
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-staging-thanos"
+
+  # Thanos sidecar 활성화
+  thanosService:
+    enabled: true
+  thanosServiceMonitor:
+    enabled: true
+
   prometheusSpec:
     # 모든 namespace 메트릭 수집
     serviceMonitorSelectorNilUsesHelmValues: false
@@ -156,17 +183,12 @@ prometheus:
         cpu: 1000m
         memory: 3Gi
 
-    # EBS CSI driver 미사용 - emptyDir 사용
-    # storageSpec:
-    #   volumeClaimTemplate:
-    #     metadata:
-    #       name: data
-    #     spec:
-    #       storageClassName: gp2
-    #       accessModes: ["ReadWriteOnce"]
-    #       resources:
-    #         requests:
-    #           storage: 30Gi
+    # Thanos sidecar 설정
+    thanos:
+      objectStorageConfig:
+        existingSecret:
+          name: thanos-objstore-secret
+          key: objstore.yml
 
   # VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
   # Service는 prometheus-stack 차트에서 생성 (vpc-cni-service.yaml)
