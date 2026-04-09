@@ -21,7 +21,7 @@
       }
     ]
   },
-  "description": "staging 운영자가 즉시 확인해야 할 Warning 및 Critical 대상 지표만 모아둔 대시보드입니다. 장애 인지 직후 이 화면에서 상태를 보고, 원인 분석은 기존 앱, DB, Redis, 로그 상세 대시보드로 이어서 확인합니다. 서비스 HTTP 패널이 모두 비면 Prometheus target down, actuator scrape 실패, 메트릭 이름 불일치 가능성을 먼저 보고, 5xx만 비면 최근 시간대에 오류가 없었을 수 있습니다. P99는 bucket 메트릭 부재나 저트래픽 때문에 비어 있을 수 있고, RDS/Redis 패널은 CloudWatch exporter나 변수 연결 상태를 함께 확인하세요.",
+  "description": "__ENV_NAME__ 운영자가 즉시 확인해야 할 Warning 및 Critical 대상 지표만 모아둔 대시보드입니다. 장애 인지 직후 이 화면에서 상태를 보고, 원인 분석은 기존 앱, DB, Redis, 로그 상세 대시보드로 이어서 확인합니다. 서비스 HTTP 패널이 모두 비면 Prometheus target down, actuator scrape 실패, 메트릭 이름 불일치 가능성을 먼저 보고, 5xx만 비면 최근 시간대에 오류가 없었을 수 있습니다. P99는 bucket 메트릭 부재나 저트래픽 때문에 비어 있을 수 있고, RDS/Redis 패널은 CloudWatch exporter나 변수 연결 상태를 함께 확인하세요.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -98,7 +98,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "100 * sum(rate(http_server_requests_seconds_count{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\", status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])), 1)",
+          "expr": "100 * sum(rate(http_server_requests_seconds_count{namespace=\"__APP_NAMESPACE__\", job=~\"__APP_JOB_PATTERN__\", status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"__APP_NAMESPACE__\", job=~\"__APP_JOB_PATTERN__\"}[5m])), 1)",
           "legendFormat": "5xx 비율",
           "refId": "A"
         }
@@ -162,7 +162,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"__APP_NAMESPACE__\", job=~\"__APP_JOB_PATTERN__\"}[5m])))",
           "legendFormat": "P99",
           "refId": "A"
         }
@@ -218,7 +218,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"__APP_NAMESPACE__\", job=~\"__APP_JOB_PATTERN__\"}[5m]))",
           "legendFormat": "RPS",
           "refId": "A"
         }
@@ -296,7 +296,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"prod-webs\"}[10m])) or vector(0)",
+          "expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"__APP_NAMESPACE__\"}[10m])) or vector(0)",
           "legendFormat": "CrashLoop",
           "refId": "A"
         }
@@ -823,7 +823,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "100 * sum(rate(http_server_requests_seconds_count{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\", status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])), 1)",
+          "expr": "100 * sum(rate(http_server_requests_seconds_count{namespace=\"__APP_NAMESPACE__\", job=~\"__APP_JOB_PATTERN__\", status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"__APP_NAMESPACE__\", job=~\"__APP_JOB_PATTERN__\"}[5m])), 1)",
           "legendFormat": "5xx 비율",
           "refId": "A"
         }
@@ -913,7 +913,7 @@
         {
           "datasource": "Prometheus",
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"prod-webs\", job=~\"prod-webs/(api-gateway|auth-guard|order-core|queue|seat)\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"__APP_NAMESPACE__\", job=~\"__APP_JOB_PATTERN__\"}[5m])))",
           "legendFormat": "P99",
           "refId": "A"
         }
@@ -928,7 +928,7 @@
   "tags": [
     "ops",
     "alerts",
-    "prod"
+    "__ENV_NAME__"
   ],
   "templating": {
     "list": [
@@ -950,8 +950,8 @@
       {
         "current": {
           "selected": true,
-          "text": "goormgb-prod-postgresql",
-          "value": "goormgb-prod-postgresql"
+          "text": "__DB_INSTANCE_NAME__",
+          "value": "__DB_INSTANCE_NAME__"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -974,14 +974,14 @@
           "region": "ap-northeast-2"
         },
         "refresh": 1,
-        "regex": "goormgb-prod-postgresql",
+        "regex": "__DB_INSTANCE_NAME__",
         "type": "query"
       },
       {
         "current": {
           "selected": true,
-          "text": "goormgb-prod-redis-001",
-          "value": "goormgb-prod-redis-001"
+          "text": "__REDIS_CLUSTER_NAME__",
+          "value": "__REDIS_CLUSTER_NAME__"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -1004,7 +1004,7 @@
           "region": "ap-northeast-2"
         },
         "refresh": 1,
-        "regex": "goormgb-prod-redis-001",
+        "regex": "__REDIS_CLUSTER_NAME__",
         "type": "query"
       }
     ]

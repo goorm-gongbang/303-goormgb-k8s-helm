@@ -509,7 +509,7 @@
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 25 },
       "id": 21,
       "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
-      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"prod-webs\", app=~\"$log_app\"} |~ `Hibernate:`", "queryType": "range", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "loki", "uid": "${loki}" }, "editorMode": "code", "expr": "{namespace=\"__NAMESPACE_PATTERN__\", app=~\"$log_app\"} |~ `Hibernate:`", "queryType": "range", "refId": "A" }],
       "title": "서비스 DB 로그 (Hibernate)",
       "type": "logs"
     },
@@ -575,14 +575,14 @@
           "value": "$__all"
         },
         "datasource": { "type": "loki", "uid": "${loki}" },
-        "definition": "label_values({namespace=\"prod-webs\"}, app)",
+        "definition": "label_values({namespace=\"__NAMESPACE_PATTERN__\"}, app)",
         "hide": 0,
         "includeAll": true,
         "label": "서비스 (로그)",
         "multi": true,
         "name": "log_app",
         "options": [],
-        "query": "label_values({namespace=\"prod-webs\"}, app)",
+        "query": "label_values({namespace=\"__NAMESPACE_PATTERN__\"}, app)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -609,7 +609,7 @@
           "region": "ap-northeast-2"
         },
         "refresh": 2,
-        "regex": "goormgb-prod-postgresql",
+        "regex": "__DB_INSTANCE_PATTERN__",
         "skipUrlSync": false,
         "sort": 1,
         "type": "query"
