@@ -19,9 +19,9 @@ server:
       # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
       # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
 
-# Istio Gateway 비활성화 (NLB 직접 노출)
+# Istio Gateway 활성화 (IP 화이트리스트 및 정책 적용)
 gateway:
-  enabled: false
+  enabled: true
   host: "argocd.playball.one"
 
 # Google OAuth 설정

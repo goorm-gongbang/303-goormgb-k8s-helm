@@ -48,10 +48,29 @@ apiGatewayConfig:
   hosts:
     - "api.playball.one"
     - "prometheus.playball.one"
+    - "argocd.playball.one"
+    - "grafana.playball.one"
+    - "kiali.playball.one"
+    - "swagger.playball.one"
 
 # =============================================================================
 # Kiali - Service Mesh Observability
 # =============================================================================
+auth:
+  strategy: openid
+  openid:
+    client_id_from_secret: kiali-oidc-secret
+    client_id_secret_key: client_id
+    issuer_uri: "https://accounts.google.com"
+    username_claim: "email"
+    scopes: ["openid", "profile", "email"]
+    disable_rbac: true
+
+server:
+  web_fqdn: kiali.playball.one
+  web_port: 443
+  web_schema: https
+
 deployment:
   node_selector:
     role: monitoring
@@ -73,6 +92,7 @@ external_services:
   grafana:
     enabled: true
     in_cluster_url: "http://grafana.monitoring.svc.cluster.local:80"
+    url: "https://grafana.playball.one"
   tracing:
     enabled: true
     provider: "tempo"

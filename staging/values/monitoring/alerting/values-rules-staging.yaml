@@ -390,3 +390,42 @@ additionalPrometheusRulesMap:
             annotations:
               summary: "staging WAF 차단 요청 급증 치명"
               description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청 수가 1000건을 초과했습니다."
+
+      # Spot 노드 교체 감지
+      - name: staging.spot.rules
+        rules:
+          - alert: StagingSpotNodeAdded
+            expr: |
+              count(kube_node_info) > count(kube_node_info offset 2m)
+            for: 0m
+            labels:
+              severity: info
+              environment: staging
+              team: infra
+            annotations:
+              summary: "staging 노드 추가 감지"
+              description: "새로운 노드가 클러스터에 추가되었습니다. Spot 회수 후 교체일 수 있습니다."
+
+          - alert: StagingSpotNodeRemoved
+            expr: |
+              count(kube_node_info) < count(kube_node_info offset 2m)
+            for: 0m
+            labels:
+              severity: warning
+              environment: staging
+              team: infra
+            annotations:
+              summary: "staging 노드 제거 감지 (Spot 회수 가능)"
+              description: "노드가 클러스터에서 제거되었습니다. Spot 인스턴스 회수일 수 있습니다."
+
+          - alert: StagingNodeNotReady
+            expr: |
+              kube_node_status_condition{condition="Ready",status="true"} == 0
+            for: 2m
+            labels:
+              severity: warning
+              environment: staging
+              team: infra
+            annotations:
+              summary: "staging 노드 NotReady 상태"
+              description: "노드 {{ $labels.node }}가 2분 이상 NotReady 상태입니다."

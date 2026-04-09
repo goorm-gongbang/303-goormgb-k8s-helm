@@ -14,32 +14,33 @@ ingress:
     external-dns.alpha.kubernetes.io/hostname: argocd.playball.one,grafana.playball.one,kiali.playball.one,api.playball.one,prometheus.playball.one
 
   # TLS 설정 (ACM 인증서) - *.playball.one
-  certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/2b440690-29ed-451b-a32a-24417cbb0473
+  # [수정됨] 기존의 안정적인 인증서 ARN으로 원복 완료
+  certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/ee27ff43-5be6-4f96-bccd-091b45663091
 
   rules:
-    # ArgoCD - Istio 안 거침 (직접 라우팅)
+    # ArgoCD - Istio 보안 정책 적용을 위해 IngressGateway 경유
     - host: argocd.playball.one
       service:
-        name: argocd-server
-        namespace: argocd
+        name: istio-ingressgateway
+        namespace: istio-system
         port: 80
-        healthCheckPath: /healthz
+        healthCheckPath: /healthz/ready
 
-    # Grafana - Istio 안 거침 (직접 라우팅)
+    # Grafana - Istio 보안 정책 적용을 위해 IngressGateway 경유
     - host: grafana.playball.one
       service:
-        name: grafana
-        namespace: monitoring
+        name: istio-ingressgateway
+        namespace: istio-system
         port: 80
-        healthCheckPath: /api/health
+        healthCheckPath: /healthz/ready
 
-    # Kiali - Istio 안 거침 (직접 라우팅)
+    # Kiali - Istio 보안 정책 적용을 위해 IngressGateway 경유
     - host: kiali.playball.one
       service:
-        name: kiali
+        name: istio-ingressgateway
         namespace: istio-system
-        port: 20001
-        healthCheckPath: /healthz
+        port: 80
+        healthCheckPath: /healthz/ready
 
     # API - Istio IngressGateway 거침
     - host: api.playball.one
