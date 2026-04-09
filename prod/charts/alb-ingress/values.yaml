@@ -10,37 +10,38 @@ ingress:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/ssl-redirect: "443"
-    # ExternalDNS
-    external-dns.alpha.kubernetes.io/hostname: argocd.playball.one,grafana.playball.one,kiali.playball.one,api.playball.one,prometheus.playball.one
+    alb.ingress.kubernetes.io/success-codes: "200,404"
+    # ExternalDNS (호스트 명단 명시적 선언)
+    external-dns.alpha.kubernetes.io/hostname: "argocd.playball.one, grafana.playball.one, kiali.playball.one, api.playball.one, prometheus.playball.one, swagger.playball.one"
 
   # TLS 설정 (ACM 인증서) - *.playball.one
   # [수정됨] 기존의 안정적인 인증서 ARN으로 원복 완료
   certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/ee27ff43-5be6-4f96-bccd-091b45663091
 
   rules:
-    # ArgoCD - Istio 보안 정책 적용을 위해 IngressGateway 경유
+    # ArgoCD - Istio 안 거침 (직접 라우팅)
     - host: argocd.playball.one
       service:
-        name: istio-ingressgateway
-        namespace: istio-system
+        name: argocd-server
+        namespace: argocd
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /healthz
 
-    # Grafana - Istio 보안 정책 적용을 위해 IngressGateway 경유
+    # Grafana - Istio 안 거침 (직접 라우팅)
     - host: grafana.playball.one
       service:
-        name: istio-ingressgateway
-        namespace: istio-system
+        name: grafana
+        namespace: monitoring
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /api/health
 
-    # Kiali - Istio 보안 정책 적용을 위해 IngressGateway 경유
+    # Kiali - Istio 안 거침 (직접 라우팅)
     - host: kiali.playball.one
       service:
-        name: istio-ingressgateway
+        name: kiali
         namespace: istio-system
-        port: 80
-        healthCheckPath: /healthz/ready
+        port: 20001
+        healthCheckPath: /healthz
 
     # API - Istio IngressGateway 거침
     - host: api.playball.one
@@ -48,7 +49,7 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /
 
     # Prometheus Remote Write - Istio IngressGateway 거침
     - host: prometheus.playball.one
@@ -56,4 +57,4 @@ ingress:
         name: istio-ingressgateway
         namespace: istio-system
         port: 80
-        healthCheckPath: /healthz/ready
+        healthCheckPath: /

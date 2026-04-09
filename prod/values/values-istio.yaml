@@ -48,10 +48,6 @@ apiGatewayConfig:
   hosts:
     - "api.playball.one"
     - "prometheus.playball.one"
-    - "argocd.playball.one"
-    - "grafana.playball.one"
-    - "kiali.playball.one"
-    - "swagger.playball.one"
 
 # =============================================================================
 # Kiali - Service Mesh Observability
