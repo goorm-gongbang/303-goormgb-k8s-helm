@@ -360,5 +360,9 @@ adminTools:
       - "argocd.playball.one"
       - "grafana.playball.one"
       - "kiali.playball.one"
-      - "prometheus.playball.one"
-      - "swagger.playball.one"
+      # prod에서는 미사용 (staging only)
+      # - "swagger.playball.one"
+      # - "redis.playball.one"
+      # - "prometheus.playball.one"
+      # - "kafka-ui.playball.one"
+      # - "cloudbeaver.playball.one"
