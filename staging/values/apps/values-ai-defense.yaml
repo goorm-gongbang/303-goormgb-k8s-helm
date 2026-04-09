@@ -64,6 +64,8 @@ env:
   # S3 아카이빙 활성화 (IRSA로 접근 - credentials 불필요)
   - name: TM_S3_BUCKET
     value: "goormgb-staging-ai-audit"
+  - name: TM_S3_ARCHIVE_INTERVAL_SECONDS
+    value: "60"
   # PostgreSQL (RDS - Secrets Manager에서 가져옴)
   - name: AI_PG_HOST
     valueFrom:

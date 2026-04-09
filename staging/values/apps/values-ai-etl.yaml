@@ -21,6 +21,22 @@ env:
   # S3 (IRSA로 접근 - credentials 불필요)
   - name: TM_S3_BUCKET
     value: "goormgb-staging-ai-audit"
+  # Redis (기존 AI Defense Redis 공유, ETL 전용 prefix: tm:etl:processed:s3:)
+  - name: AI_REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_HOST
+  - name: AI_REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_PORT
+  - name: TM_REDIS_URL
+    value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+  # ETL 처리 완료 기록 TTL (30일)
+  - name: TM_ETL_PROCESSED_LEDGER_TTL_SECONDS
+    value: "2592000"
   # ClickHouse
   - name: AI_CLICKHOUSE_USER
     valueFrom:
