@@ -42,6 +42,7 @@ dashboards:
     k6FolderName: "STAGING 부하 테스트(k6)"
     wafFolderName: "STAGING WAF 모니터링"
     cicdFolderName: "STAGING CICD 모니터링"
+    cdnFolderName: "STAGING CDN 실시간 통계"
     exclude:
       - "calico-felix.json"
     ciliumExclude:
