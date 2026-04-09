@@ -167,12 +167,86 @@ prometheus:
 grafana:
   enabled: false
   forceDeployDashboards: true
+  eso:
+    enabled: true
+    secretManagerKey: prod/monitoring/grafana
+    oauthSecretManagerKey: prod/infra/oauth/google
+    oauthAllowInsecureEmailLookup: true
   sidecar:
     dashboards:
       enabled: true
       label: grafana_dashboard
       labelValue: "1"
       searchNamespace: monitoring
+  provisioning:
+    enabled: true
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+    users:
+      - email: 212clab@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: rhuba23@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: chamchi0129@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: jusanha17@gmail.com
+        orgRole: Admin
+      - email: lab.jehyun@gmail.com
+        orgRole: Admin
+      - email: wnconc@gmail.com
+        orgRole: Admin
+      - email: jbyun1105@gmail.com
+        orgRole: Admin
+      - email: sayiamseyoun9@gmail.com
+        orgRole: Admin
+      - email: jminwook0120@gmail.com
+        orgRole: Admin
+      - email: siyeon0713@gmail.com
+        orgRole: Admin
+      - email: cdh4112618@gmail.com
+        orgRole: Admin
+      - email: rhkdgur120@gmail.com
+        orgRole: Admin
+      - email: wkdwlgus317@hanyang.ac.kr
+        orgRole: Admin
+      - email: yuuijin863@gmail.com
+        orgRole: Admin
+      - email: hs4734@gmail.com
+        orgRole: Admin
+      - email: hejwien@gmail.com
+        orgRole: Admin
+      - email: niceguy6112@gmail.com
+        orgRole: Admin
+    teams:
+      - name: DEV
+        members:
+          - yuuijin863@gmail.com
+          - jusanha17@gmail.com
+          - rhkdgur120@gmail.com
+          - siyeon0713@gmail.com
+      - name: AI
+        members:
+          - wkdwlgus317@hanyang.ac.kr
+          - cdh4112618@gmail.com
+      - name: INFR
+        members:
+          - 212clab@gmail.com
+          - chamchi0129@gmail.com
+          - rhuba23@gmail.com
+      - name: SECU
+        members:
+          - wnconc@gmail.com
+          - hejwien@gmail.com
+          - jminwook0120@gmail.com
+      - name: MAN
+        members:
+          - lab.jehyun@gmail.com
+          - jbyun1105@gmail.com
+          - sayiamseyoun9@gmail.com
+          - hs4734@gmail.com
 
 
   # EBS CSI driver 미사용 - persistence 비활성화
