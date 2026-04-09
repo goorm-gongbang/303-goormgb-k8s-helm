@@ -61,6 +61,13 @@ env:
     value: "604800"  # 7일
   - name: WHITELIST_TTL_SECS
     value: "2592000"  # 30일
+  # CDN Blocklist (Lambda가 쓰는 Redis DB 3)
+  - name: CDN_BLOCKLIST_ENABLED
+    value: "true"
+  - name: CDN_BLOCKLIST_DB
+    value: "3"
+  - name: ENVIRONMENT
+    value: "staging"
 
 # OpenTelemetry
 otel:
