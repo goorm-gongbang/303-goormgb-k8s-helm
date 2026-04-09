@@ -50,7 +50,10 @@ dashboards:
   devTeam:
     folderName: "STAGING 서비스 관측(개발)"
     namespacePattern: "staging-webs"
+    defaultNamespace: "staging-webs"
+    namespaceRegex: "/(staging-webs)/"
     redisClusterPattern: "goormgb-staging-.*"
+    dbInstancePattern: "goormgb-staging-postgresql"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
@@ -63,6 +66,11 @@ dashboards:
   alertOps:
     enabled: true
     folderName: "STAGING 알람 현황판"
+    envName: "staging"
+    appNamespace: "staging-webs"
+    appJobPattern: "staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+    dbInstanceName: "goormgb-staging-postgresql"
+    redisClusterName: "goormgb-staging-redis-001"
   businessKpi:
     enabled: true
     folderName: "STAGING 알람 현황판"

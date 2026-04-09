@@ -196,8 +196,8 @@
       {
         "current": {
           "selected": true,
-          "text": "dev-webs",
-          "value": "dev-webs"
+          "text": "__DEFAULT_NAMESPACE__",
+          "value": "__DEFAULT_NAMESPACE__"
         },
         "datasource": {
           "type": "loki",
@@ -212,7 +212,7 @@
         "options": [],
         "query": "label_values(namespace)",
         "refresh": 1,
-        "regex": "/(dev-webs|staging-webs)/",
+        "regex": "__NAMESPACE_REGEX__",
         "sort": 1,
         "type": "query"
       },

@@ -1,12 +1,18 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/dev-team-observability/*.json" -}}
 {{- $excludeList := list -}}
 {{- $namespacePattern := "dev-webs" -}}
+{{- $defaultNamespace := "dev-webs" -}}
+{{- $namespaceRegex := "/(dev-webs)/" -}}
 {{- $redisClusterPattern := "goormgb-.*" -}}
+{{- $dbInstancePattern := "goormgb-dev-postgresql" -}}
 {{- $folderName := "DEV 서비스 관측(개발)" -}}
 {{- if and .Values.dashboards .Values.dashboards.devTeam -}}
 {{- $excludeList = .Values.dashboards.devTeam.exclude | default list -}}
 {{- $namespacePattern = .Values.dashboards.devTeam.namespacePattern | default "dev-webs" -}}
+{{- $defaultNamespace = .Values.dashboards.devTeam.defaultNamespace | default $namespacePattern -}}
+{{- $namespaceRegex = .Values.dashboards.devTeam.namespaceRegex | default (printf "/(%s)/" $namespacePattern) -}}
 {{- $redisClusterPattern = .Values.dashboards.devTeam.redisClusterPattern | default "goormgb-.*" -}}
+{{- $dbInstancePattern = .Values.dashboards.devTeam.dbInstancePattern | default "goormgb-dev-postgresql" -}}
 {{- $folderName = .Values.dashboards.devTeam.folderName | default "DEV 서비스 관측(개발)" -}}
 {{- end -}}
 {{- if gt (len $dashboardFiles) 0 }}
@@ -26,7 +32,7 @@ data:
 {{- $filename := base $path -}}
 {{- if not (has $filename $excludeList) }}
   {{ $filename }}: |-
-{{ $.Files.Get $path | replace "__NAMESPACE_PATTERN__" $namespacePattern | replace "__REDIS_CLUSTER_PATTERN__" $redisClusterPattern | nindent 4 }}
+{{ $.Files.Get $path | replace "__NAMESPACE_PATTERN__" $namespacePattern | replace "__DEFAULT_NAMESPACE__" $defaultNamespace | replace "__NAMESPACE_REGEX__" $namespaceRegex | replace "__REDIS_CLUSTER_PATTERN__" $redisClusterPattern | replace "__DB_INSTANCE_PATTERN__" $dbInstancePattern | nindent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}

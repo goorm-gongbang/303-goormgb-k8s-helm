@@ -1,9 +1,19 @@
 {{- $dashboardFiles := .Files.Glob "files/grafana-dashboards/alert-ops/*.json" -}}
 {{- $enabled := false -}}
 {{- $folderName := "DEV 알람 현황판" -}}
+{{- $envName := "staging" -}}
+{{- $appNamespace := "staging-webs" -}}
+{{- $appJobPattern := "staging-webs/(api-gateway|auth-guard|order-core|queue|seat)" -}}
+{{- $dbInstanceName := "goormgb-staging-postgresql" -}}
+{{- $redisClusterName := "goormgb-staging-redis-001" -}}
 {{- if and .Values.dashboards .Values.dashboards.alertOps -}}
 {{- $enabled = .Values.dashboards.alertOps.enabled | default false -}}
 {{- $folderName = .Values.dashboards.alertOps.folderName | default "DEV 알람 현황판" -}}
+{{- $envName = .Values.dashboards.alertOps.envName | default $envName -}}
+{{- $appNamespace = .Values.dashboards.alertOps.appNamespace | default $appNamespace -}}
+{{- $appJobPattern = .Values.dashboards.alertOps.appJobPattern | default $appJobPattern -}}
+{{- $dbInstanceName = .Values.dashboards.alertOps.dbInstanceName | default $dbInstanceName -}}
+{{- $redisClusterName = .Values.dashboards.alertOps.redisClusterName | default $redisClusterName -}}
 {{- end -}}
 {{- if and $enabled (gt (len $dashboardFiles) 0) }}
 apiVersion: v1
@@ -20,6 +30,6 @@ metadata:
 data:
 {{- range $path, $_ := $dashboardFiles }}
   {{ base $path }}: |-
-{{ $.Files.Get $path | nindent 4 }}
+{{ $.Files.Get $path | replace "__ENV_NAME__" $envName | replace "__APP_NAMESPACE__" $appNamespace | replace "__APP_JOB_PATTERN__" $appJobPattern | replace "__DB_INSTANCE_NAME__" $dbInstanceName | replace "__REDIS_CLUSTER_NAME__" $redisClusterName | nindent 4 }}
 {{- end }}
 {{- end }}
