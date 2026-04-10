@@ -95,6 +95,8 @@ spec:
               value: "{{ .Values.config.controllerListenerNames }}"
             - name: KAFKA_INTER_BROKER_LISTENER_NAME
               value: "{{ .Values.config.interBrokerListenerName }}"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
             # 토픽 설정
             - name: KAFKA_NUM_PARTITIONS
               value: "{{ .Values.config.numPartitions }}"
