@@ -45,6 +45,10 @@ spec:
           env:
             - name: KAFKA_CLUSTER_ID
               value: "{{ .Values.kraft.clusterId }}"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+              value: "{{ include "kafka.controllerQuorumVoters" . }}"
           volumeMounts:
             - name: data
               mountPath: /var/lib/kafka/data
