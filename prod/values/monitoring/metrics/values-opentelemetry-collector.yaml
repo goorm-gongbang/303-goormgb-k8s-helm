@@ -5,6 +5,10 @@ fullnameOverride: otel-collector
 mode: deployment
 replicaCount: 1
 
+image:
+  repository: otel/opentelemetry-collector-contrib
+  tag: 0.110.0
+
 # Monitoring 노드에 배치
 nodeSelector:
   role: monitoring
