@@ -68,7 +68,7 @@ initialConfig:
           "provider": "postgresql",
           "driver": "postgres-jdbc",
           "name": "Staging RDS - PlayBall (Backend)",
-          "save-password": true,
+          "save-password": false,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
@@ -87,7 +87,7 @@ initialConfig:
           "provider": "postgresql",
           "driver": "postgres-jdbc",
           "name": "Staging RDS - AI Defense (AI Team)",
-          "save-password": true,
+          "save-password": false,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
@@ -106,7 +106,7 @@ initialConfig:
           "provider": "generic",
           "driver": "clickhouse",
           "name": "Staging ClickHouse (AI Team)",
-          "save-password": true,
+          "save-password": false,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
