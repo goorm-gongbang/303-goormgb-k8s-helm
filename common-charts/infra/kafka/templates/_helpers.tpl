@@ -39,7 +39,7 @@ Generate controller quorum voters string
 {{- $voters := list }}
 {{- $headless := include "kafka.headless" . }}
 {{- range $i := until (int .Values.replicas) }}
-{{- $voters = append $voters (printf "%d@%s-%d.%s.%s.svc.cluster.local:9093" (add $i 1) (include "kafka.fullname" $) $i $headless $.Release.Namespace) }}
+{{- $voters = append $voters (printf "%d@%s-%d.%s.%s.svc.cluster.local:9093" $i (include "kafka.fullname" $) $i $headless $.Release.Namespace) }}
 {{- end }}
 {{- join "," $voters }}
 {{- end }}
