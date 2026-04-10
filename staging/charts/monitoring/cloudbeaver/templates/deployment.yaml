@@ -1,20 +1,21 @@
+{{- $name := .Values.fullnameOverride | default .Release.Name | default "cloudbeaver" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloudbeaver
+  name: {{ $name }}
   labels:
-    app: cloudbeaver
+    app: {{ $name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: cloudbeaver
+      app: {{ $name }}
   template:
     metadata:
       labels:
-        app: cloudbeaver
+        app: {{ $name }}
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
@@ -44,7 +45,6 @@ spec:
       {{- end }}
       containers:
         {{- if .Values.oauth2Proxy.enabled }}
-        # OAuth2 Proxy sidecar
         - name: oauth2-proxy
           image: "{{ .Values.oauth2Proxy.image.repository }}:{{ .Values.oauth2Proxy.image.tag }}"
           imagePullPolicy: IfNotPresent
@@ -62,13 +62,14 @@ spec:
             - --reverse-proxy=true
             - --proxy-prefix=/oauth2
             - --upstream=http://127.0.0.1:8978
+            - --cookie-name=_oauth2_proxy_{{ $name }}
           ports:
             - name: http
               containerPort: {{ .Values.oauth2Proxy.port }}
               protocol: TCP
           envFrom:
             - secretRef:
-                name: cloudbeaver-oauth
+                name: {{ $name }}-oauth
           resources:
             {{- toYaml .Values.oauth2Proxy.resources | nindent 12 }}
           volumeMounts:
@@ -88,7 +89,6 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
         {{- end }}
-        # CloudBeaver
         - name: cloudbeaver
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -98,7 +98,7 @@ spec:
               protocol: TCP
           env:
             - name: CB_SERVER_NAME
-              value: "CloudBeaver-Staging"
+              value: "{{ $name | title }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
@@ -120,17 +120,17 @@ spec:
         - name: data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: cloudbeaver-data
+            claimName: {{ $name }}-data
           {{- else }}
           emptyDir: {}
           {{- end }}
         {{- if .Values.oauth2Proxy.enabled }}
         - name: oauth-emails
           secret:
-            secretName: cloudbeaver-emails
+            secretName: {{ $name }}-emails
         {{- end }}
         {{- if .Values.initialConfig.enabled }}
         - name: initial-config
           configMap:
-            name: cloudbeaver-initial-config
+            name: {{ $name }}-initial-config
         {{- end }}

@@ -1,10 +1,11 @@
 {{- if .Values.initialConfig.enabled }}
+{{- $name := .Values.fullnameOverride | default .Release.Name | default "cloudbeaver" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cloudbeaver-initial-config
+  name: {{ $name }}-initial-config
   labels:
-    app: cloudbeaver
+    app: {{ $name }}
 data:
   .project: |
     <?xml version="1.0" encoding="UTF-8"?>

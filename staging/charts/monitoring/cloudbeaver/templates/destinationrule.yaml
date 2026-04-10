@@ -1,10 +1,11 @@
 {{- if .Values.virtualService.enabled }}
+{{- $name := .Values.fullnameOverride | default .Release.Name | default "cloudbeaver" }}
 apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
-  name: cloudbeaver-dr
+  name: {{ $name }}-dr
 spec:
-  host: cloudbeaver.monitoring.svc.cluster.local
+  host: {{ $name }}.{{ .Release.Namespace }}.svc.cluster.local
   trafficPolicy:
     tls:
       mode: DISABLE
