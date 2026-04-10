@@ -15,6 +15,18 @@ imagePullSecrets:
   - name: ecr-pull-secret
 
 env:
+  - name: AI_REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_HOST
+  - name: AI_REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_PORT
+  - name: TM_REDIS_URL
+    value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   - name: TM_S3_BUCKET
     valueFrom:
       secretKeyRef:
