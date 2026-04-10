@@ -67,50 +67,53 @@ initialConfig:
         "staging-playball": {
           "provider": "postgresql",
           "driver": "postgres-jdbc",
-          "name": "Staging RDS - PlayBall",
-          "save-password": false,
+          "name": "Staging RDS - PlayBall (Backend)",
+          "save-password": true,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
             "host": "goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com",
             "port": "5432",
             "database": "goormgb",
+            "user-name": "playball",
             "url": "jdbc:postgresql://goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com:5432/goormgb",
             "type": "dev",
             "provider-properties": {
-              "@dbeaver-show-non-default-db@": "true"
+              "@dbeaver-show-non-default-db@": "false"
             }
           }
         },
         "staging-ai-defense": {
           "provider": "postgresql",
           "driver": "postgres-jdbc",
-          "name": "Staging RDS - AI Defense",
-          "save-password": false,
+          "name": "Staging RDS - AI Defense (AI Team)",
+          "save-password": true,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
             "host": "goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com",
             "port": "5432",
             "database": "ai_defense",
+            "user-name": "ai_defense_user",
             "url": "jdbc:postgresql://goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com:5432/ai_defense",
             "type": "dev",
             "provider-properties": {
-              "@dbeaver-show-non-default-db@": "true"
+              "@dbeaver-show-non-default-db@": "false"
             }
           }
         },
         "staging-clickhouse": {
           "provider": "generic",
           "driver": "clickhouse",
-          "name": "Staging ClickHouse (Lighthouse)",
-          "save-password": false,
+          "name": "Staging ClickHouse (AI Team)",
+          "save-password": true,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
             "host": "clickhouse.data.svc.cluster.local",
             "port": "8123",
             "database": "default",
+            "user-name": "default",
             "url": "jdbc:clickhouse://clickhouse.data.svc.cluster.local:8123/default",
             "type": "dev"
           }
