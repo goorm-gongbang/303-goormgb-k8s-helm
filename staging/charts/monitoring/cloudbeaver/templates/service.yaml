@@ -1,19 +1,20 @@
+{{- $name := .Values.fullnameOverride | default .Release.Name | default "cloudbeaver" }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: cloudbeaver
+  name: {{ $name }}
   labels:
-    app: cloudbeaver
+    app: {{ $name }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
       {{- if .Values.oauth2Proxy.enabled }}
-      targetPort: http  # OAuth2 Proxy port
+      targetPort: http
       {{- else }}
-      targetPort: cb-http  # CloudBeaver direct
+      targetPort: cb-http
       {{- end }}
       protocol: TCP
       name: http
   selector:
-    app: cloudbeaver
+    app: {{ $name }}

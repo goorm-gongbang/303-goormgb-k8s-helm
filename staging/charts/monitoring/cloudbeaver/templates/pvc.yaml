@@ -1,10 +1,11 @@
 {{- if .Values.persistence.enabled }}
+{{- $name := .Values.fullnameOverride | default .Release.Name | default "cloudbeaver" }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: cloudbeaver-data
+  name: {{ $name }}-data
   labels:
-    app: cloudbeaver
+    app: {{ $name }}
 spec:
   accessModes:
     - ReadWriteOnce
