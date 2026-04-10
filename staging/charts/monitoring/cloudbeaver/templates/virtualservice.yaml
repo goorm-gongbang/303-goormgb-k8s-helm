@@ -1,8 +1,9 @@
 {{- if .Values.virtualService.enabled }}
+{{- $name := .Values.fullnameOverride | default .Release.Name | default "cloudbeaver" }}
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
-  name: cloudbeaver-vs
+  name: {{ $name }}-vs
 spec:
   hosts:
     - {{ .Values.virtualService.host | quote }}
@@ -18,7 +19,7 @@ spec:
         retryOn: connect-failure,refused-stream,503,reset
       route:
         - destination:
-            host: cloudbeaver.monitoring.svc.cluster.local
+            host: {{ $name }}.{{ .Release.Namespace }}.svc.cluster.local
             port:
               number: {{ .Values.service.port }}
 {{- end }}
