@@ -7,35 +7,23 @@ additionalPrometheusRulesMap:
         rules:
           - alert: StagingHttp5xxWarning
             expr: |
-              100 * sum by (app) (
-                rate(
+              sum by (app) (
+                increase(
                   http_server_request_duration_seconds_count{
                     namespace="staging-webs",
                     app=~"staging-(api-gateway|auth-guard|order-core|queue|seat)",
                     http_response_status_code=~"5.."
                   }[5m]
                 )
-              )
-              /
-              clamp_min(
-                sum by (app) (
-                  rate(
-                    http_server_request_duration_seconds_count{
-                      namespace="staging-webs",
-                      app=~"staging-(api-gateway|auth-guard|order-core|queue|seat)"
-                    }[5m]
-                  )
-                ),
-                1
-              ) > 1
-            for: 5m
+              ) > 0
+            for: 0m
             labels:
               severity: warning
               environment: staging
               team: dev
             annotations:
-              summary: "staging 환경 5xx 에러율 경고"
-              description: "최근 5m 동안 staging 웹 서비스의 5xx 에러율이 1%를 초과했습니다."
+              summary: "staging 환경 5xx 발생"
+              description: "staging 웹 서비스에서 5xx 에러가 발생했습니다."
 
           - alert: StagingHttp5xxCritical
             expr: |
@@ -116,8 +104,8 @@ additionalPrometheusRulesMap:
           - alert: StagingPodCrashLoopCritical
             expr: |
               sum by (namespace, pod) (
-                increase(kube_pod_container_status_restarts_total{namespace="staging-webs"}[10m])
-              ) > 3
+                increase(kube_pod_container_status_restarts_total{namespace="staging-webs"}[30m])
+              ) > 2
             for: 0m
             labels:
               severity: critical
