@@ -9,10 +9,10 @@ env:
   - name: KAFKA_CONSUMER_GROUP_ID
     value: "seat-service"
   # preQueue Redis (booking-options 검증용)
-  - name: REDIS_HOST
-    value: "redis-cache.data.svc.cluster.local"
-  - name: REDIS_PORT
-    value: "6379"
+  - name: REDIS_QUEUE_HOST
+    value: "redis-queue.data.svc.cluster.local"
+  - name: REDIS_QUEUE_PORT
+    value: "6380"
 
 image:
   name: "dev/goormgb/seat"
