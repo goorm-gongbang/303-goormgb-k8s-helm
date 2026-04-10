@@ -2,6 +2,9 @@
 # ALB Ingress에서 라우팅됨 (api.playball.one)
 
 name: istio-ingressgateway
+hub: docker.io/istio
+tag: 1.29.1
+image: proxyv2
 
 # Labels for Gateway CRD selector
 labels:
