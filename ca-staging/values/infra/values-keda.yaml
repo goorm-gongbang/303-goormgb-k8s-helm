@@ -10,14 +10,9 @@ podLabels:
   webhooks:
     version: "2.19.0"
 
-# Monitoring(Spot) 노드에 배치
+# App 노드에 배치
 nodeSelector:
-  role: monitoring
-
-tolerations:
-  - key: role
-    value: monitoring
-    effect: NoSchedule
+  role: app
 
 # Prometheus 메트릭
 prometheus:
