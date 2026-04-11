@@ -28,7 +28,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "-4"
     valueFiles:
-      - $values/staging/values/istio/values-istio.yaml
+      - $values/ca-staging/values/istio/values-istio.yaml
     ignoreDifferences:
       - group: admissionregistration.k8s.io
         kind: ValidatingWebhookConfiguration
@@ -45,7 +45,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "-3"
     valueFiles:
-      - $values/staging/values/istio/values-istio.yaml
+      - $values/ca-staging/values/istio/values-istio.yaml
     syncOptions:
       - ServerSideApply=true
       - RespectIgnoreDifferences=true
@@ -82,7 +82,7 @@ ociCharts:
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - $values/staging/values/istio/values-istio-gateway.yaml
+      - $values/ca-staging/values/istio/values-istio-gateway.yaml
 
 
 
@@ -96,7 +96,7 @@ ociCharts:
     namespace: karpenter
     syncWave: "-8"
     valueFiles:
-      - $values/staging/values/infra/values-karpenter.yaml
+      - $values/ca-staging/values/infra/values-karpenter.yaml
     syncOptions:
       - ServerSideApply=true
 
@@ -109,7 +109,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/monitoring/logs/values-loki.yaml
+      - $values/ca-staging/values/monitoring/logs/values-loki.yaml
     syncOptions:
       - Replace=true
     ignoreDifferences:
@@ -128,7 +128,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - $values/staging/values/monitoring/logs/values-promtail.yaml
+      - $values/ca-staging/values/monitoring/logs/values-promtail.yaml
 
   kube-prometheus-stack:
     enabled: true
@@ -139,9 +139,9 @@ ociCharts:
     namespace: monitoring
     syncWave: "-1"
     valueFiles:
-      - $values/staging/values/monitoring/metrics/values-prometheus-stack.yaml
-      - $values/staging/values/monitoring/alerting/values-rules-staging.yaml
-      - $values/staging/values/monitoring/alerting/values-alertmanager-staging.yaml
+      - $values/ca-staging/values/monitoring/metrics/values-prometheus-stack.yaml
+      - $values/ca-staging/values/monitoring/alerting/values-rules-staging.yaml
+      - $values/ca-staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -179,7 +179,7 @@ ociCharts:
     namespace: kube-system
     syncWave: "-9"
     valueFiles:
-      - $values/staging/values/infra/values-aws-lb-controller.yaml
+      - $values/ca-staging/values/infra/values-aws-lb-controller.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -215,7 +215,7 @@ ociCharts:
     namespace: external-secrets
     syncWave: "-9"
     valueFiles:
-      - $values/staging/values/infra/values-eso.yaml
+      - $values/ca-staging/values/infra/values-eso.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -235,7 +235,7 @@ ociCharts:
     namespace: external-dns
     syncWave: "-8"
     valueFiles:
-      - $values/staging/values/infra/values-external-dns.yaml
+      - $values/ca-staging/values/infra/values-external-dns.yaml
 
   alloy:
     enabled: true
@@ -246,7 +246,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/monitoring/logs/values-alloy.yaml
+      - $values/ca-staging/values/monitoring/logs/values-alloy.yaml
 
 
   tempo:
@@ -258,7 +258,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/monitoring/traces/values-tempo.yaml
+      - $values/ca-staging/values/monitoring/traces/values-tempo.yaml
     ignoreDifferences:
       - group: ""
         kind: PersistentVolumeClaim
@@ -276,7 +276,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - $values/staging/values/monitoring/visualization/values-grafana.yaml
+      - $values/ca-staging/values/monitoring/visualization/values-grafana.yaml
 
   opentelemetry-collector:
     enabled: true
@@ -287,7 +287,7 @@ ociCharts:
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - $values/staging/values/monitoring/metrics/values-opentelemetry-collector.yaml
+      - $values/ca-staging/values/monitoring/metrics/values-opentelemetry-collector.yaml
 
   # KEDA - Event-Driven Autoscaling
   keda:
@@ -322,7 +322,7 @@ ociCharts:
     namespace: kyverno
     syncWave: "-7"
     valueFiles:
-      - $values/staging/values/security/values-kyverno.yaml
+      - $values/ca-staging/values/security/values-kyverno.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -354,7 +354,7 @@ gitCharts:
     namespace: default
     syncWave: "-10"
     valueFiles:
-      - ../../../staging/values/core/values-namespaces.yaml
+      - ../../../ca-staging/values/core/values-namespaces.yaml
 
   # === Security ===
   rbac:
@@ -363,7 +363,7 @@ gitCharts:
     path: common-charts/infra/rbac
     namespace: default
     valueFiles:
-      - ../../../staging/values/security/values-rbac.yaml
+      - ../../../ca-staging/values/security/values-rbac.yaml
 
   # Network Policies (namespace isolation)
   network-policies:
@@ -373,13 +373,13 @@ gitCharts:
     namespace: default
     syncWave: "-9"
     valueFiles:
-      - ../../../staging/values/security/values-network-policies.yaml
+      - ../../../ca-staging/values/security/values-network-policies.yaml
 
   # ESO ClusterSecretStore (IRSA 기반)
   eso-config:
     enabled: true
     description: "ESO ClusterSecretStore - AWS Secrets Manager 연결 설정"
-    path: staging/charts/eso
+    path: ca-staging/charts/eso
     namespace: external-secrets
     syncWave: "-8"
 
@@ -387,7 +387,7 @@ gitCharts:
   ai-service-secrets:
     enabled: true
     description: "AI 서비스 Secret - Redis, PostgreSQL 연결 정보"
-    path: staging/charts/security/ai-service-secrets
+    path: ca-staging/charts/security/ai-service-secrets
     namespace: staging-ai
     syncWave: "-6"
 
@@ -399,7 +399,7 @@ gitCharts:
     namespace: staging-webs
     syncWave: "-5"
     valueFiles:
-      - ../../../staging/values/apps/values-mail-config.yaml
+      - ../../../ca-staging/values/apps/values-mail-config.yaml
 
   # KEDA ScaledObjects (앱별 오토스케일링 규칙)
   keda-scalers:
@@ -415,7 +415,7 @@ gitCharts:
   karpenter-config:
     enabled: true
     description: "Karpenter 설정 - NodePool, EC2NodeClass 정의"
-    path: staging/charts/karpenter
+    path: ca-staging/charts/karpenter
     namespace: karpenter
     syncWave: "-6"
     syncOptions:
@@ -425,7 +425,7 @@ gitCharts:
   alb-ingress:
     enabled: true
     description: "ALB Ingress - 호스트 기반 라우팅 규칙"
-    path: staging/charts/alb-ingress
+    path: ca-staging/charts/alb-ingress
     namespace: istio-system
     syncWave: "5"
     syncOptions:
@@ -441,7 +441,7 @@ gitCharts:
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - ../../../../staging/values/istio/values-istio.yaml
+      - ../../../../ca-staging/values/istio/values-istio.yaml
 
   istio-security:
     enabled: true
@@ -450,7 +450,7 @@ gitCharts:
     namespace: istio-system
     syncWave: "-1"
     valueFiles:
-      - ../../../staging/values/istio/values-istio-security.yaml
+      - ../../../ca-staging/values/istio/values-istio-security.yaml
 
   # === OCI Chart Extras (추가 모니터링/설정) ===
   istiod-monitoring:
@@ -460,14 +460,14 @@ gitCharts:
     namespace: istio-system
     syncWave: "-2"
     valueFiles:
-      - ../../../../staging/values/istio/values-istio.yaml
+      - ../../../../ca-staging/values/istio/values-istio.yaml
 
   # Kiali VirtualService & DestinationRule
   # Load Test Route (k6 부하테스트용)
   loadtest-route:
     enabled: true
     description: "Load Test 라우팅 - /load-test/* -> loadtest-webs"
-    path: staging/charts/istio/loadtest-route
+    path: ca-staging/charts/istio/loadtest-route
     namespace: istio-system
     syncWave: "0"
 
@@ -478,9 +478,9 @@ gitCharts:
     namespace: monitoring
     syncWave: "0"
     valueFiles:
-      - ../../../../staging/values/monitoring/metrics/values-prometheus-stack.yaml
-      - ../../../../staging/values/monitoring/alerting/values-rules-staging.yaml
-      - ../../../../staging/values/monitoring/alerting/values-alertmanager-staging.yaml
+      - ../../../../ca-staging/values/monitoring/metrics/values-prometheus-stack.yaml
+      - ../../../../ca-staging/values/monitoring/alerting/values-rules-staging.yaml
+      - ../../../../ca-staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
       - Replace=true
 
@@ -491,7 +491,7 @@ gitCharts:
     path: common-charts/infra/argocd
     namespace: argocd
     valueFiles:
-      - ../../../staging/values/core/values-argocd.yaml
+      - ../../../ca-staging/values/core/values-argocd.yaml
 
   # Kyverno Policies
   kyverno-policies:
@@ -501,7 +501,7 @@ gitCharts:
     namespace: kyverno
     syncWave: "-6"
     valueFiles:
-      - ../../../staging/values/security/values-kyverno-policies.yaml
+      - ../../../ca-staging/values/security/values-kyverno-policies.yaml
     syncOptions:
       - SkipDryRunOnMissingResource=true
 
@@ -513,17 +513,17 @@ gitCharts:
   cloudbeaver:
     enabled: true
     description: "CloudBeaver - 웹 기반 DB 관리 도구 (RDS, ClickHouse)"
-    path: staging/charts/monitoring/cloudbeaver
+    path: ca-staging/charts/monitoring/cloudbeaver
     namespace: monitoring
     syncWave: "5"
     valueFiles:
-      - ../../../../staging/values/monitoring/tools/values-cloudbeaver.yaml
+      - ../../../../ca-staging/values/monitoring/tools/values-cloudbeaver.yaml
 
   # Redis Exporter for AI ElastiCache
   redis-exporter-ai:
     enabled: true
     description: "Redis Exporter - AI ElastiCache 메트릭 수집"
-    path: staging/charts/monitoring/redis-exporter-ai
+    path: ca-staging/charts/monitoring/redis-exporter-ai
     namespace: staging-ai
     syncWave: "5"
 
@@ -531,7 +531,7 @@ gitCharts:
   rds-backup:
     enabled: true
     description: "RDS 백업 - pg_dump CronJob (S3 저장)"
-    path: staging/charts/data/rds-backup
+    path: ca-staging/charts/data/rds-backup
     namespace: data
     syncWave: "0"
 
@@ -543,7 +543,7 @@ gitCharts:
     namespace: monitoring
     syncWave: "5"
     valueFiles:
-      - ../../../staging/values/data/values-redisinsight.yaml
+      - ../../../ca-staging/values/data/values-redisinsight.yaml
 
   # ClickHouse for AI Defense observability warehouse
   clickhouse:
@@ -553,7 +553,7 @@ gitCharts:
     namespace: data
     syncWave: "-4"
     valueFiles:
-      - ../../../staging/values/data/values-clickhouse.yaml
+      - ../../../ca-staging/values/data/values-clickhouse.yaml
     retry:
       limit: 5
       duration: "10s"
@@ -574,7 +574,7 @@ gitCharts:
     namespace: messaging
     syncWave: "-5"
     valueFiles:
-      - ../../../staging/values/messaging/values-kafka.yaml
+      - ../../../ca-staging/values/messaging/values-kafka.yaml
     retry:
       limit: 5
       duration: "10s"
@@ -594,7 +594,7 @@ gitCharts:
     namespace: messaging
     syncWave: "0"
     valueFiles:
-      - ../../../../staging/values/messaging/values-kafka-ui.yaml
+      - ../../../../ca-staging/values/messaging/values-kafka-ui.yaml
 
 # =============================================================================
 # ApplicationSets
@@ -606,7 +606,7 @@ applicationSets:
     namespace: staging-webs
     appNamePrefix: "staging"
     chartPath: common-charts/apps/java-service
-    valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
+    valueFilesPattern: ../../../ca-staging/values/apps/values-{{name}}.yaml
     services:
       # 순차 배포: auth-guard → 나머지 서비스 → api-gateway
       - name: auth-guard
@@ -631,7 +631,7 @@ applicationSets:
     namespace: staging-ai
     appNamePrefix: "staging"
     chartPath: common-charts/apps/ai-service
-    valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
+    valueFilesPattern: ../../../ca-staging/values/apps/values-{{name}}.yaml
     services:
       - name: ai-defense
         description: "AI Defense - 봇 탐지, 트래픽 분석, 정책 평가"
@@ -644,7 +644,7 @@ applicationSets:
     namespace: staging-ai
     appNamePrefix: "staging"
     chartPath: common-charts/apps/ai-etl
-    valueFilesPattern: ../../../staging/values/apps/values-{{name}}.yaml
+    valueFilesPattern: ../../../ca-staging/values/apps/values-{{name}}.yaml
     services:
       - name: ai-etl
         description: "AI ETL - S3 Audit -> ClickHouse 적재 CronJob"
@@ -656,7 +656,7 @@ applicationSets:
     namespace: loadtest-webs
     appNamePrefix: "loadtest"
     chartPath: common-charts/apps/java-service
-    valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
+    valueFilesPattern: ../../../ca-staging/values/apps-loadtest/values-{{name}}.yaml
     services:
       - name: auth-guard
         syncWave: "15"
