@@ -75,7 +75,7 @@ initialConfig:
             "host": "goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com",
             "port": "5432",
             "database": "goormgb",
-            "user-name": "goormgb_admin",
+            "user-name": "playball_user",
             "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/goormgb",
             "type": "dev",
             "provider-properties": {
@@ -94,7 +94,7 @@ initialConfig:
             "host": "goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com",
             "port": "5432",
             "database": "ai_defense",
-            "user-name": "goormgb_admin",
+            "user-name": "ai_defense",
             "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/ai_defense",
             "type": "dev",
             "provider-properties": {
