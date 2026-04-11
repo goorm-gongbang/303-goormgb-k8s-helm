@@ -43,7 +43,10 @@ serviceMonitor:
 # infra ON_DEMAND 노드에 배치 (StatefulSet 데이터 유실 방지)
 nodeSelector:
   role: infra
-tolerations: []
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
 
 # Anti-affinity 설정 (Prod에서 replicas > 1일 때 사용)
 affinity: {}
