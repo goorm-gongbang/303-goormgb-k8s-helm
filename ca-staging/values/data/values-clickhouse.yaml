@@ -1,0 +1,45 @@
+# ClickHouse for AI Defense - Staging 환경
+
+image:
+  repository: clickhouse/clickhouse-server
+  tag: "24.3-alpine"
+
+database: ai_defense
+
+config:
+  maxConnections: 100
+  maxConcurrentQueries: 100
+  maxMemoryUsage: 2000000000  # 2GB
+  maxMemoryUsageForAllQueries: 3000000000  # 3GB
+
+persistence:
+  enabled: true
+  storageClass: gp3
+  size: 20Gi
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 4Gi
+
+initScripts:
+  enabled: true
+
+# Staging 환경: Secrets Manager에서 인증 정보 로드
+externalSecret:
+  enabled: true
+  secretStore: aws-secrets-manager
+  remoteRef: staging/goormgb/clickhouse
+
+# Infra on-demand 노드에 배치 (Spot 회수 방지)
+nodeSelector:
+  kubernetes.io/arch: arm64
+  role: infra
+
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule

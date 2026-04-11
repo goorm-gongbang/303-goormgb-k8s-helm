@@ -1,0 +1,53 @@
+# ArgoCD Config - EKS Staging
+# Domain: playball.one
+
+# ArgoCD Server Service - ClusterIP (ALB Ingress에서 직접 라우팅)
+server:
+  # 외부 URL (OAuth redirect용)
+  url: https://argocd.staging.playball.one
+  # ALB에서 SSL 종료하므로 ArgoCD는 HTTP로 실행
+  insecure: true
+  service:
+    type: ClusterIP
+
+# Istio Gateway 비활성화 (NLB 직접 노출)
+gateway:
+  enabled: false
+  host: "argocd.staging.playball.one"
+
+# Google OAuth 설정
+oidc:
+  enabled: true
+  name: Google
+  issuer: https://accounts.google.com
+  secretManagerKey: staging/infra/oauth
+  requestedScopes:
+    - openid
+    - profile
+    - email
+
+# RBAC 설정 - ESO에서 허용된 사용자 목록 가져옴
+rbac:
+  eso:
+    enabled: true
+    secretManagerKey: staging/oauth/rbac/argocd
+  # 등록되지 않은 사용자는 접근 불가
+  defaultPolicy: role:none
+
+# Applications 정의
+# 앱 서비스는 ApplicationSet (staging-webs-services)으로 관리
+# 중복 방지를 위해 여기서는 비활성화
+applications: []
+  # ApplicationSet 사용: staging/root/values.yaml → applicationSets.staging-webs-services
+
+# Prometheus 메트릭 수집 (Prometheus 설치 후 enabled: true로 변경)
+metrics:
+  enabled: false  # TODO: Prometheus 설치 후 true로 변경
+
+# ArgoCD Notifications - Discord
+notifications:
+  enabled: true
+  discord:
+    eso:
+      enabled: true
+      secretManagerKey: staging/argocd

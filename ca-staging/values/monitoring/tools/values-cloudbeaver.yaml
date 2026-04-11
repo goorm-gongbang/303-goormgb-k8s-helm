@@ -1,0 +1,133 @@
+# CloudBeaver - Staging 환경 (부하테스트용 DB 관리)
+# Domain: cloudbeaver.staging.playball.one
+# Google OAuth 인증 필요
+
+replicaCount: 1
+
+nodeSelector:
+  role: infra
+
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+image:
+  repository: dbeaver/cloudbeaver
+  tag: "24.0.0"
+  pullPolicy: IfNotPresent
+
+# OAuth2 Proxy sidecar (Google 로그인 필수)
+oauth2Proxy:
+  enabled: true
+  image:
+    repository: quay.io/oauth2-proxy/oauth2-proxy
+    tag: "v7.6.0"
+  port: 4180
+  config:
+    provider: google
+    cookieSecure: true
+    cookieDomain: ".staging.playball.one"
+    cookieRefresh: "1h"
+    cookieExpire: "4h"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+  # ESO: staging/infra/oauth-teams
+  eso:
+    enabled: true
+    secretStoreRef:
+      name: "aws-secrets-manager"
+      kind: "ClusterSecretStore"
+    remoteRef:
+      key: "staging/infra/oauth-teams"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1536Mi
+
+persistence:
+  enabled: false  # emptyDir 사용 (EBS AZ 종속성 제거)
+
+# Pod 시작 시 DB 연결 설정 자동 주입
+initialConfig:
+  enabled: true
+  dataSources: |
+    {
+      "folders": {},
+      "connections": {
+        "staging-playball": {
+          "provider": "postgresql",
+          "driver": "postgres-jdbc",
+          "name": "Staging RDS - PlayBall (Backend)",
+          "save-password": false,
+          "show-system-objects": false,
+          "read-only": false,
+          "configuration": {
+            "host": "goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com",
+            "port": "5432",
+            "database": "goormgb",
+            "user-name": "playball",
+            "url": "jdbc:postgresql://goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com:5432/goormgb",
+            "type": "dev",
+            "provider-properties": {
+              "@dbeaver-show-non-default-db@": "false"
+            }
+          }
+        },
+        "staging-ai-defense": {
+          "provider": "postgresql",
+          "driver": "postgres-jdbc",
+          "name": "Staging RDS - AI Defense (AI Team)",
+          "save-password": false,
+          "show-system-objects": false,
+          "read-only": false,
+          "configuration": {
+            "host": "goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com",
+            "port": "5432",
+            "database": "ai_defense",
+            "user-name": "ai_defense_user",
+            "url": "jdbc:postgresql://goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com:5432/ai_defense",
+            "type": "dev",
+            "provider-properties": {
+              "@dbeaver-show-non-default-db@": "false"
+            }
+          }
+        },
+        "staging-clickhouse": {
+          "provider": "generic",
+          "driver": "clickhouse",
+          "name": "Staging ClickHouse (AI Team)",
+          "save-password": false,
+          "show-system-objects": false,
+          "read-only": false,
+          "configuration": {
+            "host": "clickhouse.data.svc.cluster.local",
+            "port": "8123",
+            "database": "default",
+            "user-name": "default",
+            "url": "jdbc:clickhouse://clickhouse.data.svc.cluster.local:8123/default",
+            "type": "dev"
+          }
+        }
+      }
+    }
+
+# Istio VirtualService
+virtualService:
+  enabled: true
+  host: "cloudbeaver.staging.playball.one"
+  gateway: "istio-system/api-gateway"
+
+# RDS 연결 정보
+# PlayBall DB: user=playball, db=goormgb
+# AI Defense DB: user=ai_defense_user, db=ai_defense
+# ClickHouse: user=default, host=clickhouse.data.svc.cluster.local:8123
