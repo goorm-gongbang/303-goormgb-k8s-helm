@@ -1,5 +1,6 @@
 # CloudBeaver for Staging
 # Google OAuth via OAuth2 Proxy sidecar
+# PVC 미사용 - ConfigMap 초기 설정으로 운영 (SPOT 노드 호환)
 replicaCount: 1
 
 image:
@@ -49,12 +50,10 @@ resources:
     memory: 1536Mi
 
 persistence:
-  enabled: true
-  size: 2Gi
-  storageClass: gp3
+  enabled: false
 
 initialConfig:
-  enabled: false
+  enabled: true
   dataSources: |
     {"folders":{},"connections":{}}
 
