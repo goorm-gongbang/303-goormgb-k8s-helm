@@ -53,7 +53,7 @@ serviceAccount:
   create: true
   name: loki
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-staging-loki"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-loki"
 
 singleBinary:
   replicas: 1

@@ -11,7 +11,7 @@ podLabels:
 # IRSA for CloudWatch Data Source
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-prod-grafana-cloudwatch
+    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-grafana-cloudwatch
 
 # init-chown-data 비활성화 (PVC 권한 문제 방지)
 initChownData:

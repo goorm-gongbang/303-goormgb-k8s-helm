@@ -149,7 +149,7 @@ prometheus:
     create: true
     name: prometheus-prom
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-staging-thanos"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-thanos"
 
   # Thanos sidecar 활성화
   thanosService:

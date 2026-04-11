@@ -8,7 +8,7 @@ serviceAccountName: ai-defense
 serviceAccount:
   create: true
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-staging-ai-defense
+    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-ai-defense
 
 # Uvicorn 실행 명령어 (root-path 설정 for /ai prefix)
 command:

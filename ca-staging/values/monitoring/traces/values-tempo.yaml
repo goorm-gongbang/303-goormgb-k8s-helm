@@ -17,7 +17,7 @@ serviceAccount:
   create: true
   name: tempo
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-staging-tempo"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-tempo"
 
 tempo:
   resources:
