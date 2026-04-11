@@ -136,7 +136,7 @@ prometheus:
     create: true
     name: prometheus-prom
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/playball-prod-thanos"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-prod-thanos"
 
   thanosService:
     enabled: true
