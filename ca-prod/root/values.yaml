@@ -6,7 +6,7 @@ ecr:
 # Git Repository
 git:
   repoURL: git@github.com:goorm-gongbang/303-goormgb-k8s-helm.git
-  targetRevision: argocd-sync/prod
+  targetRevision: argocd-sync/ca-prod
 
 # ArgoCD Project
 project: default
