@@ -1,0 +1,4 @@
+apiVersion: v2
+name: keda-scalers
+description: KEDA ScaledObject definitions for app services
+version: 0.1.0

@@ -20,9 +20,8 @@ nodePools:
   workloads:
     enabled: true
 
-    # On-demand 우선 (prod 안정성), Spot fallback
+    # Spot 우선 (비용 절감), 앱은 replicas로 가용성 확보
     capacityTypes:
-      - on-demand
       - spot
 
     # 인스턴스 설정 - arm64 (Graviton, 비용 효율)
