@@ -39,6 +39,9 @@ spec:
             - name: native
               containerPort: 9000
               protocol: TCP
+            - name: metrics
+              containerPort: 9363
+              protocol: TCP
           env:
             - name: CLICKHOUSE_DB
               value: {{ .Values.database | quote }}
