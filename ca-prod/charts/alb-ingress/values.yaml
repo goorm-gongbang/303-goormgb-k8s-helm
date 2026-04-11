@@ -12,7 +12,6 @@ ingress:
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/success-codes: "200,404"
     # ExternalDNS (호스트 명단 명시적 선언)
-    external-dns.alpha.kubernetes.io/hostname: "argocd.playball.one, grafana.playball.one, kiali.playball.one, api.playball.one, prometheus.playball.one, swagger.playball.one"
 
   # TLS 설정 (ACM 인증서) - *.playball.one
   # [수정됨] 기존의 안정적인 인증서 ARN으로 원복 완료
@@ -36,7 +35,6 @@ ingress:
         healthCheckPath: /api/health
 
     # Kiali - Istio 안 거침 (직접 라우팅)
-    - host: kiali.playball.one
       service:
         name: kiali
         namespace: istio-system

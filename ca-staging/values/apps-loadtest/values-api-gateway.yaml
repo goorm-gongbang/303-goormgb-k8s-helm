@@ -58,7 +58,6 @@ service:
 # Environment variables - loadtest-webs 서비스 참조
 env:
   - name: ALLOWED_ORIGINS
-    value: "https://staging.playball.one,https://swagger.staging.playball.one,http://localhost:3000"
   - name: AUTH_GUARD_URL
     value: "http://auth-guard.loadtest-webs.svc.cluster.local:8080"
   - name: QUEUE_URL
