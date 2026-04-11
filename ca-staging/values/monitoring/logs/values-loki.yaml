@@ -28,9 +28,9 @@ loki:
   storage:
     type: s3
     bucketNames:
-      chunks: goormgb-staging-loki
-      ruler: goormgb-staging-loki
-      admin: goormgb-staging-loki
+      chunks: playball-staging-loki
+      ruler: playball-staging-loki
+      admin: playball-staging-loki
     s3:
       region: ap-northeast-2
       # IRSA로 인증 (access_key/secret_key 불필요)
@@ -53,7 +53,7 @@ serviceAccount:
   create: true
   name: loki
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-loki"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/playball-staging-loki"
 
 singleBinary:
   replicas: 1

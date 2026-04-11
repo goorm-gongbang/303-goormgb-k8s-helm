@@ -78,7 +78,7 @@ dashboards:
 thanosObjstore:
   enabled: true
   secretName: "thanos-objstore-secret"
-  bucket: "goormgb-prod-thanos"
+  bucket: "playball-prod-thanos"
   region: "ap-northeast-2"
 
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
@@ -136,7 +136,7 @@ prometheus:
     create: true
     name: prometheus-prom
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-prod-thanos"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/playball-prod-thanos"
 
   thanosService:
     enabled: true

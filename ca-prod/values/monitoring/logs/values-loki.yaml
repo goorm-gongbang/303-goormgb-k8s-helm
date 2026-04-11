@@ -27,9 +27,9 @@ loki:
   storage:
     type: s3
     bucketNames:
-      chunks: goormgb-prod-loki
-      ruler: goormgb-prod-loki
-      admin: goormgb-prod-loki
+      chunks: playball-prod-loki
+      ruler: playball-prod-loki
+      admin: playball-prod-loki
     s3:
       region: ap-northeast-2
 
@@ -51,7 +51,7 @@ serviceAccount:
   create: true
   name: loki
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-prod-loki"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/playball-prod-loki"
 
 singleBinary:
   replicas: 1
