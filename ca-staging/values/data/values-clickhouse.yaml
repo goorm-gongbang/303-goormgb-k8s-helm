@@ -32,7 +32,7 @@ initScripts:
 externalSecret:
   enabled: true
   secretStore: aws-secrets-manager
-  remoteRef: staging/goormgb/clickhouse
+  remoteRef: staging/ai-service/clickhouse
 
 # Infra on-demand 노드에 배치 (Spot 회수 방지)
 nodeSelector:

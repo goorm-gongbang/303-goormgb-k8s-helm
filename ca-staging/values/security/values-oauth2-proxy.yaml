@@ -1,5 +1,4 @@
 # OAuth2 Proxy - Swagger 인증용
-# swagger.staging.playball.one → OAuth2 Proxy → 실제 서비스
 
 replicaCount: 1
 
