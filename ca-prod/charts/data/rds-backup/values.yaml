@@ -22,7 +22,7 @@ s3:
 serviceAccount:
   name: rds-backup
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-prod-rds-backup
+    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-rds-backup
 
 # Node placement
 nodeSelector:
