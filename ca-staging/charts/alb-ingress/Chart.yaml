@@ -1,0 +1,4 @@
+apiVersion: v2
+name: alb-ingress
+description: ALB Ingress for EKS Staging
+version: 1.0.0

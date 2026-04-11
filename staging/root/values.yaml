@@ -590,16 +590,6 @@ gitCharts:
     namespace: data
     syncWave: "0"
 
-  # Infra Console (Istio & Kyverno 관리 콘솔)
-  infra-console:
-    enabled: false  # 추후 활성화
-    description: "Infra Console - Istio/Kyverno 관리 웹 UI (비활성화)"
-    path: common-charts/infra/infra-console
-    namespace: monitoring
-    syncWave: "5"
-    valueFiles:
-      - ../../../staging/values/infra/values-infra-console.yaml
-
   # RedisInsight (Redis GUI with Google OAuth)
   redisinsight:
     enabled: true

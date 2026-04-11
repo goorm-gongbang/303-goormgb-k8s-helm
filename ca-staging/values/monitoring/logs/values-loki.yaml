@@ -1,0 +1,107 @@
+# EKS Staging - Loki Configuration
+# SingleBinary 모드 (S3 백엔드, 환경별 버킷 분리)
+
+deploymentMode: SingleBinary
+
+loki:
+  auth_enabled: false
+
+  compactor:
+    retention_enabled: true
+    delete_request_store: s3
+
+  limits_config:
+    retention_period: 72h  # 문서 기준 staging 인프라 로그 3일
+    allow_structured_metadata: true
+    # Per-stream retention (namespace별 보관 기간)
+    retention_stream:
+      - selector: '{namespace=~"(staging-webs|staging-ai)"}'
+        priority: 1
+        period: 336h  # 문서 기준 staging 서비스 로그 14일
+      - selector: '{namespace="k6-tests"}'
+        priority: 2
+        period: 24h  # 부하테스트 로그 24시간 (Loki 3.x 최소값)
+      - selector: '{namespace="loadtest"}'
+        priority: 2
+        period: 24h  # 부하테스트 로그 24시간 (Loki 3.x 최소값)
+
+  storage:
+    type: s3
+    bucketNames:
+      chunks: goormgb-staging-loki
+      ruler: goormgb-staging-loki
+      admin: goormgb-staging-loki
+    s3:
+      region: ap-northeast-2
+      # IRSA로 인증 (access_key/secret_key 불필요)
+
+  commonConfig:
+    replication_factor: 1
+    path_prefix: /var/loki
+
+  schemaConfig:
+    configs:
+      - from: "2024-01-01"
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+
+serviceAccount:
+  create: true
+  name: loki
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::497012402578:role/goormgb-staging-loki"
+
+singleBinary:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+    - key: loadtest
+      value: "true"
+      effect: NoSchedule
+  persistence:
+    enabled: false
+  # WAL/index 캐시용 emptyDir
+  extraVolumes:
+    - name: data
+      emptyDir: {}
+  extraVolumeMounts:
+    - name: data
+      mountPath: /var/loki
+
+# 불필요한 컴포넌트 비활성화 (SingleBinary 모드)
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
+
+gateway:
+  enabled: false
+
+# 테스트/캐시 비활성화
+test:
+  enabled: false
+lokiCanary:
+  enabled: false
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+minio:
+  enabled: false

@@ -1,0 +1,64 @@
+# ai-etl - Staging 환경
+# S3 -> ClickHouse ETL CronJob
+
+enabled: true
+
+# 매 시간 15분에 실행
+schedule: "15 * * * *"
+
+# IRSA ServiceAccount (ai-defense와 동일)
+serviceAccountName: ai-defense
+
+image:
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
+  tag: "4cf452e.5"
+  pullPolicy: Always
+
+# EKS 노드 IAM Role이 ECR 접근 권한 보유
+imagePullSecrets: []
+
+env:
+  # S3 (IRSA로 접근 - credentials 불필요)
+  - name: TM_S3_BUCKET
+    value: "goormgb-staging-ai-audit"
+  # Redis (기존 AI Defense Redis 공유, ETL 전용 prefix: tm:etl:processed:s3:)
+  - name: AI_REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_HOST
+  - name: AI_REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_REDIS_PORT
+  - name: TM_REDIS_URL
+    value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+  # ETL 처리 완료 기록 TTL (30일)
+  - name: TM_ETL_PROCESSED_LEDGER_TTL_SECONDS
+    value: "2592000"
+  # ClickHouse
+  - name: AI_CLICKHOUSE_USER
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_CLICKHOUSE_USER
+  - name: AI_CLICKHOUSE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: AI_CLICKHOUSE_PASSWORD
+  - name: TM_CLICKHOUSE_URL
+    value: "http://$(AI_CLICKHOUSE_USER):$(AI_CLICKHOUSE_PASSWORD)@clickhouse.data.svc.cluster.local:8123/ai_defense"
+
+# Graviton (ARM64) 노드에 배치
+nodeSelector:
+  kubernetes.io/arch: arm64
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

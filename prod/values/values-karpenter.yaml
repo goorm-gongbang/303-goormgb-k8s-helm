@@ -1,0 +1,45 @@
+# Karpenter Configuration - Prod
+# EKS Cluster: goormgb-prod-eks
+
+# Service Account with IRSA
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::497012402578:role/goormgb-prod-karpenter-controller
+
+# Controller Settings
+settings:
+  clusterName: goormgb-prod-eks
+  interruptionQueue: goormgb-prod-karpenter-interruption
+
+# Controller Resources
+controller:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Replicas
+replicas: 1
+
+# Logging
+logLevel: info
+
+# Prometheus ServiceMonitor
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: prom
+
+# Infra 노드에 배치
+nodeSelector:
+  role: infra
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+affinity: {}
+topologySpreadConstraints: []
