@@ -1,0 +1,67 @@
+# Kafka Prod Environment
+# AWS EKS Cluster - Pod 기반 배포
+
+replicas: 3  # Prod 환경은 고가용성을 위해 3대
+
+kraft:
+  clusterId: "goormgb-prod-kafka-001"
+
+config:
+  processRoles: broker,controller
+
+  # 토픽 기본값
+  numPartitions: 3
+  defaultReplicationFactor: 1
+  minInsyncReplicas: 1
+
+  # 로그 보존 (72시간)
+  logRetentionHours: 72
+  logRetentionBytes: 10737418240  # 10GB
+
+persistence:
+  enabled: true
+  storageClass: gp3
+  size: 50Gi
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+
+exporter:
+  enabled: true
+
+serviceMonitor:
+  enabled: true
+  interval: 30s
+
+# Karpenter가 노드 배치 관리
+nodeSelector: {}
+tolerations: []
+
+# Anti-affinity 설정 (Prod에서 replicas > 1일 때 사용)
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - kafka
+        topologyKey: "kubernetes.io/hostname"
+
+# 초기 토픽 생성
+topics:
+  - name: payment-completed
+    partitions: 3
+    replicationFactor: 1
+  - name: order-created
+    partitions: 3
+    replicationFactor: 1
+  - name: order-cancelled
+    partitions: 3
+    replicationFactor: 1

@@ -485,13 +485,7 @@ gitCharts:
     valueFiles:
       - ../../../prod/values/data/values-clickhouse.yaml
 
-  redisinsight:
-    enabled: true
-    path: common-charts/infra/redisinsight
-    namespace: data
-    syncWave: "3"
-    valueFiles:
-      - ../../../prod/values/data/values-redisinsight.yaml
+  # redisinsight: prod에서는 bastion SSM 터널 사용
 
   # === Messaging ===
   kafka:

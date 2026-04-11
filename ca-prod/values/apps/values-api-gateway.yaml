@@ -1,0 +1,138 @@
+# api-gateway - Prod 환경
+fullnameOverride: "api-gateway"
+contextPath: ""  # api-gateway는 context path 없음
+replicaCount: 1
+
+image:
+  name: "playball/web/api-gateway"
+  tag: "8119799.1"
+  pullPolicy: Always
+
+# IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
+imagePullSecrets: []
+
+# apps 노드는 taint 없음 - tolerations 불필요
+
+# HA: 노드 분산 + Managed 노드 우선
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      # Managed node (on-demand) 우선
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/nodepool
+              operator: DoesNotExist
+      # Karpenter on-demand 차선
+      - weight: 50
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/capacity-type
+              operator: In
+              values: ["on-demand"]
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: api-gateway
+          topologyKey: kubernetes.io/hostname
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Istio
+istio:
+  sidecar: true
+  gateway:
+    enabled: true
+    externalRef: "istio-system/api-gateway"
+    host: "api.playball.one"
+  cors:
+    enabled: true
+    allowOrigins:
+      - "https://playball.one"
+      - "http://localhost:3000"
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+      - OPTIONS
+    allowHeaders:
+      - "*"
+    allowCredentials: true
+    maxAge: "24h"
+
+# Service
+servicePort: &port 8085
+service:
+  type: ClusterIP
+  port: *port
+
+# Environment variables
+env:
+  - name: ALLOWED_ORIGINS
+    value: "https://playball.one,http://localhost:3000"
+  - name: AUTH_GUARD_URL
+    value: "http://auth-guard.prod-webs.svc.cluster.local:8080"
+  - name: QUEUE_URL
+    value: "http://queue.prod-webs.svc.cluster.local:8081"
+  - name: SEAT_URL
+    value: "http://seat.prod-webs.svc.cluster.local:8082"
+  - name: ORDER_CORE_URL
+    value: "http://order-core.prod-webs.svc.cluster.local:8083"
+  - name: REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: SPRING_DATA_REDIS_HOST
+  - name: REDIS_PORT
+    valueFrom:
+      secretKeyRef:
+        name: service-config
+        key: SPRING_DATA_REDIS_PORT
+
+envFrom:
+  - configMapRef:
+      name: service-config
+  - secretRef:
+      name: service-config
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: *port
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  failureThreshold: 6
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: *port
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  failureThreshold: 6
+
+otel:
+  enabled: true
+
+# Prometheus metrics (PodMonitor)
+metrics:
+  enabled: true
+  port: 9090
+  path: /actuator/prometheus
+  interval: 30s
+
+# PodDisruptionBudget - 최소 1개 유지
+pdb:
+  enabled: true
+  minAvailable: 1

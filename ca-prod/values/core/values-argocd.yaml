@@ -30,7 +30,7 @@ oidc:
   enabled: true
   name: Google
   issuer: https://accounts.google.com
-  secretManagerKey: prod/argocd/oauth
+  secretManagerKey: prod/argocd
   requestedScopes:
     - openid
     - profile
@@ -40,7 +40,7 @@ oidc:
 rbac:
   eso:
     enabled: true
-    secretManagerKey: prod/oauth/rbac/argocd
+    secretManagerKey: prod/argocd
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
 
@@ -60,7 +60,7 @@ notifications:
   discord:
     eso:
       enabled: true
-      secretManagerKey: prod/argocd/discord-webhook
+      secretManagerKey: prod/argocd
 
 # Repo Server 리소스 상향 (성능 안정화)
 repoServer:
