@@ -1,0 +1,228 @@
+{
+  "annotations": { "list": [] },
+  "description": "CloudFront CDN - Cache Hit Rate, Requests, Errors, Bandwidth",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "title": "Cache Hit Rate (%)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [{
+        "namespace": "AWS/CloudFront",
+        "metricName": "CacheHitRate",
+        "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+        "statistics": ["Average"],
+        "period": "300"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "green", "value": 80 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "Total Requests",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [{
+        "namespace": "AWS/CloudFront",
+        "metricName": "Requests",
+        "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+        "statistics": ["Sum"],
+        "period": "300"
+      }],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "title": "Error Rate (%)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        {
+          "namespace": "AWS/CloudFront",
+          "metricName": "4xxErrorRate",
+          "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+          "statistics": ["Average"],
+          "period": "300",
+          "refId": "4xx"
+        },
+        {
+          "namespace": "AWS/CloudFront",
+          "metricName": "5xxErrorRate",
+          "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+          "statistics": ["Average"],
+          "period": "300",
+          "refId": "5xx"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "Bandwidth (Bytes Downloaded)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [{
+        "namespace": "AWS/CloudFront",
+        "metricName": "BytesDownloaded",
+        "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+        "statistics": ["Sum"],
+        "period": "300"
+      }],
+      "fieldConfig": { "defaults": { "unit": "bytes" } }
+    },
+    {
+      "title": "Requests Over Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [{
+        "namespace": "AWS/CloudFront",
+        "metricName": "Requests",
+        "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+        "statistics": ["Sum"],
+        "period": "60"
+      }],
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "fillOpacity": 20 } } }
+    },
+    {
+      "title": "Cache Hit Rate Over Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [{
+        "namespace": "AWS/CloudFront",
+        "metricName": "CacheHitRate",
+        "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+        "statistics": ["Average"],
+        "period": "60"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "fillOpacity": 20 }
+        }
+      }
+    },
+    {
+      "title": "Error Rates Over Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        {
+          "namespace": "AWS/CloudFront",
+          "metricName": "4xxErrorRate",
+          "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+          "statistics": ["Average"],
+          "period": "60",
+          "refId": "4xx"
+        },
+        {
+          "namespace": "AWS/CloudFront",
+          "metricName": "5xxErrorRate",
+          "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+          "statistics": ["Average"],
+          "period": "60",
+          "refId": "5xx"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "custom": { "fillOpacity": 20 }
+        }
+      }
+    },
+    {
+      "title": "Bandwidth Over Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        {
+          "namespace": "AWS/CloudFront",
+          "metricName": "BytesDownloaded",
+          "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+          "statistics": ["Sum"],
+          "period": "60",
+          "refId": "downloaded"
+        },
+        {
+          "namespace": "AWS/CloudFront",
+          "metricName": "BytesUploaded",
+          "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+          "statistics": ["Sum"],
+          "period": "60",
+          "refId": "uploaded"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": { "fillOpacity": 20 }
+        }
+      }
+    },
+    {
+      "title": "Origin Latency (ms)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 22 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [{
+        "namespace": "AWS/CloudFront",
+        "metricName": "OriginLatency",
+        "dimensions": { "DistributionId": ["$distribution_id"], "Region": ["Global"] },
+        "statistics": ["Average", "p90", "p99"],
+        "period": "60"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": { "fillOpacity": 10 }
+        }
+      }
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "distribution_id",
+        "type": "textbox",
+        "current": { "value": "" },
+        "label": "CloudFront Distribution ID"
+      }
+    ]
+  },
+  "time": { "from": "now-6h", "to": "now" },
+  "title": "CloudFront CDN Overview",
+  "uid": "cloudfront-overview",
+  "version": 1,
+  "tags": ["cloudfront", "cdn", "dev-team"]
+}
