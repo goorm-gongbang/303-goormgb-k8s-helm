@@ -42,8 +42,8 @@ resources:
     cpu: 100m
     memory: 256Mi
   limits:
-    cpu: 500m
-    memory: 512Mi
+    cpu: "2"
+    memory: 2Gi
 
 istio:
   sidecar: true
