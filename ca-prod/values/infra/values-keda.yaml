@@ -5,13 +5,13 @@
 podLabels:
   keda:
     app: keda-operator
-    version: "2.16.1"
+    version: "2.19.0"
   metricsAdapter:
     app: keda-metrics-apiserver
-    version: "2.16.1"
+    version: "2.19.0"
   webhooks:
     app: keda-admission-webhooks
-    version: "2.16.1"
+    version: "2.19.0"
 
 # Infra 노드에 배치
 nodeSelector:

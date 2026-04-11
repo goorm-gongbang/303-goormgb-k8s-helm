@@ -24,7 +24,7 @@ ociCharts:
     enabled: true
     repoURL: https://kyverno.github.io/kyverno/
     chart: kyverno
-    version: "3.2.6"
+    version: "3.7.1"
     namespace: kyverno
     syncWave: "-7"
     valueFiles:
@@ -114,7 +114,7 @@ ociCharts:
     enabled: true
     repoURL: public.ecr.aws/karpenter
     chart: karpenter
-    version: "1.9.0"
+    version: "1.11.1"
     namespace: karpenter
     syncWave: "2"
     valueFiles:
@@ -154,7 +154,7 @@ ociCharts:
     enabled: true
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    version: "82.10.3"
+    version: "83.4.0"
     namespace: monitoring
     syncWave: "3"
     valueFiles:
@@ -184,7 +184,7 @@ ociCharts:
     enabled: true
     repoURL: https://aws.github.io/eks-charts
     chart: aws-load-balancer-controller
-    version: "1.11.0"
+    version: "3.2.1"
     namespace: kube-system
     syncWave: "1"
     valueFiles:
@@ -219,7 +219,7 @@ ociCharts:
     enabled: true
     repoURL: https://charts.external-secrets.io
     chart: external-secrets
-    version: "2.1.0"
+    version: "2.3.0"
     namespace: external-secrets
     syncWave: "0"
     valueFiles:
@@ -238,7 +238,7 @@ ociCharts:
     enabled: true
     repoURL: https://kubernetes-sigs.github.io/external-dns/
     chart: external-dns
-    version: "1.15.2"
+    version: "1.20.0"
     namespace: external-dns
     syncWave: "2"
     valueFiles:
@@ -248,7 +248,7 @@ ociCharts:
     enabled: true
     repoURL: https://grafana.github.io/helm-charts
     chart: alloy
-    version: "1.6.2"
+    version: "1.7.0"
     namespace: monitoring
     syncWave: "3"
     valueFiles:
@@ -258,7 +258,7 @@ ociCharts:
     enabled: true
     repoURL: https://grafana.github.io/helm-charts
     chart: tempo
-    version: "1.10.3"
+    version: "1.24.4"
     namespace: monitoring
     syncWave: "3"
     valueFiles:
@@ -275,7 +275,7 @@ ociCharts:
     enabled: true
     repoURL: https://grafana.github.io/helm-charts
     chart: grafana
-    version: "8.14.0"
+    version: "10.5.15"
     namespace: monitoring
     syncWave: "0"
     valueFiles:
@@ -285,7 +285,7 @@ ociCharts:
     enabled: true
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-collector
-    version: "0.147.1"
+    version: "0.150.0"
     namespace: monitoring
     syncWave: "1"
     valueFiles:
@@ -297,7 +297,7 @@ ociCharts:
     description: "KEDA - Kafka lag, Redis queue, Cron 기반 오토스케일링"
     repoURL: https://kedacore.github.io/charts
     chart: keda
-    version: "2.16.1"
+    version: "2.19.0"
     namespace: keda-system
     syncWave: "0"
     valueFiles:
