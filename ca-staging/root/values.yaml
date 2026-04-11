@@ -300,6 +300,9 @@ ociCharts:
     syncWave: "0"
     valueFiles:
       - $values/ca-staging/values/infra/values-keda.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
 
   # Metrics Server - kubectl top nodes/pods
   metrics-server:

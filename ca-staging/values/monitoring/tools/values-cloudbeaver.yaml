@@ -64,38 +64,38 @@ initialConfig:
     {
       "folders": {},
       "connections": {
-        "staging-playball": {
+        "playball-pg": {
           "provider": "postgresql",
           "driver": "postgres-jdbc",
-          "name": "Staging RDS - PlayBall (Backend)",
+          "name": "playball-pg",
           "save-password": false,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
-            "host": "goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com",
+            "host": "goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com",
             "port": "5432",
             "database": "goormgb",
-            "user-name": "playball",
-            "url": "jdbc:postgresql://goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com:5432/goormgb",
+            "user-name": "goormgb_admin",
+            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/goormgb",
             "type": "dev",
             "provider-properties": {
               "@dbeaver-show-non-default-db@": "false"
             }
           }
         },
-        "staging-ai-defense": {
+        "ai-defense-pg": {
           "provider": "postgresql",
           "driver": "postgres-jdbc",
-          "name": "Staging RDS - AI Defense (AI Team)",
+          "name": "ai-defense-pg",
           "save-password": false,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
-            "host": "goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com",
+            "host": "goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com",
             "port": "5432",
             "database": "ai_defense",
-            "user-name": "ai_defense_user",
-            "url": "jdbc:postgresql://goormgb-staging-postgresql.cvyq4qac6miw.ap-northeast-2.rds.amazonaws.com:5432/ai_defense",
+            "user-name": "goormgb_admin",
+            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/ai_defense",
             "type": "dev",
             "provider-properties": {
               "@dbeaver-show-non-default-db@": "false"
