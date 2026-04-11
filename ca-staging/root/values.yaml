@@ -84,27 +84,6 @@ ociCharts:
     valueFiles:
       - $values/staging/values/istio/values-istio-gateway.yaml
 
-  kiali-server:
-    enabled: true
-    description: "Kiali - Istio 서비스 메시 시각화 및 관리 대시보드"
-    repoURL: https://kiali.org/helm-charts
-    chart: kiali-server
-    version: "2.23.0"
-    namespace: istio-system
-    syncWave: "-1"
-    valueFiles:
-      - $values/staging/values/istio/values-istio.yaml
-    ignoreDifferences:
-      - group: ""
-        kind: ConfigMap
-        name: kiali
-        jsonPointers:
-          - /data/config.yaml
-      - group: apps
-        kind: Deployment
-        name: kiali
-        jsonPointers:
-          - /spec/template/metadata/annotations
 
 
   # Karpenter - Node Auto-scaling
@@ -462,15 +441,6 @@ gitCharts:
       - ../../../../staging/values/istio/values-istio.yaml
 
   # Kiali VirtualService & DestinationRule
-  kiali-route:
-    enabled: true
-    description: "Kiali 라우팅 - VirtualService, DestinationRule (mTLS 비활성화)"
-    path: common-charts/infra/istio/kiali
-    namespace: istio-system
-    syncWave: "-1"
-    valueFiles:
-      - ../../../../staging/values/istio/values-kiali-route.yaml
-
   # Load Test Route (k6 부하테스트용)
   loadtest-route:
     enabled: true
@@ -491,16 +461,6 @@ gitCharts:
       - ../../../../staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
       - Replace=true
-
-  alloy-config:
-    enabled: true
-    description: "Alloy 설정 - Faro RUM 수집 VirtualService"
-    path: common-charts/infra/monitoring/alloy
-    releaseName: alloy
-    namespace: monitoring
-    syncWave: "1"
-    valueFiles:
-      - ../../../../staging/values/monitoring/logs/values-alloy.yaml
 
   # === ArgoCD Config (OAuth, Applications) ===
   argocd-config:

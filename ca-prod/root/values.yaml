@@ -109,27 +109,6 @@ ociCharts:
     valueFiles:
       - $values/prod/values/istio/values-istio-gateway.yaml
 
-  kiali-server:
-    enabled: true
-    repoURL: https://kiali.org/helm-charts
-    chart: kiali-server
-    version: "2.23.0"
-    namespace: istio-system
-    syncWave: "3"
-    valueFiles:
-      - $values/prod/values/istio/values-istio.yaml
-    ignoreDifferences:
-      - group: ""
-        kind: ConfigMap
-        name: kiali
-        jsonPointers:
-          - /data/config.yaml
-      - group: apps
-        kind: Deployment
-        name: kiali
-        jsonPointers:
-          - /spec/template/metadata/annotations
-
   # Karpenter - Node Auto-scaling
   karpenter:
     enabled: true
@@ -356,12 +335,6 @@ gitCharts:
     enabled: true
     path: prod/charts/security/ai-service-secrets
     namespace: prod-ai
-    syncWave: "-4"
-
-  kiali-auth:
-    enabled: true
-    path: prod/charts/security/kiali-auth
-    namespace: istio-system
     syncWave: "-4"
 
   mail-config:

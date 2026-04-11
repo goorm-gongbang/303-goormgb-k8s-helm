@@ -479,14 +479,6 @@ gitCharts:
     valueFiles:
       - ../../../../dev/values/monitoring/values-prometheus-stack.yaml
       - ../../../../dev/values/monitoring/alerting/values-alertmanager-dev.yaml
-  alloy-config:
-    enabled: true  # Faro VirtualService 활성화
-    path: common-charts/infra/monitoring/alloy
-    namespace: monitoring
-    syncWave: "1"
-    valueFiles:
-      - ../../../../dev/values/monitoring/values-alloy.yaml
-
   # === Kyverno Policies ===
   kyverno-policies:
     enabled: true
