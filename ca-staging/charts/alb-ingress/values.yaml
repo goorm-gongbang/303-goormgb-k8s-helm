@@ -11,7 +11,6 @@ ingress:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     # ExternalDNS
-    external-dns.alpha.kubernetes.io/hostname: argocd.staging.playball.one,grafana.staging.playball.one,kiali.staging.playball.one,api.staging.playball.one,cloudbeaver.staging.playball.one,console.staging.playball.one,kafka-ui.staging.playball.one,redis.staging.playball.one
 
   # TLS 설정 (ACM 인증서)
   certificateArn: arn:aws:acm:ap-northeast-2:497012402578:certificate/86c2157d-b449-4af4-8b8a-c1ac9271d6d9
@@ -35,7 +34,6 @@ ingress:
         healthCheckSuccessCodes: "200,301,302,404"
 
     # Kiali - Istio IngressGateway 거침 (IP Whitelist 적용)
-    - host: kiali.staging.playball.one
       service:
         name: istio-ingressgateway
         namespace: istio-system
@@ -62,7 +60,6 @@ ingress:
         healthCheckSuccessCodes: "200,301,302,404"
 
     # Infra Console - Istio IngressGateway 거침
-    - host: console.staging.playball.one
       service:
         name: istio-ingressgateway
         namespace: istio-system
@@ -80,7 +77,7 @@ ingress:
         healthCheckSuccessCodes: "200,301,302,404"
 
     # RedisInsight - Istio IngressGateway 거침
-    - host: redis.staging.playball.one
+    - host: redisinsight.staging.playball.one
       service:
         name: istio-ingressgateway
         namespace: istio-system

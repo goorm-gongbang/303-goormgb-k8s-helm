@@ -1,5 +1,5 @@
 # RedisInsight for Staging
-# URL: https://redis.staging.playball.one
+# URL: https://redisinsight.staging.playball.one
 # Google OAuth 인증 필요
 
 replicaCount: 1
@@ -68,7 +68,7 @@ virtualService:
   enabled: true
   gateway: "istio-system/api-gateway"
   hosts:
-    - "redis.staging.playball.one"
+    - "redisinsight.staging.playball.one"
 
 # Redis connection (UI): ElastiCache
 # Host: staging 환경의 ElastiCache endpoint
