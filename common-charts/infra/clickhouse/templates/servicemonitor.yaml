@@ -1,0 +1,17 @@
+{{- if .Values.metrics.serviceMonitor.enabled | default false }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: clickhouse
+  labels:
+    app: clickhouse
+    release: prom
+spec:
+  selector:
+    matchLabels:
+      app: clickhouse
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+{{- end }}
