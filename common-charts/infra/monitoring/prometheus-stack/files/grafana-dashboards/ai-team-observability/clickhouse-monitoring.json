@@ -1,0 +1,474 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {"type": "datasource", "uid": "grafana"},
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {"limit": 100, "matchAny": false, "tags": [], "type": "dashboard"},
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "AI Defense ClickHouse 모니터링 — ETL 파이프라인, Defense 결정 분석, Challenge 흐름, 서버 상태",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+      "id": 100,
+      "panels": [],
+      "title": "AI Defense 파이프라인 Overview",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "전체 evaluate 요청 성공률 (decision != error)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "decimals": 2,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "orange", "value": 95}, {"color": "yellow", "value": 99}, {"color": "green", "value": 99.5}]},
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 5, "w": 4, "x": 0, "y": 1},
+      "id": 1,
+      "options": {"minVizHeight": 75, "minVizWidth": 75, "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showThresholdLabels": false, "showThresholdMarkers": true, "sizing": "auto"},
+      "targets": [{"expr": "100 * (1 - sum(rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"error\"}[$__rate_interval])) / clamp_min(sum(rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval])), 1))", "legendFormat": "성공률", "refId": "A"}],
+      "title": "Evaluate 성공률",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "초당 evaluate 요청 수",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "decimals": 2, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}, "unit": "reqps"}},
+      "gridPos": {"h": 5, "w": 4, "x": 4, "y": 1},
+      "id": 2,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": true, "textMode": "auto", "wideLayout": true},
+      "targets": [{"expr": "sum(rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))", "legendFormat": "RPS", "refId": "A"}],
+      "title": "Evaluate RPS",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "BLOCK 비율 = BLOCK / 전체 orchestration",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "decimals": 2,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 5}, {"color": "orange", "value": 15}, {"color": "red", "value": 30}]},
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 5, "w": 4, "x": 8, "y": 1},
+      "id": 3,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": true, "textMode": "auto", "wideLayout": true},
+      "targets": [{"expr": "100 * sum(rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\", decision=\"block\"}[$__rate_interval])) / clamp_min(sum(rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval])), 1)", "legendFormat": "Block Rate", "refId": "A"}],
+      "title": "Block Rate",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Challenge 통과율 = pass / (pass + fail)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "orange", "value": 50}, {"color": "green", "value": 80}]},
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 5, "w": 4, "x": 12, "y": 1},
+      "id": 4,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": true, "textMode": "auto", "wideLayout": true},
+      "targets": [{"expr": "100 * sum(rate(ai_defense_challenge_verify_total{namespace=\"__AI_NAMESPACE__\", result=\"pass\"}[$__rate_interval])) / clamp_min(sum(rate(ai_defense_challenge_verify_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval])), 1)", "legendFormat": "Pass Rate", "refId": "A"}],
+      "title": "S3 Challenge 통과율",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Precheck pass/fail 비율",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "yellow", "value": 80}, {"color": "green", "value": 95}]},
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 5, "w": 4, "x": 16, "y": 1},
+      "id": 5,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": true, "textMode": "auto", "wideLayout": true},
+      "targets": [{"expr": "100 * sum(rate(ai_defense_precheck_total{namespace=\"__AI_NAMESPACE__\", result=\"pass\"}[$__rate_interval])) / clamp_min(sum(rate(ai_defense_precheck_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval])), 1)", "legendFormat": "Pass Rate", "refId": "A"}],
+      "title": "Precheck 통과율",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "ClickHouse 서버 상태",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [{"options": {"0": {"color": "red", "text": "DOWN"}, "1": {"color": "green", "text": "UP"}}, "type": "value"}],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}
+        }
+      },
+      "gridPos": {"h": 5, "w": 4, "x": 20, "y": 1},
+      "id": 6,
+      "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
+      "targets": [{"expr": "up{job=~\".*clickhouse.*\", namespace=\"data\"}", "legendFormat": "{{ pod }}", "refId": "A"}],
+      "title": "ClickHouse 상태",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 6},
+      "id": 200,
+      "panels": [],
+      "title": "Defense Decision 분석 (Evaluate / Orchestration)",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Decision별 evaluate 요청 추이 — allow / throttle / block / require_s3 / error",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 30, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "normal"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 2, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "ops"}, "overrides": [{"matcher": {"id": "byName", "options": "block"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "throttle"}, "properties": [{"id": "color", "value": {"fixedColor": "orange", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "require_s3"}, "properties": [{"id": "color", "value": {"fixedColor": "yellow", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "allow"}, "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "error"}, "properties": [{"id": "color", "value": {"fixedColor": "dark-red", "mode": "fixed"}}]}]},
+      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 7},
+      "id": 10,
+      "options": {"legend": {"calcs": ["sum", "mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true, "sortBy": "Total", "sortDesc": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "sum by (decision) (rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))", "legendFormat": "{{ decision }}", "refId": "A"}
+      ],
+      "title": "Decision별 Evaluate 요청 (Stacked)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Decision 비율 분포 (파이 차트)",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}, "overrides": [{"matcher": {"id": "byName", "options": "block"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "throttle"}, "properties": [{"id": "color", "value": {"fixedColor": "orange", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "require_s3"}, "properties": [{"id": "color", "value": {"fixedColor": "yellow", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "allow"}, "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "error"}, "properties": [{"id": "color", "value": {"fixedColor": "dark-red", "mode": "fixed"}}]}]},
+      "gridPos": {"h": 9, "w": 6, "x": 12, "y": 7},
+      "id": 11,
+      "options": {"displayLabels": ["percent"], "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]}, "pieType": "donut", "reduceOptions": {"calcs": ["sum"], "fields": "", "values": false}, "tooltip": {"mode": "single", "sort": "none"}},
+      "targets": [
+        {"expr": "sum by (decision) (increase(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\"}[$__range]))", "legendFormat": "{{ decision }}", "refId": "A"}
+      ],
+      "title": "Decision 분포",
+      "type": "piechart"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Stage별 evaluate 요청 분포 — 어느 stage에서 결정이 내려졌는지",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 2, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "ops"}},
+      "gridPos": {"h": 9, "w": 6, "x": 18, "y": 7},
+      "id": 12,
+      "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "sum by (stage) (rate(ai_defense_evaluate_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))", "legendFormat": "{{ stage }}", "refId": "A"}
+      ],
+      "title": "Stage별 Evaluate RPS",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 16},
+      "id": 300,
+      "panels": [],
+      "title": "S3 Challenge & Turnstile 흐름",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Challenge 발급 -> 검증 파이프라인 추이",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 2, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "ops"}, "overrides": [{"matcher": {"id": "byName", "options": "Challenge 발급"}, "properties": [{"id": "color", "value": {"fixedColor": "blue", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "Verify Pass"}, "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "Verify Fail"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}]},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 17},
+      "id": 20,
+      "options": {"legend": {"calcs": ["sum", "mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "sum(rate(ai_defense_challenge_start_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))", "legendFormat": "Challenge 발급", "refId": "A"},
+        {"expr": "sum(rate(ai_defense_challenge_verify_total{namespace=\"__AI_NAMESPACE__\", result=\"pass\"}[$__rate_interval]))", "legendFormat": "Verify Pass", "refId": "B"},
+        {"expr": "sum(rate(ai_defense_challenge_verify_total{namespace=\"__AI_NAMESPACE__\", result=\"fail\"}[$__rate_interval]))", "legendFormat": "Verify Fail", "refId": "C"}
+      ],
+      "title": "Challenge 발급 -> 검증 추이",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Challenge 전환율: 발급 대비 검증 완료 비율 (drop-off 추적)",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "line+area"}}, "decimals": 1, "mappings": [], "max": 100, "min": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "orange", "value": 30}, {"color": "green", "value": 60}]}, "unit": "percent"}},
+      "gridPos": {"h": 8, "w": 6, "x": 12, "y": 17},
+      "id": 21,
+      "options": {"legend": {"calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "100 * sum(rate(ai_defense_challenge_verify_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval])) / clamp_min(sum(rate(ai_defense_challenge_start_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval])), 0.001)", "legendFormat": "검증 전환율 (Completion)", "refId": "A"}
+      ],
+      "title": "Challenge 전환율 (발급->검증)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "VQA Telemetry 판정 결과별 추이 — skip / observe / allow / terminal",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 25, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "normal"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 2, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "ops"}, "overrides": [{"matcher": {"id": "byName", "options": "terminal"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "allow"}, "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "observe"}, "properties": [{"id": "color", "value": {"fixedColor": "yellow", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "skip"}, "properties": [{"id": "color", "value": {"fixedColor": "semi-dark-blue", "mode": "fixed"}}]}]},
+      "gridPos": {"h": 8, "w": 6, "x": 18, "y": 17},
+      "id": 22,
+      "options": {"legend": {"calcs": ["sum", "mean"], "displayMode": "table", "placement": "bottom", "showLegend": true, "sortBy": "Total", "sortDesc": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "sum by (decision) (rate(ai_defense_vqa_telemetry_score_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))", "legendFormat": "{{ decision }}", "refId": "A"}
+      ],
+      "title": "VQA Telemetry Score 판정",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 25},
+      "id": 400,
+      "panels": [],
+      "title": "Telemetry Ingest & Precheck",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Stage별 텔레메트리 수집 추이 — QUEUE_ENTER_PRECLICK / VQA_CHALLENGE / SEAT_STAGE",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 25, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "normal"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 2, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "ops"}},
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 26},
+      "id": 30,
+      "options": {"legend": {"calcs": ["sum", "mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true, "sortBy": "Total", "sortDesc": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "sum by (stage) (rate(ai_defense_telemetry_ingest_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))", "legendFormat": "{{ stage }}", "refId": "A"}
+      ],
+      "title": "Telemetry Ingest (Stage별)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Precheck pass vs fail 추이",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 2, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "ops"}, "overrides": [{"matcher": {"id": "byName", "options": "pass"}, "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "fail"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}]},
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 26},
+      "id": 31,
+      "options": {"legend": {"calcs": ["sum", "mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "sum by (result) (rate(ai_defense_precheck_total{namespace=\"__AI_NAMESPACE__\"}[$__rate_interval]))", "legendFormat": "{{ result }}", "refId": "A"}
+      ],
+      "title": "Precheck Pass / Fail",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Stage별 텔레메트리 수집 비율 분포",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 26},
+      "id": 32,
+      "options": {"displayLabels": ["percent"], "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]}, "pieType": "donut", "reduceOptions": {"calcs": ["sum"], "fields": "", "values": false}, "tooltip": {"mode": "single", "sort": "none"}},
+      "targets": [
+        {"expr": "sum by (stage) (increase(ai_defense_telemetry_ingest_total{namespace=\"__AI_NAMESPACE__\"}[$__range]))", "legendFormat": "{{ stage }}", "refId": "A"}
+      ],
+      "title": "Telemetry Stage 분포",
+      "type": "piechart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 34},
+      "id": 500,
+      "panels": [],
+      "title": "ClickHouse 서버 상태 & 쿼리 성능",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "ClickHouse Pod CPU 사용량 vs limit (2 core)",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 3, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 35},
+      "id": 40,
+      "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "rate(container_cpu_usage_seconds_total{namespace=\"data\", pod=~\".*clickhouse.*\", container!=\"POD\", container!=\"\"}[$__rate_interval])", "legendFormat": "CPU {{ container }}", "refId": "A"},
+        {"expr": "kube_pod_container_resource_limits{namespace=\"data\", pod=~\".*clickhouse.*\", resource=\"cpu\", container!=\"POD\"}", "legendFormat": "limit (2 core)", "refId": "B"}
+      ],
+      "title": "CPU 사용량",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "ClickHouse Pod 메모리 사용량 vs limit 4Gi (CH내부 maxMemoryUsage=2GB, maxMemoryUsageForAllQueries=3GB)",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 1, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "bytes"}},
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 35},
+      "id": 41,
+      "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "container_memory_working_set_bytes{namespace=\"data\", pod=~\".*clickhouse.*\", container!=\"POD\", container!=\"\"}", "legendFormat": "Working Set", "refId": "A"},
+        {"expr": "kube_pod_container_resource_limits{namespace=\"data\", pod=~\".*clickhouse.*\", resource=\"memory\", container!=\"POD\"}", "legendFormat": "limit (4Gi)", "refId": "B"}
+      ],
+      "title": "메모리 사용량",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "활성 연결, 실행 중 쿼리, Merge 수 (maxConnections=100, maxConcurrentQueries=100 설정)",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 15, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 0, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 35},
+      "id": 42,
+      "options": {"legend": {"calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "ClickHouseMetrics_TCPConnection{namespace=\"data\"}", "legendFormat": "TCP Conn", "refId": "A"},
+        {"expr": "ClickHouseMetrics_HTTPConnection{namespace=\"data\"}", "legendFormat": "HTTP Conn (ETL)", "refId": "B"},
+        {"expr": "ClickHouseMetrics_Query{namespace=\"data\"}", "legendFormat": "Running Queries", "refId": "C"},
+        {"expr": "ClickHouseMetrics_Merge{namespace=\"data\"}", "legendFormat": "Running Merges", "refId": "D"}
+      ],
+      "title": "연결 & 쿼리 & Merge",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "초당 SELECT/INSERT QPS 및 실패 — INSERT는 ETL Worker 배치(256 rows, JSONEachRow) 기준",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 15, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 2, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "ops"}, "overrides": [{"matcher": {"id": "byRegexp", "options": "Failed.*"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}, {"id": "custom.drawStyle", "value": "bars"}, {"id": "custom.fillOpacity", "value": 80}]}]},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 43},
+      "id": 43,
+      "options": {"legend": {"calcs": ["mean", "max", "sum"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "rate(ClickHouseProfileEvents_SelectQuery{namespace=\"data\"}[$__rate_interval])", "legendFormat": "SELECT/s", "refId": "A"},
+        {"expr": "rate(ClickHouseProfileEvents_InsertQuery{namespace=\"data\"}[$__rate_interval])", "legendFormat": "INSERT/s (ETL batch)", "refId": "B"},
+        {"expr": "rate(ClickHouseProfileEvents_FailedSelectQuery{namespace=\"data\"}[$__rate_interval])", "legendFormat": "Failed SELECT/s", "refId": "C"},
+        {"expr": "rate(ClickHouseProfileEvents_FailedInsertQuery{namespace=\"data\"}[$__rate_interval])", "legendFormat": "Failed INSERT/s", "refId": "D"}
+      ],
+      "title": "QPS (SELECT / INSERT / Failed)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "INSERT 행 처리량 — defense_audit_events 테이블 적재 속도 (ETL 배치 256 rows 기준)",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 0, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 43},
+      "id": 44,
+      "options": {"legend": {"calcs": ["mean", "max", "sum"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "rate(ClickHouseProfileEvents_InsertedRows{namespace=\"data\"}[$__rate_interval])", "legendFormat": "Inserted Rows/s", "refId": "A"},
+        {"expr": "rate(ClickHouseProfileEvents_SelectedRows{namespace=\"data\"}[$__rate_interval])", "legendFormat": "Selected Rows/s (Read Model)", "refId": "B"},
+        {"expr": "rate(ClickHouseProfileEvents_InsertedBytes{namespace=\"data\"}[$__rate_interval])", "legendFormat": "Inserted Bytes/s", "refId": "C"}
+      ],
+      "title": "행 처리량 (defense_audit_events)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 51},
+      "id": 600,
+      "panels": [],
+      "title": "스토리지 & MergeTree 상태",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "PVC 디스크 사용률 (20Gi gp3, 파티션: toDate(fromUnixTimestamp64Milli(ts_ms)))",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 60}, {"color": "orange", "value": 80}, {"color": "red", "value": 90}]},
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 7, "w": 6, "x": 0, "y": 52},
+      "id": 50,
+      "options": {"minVizHeight": 75, "minVizWidth": 75, "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showThresholdLabels": false, "showThresholdMarkers": true, "sizing": "auto"},
+      "targets": [{"expr": "100 * (1 - kubelet_volume_stats_available_bytes{namespace=\"data\", persistentvolumeclaim=~\".*clickhouse.*\"} / kubelet_volume_stats_capacity_bytes{namespace=\"data\", persistentvolumeclaim=~\".*clickhouse.*\"})", "legendFormat": "{{ persistentvolumeclaim }}", "refId": "A"}],
+      "title": "디스크 사용률 (20Gi PVC)",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "디스크 사용량 추이",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 1, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "bytes"}},
+      "gridPos": {"h": 7, "w": 10, "x": 6, "y": 52},
+      "id": 51,
+      "options": {"legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "kubelet_volume_stats_used_bytes{namespace=\"data\", persistentvolumeclaim=~\".*clickhouse.*\"}", "legendFormat": "Used", "refId": "A"},
+        {"expr": "kubelet_volume_stats_capacity_bytes{namespace=\"data\", persistentvolumeclaim=~\".*clickhouse.*\"}", "legendFormat": "Capacity (20Gi)", "refId": "B"},
+        {"expr": "kubelet_volume_stats_available_bytes{namespace=\"data\", persistentvolumeclaim=~\".*clickhouse.*\"}", "legendFormat": "Available", "refId": "C"}
+      ],
+      "title": "디스크 사용량 추이",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "MergeTree Parts 수 — defense_audit_events ORDER BY (session_id, ts_ms, event_type), 300+ 시 INSERT 거부 위험",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 15, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "line"}}, "decimals": 0, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 150}, {"color": "red", "value": 300}]}, "unit": "short"}},
+      "gridPos": {"h": 7, "w": 8, "x": 16, "y": 52},
+      "id": 52,
+      "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "ClickHouseAsyncMetrics_MaxPartCountForPartition{namespace=\"data\"}", "legendFormat": "Max Parts/Partition", "refId": "A"},
+        {"expr": "ClickHouseAsyncMetrics_TotalPartsOfMergeTreeTables{namespace=\"data\"}", "legendFormat": "Total Parts", "refId": "B"}
+      ],
+      "title": "MergeTree Parts (300+ 위험)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 59},
+      "id": 700,
+      "panels": [],
+      "title": "에러 & 네트워크",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "ClickHouse 내부 에러 — ETL INSERT 실패 시 retry 3회 (200ms backoff) 후 최종 실패",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "bars", "fillOpacity": 80, "gradientMode": "none", "lineInterpolation": "smooth", "lineWidth": 1, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "normal"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 0, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}, "overrides": [{"matcher": {"id": "byName", "options": "Failed Queries"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}, {"matcher": {"id": "byName", "options": "Memory Limit"}, "properties": [{"id": "color", "value": {"fixedColor": "orange", "mode": "fixed"}}]}]},
+      "gridPos": {"h": 7, "w": 12, "x": 0, "y": 60},
+      "id": 60,
+      "options": {"legend": {"calcs": ["sum"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "increase(ClickHouseProfileEvents_FailedQuery{namespace=\"data\"}[$__rate_interval])", "legendFormat": "Failed Queries", "refId": "A"},
+        {"expr": "increase(ClickHouseProfileEvents_QueryMemoryLimitExceeded{namespace=\"data\"}[$__rate_interval])", "legendFormat": "Memory Limit (maxMemoryUsage=2GB)", "refId": "B"},
+        {"expr": "increase(ClickHouseProfileEvents_ReadonlyReplica{namespace=\"data\"}[$__rate_interval])", "legendFormat": "Readonly Replica", "refId": "C"}
+      ],
+      "title": "ClickHouse 에러",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "Pod 네트워크 I/O — HTTP 기반 ETL INSERT(JSONEachRow) 트래픽 패턴",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"axisBorderShow": false, "axisCenteredZero": false, "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 15, "gradientMode": "scheme", "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}}, "decimals": 1, "mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "Bps"}, "overrides": [{"matcher": {"id": "byRegexp", "options": "TX.*"}, "properties": [{"id": "custom.transform", "value": "negative-Y"}]}]},
+      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 60},
+      "id": 61,
+      "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "rate(container_network_receive_bytes_total{namespace=\"data\", pod=~\".*clickhouse.*\"}[$__rate_interval])", "legendFormat": "RX {{ pod }}", "refId": "A"},
+        {"expr": "rate(container_network_transmit_bytes_total{namespace=\"data\", pod=~\".*clickhouse.*\"}[$__rate_interval])", "legendFormat": "TX {{ pod }}", "refId": "B"}
+      ],
+      "title": "네트워크 I/O (RX up / TX down)",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["clickhouse", "ai-defense", "data", "etl"],
+  "templating": {"list": []},
+  "time": {"from": "now-3h", "to": "now"},
+  "timepicker": {},
+  "timezone": "Asia/Seoul",
+  "title": "ClickHouse Monitoring (AI Defense)",
+  "uid": "clickhouse-ai-defense",
+  "version": 2
+}

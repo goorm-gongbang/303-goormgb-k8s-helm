@@ -75,7 +75,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs'
+            title_link: 'https://grafana.staging.playball.one/explore?orgId=1&left=%7B%22queries%22:%5B%7B%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D%20%7C%20json%20%7C%20level%3D%5C%22ERROR%5C%22%22%7D%5D%7D'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -97,11 +97,13 @@ alertmanager:
               {{- end }}
               ```text
               알림: {{ or .CommonLabels.alertname "N/A" }}
-              서비스: {{ or .CommonLabels.service_name .CommonLabels.job "N/A" }}
-              네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+              서비스: {{ or .CommonLabels.service_name .CommonLabels.app "N/A" }}
+              네임스페이스: {{ or .CommonLabels.namespace "staging-webs" }}
               대상건수: {{ len .Alerts }}
+              {{ range .Alerts -}}
+              - {{ or .Labels.app "N/A" }} {{ or .Labels.http_route "" }} {{ or .Labels.http_response_status_code "" }} ({{ .Annotations.description | default "상세 없음" }})
+              {{ end -}}
               {{ with index .Alerts 0 -}}
-              인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
               발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
               {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
               {{- end }}
@@ -111,7 +113,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/warning-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/ops-alert-overview'
+            title_link: 'https://grafana.staging.playball.one/explore?orgId=1&left=%7B%22queries%22:%5B%7B%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D%20%7C%20json%20%7C%20level%3D%5C%22ERROR%5C%22%22%7D%5D%7D'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -132,11 +134,13 @@ alertmanager:
               {{- end }}
               ```text
               알림: {{ or .CommonLabels.alertname "N/A" }}
-              서비스: {{ or .CommonLabels.service_name .CommonLabels.job "N/A" }}
-              네임스페이스: {{ or .CommonLabels.namespace "N/A" }}
+              서비스: {{ or .CommonLabels.service_name .CommonLabels.app "N/A" }}
+              네임스페이스: {{ or .CommonLabels.namespace "staging-webs" }}
               대상건수: {{ len .Alerts }}
+              {{ range .Alerts -}}
+              - {{ or .Labels.app "N/A" }} {{ or .Labels.http_route "" }} {{ or .Labels.http_response_status_code "" }}
+              {{ end -}}
               {{ with index .Alerts 0 -}}
-              인스턴스: {{ or .Labels.instance .Labels.node "N/A" }}
               발생(KST): {{ if ne $startedAt "" }}{{ $startedAt }}{{ else }}N/A{{ end }}
               {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
               {{- end }}

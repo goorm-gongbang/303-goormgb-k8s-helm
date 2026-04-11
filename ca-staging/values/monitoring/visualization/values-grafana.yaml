@@ -1,0 +1,188 @@
+# Grafana - Staging 환경 (독립 배포)
+# kube-prometheus-stack에서 분리하여 별도 Application으로 배포
+
+fullnameOverride: grafana
+
+# Pod/Service label 일치 (app.kubernetes.io/instance)
+# Service selector가 'grafana'를 찾도록 설정
+podLabels:
+  app.kubernetes.io/instance: grafana
+
+# IRSA for CloudWatch Data Source
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-grafana-cloudwatch
+
+# init-chown-data 비활성화 (PVC 권한 문제 방지)
+initChownData:
+  enabled: false
+
+securityContext:
+  runAsUser: 472
+  runAsGroup: 472
+  fsGroup: 472
+
+# 대시보드 폴더 설정 (sidecar 방식)
+sidecar:
+  dashboards:
+    enabled: true
+    folder: /tmp/dashboards
+    folderAnnotation: grafana_folder
+    searchNamespace: monitoring
+    provider:
+      foldersFromFilesStructure: true
+      allowUiUpdates: true
+
+# kube-prometheus-stack 기본 대시보드 비활성화
+defaultDashboardsEnabled: false
+forceDeployDashboards: false
+defaultDashboardsTimezone: utc
+
+# 대시보드 프로바이더 — sidecar(ConfigMap)로 관리하므로 추가 provider 불필요
+# Grafana.com 기본 대시보드 비활성화 (커스텀 대시보드만 사용)
+dashboardProviders: {}
+dashboards: {}
+
+# ESO에서 생성한 secret 사용
+admin:
+  existingSecret: grafana-admin-credentials
+  userKey: admin-user
+  passwordKey: admin-password
+
+# Google OAuth 설정 - Secret에서 환경변수 주입
+envFromSecret: google-oauth-credentials
+
+# AI Service DB 연결 정보 (PostgreSQL, ClickHouse datasource용)
+envFromSecrets:
+  - name: ai-service-config
+
+# ClickHouse 플러그인 설치
+plugins:
+  - grafana-clickhouse-datasource
+
+grafana.ini:
+  server:
+    root_url: https://grafana.staging.playball.one
+  unified_alerting:
+    enabled: false
+  alerting:
+    enabled: false
+  auth.google:
+    enabled: true
+    allow_sign_up: true
+    auto_login: false
+    scopes: openid email profile
+    allow_assign_grafana_admin: true
+    skip_org_role_sync: false
+    role_attribute_strict: false
+    auth_url: https://accounts.google.com/o/oauth2/auth
+    token_url: https://oauth2.googleapis.com/token
+    api_url: https://openidconnect.googleapis.com/v1/userinfo
+    role_attribute_path: >-
+      contains(['212clab@gmail.com', 'rhuba23@gmail.com', 'chamchi0129@gmail.com'], email) && 'Admin' ||
+      contains(['jusanha17@gmail.com', 'lab.jehyun@gmail.com', 'wnconc@gmail.com', 'jbyun1105@gmail.com', 'sayiamseyoun9@gmail.com', 'jminwook0120@gmail.com', 'siyeon0713@gmail.com', 'cdh4112618@gmail.com', 'rhkdgur120@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'yuuijin863@gmail.com', 'hs4734@gmail.com', 'hejwien@gmail.com'], email) && 'Admin' ||
+      'Viewer'
+  users:
+    auto_assign_org: true
+    auto_assign_org_role: Viewer
+  auth:
+    disable_login_form: true  # Google OAuth만 허용
+
+# EBS CSI driver 미사용 - persistence 비활성화
+persistence:
+  enabled: false
+
+nodeSelector:
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi
+
+# Datasources (Prometheus + Loki + Tempo + CloudWatch)
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        uid: prometheus
+        access: proxy
+        url: http://prom-prometheus.monitoring.svc.cluster.local:9090
+        isDefault: true
+
+      - name: Loki
+        type: loki
+        uid: loki
+        access: proxy
+        url: http://loki.monitoring.svc.cluster.local:3100
+        isDefault: false
+        jsonData:
+          maxLines: 1000
+
+      - name: Tempo
+        type: tempo
+        uid: tempo
+        access: proxy
+        url: http://tempo.monitoring.svc.cluster.local:3200
+        isDefault: false
+        jsonData:
+          tracesToLogsV2:
+            datasourceUid: loki
+            spanStartTimeShift: "-1h"
+            spanEndTimeShift: "1h"
+            filterByTraceID: true
+            filterBySpanID: true
+
+      - name: CloudWatch
+        type: cloudwatch
+        uid: cloudwatch
+        access: proxy
+        isDefault: false
+        editable: true
+        jsonData:
+          authType: default
+          defaultRegion: ap-northeast-2
+
+      # AI Defense PostgreSQL (RDS)
+      - name: PostgreSQL
+        type: postgres
+        uid: postgres
+        access: proxy
+        url: ${AI_PG_HOST}:${AI_PG_PORT}
+        database: ${AI_PG_DBNAME}
+        user: ${AI_PG_USERNAME}
+        isDefault: false
+        editable: false
+        jsonData:
+          sslmode: require
+          maxOpenConns: 5
+          maxIdleConns: 2
+          connMaxLifetime: 14400
+        secureJsonData:
+          password: ${AI_PG_PASSWORD}
+
+      # AI Defense ClickHouse (클러스터 내부)
+      - name: ClickHouse
+        type: grafana-clickhouse-datasource
+        uid: clickhouse
+        access: proxy
+        isDefault: false
+        editable: false
+        jsonData:
+          host: clickhouse.data.svc.cluster.local
+          port: 8123
+          protocol: http
+          defaultDatabase: ai_defense
+          username: ${AI_CLICKHOUSE_USER}
+        secureJsonData:
+          password: ${AI_CLICKHOUSE_PASSWORD}

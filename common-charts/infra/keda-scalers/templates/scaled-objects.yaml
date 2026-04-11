@@ -1,0 +1,56 @@
+{{- range $name, $scaler := .Values.scalers }}
+{{- if $scaler.enabled }}
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ $name }}-scaler
+  namespace: {{ $scaler.namespace }}
+spec:
+  scaleTargetRef:
+    name: {{ $scaler.deploymentName | default $name }}
+  minReplicaCount: {{ $scaler.minReplicas | default 1 }}
+  maxReplicaCount: {{ $scaler.maxReplicas | default 5 }}
+  cooldownPeriod: {{ $scaler.cooldownPeriod | default 60 }}
+  pollingInterval: {{ $scaler.pollingInterval | default 15 }}
+  triggers:
+    {{- if $scaler.cpu }}
+    # CPU 기반 스케일
+    - type: cpu
+      metricType: Utilization
+      metadata:
+        value: {{ $scaler.cpu.threshold | default "70" | quote }}
+    {{- end }}
+
+    {{- if $scaler.kafka }}
+    # Kafka consumer lag 기반 스케일
+    - type: kafka
+      metadata:
+        bootstrapServers: {{ $scaler.kafka.bootstrapServers | default "kafka-headless.messaging.svc.cluster.local:9092" }}
+        consumerGroup: {{ $scaler.kafka.consumerGroup }}
+        topic: {{ $scaler.kafka.topic }}
+        lagThreshold: {{ $scaler.kafka.lagThreshold | default "100" | quote }}
+    {{- end }}
+
+    {{- if $scaler.cron }}
+    # Cron pre-warming (경기 전 미리 스케일)
+    {{- range $scaler.cron }}
+    - type: cron
+      metadata:
+        timezone: {{ .timezone | default "Asia/Seoul" }}
+        start: {{ .start | quote }}
+        end: {{ .end | quote }}
+        desiredReplicas: {{ .desiredReplicas | quote }}
+    {{- end }}
+    {{- end }}
+
+    {{- if $scaler.prometheus }}
+    # Prometheus 메트릭 기반 (커스텀)
+    - type: prometheus
+      metadata:
+        serverAddress: {{ $scaler.prometheus.serverAddress | default "http://prom-prometheus.monitoring.svc.cluster.local:9090" }}
+        query: {{ $scaler.prometheus.query | quote }}
+        threshold: {{ $scaler.prometheus.threshold | quote }}
+    {{- end }}
+{{- end }}
+{{- end }}

@@ -109,27 +109,6 @@ ociCharts:
     valueFiles:
       - $values/prod/values/istio/values-istio-gateway.yaml
 
-  kiali-server:
-    enabled: true
-    repoURL: https://kiali.org/helm-charts
-    chart: kiali-server
-    version: "2.23.0"
-    namespace: istio-system
-    syncWave: "3"
-    valueFiles:
-      - $values/prod/values/istio/values-istio.yaml
-    ignoreDifferences:
-      - group: ""
-        kind: ConfigMap
-        name: kiali
-        jsonPointers:
-          - /data/config.yaml
-      - group: apps
-        kind: Deployment
-        name: kiali
-        jsonPointers:
-          - /spec/template/metadata/annotations
-
   tigera-operator:
     enabled: false  # EKS는 VPC CNI 사용
     repoURL: https://docs.tigera.io/calico/charts
@@ -376,12 +355,6 @@ gitCharts:
     namespace: prod-ai
     syncWave: "-4"
 
-  kiali-auth:
-    enabled: true
-    path: prod/charts/security/kiali-auth
-    namespace: istio-system
-    syncWave: "-4"
-
   mail-config:
     enabled: true
     path: common-charts/infra/namespaces
@@ -479,7 +452,7 @@ gitCharts:
   # === Data ===
   clickhouse:
     enabled: true
-    path: common-charts/data/clickhouse
+    path: common-charts/infra/clickhouse
     namespace: data
     syncWave: "3"
     valueFiles:
@@ -487,7 +460,7 @@ gitCharts:
 
   redisinsight:
     enabled: true
-    path: common-charts/data/redisinsight
+    path: common-charts/infra/redisinsight
     namespace: data
     syncWave: "3"
     valueFiles:
@@ -496,7 +469,7 @@ gitCharts:
   # === Messaging ===
   kafka:
     enabled: true
-    path: common-charts/messaging/kafka
+    path: common-charts/infra/kafka
     namespace: messaging
     syncWave: "4"
     valueFiles:

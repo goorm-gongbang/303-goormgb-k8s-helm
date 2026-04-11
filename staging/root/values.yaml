@@ -84,28 +84,6 @@ ociCharts:
     valueFiles:
       - $values/staging/values/istio/values-istio-gateway.yaml
 
-  kiali-server:
-    enabled: true
-    description: "Kiali - Istio 서비스 메시 시각화 및 관리 대시보드"
-    repoURL: https://kiali.org/helm-charts
-    chart: kiali-server
-    version: "2.23.0"
-    namespace: istio-system
-    syncWave: "-1"
-    valueFiles:
-      - $values/staging/values/istio/values-istio.yaml
-    ignoreDifferences:
-      - group: ""
-        kind: ConfigMap
-        name: kiali
-        jsonPointers:
-          - /data/config.yaml
-      - group: apps
-        kind: Deployment
-        name: kiali
-        jsonPointers:
-          - /spec/template/metadata/annotations
-
   tigera-operator:
     enabled: false  # EKS는 VPC CNI 사용
     description: "Calico CNI Operator (비활성화 - EKS VPC CNI 사용)"
@@ -329,10 +307,6 @@ ociCharts:
       - $values/staging/values/monitoring/metrics/values-opentelemetry-collector.yaml
 
   # Tetragon - eBPF (비활성화, VPC CNI 사용)
-  tetragon:
-    enabled: false
-    description: "Tetragon eBPF 보안 (비활성화)"
-
   # Metrics Server - kubectl top nodes/pods
   metrics-server:
     enabled: true
@@ -485,15 +459,6 @@ gitCharts:
       - ../../../../staging/values/istio/values-istio.yaml
 
   # Kiali VirtualService & DestinationRule
-  kiali-route:
-    enabled: true
-    description: "Kiali 라우팅 - VirtualService, DestinationRule (mTLS 비활성화)"
-    path: common-charts/infra/istio/kiali
-    namespace: istio-system
-    syncWave: "-1"
-    valueFiles:
-      - ../../../../staging/values/istio/values-kiali-route.yaml
-
   # Load Test Route (k6 부하테스트용)
   loadtest-route:
     enabled: true
@@ -514,16 +479,6 @@ gitCharts:
       - ../../../../staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
       - Replace=true
-
-  alloy-config:
-    enabled: true
-    description: "Alloy 설정 - Faro RUM 수집 VirtualService"
-    path: common-charts/infra/monitoring/alloy
-    releaseName: alloy
-    namespace: monitoring
-    syncWave: "1"
-    valueFiles:
-      - ../../../../staging/values/monitoring/logs/values-alloy.yaml
 
   loki-backup:
     enabled: false  # staging에서 필요시 활성화
@@ -556,14 +511,9 @@ gitCharts:
       - SkipDryRunOnMissingResource=true
 
   # Tetragon Config (비활성화)
-  tetragon-config:
-    enabled: false
-    description: "Tetragon 설정 (비활성화)"
-
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
-
   # CloudBeaver (DB 관리 - 부하테스트용)
   cloudbeaver:
     enabled: true
@@ -589,16 +539,6 @@ gitCharts:
     path: staging/charts/data/rds-backup
     namespace: data
     syncWave: "0"
-
-  # Infra Console (Istio & Kyverno 관리 콘솔)
-  infra-console:
-    enabled: false  # 추후 활성화
-    description: "Infra Console - Istio/Kyverno 관리 웹 UI (비활성화)"
-    path: common-charts/infra/infra-console
-    namespace: monitoring
-    syncWave: "5"
-    valueFiles:
-      - ../../../staging/values/infra/values-infra-console.yaml
 
   # RedisInsight (Redis GUI with Google OAuth)
   redisinsight:
@@ -757,7 +697,6 @@ applicationSets:
 # =============================================================================
 # Raw Manifests - 모두 개별 차트로 이동 완료
 # - Grafana: prometheus-extras gitChart (grafana-vs, grafana-dr)
-# - Kiali: kiali-route gitChart (kiali-vs, kiali-dr)
 # - AI Defense: ai-service 차트 내 VirtualService
 # - Load Test: loadtest-route gitChart
 # - Swagger: dev 환경 전용 (staging에서 제거)

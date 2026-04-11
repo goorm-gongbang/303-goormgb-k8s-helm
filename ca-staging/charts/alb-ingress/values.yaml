@@ -1,0 +1,86 @@
+# ALB Ingress - EKS Staging
+# Host-based routing for all services
+
+ingress:
+  enabled: true
+  name: staging-alb
+
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    # ExternalDNS
+
+  # TLS 설정 (ACM 인증서)
+  certificateArn: "arn:aws:acm:ap-northeast-2:406223549139:certificate/cf7522dc-1228-425c-9945-09ca9043a39c,arn:aws:acm:ap-northeast-2:406223549139:certificate/58b9e432-92df-4fb6-8c6c-66dd6a469bb0"
+
+  rules:
+    # ArgoCD - Istio 안 거침 (직접 라우팅)
+    - host: argocd.staging.playball.one
+      service:
+        name: argocd-server
+        namespace: argocd
+        port: 80
+        healthCheckPath: /healthz
+
+    # Grafana - Istio IngressGateway 거침 (IP Whitelist 적용)
+    - host: grafana.staging.playball.one
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
+
+    # Kiali - Istio IngressGateway 거침 (IP Whitelist 적용)
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
+
+    # API - Istio IngressGateway 거침
+    - host: api.staging.playball.one
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
+
+    # CloudBeaver - Istio IngressGateway 거침 (DB 관리 - 부하테스트용)
+    - host: cloudbeaver.staging.playball.one
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
+
+    # Infra Console - Istio IngressGateway 거침
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
+
+    # Kafka UI - Istio IngressGateway 거침
+    - host: kafka-ui.staging.playball.one
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
+
+    # RedisInsight - Istio IngressGateway 거침
+    - host: redisinsight.staging.playball.one
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"

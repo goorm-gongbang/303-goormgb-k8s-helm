@@ -61,3 +61,13 @@ notifications:
     eso:
       enabled: true
       secretManagerKey: prod/argocd/discord-webhook
+
+# Repo Server 리소스 상향 (성능 안정화)
+repoServer:
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
