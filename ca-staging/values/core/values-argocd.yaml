@@ -30,7 +30,7 @@ oidc:
 rbac:
   eso:
     enabled: true
-    secretManagerKey: staging/oauth/rbac/argocd
+    secretManagerKey: staging/argocd
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
 
