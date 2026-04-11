@@ -106,15 +106,6 @@ ociCharts:
         jsonPointers:
           - /spec/template/metadata/annotations
 
-  tigera-operator:
-    enabled: false  # EKS는 VPC CNI 사용
-    description: "Calico CNI Operator (비활성화 - EKS VPC CNI 사용)"
-    repoURL: https://docs.tigera.io/calico/charts
-    chart: tigera-operator
-    version: "v3.29.3"
-    namespace: tigera-operator
-    syncWave: "-10"
-    valueFiles: []
 
   # Karpenter - Node Auto-scaling
   karpenter:
@@ -278,15 +269,6 @@ ociCharts:
     valueFiles:
       - $values/staging/values/monitoring/logs/values-alloy.yaml
 
-  k6-operator:
-    enabled: false
-    description: "k6 Operator - 부하테스트 CRD (비활성화)"
-    repoURL: https://grafana.github.io/helm-charts
-    chart: k6-operator
-    version: "4.3.0"
-    namespace: k6-operator
-    syncWave: "0"
-    valueFiles: []
 
   tempo:
     enabled: true
@@ -327,11 +309,6 @@ ociCharts:
     syncWave: "1"
     valueFiles:
       - $values/staging/values/monitoring/metrics/values-opentelemetry-collector.yaml
-
-  # Tetragon - eBPF (비활성화, VPC CNI 사용)
-  tetragon:
-    enabled: false
-    description: "Tetragon eBPF 보안 (비활성화)"
 
   # Metrics Server - kubectl top nodes/pods
   metrics-server:
@@ -525,15 +502,6 @@ gitCharts:
     valueFiles:
       - ../../../../staging/values/monitoring/logs/values-alloy.yaml
 
-  loki-backup:
-    enabled: false  # staging에서 필요시 활성화
-    description: "Loki 백업 설정 (비활성화)"
-    path: common-charts/infra/monitoring/loki
-    namespace: monitoring
-    syncWave: "1"
-    valueFiles:
-      - ../../../../staging/values/monitoring/metrics/values-monitoring.yaml
-
   # === ArgoCD Config (OAuth, Applications) ===
   argocd-config:
     enabled: true
@@ -554,11 +522,6 @@ gitCharts:
       - ../../../staging/values/security/values-kyverno-policies.yaml
     syncOptions:
       - SkipDryRunOnMissingResource=true
-
-  # Tetragon Config (비활성화)
-  tetragon-config:
-    enabled: false
-    description: "Tetragon 설정 (비활성화)"
 
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
@@ -729,18 +692,6 @@ applicationSets:
         syncWave: "17"
         description: "[LoadTest] API Gateway - 부하테스트용 게이트웨이"
 
-  loadtest-ai-services:
-    enabled: false  # load-test 경로는 ext_authz에서 제외되므로 AI 서비스 불필요
-    syncWave: "15"
-    namespace: loadtest-ai
-    appNamePrefix: "loadtest"
-    chartPath: common-charts/apps/ai-service
-    valueFilesPattern: ../../../staging/values/apps-loadtest/values-{{name}}.yaml
-    services:
-      - name: ai-defense
-        description: "[LoadTest] AI Defense (비활성화)"
-      - name: authz-adapter
-        description: "[LoadTest] Authz Adapter (비활성화)"
 
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)
