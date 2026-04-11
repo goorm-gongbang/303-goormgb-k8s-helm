@@ -1,6 +1,11 @@
 # KEDA - Event-Driven Autoscaling
 # Kafka lag, Redis queue, Cron pre-warming 기반 Pod 오토스케일링
 
+# Kyverno require-labels 정책 충족
+podLabels:
+  app: keda
+  version: "2.16.1"
+
 # Infra 노드에 배치
 nodeSelector:
   role: infra
