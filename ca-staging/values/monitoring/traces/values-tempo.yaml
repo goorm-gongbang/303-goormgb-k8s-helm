@@ -17,7 +17,7 @@ serviceAccount:
   create: true
   name: tempo
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-tempo"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/playball-staging-tempo"
 
 tempo:
   resources:
@@ -42,7 +42,7 @@ tempo:
     trace:
       backend: s3
       s3:
-        bucket: goormgb-staging-tempo
+        bucket: playball-staging-tempo
         endpoint: s3.ap-northeast-2.amazonaws.com
         region: ap-northeast-2
         # 환경별 버킷이므로 prefix 불필요
