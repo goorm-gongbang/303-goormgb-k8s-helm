@@ -13,7 +13,7 @@ ingress:
     # ExternalDNS
 
   # TLS 설정 (ACM 인증서)
-  certificateArn: arn:aws:acm:ap-northeast-2:406223549139:certificate/cf7522dc-1228-425c-9945-09ca9043a39c
+  certificateArn: "arn:aws:acm:ap-northeast-2:406223549139:certificate/cf7522dc-1228-425c-9945-09ca9043a39c,arn:aws:acm:ap-northeast-2:406223549139:certificate/58b9e432-92df-4fb6-8c6c-66dd6a469bb0"
 
   rules:
     # ArgoCD - Istio 안 거침 (직접 라우팅)
