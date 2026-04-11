@@ -66,13 +66,10 @@ sharedGateway:
   hosts:
     - "argocd.staging.playball.one"
     - "grafana.staging.playball.one"
-    - "kiali.staging.playball.one"
-    - "swagger.staging.playball.one"
 
 # ===== Kiali =====
 kiali-server:
   server:
-    web_fqdn: kiali.staging.playball.one
     web_port: 443
     web_schema: https
 
@@ -129,7 +126,6 @@ kiali-server:
 # Kiali VirtualService (공용 Gateway 사용)
 kialiVirtualService:
   enabled: true
-  host: "kiali.staging.playball.one"
 
 # Kiali OIDC - Google OAuth
 oidc:

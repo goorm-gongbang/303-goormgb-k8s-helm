@@ -329,6 +329,21 @@ mtls:
       metricsPort: 9090
       mode: DISABLE
 
+  # AI 서비스 예외 설정
+  # Prometheus 메트릭 스크래핑을 위해 PERMISSIVE 모드 필요
+  aiServices:
+    enabled: true
+    namespace: prod-ai
+    services:
+      - name: ai-defense
+        selector:
+          app: prod-ai-defense
+        metricsPort: 8000
+      - name: authz-adapter
+        selector:
+          app: prod-authz-adapter
+        metricsPort: 9090
+
 # ============================================================
 # JWT 인증 설정
 # ============================================================
@@ -419,9 +434,7 @@ adminTools:
     protectedHosts:
       - "argocd.playball.one"
       - "grafana.playball.one"
-      - "kiali.playball.one"
       # prod에서는 미사용 (staging only)
-      # - "swagger.playball.one"
       # - "redis.playball.one"
       # - "prometheus.playball.one"
       # - "kafka-ui.playball.one"

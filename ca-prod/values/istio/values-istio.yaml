@@ -63,7 +63,6 @@ auth:
     disable_rbac: true
 
 server:
-  web_fqdn: kiali.playball.one
   web_port: 443
   web_schema: https
 

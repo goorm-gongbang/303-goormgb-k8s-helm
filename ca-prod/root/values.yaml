@@ -291,6 +291,18 @@ ociCharts:
     valueFiles:
       - $values/prod/values/monitoring/metrics/values-opentelemetry-collector.yaml
 
+  # KEDA - Event-Driven Autoscaling
+  keda:
+    enabled: true
+    description: "KEDA - Kafka lag, Redis queue, Cron 기반 오토스케일링"
+    repoURL: https://kedacore.github.io/charts
+    chart: keda
+    version: "2.16.1"
+    namespace: keda-system
+    syncWave: "0"
+    valueFiles:
+      - $values/ca-prod/values/infra/values-keda.yaml
+
   # Metrics Server - kubectl top nodes/pods
   metrics-server:
     enabled: true
@@ -359,6 +371,16 @@ gitCharts:
     path: prod/charts/eso
     namespace: external-secrets
     syncWave: "-8"
+
+  # KEDA ScaledObjects (앱별 오토스케일링 규칙)
+  keda-scalers:
+    enabled: false  # 준비 완료, 필요 시 true로 변경
+    description: "KEDA ScaledObject - CPU, Kafka lag, Cron pre-warming"
+    path: common-charts/infra/keda-scalers
+    namespace: prod-webs
+    syncWave: "12"
+    valueFiles:
+      - ../../../ca-prod/values/infra/values-keda-scalers.yaml
 
   # Karpenter NodePool & EC2NodeClass
   karpenter-config:
@@ -451,13 +473,8 @@ gitCharts:
     valueFiles:
       - ../../../prod/values/messaging/values-kafka.yaml
 
-  kafka-ui:
-    enabled: true
-    path: common-charts/messaging/kafka-ui
-    namespace: messaging
-    syncWave: "5"
-    valueFiles:
-      - ../../../prod/values/messaging/values-kafka-ui.yaml
+  # kafka-ui: prod에서는 bastion CLI 사용
+
     enabled: true
     path: common-charts/infra/monitoring/alloy
     releaseName: alloy
