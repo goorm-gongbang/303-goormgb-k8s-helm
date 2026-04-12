@@ -532,7 +532,7 @@ gitCharts:
 
   # RDS Backup CronJob (pg_dump -> S3)
   rds-backup:
-    enabled: true
+    enabled: false
     description: "RDS 백업 - pg_dump CronJob (S3 저장)"
     path: ca-staging/charts/data/rds-backup
     namespace: data
