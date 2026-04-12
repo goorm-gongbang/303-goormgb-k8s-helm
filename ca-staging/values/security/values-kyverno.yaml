@@ -10,8 +10,6 @@ admissionController:
     requests:
       cpu: 50m
       memory: 128Mi
-
-  # Monitoring 노드에 배치
   nodeSelector:
     role: monitoring
   tolerations:
@@ -69,7 +67,6 @@ reportsController:
 
 # Config settings
 config:
-  # Namespaces to exclude from policy enforcement
   excludeNamespaces:
     - kube-system
     - kube-public
@@ -81,7 +78,7 @@ config:
 
 # Webhook configuration
 webhooks:
-  failurePolicy: Ignore  # staging에서는 Ignore로 설정 (정책 위반시에도 배포 허용)
+  failurePolicy: Ignore
 
 # ServiceMonitor for Prometheus
 serviceMonitor:
