@@ -272,7 +272,7 @@ datasources:
         database: ${AI_PG_DBNAME}
         user: ${AI_PG_USERNAME}
         isDefault: false
-        editable: false
+        editable: true
         jsonData:
           database: ${AI_PG_DBNAME}
           sslmode: require
