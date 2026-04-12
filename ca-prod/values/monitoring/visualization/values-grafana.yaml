@@ -269,11 +269,11 @@ datasources:
         uid: postgres
         access: proxy
         url: ${AI_PG_HOST}:${AI_PG_PORT}
-        database: ${AI_PG_DBNAME}
         user: ${AI_PG_USERNAME}
         isDefault: false
         editable: false
         jsonData:
+          database: ${AI_PG_DBNAME}
           sslmode: require
           maxOpenConns: 5
           maxIdleConns: 2
