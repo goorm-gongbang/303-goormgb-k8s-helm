@@ -141,6 +141,7 @@ spec:
       containers:
         - name: ratelimit
           image: {{ .Values.rateLimiting.global.service.image }}
+          command: ["/bin/ratelimit"]
           ports:
             - containerPort: 8080   # HTTP
             - containerPort: 8081   # gRPC
