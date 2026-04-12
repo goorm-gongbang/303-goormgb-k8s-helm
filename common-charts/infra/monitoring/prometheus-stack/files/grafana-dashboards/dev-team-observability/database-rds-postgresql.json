@@ -535,7 +535,7 @@
           "expression": "fields @timestamp, @message | sort @timestamp desc | limit 500",
           "id": "",
           "logGroups": [
-            { "arn": "arn:aws:logs:ap-northeast-2:497012402578:log-group:/aws/rds/instance/$db_instance/postgresql", "name": "/aws/rds/instance/$db_instance/postgresql" }
+            { "arn": "arn:aws:logs:ap-northeast-2:__AWS_ACCOUNT_ID__:log-group:/aws/rds/instance/$db_instance/postgresql", "name": "/aws/rds/instance/$db_instance/postgresql" }
           ],
           "matchExact": true,
           "namespace": "",

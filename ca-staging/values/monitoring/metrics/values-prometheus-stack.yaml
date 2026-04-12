@@ -55,6 +55,7 @@ dashboards:
     namespaceRegex: "/(staging-webs)/"
     redisClusterPattern: "goormgb-staging-.*"
     dbInstancePattern: "goormgb-staging-postgresql"
+    awsAccountId: "406223549139"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
