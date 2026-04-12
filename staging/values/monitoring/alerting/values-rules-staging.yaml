@@ -25,7 +25,7 @@ additionalPrometheusRulesMap:
               namespace: staging-webs
             annotations:
               summary: "{{ $labels.app }} 5xx 발생 ({{ $labels.http_response_status_code }})"
-              description: "서비스: {{ $labels.app }}\n경로: {{ $labels.http_route }}\n상태코드: {{ $labels.http_response_status_code }}\n발생건수(5m): {{ $value | printf \"%.0f\" }}건\n\nGrafana 로그: https://grafana.staging.playball.one/explore?orgId=1&left=%7B%22queries%22:%5B%7B%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D%20%7C%20json%20%7C%20level%20%3D%20%5C%22ERROR%5C%22%22%7D%5D%7D"
+              description: "서비스: {{ $labels.app }}\n경로: {{ $labels.http_route }}\n상태코드: {{ $labels.http_response_status_code }}\n발생건수(5m): {{ $value | printf \"%.0f\" }}건\n\nGrafana 로그: https://grafana.staging.playball.one/explore?orgId=1&left=%7B%22queries%22:%5B%7B%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22loki%22%7D,%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D%20%7C%20json%20%7C%20level%20%3D%20%5C%22ERROR%5C%22%22%7D%5D%7D"
 
           - alert: StagingHttp5xxCritical
             expr: |
