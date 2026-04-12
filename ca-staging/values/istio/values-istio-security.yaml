@@ -235,9 +235,7 @@ rateLimiting:
     enabled: true
 
     redis:
-      internal: false
-      host: "${SPRING_DATA_REDIS_HOST}"  # ElastiCache (ESO: staging/services/redis)
-      port: "${SPRING_DATA_REDIS_PORT}"
+      internal: true
 
     service:
       replicas: 1
