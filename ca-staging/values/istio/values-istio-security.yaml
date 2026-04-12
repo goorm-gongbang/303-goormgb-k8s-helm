@@ -241,7 +241,7 @@ rateLimiting:
 
     service:
       replicas: 1
-      image: docker.io/envoyproxy/ratelimit:master
+      image: docker.io/envoyproxy/ratelimit:05c08d03
 
     domain: "goormgb-staging-ratelimit"
 
