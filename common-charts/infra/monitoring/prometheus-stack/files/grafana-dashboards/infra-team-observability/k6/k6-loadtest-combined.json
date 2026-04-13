@@ -2835,7 +2835,7 @@
     },
     {
       "datasource": {"type": "datasource", "uid": "-- Dashboard --"},
-      "gridPos": {"h": 3, "w": 24, "x": 0, "y": 93}, "id": 507,
+      "gridPos": {"h": 7, "w": 24, "x": 0, "y": 93}, "id": 507,
       "options": {
         "code": {"language": "plaintext", "showLineNumbers": false},
         "content": "**Kafka 토픽 흐름**\n\n| 토픽 | Producer | Consumer | 의미 |\n|------|----------|----------|------|\n| payment-completed | order-core | seat | 결제 완료 -> 좌석 SOLD |\n| order-cancelled | order-core | seat | 주문 취소 -> 좌석 해제 |\n| bank-transfer-expired | order-core | seat | 무통장 만료 -> 좌석 해제 |\n| user-blocked | auth-guard | order-core | 사용자 차단 -> 주문 검토 |",

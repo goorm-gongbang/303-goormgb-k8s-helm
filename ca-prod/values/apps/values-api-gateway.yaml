@@ -70,6 +70,10 @@ istio:
       - "*"
     allowCredentials: true
     maxAge: "24h"
+  retries:
+    attempts: 3
+    perTryTimeout: "10s"
+    retryOn: "connect-failure,refused-stream,reset"
 
 # Service
 servicePort: &port 8085

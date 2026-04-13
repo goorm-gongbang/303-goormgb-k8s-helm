@@ -244,16 +244,6 @@ ociCharts:
     valueFiles:
       - $values/ca-prod/values/infra/values-external-dns.yaml
 
-  alloy:
-    enabled: true
-    repoURL: https://grafana.github.io/helm-charts
-    chart: alloy
-    version: "1.7.0"
-    namespace: monitoring
-    syncWave: "3"
-    valueFiles:
-      - $values/ca-prod/values/monitoring/logs/values-alloy.yaml
-
   tempo:
     enabled: true
     repoURL: https://grafana.github.io/helm-charts
@@ -477,14 +467,6 @@ gitCharts:
       - ../../../ca-prod/values/messaging/values-kafka.yaml
 
   # kafka-ui: prod에서는 bastion CLI 사용
-
-    enabled: true
-    path: common-charts/infra/monitoring/alloy
-    releaseName: alloy
-    namespace: monitoring
-    syncWave: "1"
-    valueFiles:
-      - ../../../../ca-prod/values/monitoring/logs/values-alloy.yaml
 
   # === ArgoCD Config (OAuth, Applications) ===
   argocd-config:

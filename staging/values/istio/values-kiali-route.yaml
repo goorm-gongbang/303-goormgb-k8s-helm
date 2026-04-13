@@ -1,7 +1,0 @@
-# Kiali VirtualService & DestinationRule for Staging
-# Route: kiali.staging.playball.one -> kiali service
-
-kialiVirtualService:
-  enabled: true
-  host: "kiali.staging.playball.one"
-  gatewayRef: "istio-system/api-gateway"
