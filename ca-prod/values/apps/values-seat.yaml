@@ -56,9 +56,9 @@ service:
 env:
   # HikariCP connection pool 크기 조정
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "10"
+    value: "20"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "3"
+    value: "5"
 
 envFrom:
   - configMapRef:
