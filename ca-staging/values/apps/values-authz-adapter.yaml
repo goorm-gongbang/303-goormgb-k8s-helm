@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/ai/authz-adapter"
-  tag: "d97e71a.6"
+  tag: "aa7ffc4.7"
   pullPolicy: Always
 
 # EKS 노드 IAM Role이 ECR 접근 권한 보유 - imagePullSecrets 불필요
@@ -42,6 +42,8 @@ authzAdapter:
 # Redis Blacklist 설정 (ElastiCache)
 env:
   - name: REDIS_BLACKLIST_ENABLED
+    value: "true"
+  - name: REDIS_TLS_ENABLED
     value: "true"
   - name: REDIS_HOST
     valueFrom:

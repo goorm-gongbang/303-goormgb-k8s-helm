@@ -1,11 +1,11 @@
 # api-gateway - Staging 환경
 fullnameOverride: "api-gateway"
 contextPath: ""  # api-gateway는 context path 없음
-replicaCount: 2
+replicaCount: 1
 
 image:
   name: "staging/playball/web/api-gateway"
-  tag: "10daed3.31"
+  tag: "fe8ca2b.32"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)

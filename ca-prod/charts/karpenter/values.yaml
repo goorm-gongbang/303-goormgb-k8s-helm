@@ -20,7 +20,7 @@ nodePools:
   workloads:
     enabled: true
 
-    # Spot 우선 (비용 절감), 앱은 replicas로 가용성 확보
+    # Spot (비용 효율, 다양한 instance type + interruption queue로 안정성 확보)
     capacityTypes:
       - spot
 

@@ -55,7 +55,7 @@ resources:
     memory: 1536Mi
 
 persistence:
-  enabled: false  # emptyDir 사용 (EBS AZ 종속성 제거)
+  enabled: false # emptyDir 사용 (EBS AZ 종속성 제거)
 
 # Pod 시작 시 DB 연결 설정 자동 주입
 initialConfig:
@@ -76,7 +76,7 @@ initialConfig:
             "port": "5432",
             "database": "goormgb",
             "user-name": "playball_user",
-            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/goormgb",
+            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/goormgb?sslmode=require",
             "type": "dev",
             "provider-properties": {
               "@dbeaver-show-non-default-db@": "false"
@@ -95,7 +95,7 @@ initialConfig:
             "port": "5432",
             "database": "ai_defense",
             "user-name": "ai_defense",
-            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/ai_defense",
+            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/ai_defense?sslmode=require",
             "type": "dev",
             "provider-properties": {
               "@dbeaver-show-non-default-db@": "false"
@@ -112,9 +112,9 @@ initialConfig:
           "configuration": {
             "host": "clickhouse.data.svc.cluster.local",
             "port": "8123",
-            "database": "default",
-            "user-name": "default",
-            "url": "jdbc:clickhouse://clickhouse.data.svc.cluster.local:8123/default",
+            "database": "ai_defense",
+            "user-name": "ai_defense",
+            "url": "jdbc:clickhouse://clickhouse.data.svc.cluster.local:8123/ai_defense",
             "type": "dev"
           }
         }

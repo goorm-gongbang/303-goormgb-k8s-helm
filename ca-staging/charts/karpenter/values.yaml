@@ -31,6 +31,7 @@ nodePools:
       - t
       - m
       - c
+    minGeneration: "4"  # 5세대 이상 (t4g 제외, m5/c5+)
     instanceSizes:
       - xlarge     # 4 vCPU, 16GB - 기본 (노드 개수 줄이기)
       - 2xlarge    # 8 vCPU, 32GB - 버스트용
@@ -52,8 +53,8 @@ nodePools:
     expireAfter: 720h
 
   # -----------------------------------------------------------------------------
-  # Load-test NodePool: 부하 테스트 전용 앱 서비스
-  # java-services + ai-services 2세트 운영
+  # Load-test NodePool: 부하 테스트 전용 웹 서비스
+  # Spot 비용 최적화: 다양한 패밀리/사이즈로 가격 경쟁 극대화
   # -----------------------------------------------------------------------------
   loadtest:
     enabled: true
@@ -63,18 +64,18 @@ nodePools:
     capacityTypes:
       - spot
 
-    # 인스턴스 설정 - arm64 (Graviton)
+    # 인스턴스 설정 - t4g.xlarge Spot (Graviton 최저가 ~$0.03/hr)
     arch: arm64
+    minGeneration: "3"  # 4세대 포함 (t4g)
     instanceCategories:
-      - c  # Compute-optimized
-      - m
+      - t
     instanceSizes:
-      - 2xlarge    # 8 vCPU, 16GB - 앱 2세트용
+      - xlarge    # 4 vCPU, 16GB
 
-    # 리소스 제한 (노드 2개 정도)
+    # 리소스 제한 - webs 5개 서비스만 (requests ~4 cores)
     limits:
-      cpu: 32
-      memory: 64Gi
+      cpu: 16
+      memory: 32Gi
 
     # Taint 설정 (부하 테스트 전용 격리)
     taints:
@@ -84,10 +85,10 @@ nodePools:
 
     weight: 50
 
-    # Disruption 설정
+    # Disruption 설정 - 빠른 통합으로 빈 노드 즉시 제거
     consolidationPolicy: WhenEmptyOrUnderutilized
-    consolidateAfter: 1m
-    expireAfter: 720h
+    consolidateAfter: 30s
+    expireAfter: 168h  # 7일 (테스트 끝나면 자동 교체)
 
 # =============================================================================
 # EC2NodeClass - 공통 설정

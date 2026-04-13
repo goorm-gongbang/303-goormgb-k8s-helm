@@ -81,15 +81,28 @@ notifications:
 
 # Global 설정
 configs:
-  # RBAC은 ESO + sync-rbac.sh로 관리 (bootstrap repo)
-  # Helm에서 argocd-rbac-cm 생성하지 않음
+  # RBAC - Helm에서 직접 관리 (ESO 덮어쓰기 방지)
   rbac:
-    create: false
+    create: true
+    policy.default: "role:none"
+    scopes: "[email]"
+    policy.csv: |
+      p, role:developer-staging, applications, get, */*, allow
+      p, role:developer-staging, applications, sync, */*, allow
+      p, role:developer-staging, logs, get, */*, allow
+      p, role:developer-staging, exec, create, */*, allow
+      g, 212clab@gmail.com, role:admin
+      g, rhuba23@gmail.com, role:admin
+      g, chamchi0129@gmail.com, role:admin
+      g, yuuijin863@gmail.com, role:developer-staging
+      g, siyeon0713@gmail.com, role:developer-staging
+      g, rhkdgur120@gmail.com, role:developer-staging
 
   cm:
     create: true
     url: https://argocd.staging.playball.one
     admin.enabled: "true"
+    server.allowedRedirectURLs: https://argocd.staging.playball.one
     oidc.config: |
       name: Google
       issuer: https://accounts.google.com

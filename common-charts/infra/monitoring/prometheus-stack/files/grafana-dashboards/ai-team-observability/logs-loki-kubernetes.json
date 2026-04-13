@@ -42,7 +42,7 @@
       "targets": [
         {
           "datasource": {"type": "loki", "uid": "loki"},
-          "expr": "sum by (pod) (count_over_time({namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\"} ${healthFilter:raw} ${queryType:raw} [$__interval]))",
+          "expr": "sum by (pod) (count_over_time({namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\", stream=~\"$stream\"} ${log_type:raw} |= \"$query\" ${log_level:raw} [$__interval]))",
           "legendFormat": "{{pod}}",
           "refId": "A"
         }
@@ -69,7 +69,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\"} ${healthFilter:raw} ${queryType:raw}",
+          "expr": "{namespace=\"__AI_NAMESPACE__\", pod=~\"$pod\", stream=~\"$stream\"} ${log_type:raw} |= \"$query\" ${log_level:raw}",
           "queryType": "range",
           "refId": "A"
         }
@@ -108,35 +108,64 @@
         "type": "custom"
       },
       {
+        "current": {"text": "", "value": ""},
+        "description": "검색어 (ERROR, WARN 등 로그 레벨 포함)",
+        "label": "검색어",
+        "name": "query",
+        "options": [{"selected": true, "text": "", "value": ""}],
+        "query": "",
+        "type": "textbox"
+      },
+      {
         "current": {"selected": true, "text": "전체", "value": "|= ``"},
+        "description": "로그 유형 필터링",
         "hide": 0,
         "includeAll": false,
-        "label": "필터",
+        "label": "로그 유형",
         "multi": false,
-        "name": "healthFilter",
+        "name": "log_type",
         "options": [
           {"selected": true, "text": "전체", "value": "|= ``"},
-          {"selected": false, "text": "Health/Metrics 제외", "value": "!~ `/healthz|/readyz|/livez|/health|/ready|/metrics|/actuator`"},
-          {"selected": false, "text": "ERROR만 보기", "value": "|~ `ERROR|error`"},
-          {"selected": false, "text": "WARN 이상", "value": "|~ `ERROR|error|WARN|warn|WARNING`"}
+          {"selected": false, "text": "비즈니스 로그", "value": "!~ `health|ready|metrics|actuator|kube-probe`"},
+          {"selected": false, "text": "DB/Redis 쿼리", "value": "|~ `(?i)(select|insert|update|delete|query|sql|postgres|clickhouse|redis|EXISTS|INCR|SADD|Pipeline)`"},
+          {"selected": false, "text": "gRPC/HTTP 요청", "value": "|~ `(?i)(grpc|http|request|response|evaluate|challenge|handler|ext_authz)`"},
+          {"selected": false, "text": "Health Check 제외", "value": "!~ `kube-probe|/health|/ready`"}
         ],
-        "query": "",
+        "query": "전체 : |= ``,비즈니스 로그 : !~ `health|ready|metrics|actuator|kube-probe`,DB/Redis 쿼리 : |~ `(?i)(select|insert|update|delete|query|sql|postgres|clickhouse|redis|EXISTS|INCR|SADD|Pipeline)`,gRPC/HTTP 요청 : |~ `(?i)(grpc|http|request|response|evaluate|challenge|handler|ext_authz)`,Health Check 제외 : !~ `kube-probe|/health|/ready`",
         "type": "custom"
       },
       {
-        "current": {"selected": true, "text": "전체", "value": ""},
+        "allValue": ".+",
+        "current": {"text": "All", "value": "$__all"},
+        "hide": 2,
+        "includeAll": true,
+        "multi": true,
+        "name": "stream",
+        "options": [
+          {"selected": true, "text": "All", "value": "$__all"},
+          {"selected": false, "text": "stdout", "value": "stdout"},
+          {"selected": false, "text": "stderr", "value": "stderr"}
+        ],
+        "query": "stdout,stderr",
+        "type": "custom"
+      },
+      {
+        "current": {"selected": true, "text": "전체", "value": "|= ``"},
+        "description": "애플리케이션 로그 레벨 필터링",
         "hide": 0,
         "includeAll": false,
-        "label": "쿼리 타입",
+        "label": "로그 레벨",
         "multi": false,
-        "name": "queryType",
+        "name": "log_level",
         "options": [
-          {"selected": true, "text": "전체", "value": ""},
-          {"selected": false, "text": "DB 쿼리", "value": "|~ `(?i)(select|insert|update|delete|query|sql|database|postgres|clickhouse|execute)`"},
-          {"selected": false, "text": "서비스 쿼리", "value": "|~ `(?i)(http|request|response|endpoint|api|handler|grpc|evaluate|telemetry|challenge)`"},
-          {"selected": false, "text": "Istio 쿼리", "value": "|~ `(?i)(istio|envoy|upstream|downstream|xds|pilot|proxy|ext_authz)`"}
+          {"selected": true, "text": "전체", "value": "|= ``"},
+          {"selected": false, "text": "TRACE", "value": "|~ `\"level\": ?\"TRACE\"`"},
+          {"selected": false, "text": "DEBUG", "value": "|~ `\"level\": ?\"DEBUG\"`"},
+          {"selected": false, "text": "INFO", "value": "|~ `\"level\": ?\"INFO\"`"},
+          {"selected": false, "text": "WARN", "value": "|~ `\"level\": ?\"WARN\"`"},
+          {"selected": false, "text": "ERROR", "value": "|~ `\"level\": ?\"ERROR\"`"}
         ],
-        "query": "",
+        "query": "전체 : |= ``,TRACE : |~ `\"level\": ?\"TRACE\"`,DEBUG : |~ `\"level\": ?\"DEBUG\"`,INFO : |~ `\"level\": ?\"INFO\"`,WARN : |~ `\"level\": ?\"WARN\"`,ERROR : |~ `\"level\": ?\"ERROR\"`",
         "type": "custom"
       }
     ]
@@ -146,5 +175,5 @@
   "timezone": "browser",
   "title": "[AI] 로그 확인",
   "uid": "ai-logs-loki",
-  "version": 3
+  "version": 4
 }

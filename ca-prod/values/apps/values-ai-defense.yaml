@@ -57,13 +57,13 @@ env:
         key: AI_REDIS_PORT
   # 런타임 캐시용 Redis URL (동적 파싱)
   - name: TM_REDIS_URL
-    value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+    value: "rediss://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   # CORS 허용 Origin (Frontend)
   - name: TM_CORS_ALLOW_ORIGINS
     value: "https://playball.one"
   # S3 아카이빙 활성화 (IRSA로 접근 - credentials 불필요)
   - name: TM_S3_BUCKET
-    value: "goormgb-prod-ai-audit"
+    value: "playball-prod-ai-audit"
   # PostgreSQL (RDS - Secrets Manager에서 가져옴)
   - name: AI_PG_HOST
     valueFrom:
@@ -91,7 +91,10 @@ env:
         name: ai-service-config
         key: AI_PG_DBNAME
   - name: TM_PG_URL
-    value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)"
+    value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)?sslmode=require"
+  # Policy projection staleness 체크 완화 (reconciler 미구현 — 추후 코드 수정 후 제거)
+  - name: TM_POLICY_PROJECTION_MAX_STALENESS_MS
+    value: "2678400000"
   # ClickHouse (클러스터 내부 - Secrets Manager에서 인증 정보 가져옴)
   - name: AI_CLICKHOUSE_USER
     valueFrom:

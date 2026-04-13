@@ -34,10 +34,10 @@ affinity:
 
 resources:
   requests:
-    cpu: 1000m
-    memory: 512Mi
+    cpu: 500m
+    memory: 256Mi
   limits:
-    cpu: "4"
+    cpu: "2"
     memory: 2Gi
 
 istio:

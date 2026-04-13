@@ -35,7 +35,7 @@ spec:
 
         - key: karpenter.k8s.aws/instance-generation
           operator: Gt
-          values: ["4"]
+          values: [{{ $pool.minGeneration | default "3" | quote }}]
 
         - key: karpenter.k8s.aws/instance-size
           operator: In
