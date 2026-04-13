@@ -1,7 +1,7 @@
 # seat - Load-test 환경
 fullnameOverride: "seat"
 contextPath: "/seat"
-replicaCount: 0
+replicaCount: 1
 
 image:
   name: "staging/playball/web/seat"
@@ -33,10 +33,10 @@ affinity:
 
 resources:
   requests:
-    cpu: 1000m
-    memory: 512Mi
+    cpu: 500m
+    memory: 256Mi
   limits:
-    cpu: "4"
+    cpu: "2"
     memory: 2Gi
 
 istio:
