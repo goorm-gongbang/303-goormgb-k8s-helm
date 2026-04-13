@@ -15,7 +15,7 @@ schedule: "*/5 * * * *"
 # Cloudflare API credentials (from AWS Secrets Manager via ESO)
 secret:
   name: cloudflare-ddns-credentials
-  awsSecretKey: dev/infra/cloudflare
+  awsSecretKey: dev/infra
 
 # Use lightweight image with curl
 image:
