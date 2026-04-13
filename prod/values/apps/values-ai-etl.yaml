@@ -20,7 +20,7 @@ imagePullSecrets: []
 env:
   # S3 (IRSA로 접근 - credentials 불필요)
   - name: TM_S3_BUCKET
-    value: "goormgb-prod-ai-audit"
+    value: "playball-prod-ai-audit"
   # ClickHouse
   - name: AI_CLICKHOUSE_USER
     valueFrom:
