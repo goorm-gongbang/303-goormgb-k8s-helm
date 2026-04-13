@@ -12,6 +12,27 @@ selector:
 # Staging 환경에서는 block 모드 사용
 mode: block
 
+# WAF 탐지 IP 자동 blacklist (authz-adapter:9090/admin/blacklist 호출)
+# SQLi는 따옴표 FP 위험으로 제외. 9개 카테고리만 즉시 등록.
+# 사유는 sprint7/security/waf-auto-blocklist.md 참조
+autoBlocklist:
+  enabled: true
+  cluster:
+    host: staging-authz-adapter.staging-ai.svc.cluster.local
+    port: 9090
+  path: /admin/blacklist
+  timeoutMs: 200
+  categories:
+    - LOG4SHELL
+    - XXE_INJECTION
+    - HEADER_INJECTION
+    - BOT_SCANNER
+    - LDAP_INJECTION
+    - COMMAND_INJECTION
+    - XSS
+    - SSRF
+    - PATH_TRAVERSAL
+
 # 로깅 설정
 logging:
   enabled: true
