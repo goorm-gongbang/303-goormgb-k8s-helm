@@ -28,7 +28,8 @@ oidc:
   enabled: true
   name: Google
   issuer: https://accounts.google.com
-  secretManagerKey: dev/infra/oauth/google
+  secretManagerKey: dev/infra
+  propertyPrefix: "oauth_google_"
   requestedScopes:
     - openid
     - profile
@@ -38,7 +39,8 @@ oidc:
 rbac:
   eso:
     enabled: true
-    secretManagerKey: dev/oauth/rbac/argocd
+    secretManagerKey: dev/infra
+    propertyPrefix: "oauth_rbac_argocd_"
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
 
@@ -55,4 +57,5 @@ notifications:
   discord:
     eso:
       enabled: true
-      secretManagerKey: dev/argocd/discord-webhook
+      secretManagerKey: dev/infra
+      propertyPrefix: "argocd_"

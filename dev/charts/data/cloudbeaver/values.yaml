@@ -34,7 +34,8 @@ oauth2Proxy:
       name: "aws-secrets-manager"
       kind: "ClusterSecretStore"
     remoteRef:
-      key: "dev/infra/oauth/teams-allow"
+      key: "dev/infra"
+      propertyPrefix: "oauth_teams-allow_"
 
 service:
   type: ClusterIP
