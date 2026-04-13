@@ -12,6 +12,37 @@ selector:
 # Staging 환경에서는 block 모드 사용
 mode: block
 
+# WAF 탐지 IP 자동 blacklist (authz-adapter:9090/admin/blacklist 호출)
+# FP 위험 낮은 고신뢰 카테고리만 단일 탐지 시 즉시 IP blacklist 등록.
+# 나머지(XSS/PATH_TRAVERSAL/SSRF/HEADER_INJECTION/BOT_SCANNER)는 Lua WAF 의
+# mode:block 으로 해당 요청만 차단하고, IP 전체 차단은 하지 않음 (FP 방지).
+# SQLi 는 따옴표 FP 위험으로 탐지는 하되 auto-blocklist 제외.
+# 사유는 sprint7/security/waf-auto-blocklist.md 참조
+autoBlocklist:
+  enabled: true
+  cluster:
+    host: staging-authz-adapter.staging-ai.svc.cluster.local
+    port: 9090
+  path: /admin/blacklist
+  timeoutMs: 200
+  categories:
+    - LOG4SHELL
+    - COMMAND_INJECTION
+    - XXE_INJECTION
+    - LDAP_INJECTION
+  # Threshold 기반 등록: 일정 기간 내 N회 탐지되면 blacklist 등록
+  # (FP 위험 있는 카테고리용 — 정상 요청 하나에는 관대, 반복 공격자는 차단)
+  threshold:
+    enabled: true
+    windowSeconds: 300   # 5분
+    count: 3             # 3회 탐지 시 blacklist
+    categories:
+      - XSS
+      - PATH_TRAVERSAL
+      - SSRF
+      - HEADER_INJECTION
+      - BOT_SCANNER
+
 # 로깅 설정
 logging:
   enabled: true

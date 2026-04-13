@@ -375,7 +375,7 @@
         {
           "datasource": {"type": "loki", "uid": "loki"},
           "editorMode": "code",
-          "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"IP added to blacklist\" | json | line_format \"IP: {{.ip}} | Reason: {{.reason}} | TTL: {{.ttl}}\"",
+          "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"IP added to blacklist\" | json | line_format \"[{{.source}}] IP: {{.ip}} | Reason: {{.reason}} | Category: {{.category}} | Rule: {{.rule}} | Path: {{.path}} | Matched: {{.matched}}\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -496,6 +496,94 @@
         }
       ],
       "title": "차단 로그 (reason 포함)",
+      "type": "logs"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 71},
+      "id": 200,
+      "title": "WAF 직접 차단 (Lua) — 등록 단계",
+      "description": "Istio WAF Lua 필터가 탐지 → adapter에 등록한 케이스. ext_authz 차단(위 섹션)과는 다른 단계.",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "WAF가 등록한 IP 총수 (선택 기간)",
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 72},
+      "id": 201,
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto", "colorMode": "value", "graphMode": "area"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}, "unit": "short"}},
+      "targets": [
+        {"expr": "sum(increase(authz_adapter_blacklist_added_total{source=\"waf\", result=\"added\"}[$__range])) or vector(0)", "refId": "A"}
+      ],
+      "title": "WAF 등록 IP (총)",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Whitelist라서 등록 안 된 케이스",
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 72},
+      "id": 202,
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "textMode": "auto", "colorMode": "value"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}]}, "unit": "short"}},
+      "targets": [
+        {"expr": "sum(increase(authz_adapter_blacklist_added_total{source=\"waf\", result=\"skipped_whitelist\"}[$__range])) or vector(0)", "refId": "A"}
+      ],
+      "title": "Whitelist 스킵",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "등록 실패 (adapter→Redis 에러)",
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 72},
+      "id": 203,
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "textMode": "auto", "colorMode": "value"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}, "unit": "short"}},
+      "targets": [
+        {"expr": "sum(increase(authz_adapter_blacklist_added_total{source=\"waf\", result=\"error\"}[$__range])) or vector(0)", "refId": "A"}
+      ],
+      "title": "등록 에러",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "카테고리별 등록 추이",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 76},
+      "id": 204,
+      "fieldConfig": {"defaults": {"unit": "short", "custom": {"drawStyle": "line", "fillOpacity": 10, "lineWidth": 2}}},
+      "options": {"legend": {"displayMode": "table", "placement": "right", "calcs": ["sum"]}, "tooltip": {"mode": "multi"}},
+      "targets": [
+        {"expr": "sum by (category) (rate(authz_adapter_blacklist_added_total{source=\"waf\", result=\"added\"}[$__rate_interval]))", "legendFormat": "{{category}}", "refId": "A"}
+      ],
+      "title": "카테고리별 등록 추이",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "룰별 등록 Top 20",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 76},
+      "id": 205,
+      "options": {"showHeader": true, "sortBy": [{"desc": true, "displayName": "Added"}]},
+      "fieldConfig": {"defaults": {"custom": {"align": "left"}}, "overrides": [{"matcher": {"id": "byName", "options": "Value"}, "properties": [{"id": "displayName", "value": "Added"}, {"id": "custom.cellOptions", "value": {"mode": "gradient", "type": "gauge"}}]}]},
+      "targets": [
+        {"expr": "topk(20, sum by (category, rule) (increase(authz_adapter_blacklist_added_total{source=\"waf\", result=\"added\"}[$__range])))", "format": "table", "instant": true, "refId": "A"}
+      ],
+      "title": "룰별 등록 Top 20",
+      "transformations": [
+        {"id": "organize", "options": {"excludeByName": {"Time": true}, "renameByName": {"category": "Category", "rule": "Rule"}}}
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "loki", "uid": "loki"},
+      "description": "WAF 등록 상세 로그 (어떤 IP가 무슨 페이로드 쏘다 걸렸는지)",
+      "gridPos": {"h": 12, "w": 24, "x": 0, "y": 84},
+      "id": 206,
+      "options": {"dedupStrategy": "none", "enableLogDetails": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true},
+      "targets": [
+        {"datasource": {"type": "loki", "uid": "loki"}, "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"IP added to blacklist (auto)\" | json | line_format \"[{{.source}}] {{.ip}} | {{.category}}/{{.rule}} | path={{.path}} | matched={{.matched}}\"", "queryType": "range", "refId": "A"}
+      ],
+      "title": "WAF 등록 상세 로그",
       "type": "logs"
     }
   ],

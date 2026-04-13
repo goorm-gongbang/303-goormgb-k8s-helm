@@ -5,6 +5,7 @@ metadata:
   name: {{ $name }}
   labels:
     app: {{ $name }}
+    version: {{ .Chart.AppVersion | quote }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -16,6 +17,7 @@ spec:
     metadata:
       labels:
         app: {{ $name }}
+        version: {{ .Chart.AppVersion | quote }}
       annotations:
         sidecar.istio.io/inject: "false"
     spec:

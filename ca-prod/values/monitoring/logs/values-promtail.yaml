@@ -8,6 +8,9 @@ config:
     pipelineStages:
       - cri: {}
 
+tolerations:
+  - operator: Exists
+
 resources:
   requests:
     cpu: 50m

@@ -13,8 +13,6 @@ config:
         regex: (.+)
         action: replace
 
-# CP 노드에서도 실행 (DaemonSet)
+# 모든 노드에서 실행 (DaemonSet - 로그 수집은 전 노드 필수)
 tolerations:
-  - key: "node-role.kubernetes.io/control-plane"
-    operator: "Exists"
-    effect: "NoSchedule"
+  - operator: Exists
