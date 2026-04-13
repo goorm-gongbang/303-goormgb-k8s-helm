@@ -1,641 +1,216 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
-        "type": "dashboard"
-      }
-    ]
-  },
-  "description": "비즈니스 KPI는 Warning 또는 Critical 알람 기준이 아니라, 운영 효과와 전환 흐름을 확인하기 위한 Info 전용 대시보드입니다. 집계 기준은 애플리케이션 로그가 아니라 Prometheus 메트릭입니다. 관련 ticketing_* 메트릭이 아직 배포되지 않은 환경에서는 값이 비어 보일 수 있습니다. Hold, 주문, 결제 패널이 모두 비면 ticketing_seat_hold_*, ticketing_order_draft_enter_total, ticketing_payment_* 메트릭이 아직 계측되지 않았을 가능성이 크고, 일부 패널만 비면 선택한 시간 범위에 해당 이벤트가 없었을 수 있습니다. 값이 너무 낮게 보이면 staging 트래픽 자체가 적은 경우도 함께 고려하세요.",
+  "annotations": {"list": []},
+  "description": "비즈니스 KPI - 인증, 대기열, 좌석, 결제 파이프라인 현황",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": null,
   "links": [],
   "panels": [
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0}, "id": 1, "title": "인증 (Auth-Guard)", "type": "row"},
     {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 1,
-      "panels": [],
-      "description": "좌석 Hold 자체의 볼륨과 성공률을 확인하기 위한 핵심 KPI 구간입니다.",
-      "title": "Hold KPI",
-      "type": "row"
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 1}, "id": 2,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_auth_attempts_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "인증 시도", "type": "stat"
     },
     {
-      "datasource": "Prometheus",
-      "description": "선택한 기간 동안 Hold 시도 총건수입니다. 전체 좌석 선점 수요의 분모로 사용합니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 0,
-        "y": 1
-      },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 1}, "id": 3,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_auth_success_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "인증 성공", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "max": 100, "min": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "yellow", "value": 50}, {"color": "green", "value": 90}]}, "unit": "percent"}},
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 1}, "id": 4,
+      "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"]}, "showThresholdMarkers": true},
+      "targets": [{"expr": "100 * sum(rate(ticketing_auth_success_total[5m])) / clamp_min(sum(rate(ticketing_auth_attempts_total[5m])), 0.001) or vector(0)", "refId": "A"}],
+      "title": "인증 성공률", "type": "gauge"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 1}, "id": 5,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_auth_user_blocked_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "차단된 사용자", "type": "stat"
+    },
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 5}, "id": 10, "title": "대기열 (Queue)", "type": "row"},
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 8, "x": 0, "y": 6}, "id": 11,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_queue_entries_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "대기열 진입", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 10}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 8, "x": 8, "y": 6}, "id": 12,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_queue_abandoned_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "대기열 이탈", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 30}, {"color": "red", "value": 60}]}, "unit": "s"}},
+      "gridPos": {"h": 4, "w": 8, "x": 16, "y": 6}, "id": 13,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
+      "targets": [{"expr": "histogram_quantile(0.99, sum(rate(ticketing_queue_wait_seconds_bucket[5m])) by (le)) or vector(0)", "refId": "A"}],
+      "title": "대기 시간 P99", "type": "stat"
+    },
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 10}, "id": 20, "title": "좌석 (Seat)", "type": "row"},
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 11}, "id": 21,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_seat_recommend_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "추천 요청", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 4, "x": 4, "y": 11}, "id": 22,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_seat_recommend_success_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "추천 성공", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 4, "x": 8, "y": 11}, "id": 23,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_seat_hold_attempt_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "Hold 시도", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 4, "x": 12, "y": 11}, "id": 24,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_seat_hold_success_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "Hold 성공", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 4, "x": 16, "y": 11}, "id": 25,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_seat_hold_fail_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "Hold 실패", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 4, "x": 20, "y": 11}, "id": 26,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_seat_hold_expired_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "Hold 만료", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "좌석 추천/Hold 추이",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 20, "lineWidth": 2, "showPoints": "never"}, "unit": "short"}},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 15}, "id": 27,
+      "options": {"legend": {"calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
       "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum(increase(ticketing_seat_hold_attempt_total[$__range]))",
-          "legendFormat": "Hold Attempt",
-          "refId": "A"
-        }
+        {"expr": "sum(increase(ticketing_seat_recommend_total[5m])) or vector(0)", "legendFormat": "추천 요청", "refId": "A"},
+        {"expr": "sum(increase(ticketing_seat_recommend_success_total[5m])) or vector(0)", "legendFormat": "추천 성공", "refId": "B"},
+        {"expr": "sum(increase(ticketing_seat_hold_success_total[5m])) or vector(0)", "legendFormat": "Hold 성공", "refId": "C"},
+        {"expr": "sum(increase(ticketing_seat_hold_fail_total[5m])) or vector(0)", "legendFormat": "Hold 실패", "refId": "D"},
+        {"expr": "sum(increase(ticketing_seat_hold_expired_total[5m])) or vector(0)", "legendFormat": "Hold 만료", "refId": "E"}
       ],
-      "title": "Hold 시도",
-      "type": "stat"
+      "title": "좌석 파이프라인 추이", "type": "timeseries"
+    },
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 23}, "id": 30, "title": "결제 (Order-Core)", "type": "row"},
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 24}, "id": 31,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_order_draft_enter_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "주문 진입", "type": "stat"
     },
     {
-      "datasource": "Prometheus",
-      "description": "선택한 기간 동안 Hold 성공 총건수입니다. 실제 선점 완료 건수를 나타냅니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 6,
-        "y": 1
-      },
-      "id": 3,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 24}, "id": 32,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_payment_success_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "결제 성공", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 24}, "id": 33,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_payment_fail_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "결제 실패", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "결제 전환율 = 결제 성공 / 주문 진입",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "max": 100, "min": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "yellow", "value": 50}, {"color": "green", "value": 80}]}, "unit": "percent"}},
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 24}, "id": 34,
+      "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"]}, "showThresholdMarkers": true},
+      "targets": [{"expr": "100 * sum(increase(ticketing_payment_success_total[$__range])) / clamp_min(sum(increase(ticketing_order_draft_enter_total[$__range])), 0.001) or vector(0)", "refId": "A"}],
+      "title": "결제 전환율", "type": "gauge"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "결제 파이프라인 추이",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 20, "lineWidth": 2, "showPoints": "never"}, "unit": "short"}},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 28}, "id": 35,
+      "options": {"legend": {"calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
       "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum(increase(ticketing_seat_hold_success_total[$__range]))",
-          "legendFormat": "Hold Success",
-          "refId": "A"
-        }
+        {"expr": "sum(increase(ticketing_order_draft_enter_total[5m])) or vector(0)", "legendFormat": "주문 진입", "refId": "A"},
+        {"expr": "sum(increase(ticketing_payment_attempts_total[5m])) or vector(0)", "legendFormat": "결제 시도", "refId": "B"},
+        {"expr": "sum(increase(ticketing_payment_success_total[5m])) or vector(0)", "legendFormat": "결제 성공", "refId": "C"},
+        {"expr": "sum(increase(ticketing_payment_fail_total[5m])) or vector(0)", "legendFormat": "결제 실패", "refId": "D"},
+        {"expr": "sum(increase(ticketing_payment_bank_transfer_expired_total[5m])) or vector(0)", "legendFormat": "무통장 만료", "refId": "E"}
       ],
-      "title": "Hold 성공",
-      "type": "stat"
+      "title": "결제 파이프라인 추이", "type": "timeseries"
+    },
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 36}, "id": 40, "title": "보안 탐지", "type": "row"},
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 50}, {"color": "red", "value": 200}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 8, "x": 0, "y": 37}, "id": 41,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_security_macro_detected_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "매크로/봇 탐지", "type": "stat"
     },
     {
-      "datasource": "Prometheus",
-      "description": "선택한 기간 동안 Hold 실패 총건수입니다. 경합, 검증 실패, 시스템 오류 등의 영향을 볼 수 있습니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "orange",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 12,
-        "y": 1
-      },
-      "id": 4,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum(increase(ticketing_seat_hold_fail_total[$__range]))",
-          "legendFormat": "Hold Fail",
-          "refId": "A"
-        }
-      ],
-      "title": "Hold 실패",
-      "type": "stat"
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 100}, {"color": "red", "value": 500}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 8, "x": 8, "y": 37}, "id": 42,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_security_blocked_ip_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "차단된 IP", "type": "stat"
     },
     {
-      "datasource": "Prometheus",
-      "description": "선택한 기간 동안 Hold 성공률입니다. 추천 정책과 좌석 경쟁 상황의 결과를 가장 직관적으로 보여주는 KPI입니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 50
-              },
-              {
-                "color": "green",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 18,
-        "y": 1
-      },
-      "id": 5,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "100 * sum(increase(ticketing_seat_hold_success_total[$__range])) / clamp_min(sum(increase(ticketing_seat_hold_attempt_total[$__range])), 1)",
-          "legendFormat": "Hold Success Rate",
-          "refId": "A"
-        }
-      ],
-      "title": "Hold 성공률",
-      "type": "stat"
-    },
-    {
-      "datasource": "Prometheus",
-      "description": "추천 모드와 좌석맵 모드의 Hold 성공률 비교입니다. 추천 정책이 실제 분산 효과를 냈는지 확인할 때 사용합니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 70,
-            "gradientMode": "none",
-            "lineWidth": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never"
-          },
-          "mappings": [],
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 6
-      },
-      "id": 6,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "100 * sum(increase(ticketing_seat_hold_success_total{mode=\"recommend\"}[$__range])) / clamp_min(sum(increase(ticketing_seat_hold_attempt_total{mode=\"recommend\"}[$__range])), 1)",
-          "legendFormat": "recommend",
-          "refId": "A"
-        },
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "100 * sum(increase(ticketing_seat_hold_success_total{mode=\"map\"}[$__range])) / clamp_min(sum(increase(ticketing_seat_hold_attempt_total{mode=\"map\"}[$__range])), 1)",
-          "legendFormat": "map",
-          "refId": "B"
-        }
-      ],
-      "title": "추천 vs 좌석맵 Hold 성공률",
-      "type": "timeseries"
-    },
-    {
-      "datasource": "Prometheus",
-      "description": "Hold 실패 사유 분포입니다. conflict, validation, timeout, system_error 등 어떤 원인이 주로 발생하는지 확인합니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 6
-      },
-      "id": 7,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "right",
-          "showLegend": true
-        },
-        "pieType": "pie",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum by (reason) (increase(ticketing_seat_hold_fail_total[$__range]))",
-          "legendFormat": "{{reason}}",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Hold 실패 사유",
-      "type": "piechart"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 14
-      },
-      "id": 8,
-      "panels": [],
-      "description": "추천 시스템이 정상 경로 외에 degrade 또는 fallback으로 얼마나 자주 내려가는지 보는 구간입니다.",
-      "title": "추천 운영 상태",
-      "type": "row"
-    },
-    {
-      "datasource": "Prometheus",
-      "description": "추천 degrade 발동 건수입니다. 추천 품질을 낮춰서라도 결과를 반환한 횟수를 의미합니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 15
-      },
-      "id": 9,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum by (degrade_type) (increase(ticketing_seat_recommend_degrade_total[$__range]))",
-          "legendFormat": "{{degrade_type}}",
-          "refId": "A"
-        }
-      ],
-      "title": "추천 degrade",
-      "type": "timeseries"
-    },
-    {
-      "datasource": "Prometheus",
-      "description": "추천 fallback 발동 건수입니다. 원래 경로 대신 대체 추천 로직이 사용된 횟수를 의미합니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 15
-      },
-      "id": 10,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum by (fallback_type) (increase(ticketing_seat_recommend_fallback_total[$__range]))",
-          "legendFormat": "{{fallback_type}}",
-          "refId": "A"
-        }
-      ],
-      "title": "추천 fallback",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 23
-      },
-      "id": 11,
-      "panels": [],
-      "description": "Hold 성공 이후 주문서 진입과 결제 성공으로 이어지는 전환 흐름을 보는 퍼널 구간입니다.",
-      "title": "주문 / 결제 퍼널",
-      "type": "row"
-    },
-    {
-      "datasource": "Prometheus",
-      "description": "Hold 성공 이후 주문서 진입 수와 결제 성공 수를 비교합니다. 어디에서 전환 손실이 생기는지 확인할 수 있습니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 24
-      },
-      "id": 12,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum(increase(ticketing_seat_hold_success_total[$__range]))",
-          "legendFormat": "hold_success",
-          "refId": "A"
-        },
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum(increase(ticketing_order_draft_enter_total[$__range]))",
-          "legendFormat": "order_draft_enter",
-          "refId": "B"
-        },
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum(increase(ticketing_payment_success_total[$__range]))",
-          "legendFormat": "payment_success",
-          "refId": "C"
-        }
-      ],
-      "title": "퍼널 볼륨",
-      "type": "timeseries"
-    },
-    {
-      "datasource": "Prometheus",
-      "description": "결제 수단별 성공 건수와 무통장 만료 건수를 봅니다. 결제 수단별 문제나 사용 편차를 확인할 수 있습니다.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 24
-      },
-      "id": 13,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum by (method) (increase(ticketing_payment_success_total[$__range]))",
-          "legendFormat": "{{method}} success",
-          "refId": "A"
-        },
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "expr": "sum(increase(ticketing_payment_bank_transfer_expired_total[$__range]))",
-          "legendFormat": "bank_transfer_expired",
-          "refId": "B"
-        }
-      ],
-      "title": "결제 세분화",
-      "type": "timeseries"
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 8, "x": 16, "y": 37}, "id": 43,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{"expr": "sum(increase(ticketing_seat_recommend_fallback_total[$__range])) or vector(0)", "refId": "A"}],
+      "title": "추천 Fallback", "type": "stat"
     }
   ],
-  "refresh": "1m",
+  "refresh": "30s",
   "schemaVersion": 39,
-  "style": "dark",
-  "tags": [
-    "business",
-    "kpi",
-    "info"
-  ],
-  "templating": {
-    "list": [
-      {
-        "current": {
-          "selected": true,
-          "text": "Prometheus",
-          "value": "Prometheus"
-        },
-        "hide": 2,
-        "includeAll": false,
-        "label": "Prometheus",
-        "name": "datasource",
-        "options": [],
-        "query": "prometheus",
-        "refresh": 1,
-        "type": "datasource"
-      }
-    ]
-  },
-  "time": {
-    "from": "now-24h",
-    "to": "now"
-  },
+  "tags": ["business", "kpi", "staging"],
+  "templating": {"list": []},
+  "time": {"from": "now-1h", "to": "now"},
   "timepicker": {},
   "timezone": "browser",
-  "title": "3. 비즈니스 KPI (Info)",
+  "title": "3. 비즈니스 KPI",
   "uid": "business-kpi-overview",
-  "version": 2,
-  "weekStart": ""
+  "version": 4
 }

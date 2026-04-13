@@ -10,12 +10,30 @@
   "links": [],
   "panels": [
     {
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
+      "description": "",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 3, "w": 24, "x": 0, "y": 0},
+      "id": 999,
+      "options": {
+        "code": {"language": "plaintext", "showLineNumbers": false, "showMiniMap": false},
+        "content": "# 현재 부하테스트가 실행 중이지 않습니다\n\n`loadtest-webs` / `loadtest-ai` 네임스페이스에 Pod가 없으면 데이터가 표시되지 않습니다. 부하테스트를 시작하면 자동으로 메트릭이 수집됩니다.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "absent(count(kube_pod_info{namespace=~\"loadtest-(webs|ai)\"}))", "refId": "A"}],
+      "title": "",
+      "transformations": [{"id": "filterByValue", "options": {"filters": [{"config": {"id": "equal", "options": {"value": 1}}, "fieldName": "Value"}], "match": "any", "type": "include"}}],
+      "transparent": true,
+      "type": "text"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 3
       },
       "id": 100,
       "panels": [],
@@ -2801,10 +2819,10 @@
         "skipUrlSync": false,
         "sort": 1,
         "type": "query",
-        "allValue": ".+"
+        "allValue": "loadtest-(webs|ai)"
       },
       {
-        "allValue": ".+",
+        "allValue": "loadtest-.*",
         "current": {
           "selected": true,
           "text": [
