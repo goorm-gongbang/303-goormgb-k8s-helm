@@ -4,6 +4,7 @@ metadata:
   name: cloudbeaver
   labels:
     app: cloudbeaver
+    version: {{ .Chart.AppVersion | quote }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -15,6 +16,7 @@ spec:
     metadata:
       labels:
         app: cloudbeaver
+        version: {{ .Chart.AppVersion | quote }}
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
