@@ -155,7 +155,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(authz_adapter_check_requests_total{reason=\"blacklist\", action=\"block\"}[$__range])) / (sum(increase(authz_adapter_check_requests_total{action=\"block\"}[$__range])) + 0.001) or vector(0)",
+          "expr": "sum(increase(authz_adapter_check_requests_total{reason=~\"$block_stage\", action=\"block\", path=~\"$path_filter\"}[$__range])) / (sum(increase(authz_adapter_check_requests_total{action=\"block\", path=~\"$path_filter\"}[$__range])) + 0.001) or vector(0)",
           "legendFormat": "Blacklist Ratio",
           "refId": "A"
         }
@@ -201,22 +201,22 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(authz_adapter_check_requests_total{reason=\"blacklist\", action=\"block\"}[$__rate_interval])) or vector(0)",
+          "expr": "sum(rate(authz_adapter_check_requests_total{reason=\"blacklist\", action=\"block\", path=~\"$path_filter\"}[$__rate_interval])) or vector(0)",
           "legendFormat": "Redis Blacklist",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(authz_adapter_check_requests_total{reason=\"cdn_blocklist\", action=\"block\"}[$__rate_interval])) or vector(0)",
+          "expr": "sum(rate(authz_adapter_check_requests_total{reason=\"cdn_blocklist\", action=\"block\", path=~\"$path_filter\"}[$__rate_interval])) or vector(0)",
           "legendFormat": "CDN Blocklist",
           "refId": "B"
         },
         {
-          "expr": "sum(rate(authz_adapter_check_requests_total{reason=\"bot_token\", action=\"block\"}[$__rate_interval])) or vector(0)",
+          "expr": "sum(rate(authz_adapter_check_requests_total{reason=\"bot_token\", action=\"block\", path=~\"$path_filter\"}[$__rate_interval])) or vector(0)",
           "legendFormat": "X-Bot-Token",
           "refId": "C"
         },
         {
-          "expr": "sum(rate(authz_adapter_check_requests_total{reason=~\"QUEUE_ENTER|SEAT_ENTRY|RECOMMENDATION_BLOCKS|SECTION_BLOCKS|ASSIGN_HOLD|SEAT_HOLDS\", action=\"block\"}[$__rate_interval])) or vector(0)",
+          "expr": "sum(rate(authz_adapter_check_requests_total{reason=~\"QUEUE_ENTER|SEAT_ENTRY|RECOMMENDATION_BLOCKS|SECTION_BLOCKS|ASSIGN_HOLD|SEAT_HOLDS\", action=\"block\", path=~\"$path_filter\"}[$__rate_interval])) or vector(0)",
           "legendFormat": "AI Defense (policy)",
           "refId": "D"
         }
@@ -246,7 +246,7 @@
       },
       "targets": [
         {
-          "expr": "sum by (reason) (increase(authz_adapter_check_requests_total{action=\"block\"}[$__range]))",
+          "expr": "sum by (reason) (increase(authz_adapter_check_requests_total{reason=~\"$block_stage\", action=\"block\", path=~\"$path_filter\"}[$__range]))",
           "legendFormat": "{{reason}}",
           "refId": "A"
         }
@@ -294,7 +294,7 @@
       },
       "targets": [
         {
-          "expr": "sum by (reason) (increase(authz_adapter_check_requests_total{action=\"block\"}[$__range]))",
+          "expr": "sum by (reason) (increase(authz_adapter_check_requests_total{reason=~\"$block_stage\", action=\"block\", path=~\"$path_filter\"}[$__range]))",
           "format": "table",
           "instant": true,
           "refId": "A"
@@ -412,7 +412,7 @@
       },
       "targets": [
         {
-          "expr": "topk(10, sum by (path) (increase(authz_adapter_check_requests_total{action=\"block\"}[$__range])))",
+          "expr": "topk(10, sum by (path) (increase(authz_adapter_check_requests_total{reason=~\"$block_stage\", action=\"block\", path=~\"$path_filter\"}[$__range])))",
           "legendFormat": "{{path}}",
           "refId": "A"
         }
@@ -450,7 +450,7 @@
       },
       "targets": [
         {
-          "expr": "topk(20, sum by (method, path, reason) (increase(authz_adapter_check_requests_total{action=\"block\"}[$__range])))",
+          "expr": "topk(20, sum by (method, path, reason) (increase(authz_adapter_check_requests_total{reason=~\"$block_stage\", action=\"block\", path=~\"$path_filter\"}[$__range])))",
           "format": "table",
           "instant": true,
           "legendFormat": "",
