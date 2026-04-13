@@ -1,0 +1,201 @@
+{
+  "annotations": {"list": []},
+  "description": "CloudTrail 감사 로그 - AWS API 호출, 보안 이벤트, 리소스 변경 추적",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0}, "id": 1, "title": "API 활동 요약", "type": "row"},
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 1}, "id": 2,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "fields @timestamp | stats count(*) as total",
+        "refId": "A"
+      }],
+      "title": "총 API 호출", "type": "stat"
+    },
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 10}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 1}, "id": 3,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "filter errorCode like /Unauthorized|AccessDenied|Forbidden/ | stats count(*) as denied",
+        "refId": "A"
+      }],
+      "title": "권한 거부 (AccessDenied)", "type": "stat"
+    },
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 1}, "id": 4,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "filter eventName = 'ConsoleLogin' | stats count(*) as logins",
+        "refId": "A"
+      }],
+      "title": "콘솔 로그인", "type": "stat"
+    },
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 1}, "id": 5,
+      "options": {"colorMode": "value", "graphMode": "none", "reduceOptions": {"calcs": ["sum"]}},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "stats count_distinct(userIdentity.arn) as users",
+        "refId": "A"
+      }],
+      "title": "고유 사용자 수", "type": "stat"
+    },
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 5}, "id": 10, "title": "시계열 분석", "type": "row"},
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "bars", "fillOpacity": 80, "showPoints": "never", "stacking": {"mode": "normal"}}, "unit": "short"}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6}, "id": 11,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "stats count(*) as cnt by bin(5m) as time, userIdentity.principalId",
+        "refId": "A"
+      }],
+      "title": "사용자별 API 호출 추이", "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "bars", "fillOpacity": 80, "showPoints": "never"}, "unit": "short"},
+        "overrides": [{"matcher": {"id": "byRegexp", "options": ".*"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}]
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6}, "id": 12,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi"}},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "filter errorCode like /Unauthorized|AccessDenied|Forbidden|Denied/ | stats count(*) as denied by bin(5m)",
+        "refId": "A"
+      }],
+      "title": "권한 거부 추이", "type": "timeseries"
+    },
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 14}, "id": 20, "title": "보안 주요 이벤트", "type": "row"},
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "description": "IAM, SG, 정책 변경 등 보안 관련 API 호출",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}},
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "cnt"}, "properties": [{"id": "custom.cellOptions", "value": {"mode": "gradient", "type": "gauge"}}, {"id": "min", "value": 0}]}
+        ]
+      },
+      "gridPos": {"h": 10, "w": 12, "x": 0, "y": 15}, "id": 21,
+      "options": {"cellHeight": "sm", "showHeader": true, "sortBy": [{"desc": true, "displayName": "cnt"}]},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "filter eventName like /Create|Delete|Put|Update|Attach|Detach|Modify|Revoke|Authorize/ and eventSource like /iam|ec2|s3|rds|elasticache|eks|secretsmanager/ | stats count(*) as cnt by eventName, eventSource, userIdentity.arn | sort cnt desc | limit 30",
+        "refId": "A"
+      }],
+      "title": "리소스 변경 이벤트 (Top 30)", "type": "table"
+    },
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "description": "권한 거부된 API 호출 상세",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false}, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}},
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "cnt"}, "properties": [{"id": "custom.cellOptions", "value": {"mode": "gradient", "type": "gauge"}}, {"id": "min", "value": 0}]}
+        ]
+      },
+      "gridPos": {"h": 10, "w": 12, "x": 12, "y": 15}, "id": 22,
+      "options": {"cellHeight": "sm", "showHeader": true, "sortBy": [{"desc": true, "displayName": "cnt"}]},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "filter errorCode like /Unauthorized|AccessDenied|Forbidden/ | stats count(*) as cnt by eventName, errorCode, userIdentity.arn, sourceIPAddress | sort cnt desc | limit 20",
+        "refId": "A"
+      }],
+      "title": "권한 거부 상세 (Top 20)", "type": "table"
+    },
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 25}, "id": 30, "title": "서비스별 분석", "type": "row"},
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"hideFrom": {"legend": false, "tooltip": false, "viz": false}}}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 26}, "id": 31,
+      "options": {"legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]}, "pieType": "donut", "reduceOptions": {"calcs": ["sum"]}, "tooltip": {"mode": "single"}},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "stats count(*) as calls by eventSource | sort calls desc | limit 15",
+        "refId": "A"
+      }],
+      "title": "AWS 서비스별 API 호출 분포", "type": "piechart"
+    },
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"hideFrom": {"legend": false, "tooltip": false, "viz": false}}}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 26}, "id": 32,
+      "options": {"legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]}, "pieType": "donut", "reduceOptions": {"calcs": ["sum"]}, "tooltip": {"mode": "single"}},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "stats count(*) as calls by userIdentity.arn | sort calls desc | limit 10",
+        "refId": "A"
+      }],
+      "title": "사용자별 API 호출 분포", "type": "piechart"
+    },
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 34}, "id": 40, "title": "Raw 로그", "type": "row"},
+    {
+      "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+      "description": "CloudTrail 원본 로그 - 시간, 이벤트, 서비스, 수정 주체, IP, 에러",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false}},
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "@timestamp"}, "properties": [{"id": "custom.width", "value": 180}]},
+          {"matcher": {"id": "byName", "options": "eventName"}, "properties": [{"id": "custom.width", "value": 200}]},
+          {"matcher": {"id": "byName", "options": "eventSource"}, "properties": [{"id": "custom.width", "value": 180}]},
+          {"matcher": {"id": "byName", "options": "userIdentity.arn"}, "properties": [{"id": "custom.width", "value": 350}]},
+          {"matcher": {"id": "byName", "options": "sourceIPAddress"}, "properties": [{"id": "custom.width", "value": 130}]},
+          {"matcher": {"id": "byName", "options": "errorCode"}, "properties": [{"id": "custom.width", "value": 120}, {"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}
+        ]
+      },
+      "gridPos": {"h": 20, "w": 24, "x": 0, "y": 35}, "id": 41,
+      "options": {"cellHeight": "sm", "showHeader": true, "sortBy": [{"desc": true, "displayName": "@timestamp"}], "footer": {"show": false}},
+      "targets": [{
+        "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
+        "queryMode": "Logs",
+        "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
+        "expression": "fields @timestamp, eventName, eventSource, userIdentity.arn, sourceIPAddress, errorCode | sort @timestamp desc | limit 200",
+        "refId": "A"
+      }],
+      "title": "CloudTrail 로그 (수정 주체 포함)", "type": "table"
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 39,
+  "tags": ["cloudtrail", "audit", "security"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "CloudTrail 감사 로그",
+  "uid": "cloudtrail-audit",
+  "version": 1
+}

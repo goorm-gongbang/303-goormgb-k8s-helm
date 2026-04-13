@@ -1,0 +1,58 @@
+# ALB Ingress - EKS Prod
+# Host-based routing for all services
+
+ingress:
+  enabled: true
+  name: prod-alb
+
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/success-codes: "200,404"
+    # ExternalDNS (호스트 명단 명시적 선언)
+
+  # TLS 설정 (ACM 인증서) - *.playball.one
+  # [수정됨] 기존의 안정적인 인증서 ARN으로 원복 완료
+  certificateArn: arn:aws:acm:ap-northeast-2:406223549139:certificate/cf7522dc-1228-425c-9945-09ca9043a39c
+
+  rules:
+    # ArgoCD - Istio 안 거침 (직접 라우팅)
+    - host: argocd.playball.one
+      service:
+        name: argocd-server
+        namespace: argocd
+        port: 80
+        healthCheckPath: /healthz
+
+    # Grafana - Istio 안 거침 (직접 라우팅)
+    - host: grafana.playball.one
+      service:
+        name: grafana
+        namespace: monitoring
+        port: 80
+        healthCheckPath: /api/health
+
+    # Kiali - Istio 안 거침 (직접 라우팅)
+      service:
+        name: kiali
+        namespace: istio-system
+        port: 20001
+        healthCheckPath: /healthz
+
+    # API - Istio IngressGateway 거침
+    - host: api.playball.one
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+
+    # Prometheus Remote Write - Istio IngressGateway 거침
+    - host: prometheus.playball.one
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /

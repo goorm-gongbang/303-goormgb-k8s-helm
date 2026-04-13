@@ -1,0 +1,259 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "panels": [
+    {
+      "id": 1,
+      "title": "보안 차단 타임라인 (실시간)",
+      "description": "bot_token: X-Bot-Token 없거나 위조 / cdn_blocklist: CDN Lambda가 탐지한 봇 IP / blacklist: AI Defense가 판정한 차단 IP",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(authz_adapter_check_requests_total{path_prefix=\"bot_token\", result=\"block\"}[1m])) * 60",
+          "legendFormat": "Bot Token 차단 (토큰 없음/위조)"
+        },
+        {
+          "refId": "B",
+          "expr": "sum(rate(authz_adapter_check_requests_total{path_prefix=\"cdn_blocklist\", result=\"block\"}[1m])) * 60",
+          "legendFormat": "CDN Blocklist 차단 (IP 과다 요청)"
+        },
+        {
+          "refId": "C",
+          "expr": "sum(rate(authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"}[1m])) * 60",
+          "legendFormat": "AI Blacklist 차단 (행동 패턴)"
+        },
+        {
+          "refId": "D",
+          "expr": "sum(rate(authz_adapter_check_requests_total{result=\"allow\"}[1m])) * 60",
+          "legendFormat": "정상 통과"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 20, "stacking": { "mode": "none" } },
+          "color": { "mode": "palette-classic" },
+          "unit": "rpm"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "정상 통과" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Bot Token 차단 (토큰 없음/위조)" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "CDN Blocklist 차단 (IP 과다 요청)" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "AI Blacklist 차단 (행동 패턴)" }, "properties": [{ "id": "color", "value": { "fixedColor": "purple", "mode": "fixed" } }] }
+        ]
+      },
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "table", "placement": "right", "calcs": ["sum", "lastNotNull"] }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Bot Token 차단",
+      "description": "X-Bot-Token 없음(curl/봇) 또는 위조/만료",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(authz_adapter_check_requests_total{path_prefix=\"bot_token\", result=\"block\"}[1h])) or vector(0)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 10 }] },
+          "unit": "short", "displayName": "1시간 차단 수"
+        }
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" }
+    },
+    {
+      "id": 3,
+      "title": "CDN Blocklist 차단",
+      "description": "CDN Lambda가 IP 과다 요청 탐지 -> blocklist",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(authz_adapter_check_requests_total{path_prefix=\"cdn_blocklist\", result=\"block\"}[1h])) or vector(0)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 10 }] },
+          "unit": "short", "displayName": "1시간 차단 수"
+        }
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" }
+    },
+    {
+      "id": 4,
+      "title": "AI Blacklist 차단",
+      "description": "AI Defense 행동 분석 -> blacklist 등록된 IP",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(authz_adapter_check_requests_total{path_prefix=\"blacklist\", result=\"block\"}[1h])) or vector(0)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 10 }] },
+          "unit": "short", "displayName": "1시간 차단 수"
+        }
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" }
+    },
+    {
+      "id": 5,
+      "title": "정상 통과",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(authz_adapter_check_requests_total{result=\"allow\"}[1h])) or vector(0)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": { "steps": [{ "color": "green", "value": null }] },
+          "unit": "short", "displayName": "1시간 통과 수"
+        }
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" }
+    },
+    {
+      "id": 10,
+      "title": "차단 상세 로그 (Bot Score, IP, 사유)",
+      "description": "bot_score, IP, 차단 사유를 실시간으로 확인",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 13 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{namespace=~\"__NAMESPACE_PATTERN__-ai|staging-ai\", container=\"authz-adapter\"} |= \"bot\" | json | line_format \"{{.time}} | IP={{.ip}}{{.client_ip}} | score={{.bot_score}} | {{.msg}}\"",
+          "queryType": "range"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": { "source": "Line" }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "Time", "desc": true }]
+      }
+    },
+    {
+      "id": 11,
+      "title": "차단 IP 로그 (Blacklist/CDN Blocklist)",
+      "description": "blacklist 등록된 IP와 사유",
+      "type": "logs",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 23 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{namespace=~\"__NAMESPACE_PATTERN__-ai|staging-ai\", container=\"authz-adapter\"} |~ \"blacklisted|CDN.*blocked|blocklist|bot farm|headless\""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true
+      }
+    },
+    {
+      "id": 20,
+      "title": "요청 결과 분포 (1시간)",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 31 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(authz_adapter_check_requests_total[1h])) by (result)",
+          "legendFormat": "{{result}}"
+        }
+      ],
+      "options": {
+        "pieType": "donut",
+        "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }
+      }
+    },
+    {
+      "id": 21,
+      "title": "차단 사유별 분포 (1시간)",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 31 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(authz_adapter_check_requests_total{result=\"block\"}[1h])) by (path_prefix)",
+          "legendFormat": "{{path_prefix}}"
+        }
+      ],
+      "fieldConfig": {
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "bot_token" }, "properties": [{ "id": "displayName", "value": "X-Bot-Token 없음/위조" }] },
+          { "matcher": { "id": "byName", "options": "cdn_blocklist" }, "properties": [{ "id": "displayName", "value": "CDN IP 과다요청" }] },
+          { "matcher": { "id": "byName", "options": "blacklist" }, "properties": [{ "id": "displayName", "value": "AI 행동패턴 차단" }] }
+        ]
+      },
+      "options": {
+        "pieType": "donut",
+        "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }
+      }
+    },
+    {
+      "id": 22,
+      "title": "authz-adapter 레이턴시 (p50 / p99)",
+      "description": "X-Bot-Token 검증 + CDN blocklist 조회 + AI Defense 호출 포함",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 31 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50, sum(rate(authz_adapter_check_latency_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.99, sum(rate(authz_adapter_check_latency_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p99"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 10 },
+          "color": { "mode": "palette-classic" },
+          "unit": "s"
+        }
+      }
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["security", "bot-detection", "x-bot-token", "authz-adapter"],
+  "time": { "from": "now-1h", "to": "now" },
+  "timezone": "Asia/Seoul",
+  "title": "X-Bot-Token Monitoring",
+  "uid": "xbot-token-monitoring",
+  "version": 1
+}

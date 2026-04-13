@@ -1,0 +1,99 @@
+# Karpenter Configuration - Staging (Main Account: 497012402578)
+clusterName: goormgb-staging-eks
+nodeRole: goormgb-staging-karpenter-node
+
+# 공통 Zone 설정
+zones:
+  - ap-northeast-2a
+  - ap-northeast-2c
+
+# =============================================================================
+# NodePools - Workloads (Apps)
+# =============================================================================
+# 인프라는 EKS Managed Node Groups 사용 (argocd, infra, monitoring)
+# Karpenter는 앱 워크로드만 관리
+nodePools:
+  # -----------------------------------------------------------------------------
+  # Workloads NodePool: 앱 서비스 전용
+  # api-gateway, auth-guard, order-core, queue, seat
+  # -----------------------------------------------------------------------------
+  workloads:
+    enabled: true  # apps 노드 부족 시 자동 스케일아웃
+    role: karpenter-workloads
+
+    # Spot only (staging 비용 절감)
+    capacityTypes:
+      - spot
+
+    # 인스턴스 설정 - arm64 (Graviton, 비용 효율)
+    arch: arm64
+    instanceCategories:
+      - t
+      - m
+      - c
+    minGeneration: "4"  # 5세대 이상 (t4g 제외, m5/c5+)
+    instanceSizes:
+      - xlarge     # 4 vCPU, 16GB - 기본 (노드 개수 줄이기)
+      - 2xlarge    # 8 vCPU, 32GB - 버스트용
+
+    # 리소스 제한 (앱용)
+    limits:
+      cpu: 100
+      memory: 200Gi
+
+    # Taint 없음 (기본 워크로드용)
+    # taints: []
+
+    # 낮은 우선순위 (system 먼저)
+    weight: 50
+
+    # Disruption 설정 (빠른 통합)
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 1m
+    expireAfter: 720h
+
+  # -----------------------------------------------------------------------------
+  # Load-test NodePool: 부하 테스트 전용 웹 서비스
+  # Spot 비용 최적화: 다양한 패밀리/사이즈로 가격 경쟁 극대화
+  # -----------------------------------------------------------------------------
+  loadtest:
+    enabled: true
+    role: loadtest
+
+    # Spot only (비용 절감)
+    capacityTypes:
+      - spot
+
+    # 인스턴스 설정 - t4g.xlarge Spot (Graviton 최저가 ~$0.03/hr)
+    arch: arm64
+    minGeneration: "3"  # 4세대 포함 (t4g)
+    instanceCategories:
+      - t
+    instanceSizes:
+      - xlarge    # 4 vCPU, 16GB
+
+    # 리소스 제한 - webs 5개 서비스만 (requests ~4 cores)
+    limits:
+      cpu: 16
+      memory: 32Gi
+
+    # Taint 설정 (부하 테스트 전용 격리)
+    taints:
+      - key: loadtest
+        value: "true"
+        effect: NoSchedule
+
+    weight: 50
+
+    # Disruption 설정 - 빠른 통합으로 빈 노드 즉시 제거
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 30s
+    expireAfter: 168h  # 7일 (테스트 끝나면 자동 교체)
+
+# =============================================================================
+# EC2NodeClass - 공통 설정
+# =============================================================================
+ec2NodeClass:
+  name: default
+  volumeSize: 50Gi
+  volumeType: gp3

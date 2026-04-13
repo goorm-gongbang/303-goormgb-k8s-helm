@@ -1,0 +1,86 @@
+# Kyverno Configuration for Staging
+# Chart version: 3.7.1
+
+# Admission controller settings
+admissionController:
+  replicas: 1
+  resources:
+    limits:
+      memory: 384Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+
+# Background controller
+backgroundController:
+  replicas: 1
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 25m
+      memory: 64Mi
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+
+# Cleanup controller
+cleanupController:
+  replicas: 1
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 25m
+      memory: 64Mi
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+
+# Reports controller
+reportsController:
+  replicas: 1
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 25m
+      memory: 64Mi
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+
+# Config settings
+config:
+  excludeNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - kyverno
+    - argocd
+    - istio-system
+    - monitoring
+
+# Webhook configuration
+webhooks:
+  failurePolicy: Ignore
+
+# ServiceMonitor for Prometheus
+serviceMonitor:
+  enabled: true
+  namespace: monitoring

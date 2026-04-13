@@ -9,7 +9,8 @@ email: "212clab@gmail.com"
 
 cloudflare:
   secret:
-    awsSecretKey: dev/infra/cloudflare  # DDNS와 동일한 시크릿 사용
+    awsSecretKey: dev/infra
+    propertyPrefix: "cloudflare_"
 
 certificates:
   - name: goormgb-tls

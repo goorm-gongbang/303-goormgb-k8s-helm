@@ -1,0 +1,43 @@
+# KEDA - Event-Driven Autoscaling
+# Kafka lag, Redis queue, Cron pre-warming 기반 Pod 오토스케일링
+
+# Kyverno require-labels 정책 충족
+podLabels:
+  keda:
+    version: "2.19.0"
+  metricsAdapter:
+    version: "2.19.0"
+  webhooks:
+    version: "2.19.0"
+
+# App 노드에 배치
+nodeSelector:
+  role: app
+
+# Prometheus 메트릭
+prometheus:
+  metricServer:
+    enabled: true
+  operator:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: prom
+
+# 리소스
+resources:
+  operator:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  metricServer:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

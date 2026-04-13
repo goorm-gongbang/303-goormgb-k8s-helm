@@ -26,3 +26,20 @@ spec:
     tls:
       mode: DISABLE
 {{- end }}
+{{- if and .Values.mtls .Values.mtls.nonMeshNamespaces }}
+{{- range .Values.mtls.nonMeshNamespaces }}
+---
+# {{ .namespace }} 네임스페이스 - mTLS 비활성화
+# {{ .reason }}
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: {{ .namespace }}-mtls-disable
+  namespace: istio-system
+spec:
+  host: "*.{{ .namespace }}.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+{{- end }}
+{{- end }}

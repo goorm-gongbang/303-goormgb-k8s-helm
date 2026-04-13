@@ -165,7 +165,7 @@
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_limits{namespace=\"staging-webs\", resource=\"cpu\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "C" },
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_requests{namespace=\"staging-webs\", resource=\"memory\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "D" },
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_limits{namespace=\"staging-webs\", resource=\"memory\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "E" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(hikaricp_connections_max{namespace=\"staging-webs\"}, \"service\", \"$1\", \"app\", \"(.+)\"))", "format": "table", "instant": true, "refId": "F" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (hikaricp_connections_max{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})", "format": "table", "instant": true, "refId": "F" }
       ],
       "title": "서비스별 설정 현황",
       "transformations": [

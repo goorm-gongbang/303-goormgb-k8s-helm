@@ -15,5 +15,9 @@ spec:
       port: {{ .Values.service.nativePort }}
       targetPort: native
       protocol: TCP
+    - name: metrics
+      port: 9363
+      targetPort: metrics
+      protocol: TCP
   selector:
     app: clickhouse

@@ -338,7 +338,7 @@
         "type": "custom"
       },
       {
-        "allValue": ".+",
+        "allValue": "loadtest-.*",
         "current": {
           "selected": true,
           "text": [
@@ -361,7 +361,7 @@
         "options": [],
         "query": "label_values({service_namespace=\"$namespace\"}, service_name)",
         "refresh": 1,
-        "regex": "",
+        "regex": "loadtest-.*",
         "sort": 1,
         "type": "query"
       },

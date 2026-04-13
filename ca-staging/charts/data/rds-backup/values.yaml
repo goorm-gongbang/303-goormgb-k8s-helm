@@ -1,0 +1,42 @@
+# RDS Backup to S3 Configuration
+# pg_dump CronJob - RDS 중지 전 백업 필수!
+
+enabled: true
+
+# Backup schedule (KST 02:00 = UTC 17:00)
+schedule: "0 17 * * *"
+
+# RDS endpoint (Secrets Manager에서 가져옴)
+rdsHost: ""  # ExternalSecret에서 주입
+
+# Database names to backup
+databases:
+  - goormgb
+
+# S3 configuration
+s3:
+  bucket: goormgb-backup
+  prefix: staging/postgres
+
+# ServiceAccount with IRSA
+serviceAccount:
+  name: rds-backup
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-rds-backup
+
+# Node placement
+nodeSelector:
+  role: infra
+
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

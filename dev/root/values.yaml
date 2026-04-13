@@ -214,17 +214,6 @@ ociCharts:
     syncWave: "-9"
     valueFiles: []
 
-  alloy:
-    enabled: true  # Faro 프론트엔드 RUM 활성화
-    description: "Grafana Alloy - Faro RUM 수집"
-    repoURL: https://grafana.github.io/helm-charts
-    chart: alloy
-    version: "1.6.2"
-    namespace: monitoring
-    syncWave: "0"
-    valueFiles:
-      - $values/dev/values/monitoring/values-alloy.yaml
-
   k6-operator:
     enabled: false  # 필요시 활성화
     description: "k6 Operator - 부하테스트 (비활성화)"
@@ -479,23 +468,6 @@ gitCharts:
     valueFiles:
       - ../../../../dev/values/monitoring/values-prometheus-stack.yaml
       - ../../../../dev/values/monitoring/alerting/values-alertmanager-dev.yaml
-  alloy-config:
-    enabled: true  # Faro VirtualService 활성화
-    path: common-charts/infra/monitoring/alloy
-    namespace: monitoring
-    syncWave: "1"
-    valueFiles:
-      - ../../../../dev/values/monitoring/values-alloy.yaml
-
-  # === Infra Console ===
-  infra-console:
-    enabled: true
-    path: common-charts/infra/infra-console
-    namespace: monitoring
-    syncWave: "5"
-    valueFiles:
-      - ../../../dev/values/infra/values-infra-console.yaml
-
   # === Kyverno Policies ===
   kyverno-policies:
     enabled: true

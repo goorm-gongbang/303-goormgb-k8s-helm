@@ -1,0 +1,3 @@
+# KEDA ScaledObject Definitions
+# 각 환경 values에서 오버라이드
+scalers: {}

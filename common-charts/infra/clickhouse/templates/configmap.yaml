@@ -9,6 +9,14 @@ data:
       <max_connections>{{ .Values.config.maxConnections }}</max_connections>
       <max_concurrent_queries>{{ .Values.config.maxConcurrentQueries }}</max_concurrent_queries>
       <listen_host>0.0.0.0</listen_host>
+      <prometheus>
+        <endpoint>/metrics</endpoint>
+        <port>9363</port>
+        <metrics>true</metrics>
+        <events>true</events>
+        <asynchronous_metrics>true</asynchronous_metrics>
+        <status_info>true</status_info>
+      </prometheus>
     </clickhouse>
 ---
 {{- if .Values.initScripts.enabled }}

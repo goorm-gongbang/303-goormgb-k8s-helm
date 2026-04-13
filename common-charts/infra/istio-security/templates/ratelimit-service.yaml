@@ -136,11 +136,12 @@ spec:
       labels:
         app: ratelimit
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/ratelimit-service.yaml") . | sha256sum | trunc 8 }}
+        checksum/config: {{ .Values.rateLimiting.global.descriptors | toYaml | sha256sum | trunc 8 }}
     spec:
       containers:
         - name: ratelimit
           image: {{ .Values.rateLimiting.global.service.image }}
+          command: ["/bin/ratelimit"]
           ports:
             - containerPort: 8080   # HTTP
             - containerPort: 8081   # gRPC

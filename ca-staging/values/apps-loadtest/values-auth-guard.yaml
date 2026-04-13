@@ -1,0 +1,95 @@
+# auth-guard - Load-test 환경
+# CPU 사용량 높음 - JWT 검증/발급 (5000 VU 기준)
+fullnameOverride: "auth-guard"
+contextPath: "/auth"
+replicaCount: 0
+
+image:
+  name: "staging/playball/web/auth-guard"
+  tag: "fe8ca2b.40"
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+nodeSelector:
+  role: loadtest
+
+tolerations:
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: auth-guard
+          topologyKey: kubernetes.io/hostname
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 256Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+istio:
+  sidecar: true
+
+servicePort: &port 8080
+service:
+  type: ClusterIP
+  port: *port
+
+# HikariCP connection pool - JWT 발급 시 user 조회 (5000 VU 기준)
+# 4 replicas x 10 pool = 40 connections
+env:
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "10"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "3"
+
+  # 로그 레벨 WARN (부하테스트 시 로그 감소)
+  - name: LOGGING_LEVEL_ROOT
+    value: "WARN"
+
+envFrom:
+  - configMapRef:
+      name: service-config
+  - secretRef:
+      name: service-config
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: *port
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  failureThreshold: 6
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: *port
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  failureThreshold: 6
+
+otel:
+  enabled: true
+
+metrics:
+  enabled: true
+  path: /actuator/prometheus
+  interval: 30s
+
+pdb:
+  enabled: true
+  minAvailable: 1

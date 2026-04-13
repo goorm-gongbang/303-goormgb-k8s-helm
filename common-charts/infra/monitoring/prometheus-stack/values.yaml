@@ -145,6 +145,14 @@ alertmanager:
       secretManagerKey: ""  # 예: dev/monitoring/discord-webhook
       securityWebhooksEnabled: false  # security-* webhook URLs (securityCriticalWebhookUrl 등)
 
+# Thanos object storage secret
+thanosObjstore:
+  enabled: false
+  secretName: "thanos-objstore-secret"
+  bucket: ""
+  region: "ap-northeast-2"
+  endpoint: ""
+
 # Istio Gateway 설정
 gateway:
   grafana:

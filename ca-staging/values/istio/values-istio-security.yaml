@@ -1,0 +1,485 @@
+# EKS Staging - Istio Security
+# WAF-like protection using EnvoyFilter + Lua
+
+enabled: true
+
+# 적용 대상 (Istio IngressGateway)
+selector:
+  labels:
+    istio: ingressgateway
+
+# 차단 모드: block (차단) | detect (로그만)
+# Staging 환경에서는 block 모드 사용
+mode: block
+
+# 로깅 설정
+logging:
+  enabled: true
+  level: warn
+
+# 탐지 패턴
+patterns:
+  sqlInjection:
+    enabled: true
+  xss:
+    enabled: true
+  pathTraversal:
+    enabled: true
+  commandInjection:
+    enabled: true
+  ldapInjection:
+    enabled: true
+  xxeInjection:
+    enabled: true
+  ssrf:
+    enabled: true
+  log4shell:
+    enabled: true
+  headerInjection:
+    enabled: true
+  botScanner:
+    enabled: true
+
+# 제외 경로 (health check, metrics, 내부 서비스 등)
+excludePaths:
+  # Load-test (k6 부하 테스트 - WAF 패턴 검사 제외)
+  - "/load-test/"
+
+  # Faro RUM (프론트엔드 텔레메트리)
+  - "/faro/"
+
+  # Grafana 내부 API (Loki 쿼리 등 - SQL Injection 오탐 방지)
+  - "/api/datasources/"
+
+  # Socket.IO (실시간 폴링 - sid 패턴이 SQL 주입으로 오탐됨)
+  - "/socket.io/"
+
+  # 정적 파일 (JS, CSS 등 - 파일명에 특수문자 포함 가능)
+  - "/assets/"
+
+  # Grafana Explore (PromQL/LogQL 쿼리 포함)
+  - "/explore"
+
+  # Grafana 데이터소스 쿼리 API
+  - "/api/ds/query"
+
+  # Health checks
+  - "/health"
+  - "/healthz"
+  - "/ready"
+  - "/readyz"
+  - "/livez"
+  - "/actuator/health"
+  - "/actuator/info"
+  - "/actuator/prometheus"
+
+  # Metrics & Monitoring
+  - "/metrics"
+  - "/stats/prometheus"
+
+  # Kubernetes probes
+  - "/api/v1/health"
+
+  # Swagger/OpenAPI
+  - "/swagger"
+  - "/swagger-ui"
+  - "/v3/api-docs"
+  - "/openapi"
+
+  # Kiali
+  - "/kiali"
+
+# 응답 설정
+response:
+  statusCode: 403
+  body: "Forbidden: Security violation detected"
+
+# 내부 경로 차단 (외부 접근 불가)
+# 주의: 접미사 와일드카드(*/path)는 오탐 위험이 있어 접두사 기반만 사용
+denyPaths:
+  enabled: true
+  paths:
+    # Prometheus/Metrics (접두사 기반만 사용)
+    - "/api/prometheus*"
+    - "/actuator/prometheus*"
+    - "/metrics*"
+    # Health checks (접두사 기반만 사용)
+    - "/health*"
+    - "/healthz*"
+    - "/ready*"
+    - "/readyz*"
+    - "/livez*"
+    - "/actuator/health*"
+
+# External Authorization (AI Defense) - gRPC Adapter
+extAuthz:
+  enabled: true
+
+  # gRPC authz adapter 연결 설정 (202-goormgb-authz-adapter)
+  service:
+    host: staging-authz-adapter.staging-ai.svc.cluster.local
+    port: 9001
+
+  # 타임아웃 설정
+  connectTimeout: "0.5s"
+  timeout: "0.8s"
+
+  # AI 서버 장애 시 통과 허용 (fail-open)
+  failOpen: true
+
+  # ext_authz 제외 경로 (AI direct routes, health checks, load-test)
+  excludePaths:
+    - "/ai/"
+    - "/load-test/"
+    - "/health"
+    - "/healthz"
+    - "/ready"
+    - "/metrics"
+    - "/actuator/"
+
+  # ext_authz 적용 대상 API (Critical APIs)
+  includePaths:
+    # Queue 서비스
+    - method: POST
+      pattern: "^/queue/matches/[0-9]+/enter$"
+      eventType: QUEUE_ENTER
+
+    # Seat 서비스 - 추천 블럭 조회
+    - method: GET
+      pattern: "^/seat/matches/[0-9]+/recommendations/blocks$"
+      eventType: RECOMMENDATION_BLOCKS
+
+    # Seat 서비스 - 좌석 자동 배정
+    - method: POST
+      pattern: "^/seat/matches/[0-9]+/recommendations/blocks/[0-9]+/assign$"
+      eventType: ASSIGN_HOLD
+
+    # Seat 서비스 - 구역 리스트 조회
+    - method: GET
+      pattern: "^/seat/matches/[0-9]+/seat-groups$"
+      eventType: SEAT_ENTRY
+
+    # Seat 서비스 - 블럭별 포도알 조회
+    - method: GET
+      pattern: "^/seat/matches/[0-9]+/sections/[0-9]+/blocks$"
+      eventType: SECTION_BLOCKS
+
+    # Seat 서비스 - Hold 생성
+    - method: POST
+      pattern: "^/seat/matches/[0-9]+/seat-holds$"
+      eventType: SEAT_HOLDS
+
+# ============================================================
+# Rate Limiting 설정
+# ============================================================
+rateLimiting:
+  # Rate limit 제외 경로 (부하 테스트, health check 등)
+  excludePaths:
+    - "/load-test/"  # k6 부하테스트
+    - "/health"
+    - "/healthz"
+    - "/ready"
+    - "/metrics"
+    - "/actuator/health"
+
+  # --- Local Rate Limit (Envoy 내장) ---
+  local:
+    enabled: true  # Rate limiting 활성화
+
+    # 기본 설정 (전체 경로에 적용)
+    default:
+      enabled: true
+      tokensPerFill: 100        # 초당 100 요청
+      fillInterval: 1s
+      maxTokens: 100
+
+    # IP별 제한
+    perClient:
+      enabled: true
+      tokensPerFill: 50         # IP당 초당 50 요청
+      fillInterval: 1s
+      maxTokens: 100
+
+    # 경로별 제한
+    perRoute:
+      enabled: true
+      routes:
+        - path: "/auth/"
+          tokensPerFill: 10
+          fillInterval: 1s
+          maxTokens: 20
+        - path: "/payment/"
+          tokensPerFill: 5
+          fillInterval: 1s
+          maxTokens: 10
+        - path: "/signup"
+          tokensPerFill: 3
+          fillInterval: 1s
+          maxTokens: 5
+
+    response:
+      statusCode: 429
+      body: "Too Many Requests"
+      headers:
+        - name: "Retry-After"
+          value: "60"
+        - name: "X-RateLimit-Limit"
+          value: "100"
+
+    logging:
+      enabled: true
+      onlyLimited: true
+
+  # --- Global Rate Limit (Redis 기반) ---
+  global:
+    enabled: true
+
+    redis:
+      internal: true
+
+    service:
+      replicas: 1
+      image: docker.io/envoyproxy/ratelimit:05c08d03
+
+    domain: "goormgb-staging-ratelimit"
+
+    descriptors:
+      # IP별 전역 제한: 분당 300회
+      - key: remote_address
+        rateLimit:
+          requestsPerUnit: 300
+          unit: minute
+
+      # 로그인: IP당 분당 10회
+      - key: path
+        value: "/auth/kakao/login"
+        descriptors:
+          - key: remote_address
+            rateLimit:
+              requestsPerUnit: 10
+              unit: minute
+
+      # 회원가입: IP당 분당 5회
+      - key: path
+        value: "/auth/signup"
+        descriptors:
+          - key: remote_address
+            rateLimit:
+              requestsPerUnit: 5
+              unit: minute
+
+      # 결제: IP당 분당 20회
+      - key: path
+        value: "/order/payment"
+        descriptors:
+          - key: remote_address
+            rateLimit:
+              requestsPerUnit: 20
+              unit: minute
+
+      # 좌석 선점: IP당 분당 30회
+      - key: path
+        value: "/seat/hold"
+        descriptors:
+          - key: remote_address
+            rateLimit:
+              requestsPerUnit: 30
+              unit: minute
+
+      # 내부 대역 무제한 (Pod 간 통신)
+      - key: remote_address
+        value: "10.0.0.0/8"
+        rateLimit:
+          unlimited: true
+
+# ============================================================
+# mTLS 설정 (서비스 간 통신 암호화)
+# ============================================================
+mtls:
+  enabled: true
+  mode: STRICT  # STRICT: mTLS 필수, PERMISSIVE: 허용
+  namespaces:
+    - staging-webs
+    - monitoring
+    # - staging-ai  # AI 서비스 사용시 활성화
+
+  # Non-mesh 네임스페이스 mTLS 비활성화
+  # Istio sidecar가 없는 네임스페이스로의 트래픽은 PLAINTEXT로 보내야 함
+  nonMeshNamespaces:
+    - namespace: messaging
+      reason: "Kafka 브로커에 Istio sidecar 없음 — mTLS로 보내면 프로토콜 불일치 (TLS ClientHello를 메시지 크기로 해석)"
+    - namespace: data
+      reason: "ClickHouse에 Istio sidecar 없음 — non-mesh 서비스이므로 PLAINTEXT 필요"
+
+  # OTEL Collector 예외 설정
+  # OTEL Java agent는 Istio sidecar를 거치지 않고 직접 연결하므로
+  # plain HTTP도 허용해야 함 (PERMISSIVE)
+  otelCollector:
+    enabled: true
+    namespace: monitoring
+    selector:
+      app.kubernetes.io/name: opentelemetry-collector
+
+  # AI 서비스 예외 설정
+  # Prometheus 메트릭 스크래핑을 위해 PERMISSIVE 모드 필요
+  aiServices:
+    enabled: true
+    namespace: staging-ai
+    # AI Defense 메트릭 포트 (8000)에 대해 PERMISSIVE 허용
+    services:
+      - name: ai-defense
+        selector:
+          app: staging-ai-defense
+        metricsPort: 8000
+      - name: authz-adapter
+        selector:
+          app: staging-authz-adapter
+        metricsPort: 9090
+
+  # App 서비스 예외 설정
+  # monitoring namespace의 Prometheus가 plain HTTP로 actuator를 scrape할 수 있도록
+  # 앱 메트릭 포트에만 mTLS 비활성화 (management 포트 9090 분리)
+  metricsScrapeExceptions:
+    - name: auth-guard-metrics
+      namespace: staging-webs
+      selector:
+        app: staging-auth-guard
+      metricsPort: 9090
+      mode: DISABLE
+    - name: queue-metrics
+      namespace: staging-webs
+      selector:
+        app: staging-queue
+      metricsPort: 9090
+      mode: DISABLE
+    - name: seat-metrics
+      namespace: staging-webs
+      selector:
+        app: staging-seat
+      metricsPort: 9090
+      mode: DISABLE
+    - name: order-core-metrics
+      namespace: staging-webs
+      selector:
+        app: staging-order-core
+      metricsPort: 9090
+      mode: DISABLE
+    - name: api-gateway-metrics
+      namespace: staging-webs
+      selector:
+        app: staging-api-gateway
+      metricsPort: 9090
+      mode: DISABLE
+
+# ============================================================
+# JWT 인증 설정
+# ============================================================
+jwtAuth:
+  enabled: false  # 우선 비활성화
+
+  issuers:
+    # Kakao OAuth
+    - name: kakao
+      issuer: "https://kauth.kakao.com"
+      jwksUri: "https://kauth.kakao.com/.well-known/jwks.json"
+      fromHeaders:
+        - name: Authorization
+          prefix: "Bearer "
+
+    # 자체 Auth 서비스 (staging 네임스페이스)
+    - name: goormgb-auth
+      issuer: "https://auth.goormgb.com"
+      jwksUri: "http://auth-guard.staging-webs.svc.cluster.local:8080/.well-known/jwks.json"
+      fromHeaders:
+        - name: Authorization
+          prefix: "Bearer "
+
+  forwardOriginalToken: true
+
+  # 공개 경로 (JWT 불필요)
+  publicPaths:
+    # 인증 관련
+    - "/auth/*"
+    - "/oauth/*"
+    - "/login"
+    - "/signup"
+    - "/api/auth/*"
+
+    # 헬스체크
+    - "/health"
+    - "/healthz"
+    - "/ready"
+    - "/readyz"
+    - "/actuator/health"
+    - "/actuator/info"
+
+    # 메트릭
+    - "/metrics"
+    - "/actuator/prometheus"
+
+    # 공개 API
+    - "/api/public/*"
+    - "/order/clubs"
+    - "/order/clubs/*/info"
+    - "/order/matches"
+
+    # 정적 리소스
+    - "/static/*"
+    - "/assets/*"
+    - "/favicon.ico"
+    - "/robots.txt"
+
+    # Swagger/API 문서
+    - "/swagger-ui/*"
+    - "/v3/api-docs/*"
+    - "/api-docs/*"
+
+    # Grafana (별도 인증)
+    - "/grafana/*"
+
+  # 인증 필수 경로
+  protectedPaths:
+    - "/api/user/*"
+    - "/api/booking/*"
+    - "/api/payment/*"
+    - "/order/reservations/*"
+    - "/order/my/*"
+
+  unauthorizedResponse:
+    enabled: true
+
+# ============================================================
+# Admin Tools IP Whitelist
+# CloudBeaver, Kafka-UI, Prometheus 등 관리 도구 접근 제한
+# ============================================================
+adminTools:
+  ipWhitelist:
+    enabled: true
+    # 허용된 IP 목록 (팀원 IP)
+    allowedIPs:
+      - "59.12.199.140"
+      - "219.241.49.248"
+      - "121.160.234.212"
+      - "118.33.22.122"
+      - "182.222.162.2"
+      - "180.70.114.57"
+      - "211.244.208.42"
+      - "59.7.96.150"
+      - "221.149.74.70"
+      - "58.148.70.203"
+      - "59.20.70.146"
+      - "39.119.192.15"
+      - "119.204.100.200"
+      - "124.49.102.36"
+      - "122.34.166.131"
+      - "182.221.197.174"
+      - "118.221.42.243"
+      - "121.175.144.99"
+    # IP 제한 적용 대상 호스트
+    protectedHosts:
+      - "argocd.staging.playball.one"
+      - "cloudbeaver.staging.playball.one"
+      - "grafana.staging.playball.one"
+      - "kafka-ui.staging.playball.one"
+      - "prometheus.staging.playball.one"
+      - "redisinsight.staging.playball.one"

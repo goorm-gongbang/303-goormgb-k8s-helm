@@ -253,6 +253,7 @@ spec:
                   { patterns = XSS_PATTERNS, category = "XSS", event = "XSS_DETECTED" },
                 }
 
+
                 -- 공통 패턴 검사 및 응답 함수
                 local function check_and_respond(request_handle, input, pattern_list, client_ip, path)
                   for _, p in ipairs(pattern_list) do
@@ -296,5 +297,14 @@ spec:
                   if check_and_respond(request_handle, user_agent, HEADER_CHECK_PATTERNS, client_ip, path) then
                     return
                   end
+
+                  -- Referer 헤더 검사
+                  local referer = headers:get("referer") or ""
+                  if referer ~= "" then
+                    if check_and_respond(request_handle, referer, PATH_CHECK_PATTERNS, client_ip, path) then
+                      return
+                    end
+                  end
+
                 end
 {{- end }}

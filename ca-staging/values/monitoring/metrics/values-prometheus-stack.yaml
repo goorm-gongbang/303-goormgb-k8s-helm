@@ -1,0 +1,305 @@
+# EKS Staging - kube-prometheus-stack Configuration
+# Domain: staging.playball.one
+# Note: kube-prometheus-stack을 직접 OCI 배포하므로 prefix 없이 root level에 값 설정
+#
+# ============================================================
+# dev vs EKS 차이점:
+# ------------------------------------------------------------
+# [제거됨 - EKS 불필요]
+# - nodeSelector/tolerations (kubeadm Control Plane 노드 배치용)
+# - kubeControllerManager/kubeScheduler/kubeEtcd 모니터링 (kubeadm 전용)
+# - etcd-client-cert secret 마운트 (kubeadm 전용)
+# - endpoints 설정 (kubeadm 전용)
+#
+# [변경됨 - EKS 환경]
+# - 도메인: goormgb.space -> staging.playball.one
+# - 리소스: 스케일 업 (EKS 환경에 맞게)
+# - retention: 7일로 증가
+# ============================================================
+
+# ===== prometheus-extras용 설정 (ExternalSecrets, VirtualService) =====
+# Grafana Gateway
+gateway:
+  grafana:
+    enabled: true
+    host: "grafana.staging.playball.one"
+    # EKS: TLS는 CloudFront + ACM에서 처리
+  prometheus:
+    enabled: false
+    host: "prometheus.staging.playball.one"
+    gatewayRef: "istio-system/api-gateway"
+    # Remote Write 인증 (k6, OTel 등 외부 메트릭 전송용)
+    remoteWriteAuth:
+      enabled: true
+      # 토큰은 Secrets Manager에서 관리 권장, 임시로 여기 설정
+      # openssl rand -hex 32 로 생성
+      token: "k6-remote-write-staging-2026-t4goormgb"
+
+# Dashboard 설정 (EKS 환경: Calico, 로컬 exporter 대시보드 제외)
+dashboards:
+  infraTeam:
+    folderName: "STAGING 플랫폼 관측(인프라)"
+    k6FolderName: "STAGING 부하 테스트(k6)"
+    wafFolderName: "STAGING 보안 모니터링"
+    cicdFolderName: "STAGING CICD 모니터링"
+    cdnFolderName: "STAGING CDN 실시간 통계"
+    exclude:
+      - "calico-felix.json"
+    ciliumExclude:
+      - "cilium-overview.json"
+      - "hubble-overview.json"
+  devTeam:
+    folderName: "STAGING 서비스 관측(개발)"
+    namespacePattern: "staging-webs"
+    defaultNamespace: "staging-webs"
+    namespaceRegex: "/(staging-webs)/"
+    redisClusterPattern: "goormgb-staging-.*"
+    dbInstancePattern: "goormgb-staging-postgresql"
+    awsAccountId: "406223549139"
+    exclude:
+      # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
+      - "database-postgresql-local.json"
+      - "cache-redis-local.json"
+  aiTeam:
+    folderName: "STAGING 서비스 관측(AI)"
+    aiNamespace: "staging-ai"
+    websNamespace: "staging-webs"
+    redisInfo: "ElastiCache: goormgb-staging-redis.ihyerz.ng.0001.apn2.cache.amazonaws.com:6379 (AI IP Blacklist / Session, DB2)"
+  alertOps:
+    enabled: true
+    folderName: "STAGING 알람 현황판"
+    envName: "staging"
+    appNamespace: "staging-webs"
+    appJobPattern: "staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+    dbInstanceName: "goormgb-staging-postgresql"
+    redisClusterName: "goormgb-staging-redis-001"
+  businessKpi:
+    enabled: true
+    folderName: "STAGING 알람 현황판"
+  businessPm:
+    folderName: "STAGING 사용자 행동 분석(PM)"
+  securityOps:
+    enabled: true
+    folderName: "STAGING 알람 현황판"
+
+thanosObjstore:
+  enabled: true
+  secretName: "thanos-objstore-secret"
+  bucket: "playball-staging-thanos"
+  region: "ap-northeast-2"
+
+# VPC CNI Metrics (EKS eBPF)
+vpcCniMetrics:
+  enabled: true
+
+# ===== kube-prometheus-stack 직접 배포용 설정 =====
+fullnameOverride: prom
+cleanPrometheusOperatorObjectNames: true
+
+# Admission webhook 비활성화 (TLS 인증서 문제 방지)
+prometheusOperator:
+  admissionWebhooks:
+    enabled: false
+  tls:
+    enabled: false
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# kube-state-metrics
+kube-state-metrics:
+  metricLabelsAllowlist:
+    - nodes=[nodepool,role,topology.kubernetes.io/zone,node.kubernetes.io/instance-type]
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# EKS: kubeadm 전용 컴포넌트 모니터링 비활성화
+kubeControllerManager:
+  enabled: false  # EKS managed
+kubeScheduler:
+  enabled: false  # EKS managed
+kubeEtcd:
+  enabled: false  # EKS managed
+kubeProxy:
+  enabled: true
+
+prometheus:
+  # Thanos sidecar SA (IRSA)
+  serviceAccount:
+    create: true
+    name: prometheus-prom
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-thanos"
+
+  # Thanos sidecar 활성화
+  thanosService:
+    enabled: true
+  thanosServiceMonitor:
+    enabled: true
+
+  prometheusSpec:
+    # 모든 namespace 메트릭 수집
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+    # OTel Collector에서 메트릭 수신 (remote write)
+    enableRemoteWriteReceiver: true
+
+    retention: 7d
+    retentionSize: "20GB"
+
+    nodeSelector:
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
+
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 3Gi
+
+    # Thanos sidecar 설정
+    thanos:
+      objectStorageConfig:
+        existingSecret:
+          name: thanos-objstore-secret
+          key: objstore.yml
+
+  # VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
+  # Service는 prometheus-stack 차트에서 생성 (vpc-cni-service.yaml)
+  additionalServiceMonitors:
+    - name: aws-vpc-cni
+      jobLabel: k8s-app
+      namespaceSelector:
+        matchNames:
+          - kube-system
+      selector:
+        matchLabels:
+          k8s-app: aws-node
+      endpoints:
+        - port: metrics
+          interval: 30s
+          path: /metrics
+          # VPC CNI metrics port
+          targetPort: 61678
+
+# Grafana는 별도 Application으로 분리 (ociCharts.grafana)
+# values-grafana.yaml 참조
+grafana:
+  enabled: false
+  # ExternalSecret은 prometheus-extras에서 생성 (common-charts 템플릿 사용)
+  eso:
+    enabled: true
+    secretManagerKey: staging/monitoring
+    oauthSecretManagerKey: staging/infra/oauth
+    oauthAllowInsecureEmailLookup: true
+  provisioning:
+    enabled: true
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+    users:
+      - email: 212clab@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: rhuba23@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: chamchi0129@gmail.com
+        orgRole: Admin
+        isGrafanaAdmin: true
+      - email: jusanha17@gmail.com
+        orgRole: Admin
+      - email: lab.jehyun@gmail.com
+        orgRole: Admin
+      - email: wnconc@gmail.com
+        orgRole: Admin
+      - email: jbyun1105@gmail.com
+        orgRole: Admin
+      - email: sayiamseyoun9@gmail.com
+        orgRole: Admin
+      - email: jminwook0120@gmail.com
+        orgRole: Admin
+      - email: siyeon0713@gmail.com
+        orgRole: Admin
+      - email: cdh4112618@gmail.com
+        orgRole: Admin
+      - email: rhkdgur120@gmail.com
+        orgRole: Admin
+      - email: wkdwlgus317@hanyang.ac.kr
+        orgRole: Admin
+      - email: yuuijin863@gmail.com
+        orgRole: Admin
+      - email: hs4734@gmail.com
+        orgRole: Admin
+      - email: hejwien@gmail.com
+        orgRole: Admin
+    teams:
+      - name: DEV
+        members:
+          - yuuijin863@gmail.com
+          - jusanha17@gmail.com
+          - rhkdgur120@gmail.com
+          - siyeon0713@gmail.com
+      - name: AI
+        members:
+          - wkdwlgus317@hanyang.ac.kr
+          - cdh4112618@gmail.com
+      - name: INFR
+        members:
+          - 212clab@gmail.com
+          - chamchi0129@gmail.com
+          - rhuba23@gmail.com
+      - name: SECU
+        members:
+          - wnconc@gmail.com
+          - hejwien@gmail.com
+          - jminwook0120@gmail.com
+      - name: MAN
+        members:
+          - lab.jehyun@gmail.com
+          - jbyun1105@gmail.com
+          - sayiamseyoun9@gmail.com
+          - hs4734@gmail.com
+
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      role: monitoring
+    tolerations:
+      - key: role
+        value: monitoring
+        effect: NoSchedule
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
