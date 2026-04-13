@@ -143,7 +143,7 @@
         "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
         "queryMode": "Logs",
         "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
-        "expression": "stats count(*) as cnt by eventSource | sort cnt desc | limit 15",
+        "expression": "stats count(*) as calls by eventSource | sort calls desc | limit 15",
         "refId": "A"
       }],
       "title": "AWS 서비스별 API 호출 분포", "type": "piechart"
@@ -157,7 +157,7 @@
         "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
         "queryMode": "Logs",
         "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
-        "expression": "stats count(*) as cnt by userIdentity.arn | sort cnt desc | limit 10",
+        "expression": "stats count(*) as calls by userIdentity.arn | sort calls desc | limit 10",
         "refId": "A"
       }],
       "title": "사용자별 API 호출 분포", "type": "piechart"
@@ -165,17 +165,27 @@
     {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 34}, "id": 40, "title": "Raw 로그", "type": "row"},
     {
       "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
-      "description": "CloudTrail 원본 로그",
-      "gridPos": {"h": 16, "w": 24, "x": 0, "y": 35}, "id": 41,
-      "options": {"dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": true, "showLabels": false, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true},
+      "description": "CloudTrail 원본 로그 - 시간, 이벤트, 서비스, 수정 주체, IP, 에러",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false}},
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "@timestamp"}, "properties": [{"id": "custom.width", "value": 180}]},
+          {"matcher": {"id": "byName", "options": "eventName"}, "properties": [{"id": "custom.width", "value": 200}]},
+          {"matcher": {"id": "byName", "options": "eventSource"}, "properties": [{"id": "custom.width", "value": 180}]},
+          {"matcher": {"id": "byName", "options": "userIdentity.arn"}, "properties": [{"id": "custom.width", "value": 350}]},
+          {"matcher": {"id": "byName", "options": "sourceIPAddress"}, "properties": [{"id": "custom.width", "value": 130}]},
+          {"matcher": {"id": "byName", "options": "errorCode"}, "properties": [{"id": "custom.width", "value": 120}, {"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}
+        ]
+      },
+      "gridPos": {"h": 20, "w": 24, "x": 0, "y": 35}, "id": 41,
+      "options": {"cellHeight": "sm", "showHeader": true, "sortBy": [{"desc": true, "displayName": "@timestamp"}], "footer": {"show": false}},
       "targets": [{
         "datasource": {"type": "cloudwatch", "uid": "cloudwatch"},
         "queryMode": "Logs",
         "logGroups": [{"arn": "arn:aws:logs:ap-northeast-2:406223549139:log-group:/aws/cloudtrail/playball/audit:*"}],
-        "expression": "fields @timestamp, eventName, eventSource, userIdentity.arn, sourceIPAddress, errorCode | sort @timestamp desc | limit 100",
+        "expression": "fields @timestamp, eventName, eventSource, userIdentity.arn, sourceIPAddress, errorCode | sort @timestamp desc | limit 200",
         "refId": "A"
       }],
-      "title": "CloudTrail 로그", "type": "logs"
+      "title": "CloudTrail 로그 (수정 주체 포함)", "type": "table"
     }
   ],
   "refresh": "5m",
