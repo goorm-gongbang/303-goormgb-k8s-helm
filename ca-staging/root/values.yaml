@@ -514,11 +514,11 @@ gitCharts:
   cloudbeaver:
     enabled: true
     description: "CloudBeaver - 웹 기반 DB 관리 도구 (RDS, ClickHouse)"
-    path: ca-staging/charts/monitoring/cloudbeaver
-    namespace: monitoring
+    path: ca-staging/charts/data/cloudbeaver
+    namespace: data
     syncWave: "5"
     valueFiles:
-      - ../../../../ca-staging/values/monitoring/tools/values-cloudbeaver.yaml
+      - ../../../../ca-staging/values/data/values-cloudbeaver.yaml
 
   # Redis Exporter for AI ElastiCache
   redis-exporter-ai:
