@@ -23,8 +23,10 @@ podAnnotations:
 # Exporter 설정
 exporter:
   port: 9121
-  # 추가 옵션
-  extraArgs: []
+  # TLS 활성화 (ElastiCache transit_encryption_mode: required)
+  extraArgs:
+    - --redis.addr=rediss://$(AI_REDIS_HOST):$(AI_REDIS_PORT)
+    - --skip-tls-verification
 
 resources:
   limits:

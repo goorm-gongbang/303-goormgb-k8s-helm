@@ -76,7 +76,7 @@ initialConfig:
             "port": "5432",
             "database": "goormgb",
             "user-name": "playball_user",
-            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/goormgb",
+            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/goormgb?sslmode=require",
             "type": "dev",
             "provider-properties": {
               "@dbeaver-show-non-default-db@": "false"
@@ -95,7 +95,7 @@ initialConfig:
             "port": "5432",
             "database": "ai_defense",
             "user-name": "ai_defense",
-            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/ai_defense",
+            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/ai_defense?sslmode=require",
             "type": "dev",
             "provider-properties": {
               "@dbeaver-show-non-default-db@": "false"
