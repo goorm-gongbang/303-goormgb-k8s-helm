@@ -57,6 +57,9 @@ env:
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
     value: "WARN"
+  # Kafka consumer group (staging과 분리)
+  - name: KAFKA_CONSUMER_GROUP_ID
+    value: "loadtest-order-core-notification"
 
 envFrom:
   - configMapRef:
