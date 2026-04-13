@@ -687,6 +687,21 @@ applicationSets:
         syncWave: "17"
         description: "[LoadTest] API Gateway - 부하테스트용 게이트웨이"
 
+  loadtest-ai-services:
+    enabled: true
+    syncWave: "15"
+    namespace: loadtest-ai
+    appNamePrefix: "loadtest"
+    chartPath: common-charts/apps/ai-service
+    valueFilesPattern: ../../../ca-staging/values/apps-loadtest/values-{{name}}.yaml
+    services:
+      - name: ai-defense
+        syncWave: "15"
+        description: "[LoadTest] AI Defense - 부하테스트용 봇 탐지"
+      - name: authz-adapter
+        syncWave: "16"
+        description: "[LoadTest] Authz Adapter - 부하테스트용 ext_authz"
+
 
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)

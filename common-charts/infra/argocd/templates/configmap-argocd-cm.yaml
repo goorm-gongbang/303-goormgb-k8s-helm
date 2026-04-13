@@ -20,6 +20,11 @@ data:
     issuer: {{ .Values.oidc.issuer }}
     clientID: $argocd-google-oauth:clientId
     clientSecret: $argocd-google-oauth:clientSecret
+    {{- if .Values.server.url }}
+    redirectURI: {{ .Values.server.url }}/auth/callback
+    {{- else if .Values.gateway.host }}
+    redirectURI: https://{{ .Values.gateway.host }}/auth/callback
+    {{- end }}
     requestedScopes:
       {{- range .Values.oidc.requestedScopes }}
       - {{ . }}

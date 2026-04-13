@@ -31,6 +31,7 @@ nodePools:
       - t
       - m
       - c
+    minGeneration: "4"  # 5세대 이상 (t4g 제외, m5/c5+)
     instanceSizes:
       - xlarge     # 4 vCPU, 16GB - 기본 (노드 개수 줄이기)
       - 2xlarge    # 8 vCPU, 32GB - 버스트용
@@ -65,6 +66,7 @@ nodePools:
 
     # 인스턴스 설정 - t4g.xlarge Spot (Graviton 최저가 ~$0.03/hr)
     arch: arm64
+    minGeneration: "3"  # 4세대 포함 (t4g)
     instanceCategories:
       - t
     instanceSizes:

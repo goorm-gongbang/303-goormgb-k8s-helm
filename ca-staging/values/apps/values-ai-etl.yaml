@@ -20,7 +20,7 @@ imagePullSecrets: []
 env:
   # S3 (IRSA로 접근 - credentials 불필요)
   - name: TM_S3_BUCKET
-    value: "goormgb-staging-ai-audit"
+    value: "playball-staging-ai-audit"
   # Redis (기존 AI Defense Redis 공유, ETL 전용 prefix: tm:etl:processed:s3:)
   - name: AI_REDIS_HOST
     valueFrom:
