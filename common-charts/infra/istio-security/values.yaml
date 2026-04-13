@@ -169,6 +169,18 @@ patterns:
       - name: "ssrf-gcp-metadata"
         pattern: "metadata%.google%.internal"
         description: "GCP metadata endpoint"
+      - name: "ssrf-file-protocol"
+        pattern: "[Ff][Ii][Ll][Ee]://"
+        description: "file:// protocol SSRF"
+      - name: "ssrf-gopher-protocol"
+        pattern: "[Gg][Oo][Pp][Hh][Ee][Rr]://"
+        description: "gopher:// protocol SSRF"
+      - name: "ssrf-dict-protocol"
+        pattern: "[Dd][Ii][Cc][Tt]://"
+        description: "dict:// protocol SSRF"
+      - name: "ssrf-ftp-protocol"
+        pattern: "[Ff][Tt][Pp]://"
+        description: "ftp:// protocol SSRF"
 
   log4shell:
     enabled: true
@@ -185,6 +197,12 @@ patterns:
       - name: "log4j-env"
         pattern: "%$%{[eE][nN][vV]:"
         description: "Log4j env lookup"
+      - name: "log4j-encoded-dollar-brace"
+        pattern: "%%24%%7[bB]"
+        description: "Log4j encoded ${  (%24%7B)"
+      - name: "log4j-base"
+        pattern: "%$%{[bB][aA][sS][eE]64:"
+        description: "Log4j base64 lookup"
 
   headerInjection:
     enabled: true
@@ -192,9 +210,18 @@ patterns:
       - name: "header-crlf"
         pattern: "%%0[dD]%%0[aA]"
         description: "CRLF injection (encoded)"
+      - name: "header-cr-only"
+        pattern: "%%0[dD]"
+        description: "CR injection (encoded)"
+      - name: "header-lf-only"
+        pattern: "%%0[aA]"
+        description: "LF injection (encoded)"
       - name: "header-newline"
         pattern: "\\r\\n"
         description: "CRLF injection (escaped)"
+      - name: "header-set-cookie"
+        pattern: "[Ss][Ee][Tt]%-[Cc][Oo][Oo][Kk][Ii][Ee]:"
+        description: "Set-Cookie header injection"
 
   botScanner:
     enabled: true

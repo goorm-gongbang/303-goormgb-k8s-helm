@@ -296,5 +296,34 @@ spec:
                   if check_and_respond(request_handle, user_agent, HEADER_CHECK_PATTERNS, client_ip, path) then
                     return
                   end
+
+                  -- Referer 헤더 검사
+                  local referer = headers:get("referer") or ""
+                  if referer ~= "" then
+                    if check_and_respond(request_handle, referer, PATH_CHECK_PATTERNS, client_ip, path) then
+                      return
+                    end
+                  end
+
+                  -- POST/PUT/PATCH Body 검사 (텍스트 기반만, 8KB 이하)
+                  if method == "POST" or method == "PUT" or method == "PATCH" then
+                    local content_type = headers:get("content-type") or ""
+                    local content_length = tonumber(headers:get("content-length") or "0") or 0
+                    -- multipart(파일 업로드), octet-stream 제외 + 8KB 이하만
+                    if content_length > 0 and content_length <= 8192
+                       and not string.find(content_type, "multipart")
+                       and not string.find(content_type, "octet%-stream")
+                       and (string.find(content_type, "json") or string.find(content_type, "text") or string.find(content_type, "xml")) then
+                      local body = request_handle:body()
+                      if body then
+                        local body_str = body:getBytes(0, body:length())
+                        if body_str and #body_str > 0 then
+                          if check_and_respond(request_handle, body_str, PATH_CHECK_PATTERNS, client_ip, path) then
+                            return
+                          end
+                        end
+                      end
+                    end
+                  end
                 end
 {{- end }}
