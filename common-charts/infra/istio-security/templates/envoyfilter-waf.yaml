@@ -253,6 +253,23 @@ spec:
                   { patterns = XSS_PATTERNS, category = "XSS", event = "XSS_DETECTED" },
                 }
 
+                -- Body/Referer 검사용 패턴 (sql-quotes 제외 - JSON 따옴표 오탐 방지)
+                local SQL_PATTERNS_BODY_SAFE = {}
+                for _, rule in ipairs(SQL_PATTERNS) do
+                  if rule.name ~= "sql-quotes" and rule.name ~= "sql-comment" then
+                    table.insert(SQL_PATTERNS_BODY_SAFE, rule)
+                  end
+                end
+
+                local BODY_CHECK_PATTERNS = {
+                  { patterns = SQL_PATTERNS_BODY_SAFE, category = "SQL_INJECTION", event = "SQL_INJECTION_DETECTED" },
+                  { patterns = XSS_PATTERNS, category = "XSS", event = "XSS_DETECTED" },
+                  { patterns = CMD_PATTERNS, category = "COMMAND_INJECTION", event = "COMMAND_INJECTION_DETECTED" },
+                  { patterns = XXE_PATTERNS, category = "XXE_INJECTION", event = "XXE_INJECTION_DETECTED" },
+                  { patterns = SSRF_PATTERNS, category = "SSRF", event = "SSRF_DETECTED" },
+                  { patterns = LOG4J_PATTERNS, category = "LOG4SHELL", event = "LOG4SHELL_DETECTED" },
+                }
+
                 -- 공통 패턴 검사 및 응답 함수
                 local function check_and_respond(request_handle, input, pattern_list, client_ip, path)
                   for _, p in ipairs(pattern_list) do
