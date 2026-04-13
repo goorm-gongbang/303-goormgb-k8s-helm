@@ -41,8 +41,9 @@ ingress:
         healthCheckPath: /
         healthCheckSuccessCodes: "200,301,302,404"
 
-    # API - Istio IngressGateway 거침
+    # API - Istio IngressGateway 거침 (CloudFront 경유 - external-dns 제외)
     - host: api.staging.playball.one
+      skipExternalDns: true
       service:
         name: istio-ingressgateway
         namespace: istio-system

@@ -20,7 +20,11 @@ metadata:
     {{- if $.Values.ingress.certificateArn }}
     alb.ingress.kubernetes.io/certificate-arn: {{ $.Values.ingress.certificateArn | quote }}
     {{- end }}
+    {{- if .skipExternalDns }}
+    external-dns.alpha.kubernetes.io/controller: "none"
+    {{- else }}
     external-dns.alpha.kubernetes.io/hostname: {{ .host }}
+    {{- end }}
 spec:
   ingressClassName: alb
   rules:
