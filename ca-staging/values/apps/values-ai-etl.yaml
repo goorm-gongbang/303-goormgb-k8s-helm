@@ -7,7 +7,7 @@ enabled: true
 schedule: "15 * * * *"
 
 # IRSA ServiceAccount (ai-defense와 동일)
-serviceAccountName: ai-defensePval
+serviceAccountName: ai-defense
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
