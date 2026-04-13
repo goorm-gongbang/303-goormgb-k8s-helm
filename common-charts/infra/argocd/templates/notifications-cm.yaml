@@ -168,8 +168,8 @@ data:
       send: [app-sync-running]
 
   trigger.on-deployed: |
-    - when: app.status.operationState != nil and app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
-      oncePer: app.status.operationState.syncResult.revision
+    - when: app.status.operationState != nil and app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy' and app.status.operationState.startedAt != app.status.operationState.finishedAt
+      oncePer: app.status.operationState.finishedAt
       send: [app-deployed]
 
   trigger.on-deploy-failed: |
