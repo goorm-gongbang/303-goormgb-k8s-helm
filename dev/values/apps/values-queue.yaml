@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   name: "dev/goormgb/queue"
-  tag: "532c685"
+  tag: "d4d6b96"
   pullPolicy: Always
 
 imagePullSecrets:
