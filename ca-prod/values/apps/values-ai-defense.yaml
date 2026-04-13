@@ -92,6 +92,9 @@ env:
         key: AI_PG_DBNAME
   - name: TM_PG_URL
     value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)"
+  # Policy projection staleness 체크 완화 (reconciler 미구현 — 추후 코드 수정 후 제거)
+  - name: TM_POLICY_PROJECTION_MAX_STALENESS_MS
+    value: "2678400000"
   # ClickHouse (클러스터 내부 - Secrets Manager에서 인증 정보 가져옴)
   - name: AI_CLICKHOUSE_USER
     valueFrom:
