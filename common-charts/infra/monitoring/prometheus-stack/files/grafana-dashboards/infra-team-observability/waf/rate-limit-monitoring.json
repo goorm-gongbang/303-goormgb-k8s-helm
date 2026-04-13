@@ -173,14 +173,197 @@
     {
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
-      "id": 10,
+      "id": 40,
       "panels": [],
-      "title": "시계열 분석",
+      "title": "Local vs Global",
       "type": "row"
     },
     {
       "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-      "description": "시간별 Rate Limit 차단/허용 추이",
+      "description": "Local Rate Limit (Envoy Lua) - IP별/경로별 초당 제한",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "red", "value": 500 }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 6 },
+      "id": 41,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `type\":\"ratelimit\"` |= `scope\":\"local\"` |= `limited\":true` [$__range]))",
+          "legendFormat": "Local Blocked",
+          "refId": "A"
+        }
+      ],
+      "title": "Local 차단 수",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Global Rate Limit (Redis) - 429 응답 중 Local이 아닌 것",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "red", "value": 500 }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 6 },
+      "id": 42,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "sum(increase(istio_requests_total{reporter=\"destination\", response_code=\"429\"}[$__range])) - (sum(count_over_time({namespace=\"istio-system\"} |= `scope\":\"local\"` |= `limited\":true` [$__range])) or vector(0)) or vector(0)",
+          "legendFormat": "Global Blocked",
+          "refId": "A"
+        }
+      ],
+      "title": "Global 차단 수 (추정)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "description": "Local Rate Limit 차단 추이 (Envoy Lua 로그)",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never",
+            "stacking": { "group": "A", "mode": "none" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Local 차단" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Local 허용" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 10 },
+      "id": 43,
+      "options": {
+        "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `scope\":\"local\"` |= `limited\":true` [$__interval]))",
+          "legendFormat": "Local 차단",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "expr": "sum(count_over_time({namespace=\"istio-system\"} |= `scope\":\"local\"` |= `limited\":false` [$__interval]))",
+          "legendFormat": "Local 허용",
+          "refId": "B"
+        }
+      ],
+      "title": "Local Rate Limit 추이 (Envoy Lua)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Global Rate Limit 차단 추이 (Istio 429 - envoy ratelimit 필터)",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never",
+            "stacking": { "group": "A", "mode": "none" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "reqps"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Global 429" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 10 },
+      "id": 44,
+      "options": {
+        "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "sum(rate(istio_requests_total{reporter=\"destination\", response_code=\"429\", response_flags=~\".*RL.*\"}[$__rate_interval])) or vector(0)",
+          "legendFormat": "Global 429",
+          "refId": "A"
+        }
+      ],
+      "title": "Global Rate Limit 추이 (Redis)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "datasource", "uid": "-- Dashboard --" },
+      "gridPos": { "h": 3, "w": 24, "x": 0, "y": 18 },
+      "id": 45,
+      "options": {
+        "code": { "language": "plaintext", "showLineNumbers": false },
+        "content": "**Local Rate Limit** (Envoy Lua, 초당)\n- 전체: 100 req/s\n- IP별: 50 req/s\n- /auth/: 10 req/s\n- /payment/: 5 req/s\n- /signup: 3 req/s\n\n**Global Rate Limit** (Redis, 분당)\n- IP별: 300 req/min\n- /auth/kakao/login: 10 req/min\n- /auth/signup: 5 req/min\n- /order/payment: 20 req/min\n- /seat/hold: 30 req/min",
+        "mode": "markdown"
+      },
+      "title": "Rate Limit 설정 참고",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 21 },
+      "id": 10,
+      "panels": [],
+      "title": "시계열 분석 (전체)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "description": "시간별 Rate Limit 차단/허용 추이 (Local 기준)",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },

@@ -474,7 +474,7 @@
     {
       "datasource": {"type": "loki", "uid": "loki"},
       "description": "블랙리스트 차단 로그 스트림 (reason 포함)",
-      "gridPos": {"h": 48, "w": 24, "x": 0, "y": 47},
+      "gridPos": {"h": 24, "w": 24, "x": 0, "y": 47},
       "id": 6,
       "options": {
         "dedupStrategy": "none",
