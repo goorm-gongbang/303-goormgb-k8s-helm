@@ -414,6 +414,16 @@ gitCharts:
     valueFiles:
       - ../../../ca-staging/values/infra/values-keda-scalers.yaml
 
+  # KEDA ScaledObjects - Load Test (부하테스트 전용)
+  keda-scalers-loadtest:
+    enabled: true
+    description: "KEDA ScaledObject - Load Test 전용 CPU 기반 오토스케일링"
+    path: common-charts/infra/keda-scalers
+    namespace: loadtest-webs
+    syncWave: "16"
+    valueFiles:
+      - ../../../ca-staging/values/infra/values-keda-scalers-loadtest.yaml
+
   # Karpenter NodePool & EC2NodeClass
   karpenter-config:
     enabled: true
@@ -468,7 +478,7 @@ gitCharts:
   # Kiali VirtualService & DestinationRule
   # Load Test Route (k6 부하테스트용)
   loadtest-route:
-    enabled: false
+    enabled: true
     description: "Load Test 라우팅 - /load-test/* -> loadtest-webs"
     path: ca-staging/charts/istio/loadtest-route
     namespace: istio-system
@@ -654,7 +664,7 @@ applicationSets:
 
   # Load-test 전용 서비스 (k6 부하 테스트용)
   loadtest-webs-services:
-    enabled: false
+    enabled: true
     syncWave: "15"
     namespace: loadtest-webs
     appNamePrefix: "loadtest"
