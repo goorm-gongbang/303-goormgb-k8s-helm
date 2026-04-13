@@ -15,6 +15,9 @@ config:
         regex: (.+)
         action: replace
 
+tolerations:
+  - operator: Exists
+
 resources:
   requests:
     cpu: 50m
