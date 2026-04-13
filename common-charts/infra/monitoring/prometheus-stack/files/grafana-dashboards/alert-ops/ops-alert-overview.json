@@ -1,73 +1,118 @@
 {
   "annotations": {"list": []},
-  "description": "운영 알람 현황 - 5xx, P99, Pod 재시작, 노드, CPU/메모리, Redis",
+  "description": "운영 알람 현황 - 디스코드 알림 기반 드릴다운",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
   "links": [],
   "panels": [
-    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0}, "id": 1, "title": "HTTP 서비스 상태", "type": "row"},
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0}, "id": 1, "title": "5xx 에러 (StagingHttp5xxWarning / Critical)", "type": "row"},
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 3}, {"color": "red", "value": 10}]}, "unit": "short"}},
+      "description": "Warning: 5건/5m, Critical: 20건/5m",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 5}, {"color": "red", "value": 20}]}, "unit": "short"}},
       "gridPos": {"h": 4, "w": 6, "x": 0, "y": 1}, "id": 2,
       "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
       "targets": [{"expr": "sum(increase(http_server_request_duration_seconds_count{namespace=\"staging-webs\", http_response_status_code=~\"5..\"}[5m])) or vector(0)", "refId": "A"}],
-      "title": "5xx 에러 (5m)", "type": "stat"
+      "title": "5xx 에러 수 (5m)", "type": "stat"
     },
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "어떤 서비스에서 5xx가 나는지",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "bars", "fillOpacity": 80, "showPoints": "never", "stacking": {"mode": "normal"}}, "unit": "short"}},
+      "gridPos": {"h": 8, "w": 18, "x": 6, "y": 1}, "id": 3,
+      "options": {"legend": {"calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"expr": "sum by (app, http_route, http_response_status_code) (increase(http_server_request_duration_seconds_count{namespace=\"staging-webs\", http_response_status_code=~\"5..\"}[5m])) > 0", "legendFormat": "{{app}} {{http_route}} ({{http_response_status_code}})", "refId": "A"}],
+      "title": "5xx 발생 위치 (서비스 / 경로 / 상태코드)", "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "loki", "uid": "loki"},
+      "description": "5xx 발생 시점의 ERROR 로그",
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 9}, "id": 4,
+      "options": {"dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": true, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true},
+      "targets": [{"datasource": {"type": "loki", "uid": "loki"}, "expr": "{namespace=\"staging-webs\"} |~ `\"level\": ?\"ERROR\"` | json", "refId": "A"}],
+      "title": "ERROR 로그 (staging-webs)", "type": "logs"
+    },
+
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 17}, "id": 10, "title": "P99 응답시간 (StagingApiP99Warning / Critical)", "type": "row"},
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Warning: >3s, Critical: >5s",
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 3}, {"color": "red", "value": 5}]}, "unit": "s"}},
-      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 1}, "id": 3,
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 18}, "id": 11,
       "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
       "targets": [{"expr": "histogram_quantile(0.99, sum(rate(http_server_request_duration_seconds_bucket{namespace=\"staging-webs\"}[5m])) by (le)) or vector(0)", "refId": "A"}],
-      "title": "P99 응답시간", "type": "stat"
+      "title": "전체 P99 (현재)", "type": "stat"
     },
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "reqps"}},
-      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 1}, "id": 4,
-      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
-      "targets": [{"expr": "sum(rate(http_server_request_duration_seconds_count{namespace=\"staging-webs\"}[5m])) or vector(0)", "refId": "A"}],
-      "title": "전체 RPS", "type": "stat"
+      "description": "어떤 서비스가 느린지",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 10, "lineWidth": 2, "showPoints": "never"}, "unit": "s"},
+        "overrides": [
+          {"matcher": {"id": "byRegexp", "options": ".*"}, "properties": [{"id": "custom.thresholdsStyle", "value": {"mode": "line+area"}}, {"id": "thresholds", "value": {"mode": "absolute", "steps": [{"color": "transparent", "value": null}, {"color": "rgba(255,0,0,0.1)", "value": 3}]}}]}
+        ]
+      },
+      "gridPos": {"h": 8, "w": 18, "x": 6, "y": 18}, "id": 12,
+      "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"expr": "histogram_quantile(0.99, sum by (app, le) (rate(http_server_request_duration_seconds_bucket{namespace=\"staging-webs\"}[5m])))", "legendFormat": "{{app}}", "refId": "A"}],
+      "title": "서비스별 P99 추이 (3s 경고선)", "type": "timeseries"
     },
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "가장 느린 엔드포인트 Top 10",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "custom": {"align": "auto", "cellOptions": {"type": "auto"}}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 3}, {"color": "red", "value": 5}]}, "unit": "s"},
+        "overrides": [{"matcher": {"id": "byName", "options": "Value"}, "properties": [{"id": "custom.cellOptions", "value": {"mode": "gradient", "type": "gauge"}}, {"id": "min", "value": 0}, {"id": "max", "value": 10}]}]
+      },
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 26}, "id": 13,
+      "options": {"cellHeight": "sm", "showHeader": true, "sortBy": [{"desc": true, "displayName": "Value"}]},
+      "targets": [{"expr": "topk(10, histogram_quantile(0.99, sum by (app, http_route, le) (rate(http_server_request_duration_seconds_bucket{namespace=\"staging-webs\"}[5m]))))", "format": "table", "instant": true, "refId": "A"}],
+      "title": "느린 엔드포인트 Top 10 (P99)", "type": "table",
+      "transformations": [{"id": "organize", "options": {"excludeByName": {"Time": true, "le": true}, "renameByName": {"app": "서비스", "http_route": "경로", "Value": "P99 (초)"}}}]
+    },
+
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 34}, "id": 20, "title": "Pod 재시작 (StagingPodCrashLoopCritical)", "type": "row"},
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Critical: 30m에 3회 초과",
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 3}]}, "unit": "short"}},
-      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 1}, "id": 5,
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 35}, "id": 21,
       "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
       "targets": [{"expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"staging-webs\"}[30m])) or vector(0)", "refId": "A"}],
-      "title": "Pod 재시작 (30m)", "type": "stat"
+      "title": "재시작 수 (30m)", "type": "stat"
     },
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 20, "lineWidth": 2, "showPoints": "never"}, "unit": "short"}},
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 5}, "id": 6,
-      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"expr": "sum by (app) (increase(http_server_request_duration_seconds_count{namespace=\"staging-webs\", http_response_status_code=~\"5..\"}[5m]))", "legendFormat": "{{app}}", "refId": "A"}],
-      "title": "5xx 에러 추이 (서비스별)", "type": "timeseries"
+      "description": "어떤 Pod가 재시작했는지",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "bars", "fillOpacity": 80, "showPoints": "never", "stacking": {"mode": "normal"}}, "unit": "short"}},
+      "gridPos": {"h": 8, "w": 18, "x": 6, "y": 35}, "id": 22,
+      "options": {"legend": {"calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"expr": "sum by (pod) (increase(kube_pod_container_status_restarts_total{namespace=\"staging-webs\"}[30m])) > 0", "legendFormat": "{{pod}}", "refId": "A"}],
+      "title": "Pod별 재시작 추이", "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 10, "lineWidth": 2, "showPoints": "never"}, "unit": "s"}},
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 5}, "id": 7,
-      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"expr": "histogram_quantile(0.99, sum by (app, le) (rate(http_server_request_duration_seconds_bucket{namespace=\"staging-webs\"}[5m])))", "legendFormat": "{{app}}", "refId": "A"}],
-      "title": "P99 응답시간 추이 (서비스별)", "type": "timeseries"
+      "datasource": {"type": "loki", "uid": "loki"},
+      "description": "OOMKilled, CrashLoopBackOff 관련 로그",
+      "gridPos": {"h": 6, "w": 24, "x": 0, "y": 43}, "id": 23,
+      "options": {"dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": true, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true},
+      "targets": [{"datasource": {"type": "loki", "uid": "loki"}, "expr": "{namespace=\"staging-webs\"} |~ `(?i)(OOMKilled|CrashLoopBackOff|killed|restart|OutOfMemory|java.lang.OutOfMemoryError)`", "refId": "A"}],
+      "title": "크래시 관련 로그", "type": "logs"
     },
-    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 13}, "id": 10, "title": "클러스터 리소스", "type": "row"},
+
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 49}, "id": 30, "title": "클러스터 리소스 (CPU / Memory / Node)", "type": "row"},
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "CPU Warning: >65%, Critical: >80%",
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "max": 100, "min": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 65}, {"color": "red", "value": 80}]}, "unit": "percent"}},
-      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 14}, "id": 11,
+      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 50}, "id": 31,
       "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"]}, "showThresholdMarkers": true},
       "targets": [{"expr": "100 * sum(rate(container_cpu_usage_seconds_total{container!=\"\", container!=\"POD\"}[5m])) / sum(kube_node_status_allocatable{resource=\"cpu\"})", "refId": "A"}],
       "title": "클러스터 CPU", "type": "gauge"
     },
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Memory Warning: >70%, Critical: >90%",
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "max": 100, "min": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 70}, {"color": "red", "value": 90}]}, "unit": "percent"}},
-      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 14}, "id": 12,
+      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 50}, "id": 32,
       "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"]}, "showThresholdMarkers": true},
       "targets": [{"expr": "100 * sum(container_memory_working_set_bytes{container!=\"\", container!=\"POD\"}) / sum(kube_node_status_allocatable{resource=\"memory\"})", "refId": "A"}],
       "title": "클러스터 메모리", "type": "gauge"
@@ -75,51 +120,54 @@
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}},
-      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 14}, "id": 13,
+      "gridPos": {"h": 5, "w": 4, "x": 12, "y": 50}, "id": 33,
       "options": {"colorMode": "value", "graphMode": "none", "reduceOptions": {"calcs": ["lastNotNull"]}},
       "targets": [{"expr": "sum(kube_node_status_condition{condition=\"Ready\", status=\"true\"})", "legendFormat": "Ready", "refId": "A"}],
-      "title": "Ready 노드 수", "type": "stat"
+      "title": "Ready 노드", "type": "stat"
     },
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}}},
-      "gridPos": {"h": 5, "w": 6, "x": 18, "y": 14}, "id": 14,
+      "gridPos": {"h": 5, "w": 4, "x": 16, "y": 50}, "id": 34,
       "options": {"colorMode": "value", "graphMode": "none", "reduceOptions": {"calcs": ["lastNotNull"]}},
       "targets": [{"expr": "count(kube_node_info)", "refId": "A"}],
-      "title": "전체 노드 수", "type": "stat"
+      "title": "전체 노드", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Spot 노드 추가/제거 감지",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 20, "lineWidth": 2, "showPoints": "auto"}, "unit": "short"}},
+      "gridPos": {"h": 5, "w": 4, "x": 20, "y": 50}, "id": 35,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi"}},
+      "targets": [{"expr": "count(kube_node_info)", "legendFormat": "노드 수", "refId": "A"}],
+      "title": "노드 수 추이", "type": "timeseries"
     },
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
       "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 20, "lineWidth": 2, "showPoints": "never"}, "unit": "percent"}},
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 19}, "id": 15,
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 55}, "id": 36,
       "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi"}},
       "targets": [
         {"expr": "100 * sum(rate(container_cpu_usage_seconds_total{container!=\"\", container!=\"POD\"}[5m])) / sum(kube_node_status_allocatable{resource=\"cpu\"})", "legendFormat": "CPU", "refId": "A"},
         {"expr": "100 * sum(container_memory_working_set_bytes{container!=\"\", container!=\"POD\"}) / sum(kube_node_status_allocatable{resource=\"memory\"})", "legendFormat": "Memory", "refId": "B"}
       ],
-      "title": "CPU / 메모리 추이", "type": "timeseries"
+      "title": "CPU / 메모리 추이 (경고선: CPU 65%, Memory 70%)", "type": "timeseries"
     },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "bars", "fillOpacity": 80, "showPoints": "never", "stacking": {"mode": "normal"}}, "unit": "short"}},
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 19}, "id": 16,
-      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"expr": "sum by (pod) (increase(kube_pod_container_status_restarts_total{namespace=\"staging-webs\"}[30m])) > 0", "legendFormat": "{{pod}}", "refId": "A"}],
-      "title": "Pod 재시작 추이", "type": "timeseries"
-    },
-    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 27}, "id": 20, "title": "Redis", "type": "row"},
+
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 63}, "id": 40, "title": "Redis (StagingRedisDown / MemoryWarning / Critical)", "type": "row"},
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "mappings": [{"options": {"0": {"text": "DOWN"}, "1": {"text": "UP"}}, "type": "value"}], "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}},
-      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 28}, "id": 21,
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 64}, "id": 41,
       "options": {"colorMode": "background", "graphMode": "none", "reduceOptions": {"calcs": ["lastNotNull"]}},
       "targets": [{"expr": "min(redis_up) or vector(0)", "refId": "A"}],
       "title": "Redis 상태", "type": "stat"
     },
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Warning: >80%, Critical: >95%",
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "max": 100, "min": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 80}, {"color": "red", "value": 95}]}, "unit": "percent"}},
-      "gridPos": {"h": 4, "w": 5, "x": 4, "y": 28}, "id": 22,
+      "gridPos": {"h": 4, "w": 5, "x": 4, "y": 64}, "id": 42,
       "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"]}, "showThresholdMarkers": true},
       "targets": [{"expr": "100 * sum(redis_memory_used_bytes) / sum(redis_memory_max_bytes > 0) or vector(0)", "refId": "A"}],
       "title": "Redis 메모리", "type": "gauge"
@@ -127,7 +175,7 @@
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "ops"}},
-      "gridPos": {"h": 4, "w": 5, "x": 9, "y": 28}, "id": 23,
+      "gridPos": {"h": 4, "w": 5, "x": 9, "y": 64}, "id": 43,
       "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
       "targets": [{"expr": "sum(rate(redis_commands_processed_total[5m])) or vector(0)", "refId": "A"}],
       "title": "Redis OPS", "type": "stat"
@@ -135,7 +183,7 @@
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 100}]}, "unit": "short"}},
-      "gridPos": {"h": 4, "w": 5, "x": 14, "y": 28}, "id": 24,
+      "gridPos": {"h": 4, "w": 5, "x": 14, "y": 64}, "id": 44,
       "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
       "targets": [{"expr": "sum(redis_connected_clients) or vector(0)", "refId": "A"}],
       "title": "Redis 연결 수", "type": "stat"
@@ -143,10 +191,44 @@
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
       "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "short"}},
-      "gridPos": {"h": 4, "w": 5, "x": 19, "y": 28}, "id": 27,
+      "gridPos": {"h": 4, "w": 5, "x": 19, "y": 64}, "id": 45,
       "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
       "targets": [{"expr": "sum(redis_db_keys) or vector(0)", "refId": "A"}],
       "title": "Redis 키 수", "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 10, "lineWidth": 2, "showPoints": "never"}, "unit": "bytes"}},
+      "gridPos": {"h": 6, "w": 12, "x": 0, "y": 68}, "id": 46,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi"}},
+      "targets": [
+        {"expr": "sum(redis_memory_used_bytes)", "legendFormat": "Used", "refId": "A"},
+        {"expr": "sum(redis_memory_max_bytes > 0)", "legendFormat": "Max", "refId": "B"}
+      ],
+      "title": "Redis 메모리 추이", "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 10, "lineWidth": 2, "showPoints": "never"}, "unit": "ops"}},
+      "gridPos": {"h": 6, "w": 12, "x": 12, "y": 68}, "id": 47,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi"}},
+      "targets": [
+        {"expr": "sum(rate(redis_commands_processed_total[5m])) or vector(0)", "legendFormat": "OPS", "refId": "A"},
+        {"expr": "sum(rate(redis_expired_keys_total[5m])) or vector(0)", "legendFormat": "Expired/s", "refId": "B"}
+      ],
+      "title": "Redis OPS / 만료 키 추이", "type": "timeseries"
+    },
+
+    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 74}, "id": 50, "title": "알림 규칙 참고", "type": "row"},
+    {
+      "datasource": {"type": "datasource", "uid": "-- Dashboard --"},
+      "gridPos": {"h": 6, "w": 24, "x": 0, "y": 75}, "id": 51,
+      "options": {
+        "code": {"language": "plaintext", "showLineNumbers": false},
+        "content": "| 알림 | 조건 | 지속 | 채널 |\n|------|------|------|------|\n| StagingHttp5xxWarning | 서비스별 5xx > 5건/5m | 0m | 경고 |\n| StagingHttp5xxCritical | 서비스 전체 5xx > 20건/5m | 0m | 긴급 |\n| StagingApiP99Warning | P99 > 3s (5m) | 5m | 경고 |\n| StagingApiP99Critical | P99 > 5s (5m) | 5m | 긴급 |\n| StagingPodCrashLoopCritical | Pod 재시작 > 3회/30m | 0m | 긴급 |\n| StagingNodeNotReadyCritical | Not Ready 노드 존재 | 5m | 긴급 |\n| StagingClusterCpuWarning | CPU > 65% | 5m | 경고 |\n| StagingClusterCpuCritical | CPU > 80% | 5m | 긴급 |\n| StagingClusterMemoryWarning | Memory > 70% | 5m | 경고 |\n| StagingClusterMemoryCritical | Memory > 90% | 5m | 긴급 |\n| StagingRedisDownCritical | redis_up == 0 | 1m | 긴급 |\n| StagingRedisMemoryWarning | Redis Memory > 80% | 5m | 경고 |\n| StagingRedisMemoryCritical | Redis Memory > 95% | 5m | 긴급 |\n| StagingSpotNodeAdded | 노드 수 증가 | 0m | 정보 |\n| StagingSpotNodeRemoved | 노드 수 감소 | 0m | 정보 |",
+        "mode": "markdown"
+      },
+      "title": "알림 규칙 참고", "type": "text"
     }
   ],
   "refresh": "30s",
@@ -158,5 +240,5 @@
   "timezone": "browser",
   "title": "1. 운영 알람 현황",
   "uid": "ops-alert-overview",
-  "version": 3
+  "version": 4
 }
