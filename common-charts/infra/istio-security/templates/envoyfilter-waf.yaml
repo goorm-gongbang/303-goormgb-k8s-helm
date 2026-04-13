@@ -284,18 +284,81 @@ spec:
 
 
                 {{- if and .Values.autoBlocklist .Values.autoBlocklist.enabled }}
-                -- 자동 blacklist 대상 카테고리 (FP 위험 낮은 것만)
+                -- 자동 blacklist 대상 카테고리 (FP 위험 낮은 것만 — 단일 탐지 시 즉시 등록)
                 local AUTO_BLOCK_CATEGORIES = {
                   {{- range .Values.autoBlocklist.categories }}
                   ["{{ . }}"] = true,
                   {{- end }}
                 }
 
+                {{- $thr := .Values.autoBlocklist.threshold | default dict }}
+                {{- if and $thr.enabled $thr.categories }}
+                -- Threshold 기반 카테고리 (윈도우 내 N회 탐지 후 등록 — FP 위험 중간)
+                local THRESHOLD_CATEGORIES = {
+                  {{- range $thr.categories }}
+                  ["{{ . }}"] = true,
+                  {{- end }}
+                }
+                local THRESHOLD_WINDOW = {{ $thr.windowSeconds | default 300 }}
+                local THRESHOLD_COUNT = {{ $thr.count | default 3 }}
+
+                -- IP+category 별 탐지 카운터 (메모리 기반, pod 재시작 시 초기화)
+                local waf_counters = {}
+                local WAF_ENTRY_TTL = THRESHOLD_WINDOW * 2
+                local waf_last_gc = os.time()
+                local WAF_GC_INTERVAL = 30
+
+                local function waf_gc_expired()
+                  local now = os.time()
+                  if now - waf_last_gc < WAF_GC_INTERVAL then return end
+                  waf_last_gc = now
+                  local to_delete = {}
+                  for key, c in pairs(waf_counters) do
+                    if now - c.last_seen > WAF_ENTRY_TTL then
+                      table.insert(to_delete, key)
+                    end
+                  end
+                  for _, k in ipairs(to_delete) do waf_counters[k] = nil end
+                end
+
+                -- 탐지 카운트 증가 및 threshold 초과 여부 반환
+                local function bump_threshold(client_ip, category)
+                  waf_gc_expired()
+                  local now = os.time()
+                  local key = client_ip .. ":" .. category
+                  local c = waf_counters[key]
+                  if c == nil or (now - c.window_start) >= THRESHOLD_WINDOW then
+                    waf_counters[key] = { count = 1, window_start = now, last_seen = now }
+                    return false, 1
+                  end
+                  c.count = c.count + 1
+                  c.last_seen = now
+                  if c.count >= THRESHOLD_COUNT then
+                    waf_counters[key] = nil  -- 등록 후 리셋 (재등록 방지)
+                    return true, c.count
+                  end
+                  return false, c.count
+                end
+                {{- else }}
+                local THRESHOLD_CATEGORIES = {}
+                local function bump_threshold(_, _) return false, 0 end
+                {{- end }}
+
                 -- adapter에 IP blacklist 등록 요청 (async, fire-and-forget)
                 local function send_to_blocklist(request_handle, client_ip, match, path)
                   if not AUTO_BLOCKLIST then return end
-                  if not AUTO_BLOCK_CATEGORIES[match.category] then return end
                   if client_ip == nil or client_ip == "" or client_ip == "unknown" then return end
+
+                  local cat = match.category
+                  if AUTO_BLOCK_CATEGORIES[cat] then
+                    -- 고신뢰: 단일 탐지 즉시 등록
+                  elseif THRESHOLD_CATEGORIES[cat] then
+                    -- 중간신뢰: threshold 초과 시에만
+                    local exceeded, _ = bump_threshold(client_ip, cat)
+                    if not exceeded then return end
+                  else
+                    return
+                  end
 
                   local reason = "waf:" .. (match.category or "unknown") .. ":" .. (match.rule or "unknown")
                   local body = string.format(
