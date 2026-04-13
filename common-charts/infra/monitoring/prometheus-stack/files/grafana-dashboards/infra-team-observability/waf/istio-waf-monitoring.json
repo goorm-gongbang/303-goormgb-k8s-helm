@@ -60,7 +60,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -71,7 +71,8 @@
         {
           "expr": "sum(increase(istio_requests_total{reporter=\"destination\"}[$__range]))",
           "legendFormat": "Total",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "총 요청 수",
@@ -176,7 +177,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -187,7 +188,8 @@
         {
           "expr": "sum(increase(istio_requests_total{reporter=\"destination\", response_code=\"403\"}[$__range]))",
           "legendFormat": "Blocked",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "차단된 요청 (403)",
@@ -238,7 +240,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -249,7 +251,8 @@
         {
           "expr": "sum(increase(istio_requests_total{reporter=\"destination\", response_code=\"429\"}[$__range]))",
           "legendFormat": "Rate Limited",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "Rate Limited (429)",
@@ -296,7 +299,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -307,7 +310,8 @@
         {
           "expr": "sum(increase(istio_requests_total{reporter=\"destination\", response_code=~\"5.*\"}[$__range]))",
           "legendFormat": "5xx",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "서버 에러 (5xx)",
