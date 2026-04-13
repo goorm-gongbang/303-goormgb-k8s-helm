@@ -11,7 +11,7 @@ serviceAccountName: ai-defense
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
-  tag: "4cf452e.5"
+  tag: "8fcad64.6"
   pullPolicy: Always
 
 # EKS 노드 IAM Role이 ECR 접근 권한 보유
