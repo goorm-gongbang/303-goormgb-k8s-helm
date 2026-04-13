@@ -184,7 +184,7 @@
     },
     {
       "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-      "description": "Local Rate Limit 차단/허용 추이 (Envoy Lua 로그)",
+      "description": "Local Rate Limit 차단/허용 추이 (Envoy Lua 로그)\n\n**Local RL = ingressgateway Pod별 token bucket** (Pod 간 카운터 공유 X. Pod N개면 실효 limit ×N)\n\n**기본 (전체 경로)**: 100 req/s, burst 100\n**IP별 (perClient)**: 50 req/s, burst 100\n**경로별 (perRoute)**:\n- /auth/ : 10 req/s, burst 20\n- /payment/ : 5 req/s, burst 10\n- /signup : 3 req/s, burst 5\n\n**제외 경로**: /load-test/, /health, /healthz, /ready, /metrics, /actuator/health\n**응답**: 429 + Retry-After:60\n**로깅**: 차단된 요청만 (onlyLimited:true)\n\n*설정: ca-staging/values/istio/values-istio-security.yaml > rateLimiting.local*",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -241,7 +241,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Global Rate Limit 차단 추이 (Istio 429 응답 중 RL 플래그)",
+      "description": "Global Rate Limit 차단 추이 (Istio 429 응답 중 RL 플래그)\n\n**Global RL = Redis 카운터 공유**, 클러스터 전체 합산 limit (Pod 수 무관)\n도메인: `goormgb-staging-ratelimit` / 서비스: envoyproxy/ratelimit (replicas:1)\n\n**IP별 전역**: 300 req/min (key=remote_address)\n**경로별 (IP당)**:\n- /auth/kakao/login : 10 req/min\n- /auth/signup : 5 req/min\n- /order/payment : 20 req/min\n- /seat/hold : 30 req/min\n\n**예외**: 내부 대역 10.0.0.0/8 unlimited (Pod 간 통신)\n**제외 경로**: Local RL과 동일 (/load-test, /health 등)\n\n*설정: ca-staging/values/istio/values-istio-security.yaml > rateLimiting.global*",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
