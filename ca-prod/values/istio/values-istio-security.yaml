@@ -207,13 +207,11 @@ rateLimiting:
     enabled: true
 
     redis:
-      internal: false
-      host: "${SPRING_DATA_REDIS_HOST}"  # ElastiCache (ESO: prod/services/redis)
-      port: "${SPRING_DATA_REDIS_PORT}"
+      internal: true
 
     service:
       replicas: 1
-      image: envoyproxy/ratelimit:latest
+      image: docker.io/envoyproxy/ratelimit:05c08d03
 
     domain: "goormgb-prod-ratelimit"
 

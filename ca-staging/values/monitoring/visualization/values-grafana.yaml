@@ -102,7 +102,7 @@ tolerations:
 
 resources:
   requests:
-    cpu: 200m
+    cpu: 100m
     memory: 512Mi
   limits:
     cpu: 500m
@@ -162,8 +162,9 @@ datasources:
         database: ${AI_PG_DBNAME}
         user: ${AI_PG_USERNAME}
         isDefault: false
-        editable: false
+        editable: true
         jsonData:
+          database: ${AI_PG_DBNAME}
           sslmode: require
           maxOpenConns: 5
           maxIdleConns: 2

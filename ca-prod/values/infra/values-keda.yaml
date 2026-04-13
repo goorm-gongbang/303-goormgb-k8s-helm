@@ -3,17 +3,16 @@
 
 # Kyverno require-labels 정책 충족
 podLabels:
-  app: keda
-  version: "2.16.1"
+  keda:
+    version: "2.19.0"
+  metricsAdapter:
+    version: "2.19.0"
+  webhooks:
+    version: "2.19.0"
 
-# Infra 노드에 배치
+# App 노드에 배치
 nodeSelector:
-  role: infra
-
-tolerations:
-  - key: role
-    value: infra
-    effect: NoSchedule
+  role: app
 
 # Prometheus 메트릭
 prometheus:

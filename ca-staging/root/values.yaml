@@ -92,7 +92,7 @@ ociCharts:
     description: "Karpenter - EKS 노드 자동 스케일링 (NodePool, EC2NodeClass)"
     repoURL: public.ecr.aws/karpenter
     chart: karpenter
-    version: "1.10.0"
+    version: "1.11.1"
     namespace: karpenter
     syncWave: "-8"
     valueFiles:
@@ -135,7 +135,7 @@ ociCharts:
     description: "Prometheus + Alertmanager - 메트릭 수집, 알림 규칙, ServiceMonitor"
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    version: "82.13.6"
+    version: "83.4.0"
     namespace: monitoring
     syncWave: "-1"
     valueFiles:
@@ -175,7 +175,7 @@ ociCharts:
     description: "AWS Load Balancer Controller - ALB/NLB Ingress 관���"
     repoURL: https://aws.github.io/eks-charts
     chart: aws-load-balancer-controller
-    version: "3.1.0"
+    version: "3.2.1"
     namespace: kube-system
     syncWave: "-9"
     valueFiles:
@@ -211,7 +211,7 @@ ociCharts:
     description: "External Secrets Operator - AWS Secrets Manager 연���"
     repoURL: https://charts.external-secrets.io
     chart: external-secrets
-    version: "2.2.0"
+    version: "2.3.0"
     namespace: external-secrets
     syncWave: "-9"
     valueFiles:
@@ -242,7 +242,7 @@ ociCharts:
     description: "Grafana Alloy - OTEL 수집기 (Faro RUM 등)"
     repoURL: https://grafana.github.io/helm-charts
     chart: alloy
-    version: "1.6.2"
+    version: "1.7.0"
     namespace: monitoring
     syncWave: "0"
     valueFiles:
@@ -272,7 +272,7 @@ ociCharts:
     description: "Grafana - 대시보드 시각화 (Prometheus, Loki, Tempo 연동)"
     repoURL: https://grafana.github.io/helm-charts
     chart: grafana
-    version: "8.14.0"
+    version: "10.5.15"
     namespace: monitoring
     syncWave: "0"
     valueFiles:
@@ -283,7 +283,7 @@ ociCharts:
     description: "OpenTelemetry Collector - 메트릭/트레이스 수집 파이프라인"
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-collector
-    version: "0.147.1"
+    version: "0.150.0"
     namespace: monitoring
     syncWave: "1"
     valueFiles:
@@ -295,7 +295,7 @@ ociCharts:
     description: "KEDA - Kafka lag, Redis queue, Cron 기반 오토스케일링"
     repoURL: https://kedacore.github.io/charts
     chart: keda
-    version: "2.16.1"
+    version: "2.19.0"
     namespace: keda-system
     syncWave: "0"
     valueFiles:
@@ -468,7 +468,7 @@ gitCharts:
   # Kiali VirtualService & DestinationRule
   # Load Test Route (k6 부하테스트용)
   loadtest-route:
-    enabled: true
+    enabled: false
     description: "Load Test 라우팅 - /load-test/* -> loadtest-webs"
     path: ca-staging/charts/istio/loadtest-route
     namespace: istio-system
@@ -532,7 +532,7 @@ gitCharts:
 
   # RDS Backup CronJob (pg_dump -> S3)
   rds-backup:
-    enabled: true
+    enabled: false
     description: "RDS 백업 - pg_dump CronJob (S3 저장)"
     path: ca-staging/charts/data/rds-backup
     namespace: data
@@ -654,7 +654,7 @@ applicationSets:
 
   # Load-test 전용 서비스 (k6 부하 테스트용)
   loadtest-webs-services:
-    enabled: true
+    enabled: false
     syncWave: "15"
     namespace: loadtest-webs
     appNamePrefix: "loadtest"

@@ -43,3 +43,8 @@ tolerations:
   - key: role
     value: infra
     effect: NoSchedule
+
+# Prometheus 메트릭
+metrics:
+  serviceMonitor:
+    enabled: true
