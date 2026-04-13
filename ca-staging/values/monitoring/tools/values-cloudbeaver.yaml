@@ -55,7 +55,7 @@ resources:
     memory: 1536Mi
 
 persistence:
-  enabled: false  # emptyDir 사용 (EBS AZ 종속성 제거)
+  enabled: false # emptyDir 사용 (EBS AZ 종속성 제거)
 
 # Pod 시작 시 DB 연결 설정 자동 주입
 initialConfig:
@@ -112,9 +112,9 @@ initialConfig:
           "configuration": {
             "host": "clickhouse.data.svc.cluster.local",
             "port": "8123",
-            "database": "default",
-            "user-name": "default",
-            "url": "jdbc:clickhouse://clickhouse.data.svc.cluster.local:8123/default",
+            "database": "ai_defense",
+            "user-name": "ai_defense",
+            "url": "jdbc:clickhouse://clickhouse.data.svc.cluster.local:8123/ai_defense",
             "type": "dev"
           }
         }
