@@ -1,6 +1,0 @@
-apiVersion: v2
-name: cloudbeaver
-description: CloudBeaver - Web-based database management tool
-type: application
-version: 1.0.0
-appVersion: "24.0.0"

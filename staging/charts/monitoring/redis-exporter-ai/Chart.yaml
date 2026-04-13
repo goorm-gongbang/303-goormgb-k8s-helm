@@ -1,6 +1,0 @@
-apiVersion: v2
-name: redis-exporter-ai
-description: Redis Exporter for AI ElastiCache monitoring
-type: application
-version: 1.0.0
-appVersion: "1.66.0"
