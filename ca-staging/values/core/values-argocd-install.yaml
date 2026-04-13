@@ -90,6 +90,7 @@ configs:
     create: true
     url: https://argocd.staging.playball.one
     admin.enabled: "true"
+    server.allowedRedirectURLs: https://argocd.staging.playball.one
     oidc.config: |
       name: Google
       issuer: https://accounts.google.com
