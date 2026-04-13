@@ -237,18 +237,6 @@ ociCharts:
     valueFiles:
       - $values/ca-staging/values/infra/values-external-dns.yaml
 
-  alloy:
-    enabled: true
-    description: "Grafana Alloy - OTEL 수집기 (Faro RUM 등)"
-    repoURL: https://grafana.github.io/helm-charts
-    chart: alloy
-    version: "1.7.0"
-    namespace: monitoring
-    syncWave: "0"
-    valueFiles:
-      - $values/ca-staging/values/monitoring/logs/values-alloy.yaml
-
-
   tempo:
     enabled: true
     description: "Tempo - 분산 추적 저장소 (Jaeger/Zipkin 호환)"

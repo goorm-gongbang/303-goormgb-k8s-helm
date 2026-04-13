@@ -214,17 +214,6 @@ ociCharts:
     syncWave: "-9"
     valueFiles: []
 
-  alloy:
-    enabled: true  # Faro 프론트엔드 RUM 활성화
-    description: "Grafana Alloy - Faro RUM 수집"
-    repoURL: https://grafana.github.io/helm-charts
-    chart: alloy
-    version: "1.6.2"
-    namespace: monitoring
-    syncWave: "0"
-    valueFiles:
-      - $values/dev/values/monitoring/values-alloy.yaml
-
   k6-operator:
     enabled: false  # 필요시 활성화
     description: "k6 Operator - 부하테스트 (비활성화)"
