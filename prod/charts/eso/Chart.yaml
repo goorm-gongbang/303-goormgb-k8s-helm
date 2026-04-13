@@ -1,6 +1,0 @@
-apiVersion: v2
-name: eso-config
-description: ClusterSecretStore for EKS prod (IRSA-based)
-type: application
-version: 1.0.0
-appVersion: "1.0.0"
