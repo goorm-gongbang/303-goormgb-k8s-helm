@@ -10,37 +10,67 @@
   "panels": [
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
       "id": 100,
       "title": "Blacklist 차단 현황",
       "type": "row"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "블랙리스트에 의해 차단된 총 요청 수",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"color": "green", "value": null},
-              {"color": "yellow", "value": 100},
-              {"color": "red", "value": 500}
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
             ]
           },
           "unit": "short"
         }
       },
-      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 1},
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
       "id": 1,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "textMode": "auto"
       },
       "targets": [
@@ -54,31 +84,56 @@
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "현재 차단 속도 (요청/분)",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"color": "green", "value": null},
-              {"color": "yellow", "value": 5},
-              {"color": "red", "value": 20}
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 5
+              },
+              {
+                "color": "red",
+                "value": 20
+              }
             ]
           },
           "unit": "reqpm"
         }
       },
-      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 1},
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
       "id": 2,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "textMode": "auto"
       },
       "targets": [
@@ -92,29 +147,48 @@
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "블랙리스트 체크된 고유 IP 수",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"color": "blue", "value": null}
+              {
+                "color": "blue",
+                "value": null
+              }
             ]
           },
           "unit": "short"
         }
       },
-      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 1},
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
       "id": 3,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "textMode": "auto"
       },
       "targets": [
@@ -128,29 +202,48 @@
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "전체 차단 중 블랙리스트 비율",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "전체 차단 중 이전 판정 캐시로 즉시 차단된 비율 (높을수록 효율적)",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"color": "orange", "value": null}
+              {
+                "color": "orange",
+                "value": null
+              }
             ]
           },
           "unit": "percentunit"
         }
       },
-      "gridPos": {"h": 5, "w": 6, "x": 18, "y": 1},
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
       "id": 4,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "textMode": "auto"
       },
       "targets": [
@@ -161,15 +254,19 @@
         }
       ],
       "title": "캐시 히트 비율",
-      "description": "전체 차단 중 이전 판정 캐시로 즉시 차단된 비율 (높을수록 효율적)",
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "차단 사유별 추이 (blacklist / cdn_blocklist / bot_token / ai_defense)",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
@@ -184,21 +281,41 @@
             "lineWidth": 2,
             "pointSize": 5,
             "showPoints": "never",
-            "stacking": {"group": "A", "mode": "none"}
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [{"color": "green", "value": null}]
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
           },
           "unit": "reqps"
         }
       },
-      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 6},
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
       "id": 5,
       "options": {
-        "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
-        "tooltip": {"mode": "multi", "sort": "desc"}
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
       "targets": [
         {
@@ -226,24 +343,55 @@
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "어떤 이유로 차단됐는지 한눈에 보기",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false}
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
           },
           "mappings": []
         }
       },
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14},
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
       "id": 12,
       "options": {
-        "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]},
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
         "pieType": "donut",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "tooltip": {"mode": "single", "sort": "none"}
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "targets": [
         {
@@ -256,42 +404,157 @@
       "type": "piechart"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "차단 사유별 상세 현황 테이블",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
-          "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false},
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
           "mappings": [
-            {"options": {"blacklist": {"text": "Redis Blacklist (캐시)"}}, "type": "value"},
-            {"options": {"cdn_blocklist": {"text": "CDN Edge (Lambda)"}}, "type": "value"},
-            {"options": {"bot_token": {"text": "X-Bot-Token (score>=80)"}}, "type": "value"},
-            {"options": {"QUEUE_ENTER": {"text": "AI: 대기열 진입"}}, "type": "value"},
-            {"options": {"SEAT_ENTRY": {"text": "AI: 좌석 진입"}}, "type": "value"},
-            {"options": {"RECOMMENDATION_BLOCKS": {"text": "AI: 블록 추천"}}, "type": "value"},
-            {"options": {"SECTION_BLOCKS": {"text": "AI: 섹션 블록"}}, "type": "value"},
-            {"options": {"ASSIGN_HOLD": {"text": "AI: 좌석 배정/홀드"}}, "type": "value"},
-            {"options": {"SEAT_HOLDS": {"text": "AI: 좌석 홀드"}}, "type": "value"}
+            {
+              "options": {
+                "blacklist": {
+                  "text": "Redis Blacklist (캐시)"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "cdn_blocklist": {
+                  "text": "CDN Edge (Lambda)"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "bot_token": {
+                  "text": "X-Bot-Token (score>=80)"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "QUEUE_ENTER": {
+                  "text": "AI: 대기열 진입"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "SEAT_ENTRY": {
+                  "text": "AI: 좌석 진입"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "RECOMMENDATION_BLOCKS": {
+                  "text": "AI: 블록 추천"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "SECTION_BLOCKS": {
+                  "text": "AI: 섹션 블록"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "ASSIGN_HOLD": {
+                  "text": "AI: 좌석 배정/홀드"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "SEAT_HOLDS": {
+                  "text": "AI: 좌석 홀드"
+                }
+              },
+              "type": "value"
+            }
           ],
           "thresholds": {
             "mode": "absolute",
-            "steps": [{"color": "green", "value": null}, {"color": "red", "value": 10}]
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
           }
         },
         "overrides": [
           {
-            "matcher": {"id": "byName", "options": "Value"},
-            "properties": [{"id": "custom.cellOptions", "value": {"mode": "gradient", "type": "gauge"}}, {"id": "min", "value": 0}]
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "min",
+                "value": 0
+              }
+            ]
           }
         ]
       },
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14},
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
       "id": 13,
       "options": {
         "cellHeight": "sm",
-        "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false},
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
-        "sortBy": [{"desc": true, "displayName": "Value"}]
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Value"
+          }
+        ]
       },
       "targets": [
         {
@@ -303,44 +566,132 @@
       ],
       "title": "차단 사유별 현황",
       "transformations": [
-        {"id": "organize", "options": {"excludeByName": {"Time": true}, "renameByName": {"reason": "차단 사유", "Value": "차단 수"}}}
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "reason": "차단 사유",
+              "Value": "차단 수"
+            }
+          }
+        }
       ],
       "type": "table"
     },
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 22},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
       "id": 103,
       "title": "Blacklist IP 목록",
       "type": "row"
     },
     {
-      "datasource": {"type": "loki", "uid": "loki"},
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
       "description": "블랙리스트에 추가된 IP와 사유",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
-          "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false},
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
           "mappings": [],
-          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          }
         },
         "overrides": [
-          {"matcher": {"id": "byName", "options": "Count"}, "properties": [{"id": "custom.width", "value": 80}]},
-          {"matcher": {"id": "byName", "options": "IP"}, "properties": [{"id": "custom.width", "value": 150}]},
-          {"matcher": {"id": "byName", "options": "Reason"}, "properties": [{"id": "custom.width", "value": 200}]}
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Count"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Reason"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          }
         ]
       },
-      "gridPos": {"h": 10, "w": 12, "x": 0, "y": 23},
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 23
+      },
       "id": 10,
       "options": {
         "cellHeight": "sm",
-        "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false},
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
-        "sortBy": [{"desc": true, "displayName": "Count"}]
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Count"
+          }
+        ]
       },
       "targets": [
         {
-          "datasource": {"type": "loki", "uid": "loki"},
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
           "editorMode": "code",
           "expr": "sum by (ip, reason) (count_over_time({namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"IP added to blacklist\" | json | __error__=\"\" [$__range]))",
           "legendFormat": "",
@@ -350,16 +701,49 @@
       ],
       "title": "Blacklist 추가된 IP 목록",
       "transformations": [
-        {"id": "sortBy", "options": {"fields": {}, "sort": [{"desc": true, "field": "Value"}]}},
-        {"id": "limit", "options": {"limitField": 20}},
-        {"id": "organize", "options": {"renameByName": {"ip": "IP", "reason": "Reason", "Value": "Count"}}}
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Value"
+              }
+            ]
+          }
+        },
+        {
+          "id": "limit",
+          "options": {
+            "limitField": 20
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "ip": "IP",
+              "reason": "Reason",
+              "Value": "Count"
+            }
+          }
+        }
       ],
       "type": "table"
     },
     {
-      "datasource": {"type": "loki", "uid": "loki"},
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
       "description": "블랙리스트 추가 상세 로그 (IP, reason, TTL)",
-      "gridPos": {"h": 10, "w": 12, "x": 12, "y": 23},
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 23
+      },
       "id": 11,
       "options": {
         "dedupStrategy": "none",
@@ -373,7 +757,10 @@
       },
       "targets": [
         {
-          "datasource": {"type": "loki", "uid": "loki"},
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
           "editorMode": "code",
           "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"IP added to blacklist\" | json | line_format \"[{{.source}}] IP: {{.ip}} | Reason: {{.reason}} | Category: {{.category}} | Rule: {{.rule}} | Path: {{.path}} | Matched: {{.matched}}\"",
           "queryType": "range",
@@ -385,31 +772,67 @@
     },
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 33},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 33
+      },
       "id": 102,
       "title": "경로별 분석",
       "type": "row"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "블랙리스트에 의해 차단된 요청의 경로별 분포",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false}
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
           },
           "mappings": []
         },
         "overrides": []
       },
-      "gridPos": {"h": 12, "w": 12, "x": 0, "y": 34},
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 0,
+        "y": 34
+      },
       "id": 7,
       "options": {
-        "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]},
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
         "pieType": "pie",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "tooltip": {"mode": "single", "sort": "none"}
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "targets": [
         {
@@ -422,32 +845,80 @@
       "type": "piechart"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "경로별 차단 현황 테이블 - 사유 포함",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
-          "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false},
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [{"color": "green", "value": null}]
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
           }
         },
         "overrides": [
           {
-            "matcher": {"id": "byName", "options": "Blocked"},
-            "properties": [{"id": "custom.cellOptions", "value": {"mode": "gradient", "type": "gauge"}}, {"id": "min", "value": 0}]
+            "matcher": {
+              "id": "byName",
+              "options": "Blocked"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "min",
+                "value": 0
+              }
+            ]
           }
         ]
       },
-      "gridPos": {"h": 12, "w": 12, "x": 12, "y": 34},
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 12,
+        "y": 34
+      },
       "id": 8,
       "options": {
         "cellHeight": "sm",
-        "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false},
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
-        "sortBy": [{"desc": true, "displayName": "Blocked"}]
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Blocked"
+          }
+        ]
       },
       "targets": [
         {
@@ -460,21 +931,47 @@
       ],
       "title": "경로별 차단 현황 (Top 20)",
       "transformations": [
-        {"id": "organize", "options": {"excludeByName": {"Time": true}, "renameByName": {"method": "Method", "path": "Path", "reason": "Reason", "Value": "Blocked"}}}
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "method": "Method",
+              "path": "Path",
+              "reason": "Reason",
+              "Value": "Blocked"
+            }
+          }
+        }
       ],
       "type": "table"
     },
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 46},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 46
+      },
       "id": 101,
       "title": "차단 로그",
       "type": "row"
     },
     {
-      "datasource": {"type": "loki", "uid": "loki"},
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
       "description": "블랙리스트 차단 로그 스트림 (reason 포함)",
-      "gridPos": {"h": 24, "w": 24, "x": 0, "y": 47},
+      "gridPos": {
+        "h": 24,
+        "w": 24,
+        "x": 0,
+        "y": 47
+      },
       "id": 6,
       "options": {
         "dedupStrategy": "none",
@@ -488,7 +985,10 @@
       },
       "targets": [
         {
-          "datasource": {"type": "loki", "uid": "loki"},
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
           "editorMode": "code",
           "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"blacklist\" | json | line_format \"[{{.level}}] {{.client_ip}} | {{.msg}} | path={{.path}} | reason={{.reason}}\"",
           "queryType": "range",
@@ -497,103 +997,23 @@
       ],
       "title": "차단 로그 (reason 포함)",
       "type": "logs"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 71},
-      "id": 200,
-      "title": "WAF 직접 차단 (Lua) — 등록 단계",
-      "description": "Istio WAF Lua 필터가 탐지 → adapter에 등록한 케이스. ext_authz 차단(위 섹션)과는 다른 단계.",
-      "type": "row"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "WAF가 등록한 IP 총수 (선택 기간)",
-      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 72},
-      "id": 201,
-      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto", "colorMode": "value", "graphMode": "area"},
-      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}, "unit": "short"}},
-      "targets": [
-        {"expr": "sum(increase(authz_adapter_blacklist_added_total{source=\"waf\", result=\"added\"}[$__range])) or vector(0)", "refId": "A"}
-      ],
-      "title": "WAF 등록 IP (총)",
-      "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "Whitelist라서 등록 안 된 케이스",
-      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 72},
-      "id": 202,
-      "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "textMode": "auto", "colorMode": "value"},
-      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}]}, "unit": "short"}},
-      "targets": [
-        {"expr": "sum(increase(authz_adapter_blacklist_added_total{source=\"waf\", result=\"skipped_whitelist\"}[$__range])) or vector(0)", "refId": "A"}
-      ],
-      "title": "Whitelist 스킵",
-      "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "등록 실패 (adapter→Redis 에러)",
-      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 72},
-      "id": 203,
-      "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "textMode": "auto", "colorMode": "value"},
-      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}, "unit": "short"}},
-      "targets": [
-        {"expr": "sum(increase(authz_adapter_blacklist_added_total{source=\"waf\", result=\"error\"}[$__range])) or vector(0)", "refId": "A"}
-      ],
-      "title": "등록 에러",
-      "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "카테고리별 등록 추이",
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 76},
-      "id": 204,
-      "fieldConfig": {"defaults": {"unit": "short", "custom": {"drawStyle": "line", "fillOpacity": 10, "lineWidth": 2}}},
-      "options": {"legend": {"displayMode": "table", "placement": "right", "calcs": ["sum"]}, "tooltip": {"mode": "multi"}},
-      "targets": [
-        {"expr": "sum by (category) (rate(authz_adapter_blacklist_added_total{source=\"waf\", result=\"added\"}[$__rate_interval]))", "legendFormat": "{{category}}", "refId": "A"}
-      ],
-      "title": "카테고리별 등록 추이",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "룰별 등록 Top 20",
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 76},
-      "id": 205,
-      "options": {"showHeader": true, "sortBy": [{"desc": true, "displayName": "Added"}]},
-      "fieldConfig": {"defaults": {"custom": {"align": "left"}}, "overrides": [{"matcher": {"id": "byName", "options": "Value"}, "properties": [{"id": "displayName", "value": "Added"}, {"id": "custom.cellOptions", "value": {"mode": "gradient", "type": "gauge"}}]}]},
-      "targets": [
-        {"expr": "topk(20, sum by (category, rule) (increase(authz_adapter_blacklist_added_total{source=\"waf\", result=\"added\"}[$__range])))", "format": "table", "instant": true, "refId": "A"}
-      ],
-      "title": "룰별 등록 Top 20",
-      "transformations": [
-        {"id": "organize", "options": {"excludeByName": {"Time": true}, "renameByName": {"category": "Category", "rule": "Rule"}}}
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": {"type": "loki", "uid": "loki"},
-      "description": "WAF 등록 상세 로그 (어떤 IP가 무슨 페이로드 쏘다 걸렸는지)",
-      "gridPos": {"h": 12, "w": 24, "x": 0, "y": 84},
-      "id": 206,
-      "options": {"dedupStrategy": "none", "enableLogDetails": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true},
-      "targets": [
-        {"datasource": {"type": "loki", "uid": "loki"}, "expr": "{namespace=\"staging-ai\", app=\"staging-authz-adapter\"} |= \"IP added to blacklist (auto)\" | json | line_format \"[{{.source}}] {{.ip}} | {{.category}}/{{.rule}} | path={{.path}} | matched={{.matched}}\"", "queryType": "range", "refId": "A"}
-      ],
-      "title": "WAF 등록 상세 로그",
-      "type": "logs"
     }
   ],
   "refresh": "30s",
   "schemaVersion": 40,
-  "tags": ["waf", "blacklist", "security"],
+  "tags": [
+    "waf",
+    "blacklist",
+    "security"
+  ],
   "templating": {
     "list": [
       {
-        "current": {"selected": true, "text": "전체", "value": ".*"},
+        "current": {
+          "selected": true,
+          "text": "전체",
+          "value": ".*"
+        },
         "description": "차단 단계 필터링",
         "hide": 0,
         "includeAll": false,
@@ -601,18 +1021,46 @@
         "multi": false,
         "name": "block_stage",
         "options": [
-          {"selected": true, "text": "전체", "value": ".*"},
-          {"selected": false, "text": "캐시 히트 (이전 판정 재차단)", "value": "blacklist"},
-          {"selected": false, "text": "CDN Blocklist (Lambda)", "value": "cdn_blocklist"},
-          {"selected": false, "text": "X-Bot-Token (위조/변조)", "value": "bot_token"},
-          {"selected": false, "text": "Bot Fingerprint (다중IP/반복)", "value": "bot_fingerprint_multi_ip|bot_fingerprint_headless"},
-          {"selected": false, "text": "AI Defense (정책 판정)", "value": "QUEUE_ENTER|SEAT_ENTRY|RECOMMENDATION_BLOCKS|SECTION_BLOCKS|ASSIGN_HOLD|SEAT_HOLDS"}
+          {
+            "selected": true,
+            "text": "전체",
+            "value": ".*"
+          },
+          {
+            "selected": false,
+            "text": "캐시 히트 (이전 판정 재차단)",
+            "value": "blacklist"
+          },
+          {
+            "selected": false,
+            "text": "CDN Blocklist (Lambda)",
+            "value": "cdn_blocklist"
+          },
+          {
+            "selected": false,
+            "text": "X-Bot-Token (위조/변조)",
+            "value": "bot_token"
+          },
+          {
+            "selected": false,
+            "text": "Bot Fingerprint (다중IP/반복)",
+            "value": "bot_fingerprint_multi_ip|bot_fingerprint_headless"
+          },
+          {
+            "selected": false,
+            "text": "AI Defense (정책 판정)",
+            "value": "QUEUE_ENTER|SEAT_ENTRY|RECOMMENDATION_BLOCKS|SECTION_BLOCKS|ASSIGN_HOLD|SEAT_HOLDS"
+          }
         ],
         "query": "전체 : .*,캐시 히트 (이전 판정 재차단) : blacklist,CDN Blocklist (Lambda) : cdn_blocklist,X-Bot-Token (위조/변조) : bot_token,Bot Fingerprint (다중IP/반복) : bot_fingerprint_multi_ip|bot_fingerprint_headless,AI Defense (정책 판정) : QUEUE_ENTER|SEAT_ENTRY|RECOMMENDATION_BLOCKS|SECTION_BLOCKS|ASSIGN_HOLD|SEAT_HOLDS",
         "type": "custom"
       },
       {
-        "current": {"selected": true, "text": "전체", "value": ".*"},
+        "current": {
+          "selected": true,
+          "text": "전체",
+          "value": ".*"
+        },
         "description": "차단된 경로 필터링",
         "hide": 0,
         "includeAll": false,
@@ -620,18 +1068,41 @@
         "multi": false,
         "name": "path_filter",
         "options": [
-          {"selected": true, "text": "전체", "value": ".*"},
-          {"selected": false, "text": "/queue/*", "value": "/queue/.*"},
-          {"selected": false, "text": "/seat/*", "value": "/seat/.*"},
-          {"selected": false, "text": "/order/*", "value": "/order/.*"},
-          {"selected": false, "text": "/auth/*", "value": "/auth/.*"}
+          {
+            "selected": true,
+            "text": "전체",
+            "value": ".*"
+          },
+          {
+            "selected": false,
+            "text": "/queue/*",
+            "value": "/queue/.*"
+          },
+          {
+            "selected": false,
+            "text": "/seat/*",
+            "value": "/seat/.*"
+          },
+          {
+            "selected": false,
+            "text": "/order/*",
+            "value": "/order/.*"
+          },
+          {
+            "selected": false,
+            "text": "/auth/*",
+            "value": "/auth/.*"
+          }
         ],
         "query": "전체 : .*,/queue/* : /queue/.*,/seat/* : /seat/.*,/order/* : /order/.*,/auth/* : /auth/.*",
         "type": "custom"
       }
     ]
   },
-  "time": {"from": "now-1h", "to": "now"},
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
   "timepicker": {},
   "timezone": "browser",
   "title": "[WAF] IP Blacklist 모니터링 (ext_authz)",
