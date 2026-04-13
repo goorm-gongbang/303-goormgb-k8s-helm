@@ -25,7 +25,8 @@ upstreams:
 # ESO - AWS Secrets Manager에서 OAuth credentials + 이메일 목록 가져옴
 eso:
   enabled: true
-  secretKey: dev/infra/oauth/swagger
+  secretKey: dev/infra
+  propertyPrefix: "oauth_swagger_"
 
 resources:
   requests:

@@ -4,7 +4,8 @@ alertmanager:
   discord:
     eso:
       enabled: true
-      secretManagerKey: "dev/monitoring/discord-webhook-alerts"
+      secretManagerKey: "dev/infra"
+      propertyPrefix: "monitoring_discord-webhook-alerts_"
   alertmanagerSpec:
     secrets:
       - alertmanager-discord-webhooks

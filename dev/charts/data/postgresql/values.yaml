@@ -33,7 +33,7 @@ databases:
 externalSecret:
   enabled: true
   secretStore: aws-secrets-manager
-  remoteRef: dev/services/db
+  remoteRef: dev/services
 
 persistence:
   enabled: true
@@ -57,7 +57,7 @@ backup:
   s3Bucket: goormgb-backup
   s3Prefix: dev/postgres
   externalSecret:
-    remoteRef: dev/infra/s3-backup
+    remoteRef: dev/infra
 
 nodeSelector:
   kubernetes.io/hostname: mini-gmk
