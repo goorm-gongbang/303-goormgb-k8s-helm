@@ -70,7 +70,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -85,7 +85,8 @@
           },
           "expr": "sum(count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` [$__range]))",
           "legendFormat": "Blocked",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "차단된 요청",
@@ -130,7 +131,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -145,7 +146,8 @@
           },
           "expr": "sum(count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":false` [$__range]))",
           "legendFormat": "Allowed",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "허용된 요청",

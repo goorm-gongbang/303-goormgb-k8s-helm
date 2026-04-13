@@ -55,14 +55,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_auth_attempts_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "인증 시도",
@@ -103,14 +104,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_auth_success_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "인증 성공",
@@ -211,14 +213,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_auth_user_blocked_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "차단된 사용자",
@@ -276,14 +279,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_queue_entries_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "대기열 진입",
@@ -328,14 +332,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_queue_abandoned_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "대기열 이탈",
@@ -443,14 +448,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_seat_recommend_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "추천 요청",
@@ -491,14 +497,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_seat_recommend_success_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "추천 성공",
@@ -539,14 +546,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_seat_hold_attempt_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "Hold 시도",
@@ -587,14 +595,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_seat_hold_success_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "Hold 성공",
@@ -639,14 +648,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_seat_hold_fail_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "Hold 실패",
@@ -687,14 +697,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_seat_hold_expired_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "Hold 만료",
@@ -818,14 +829,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_order_draft_enter_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "주문 진입",
@@ -866,14 +878,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_payment_success_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "결제 성공",
@@ -918,14 +931,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_payment_fail_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "결제 실패",
@@ -1114,14 +1128,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_security_macro_detected_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "매크로/봇 탐지",
@@ -1169,14 +1184,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_security_blocked_ip_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "차단된 IP",
@@ -1217,14 +1233,15 @@
         "graphMode": "area",
         "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ]
         }
       },
       "targets": [
         {
           "expr": "sum(increase(ticketing_seat_recommend_fallback_total[$__range])) or vector(0)",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "추천 Fallback",
