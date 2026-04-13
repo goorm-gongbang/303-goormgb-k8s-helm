@@ -40,7 +40,7 @@ dashboards:
   infraTeam:
     folderName: "STAGING 플랫폼 관측(인프라)"
     k6FolderName: "STAGING 부하 테스트(k6)"
-    wafFolderName: "STAGING WAF 모니터링"
+    wafFolderName: "STAGING 보안 모니터링"
     cicdFolderName: "STAGING CICD 모니터링"
     cdnFolderName: "STAGING CDN 실시간 통계"
     exclude:

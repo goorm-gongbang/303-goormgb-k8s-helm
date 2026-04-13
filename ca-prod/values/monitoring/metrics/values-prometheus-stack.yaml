@@ -35,7 +35,7 @@ dashboards:
     folderName: "PROD 플랫폼 관측(인프라)"
     k6Enabled: false
     k6FolderName: "PROD 부하 테스트(k6)"
-    wafFolderName: "PROD WAF 모니터링"
+    wafFolderName: "PROD 보안 모니터링"
     cicdFolderName: "PROD CICD 모니터링"
     cdnFolderName: "PROD CDN 실시간 통계"
     exclude:
