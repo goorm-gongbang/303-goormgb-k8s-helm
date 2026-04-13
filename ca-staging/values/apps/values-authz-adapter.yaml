@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/ai/authz-adapter"
-  tag: "57f49db.9"
+  tag: "f8aab5c.10"
   pullPolicy: Always
 
 # EKS 노드 IAM Role이 ECR 접근 권한 보유 - imagePullSecrets 불필요
