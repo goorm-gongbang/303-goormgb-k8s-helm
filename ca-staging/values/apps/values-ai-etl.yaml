@@ -33,7 +33,7 @@ env:
         name: ai-service-config
         key: AI_REDIS_PORT
   - name: TM_REDIS_URL
-    value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+    value: "rediss://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   # ETL 처리 완료 기록 TTL (30일)
   - name: TM_ETL_PROCESSED_LEDGER_TTL_SECONDS
     value: "2592000"
@@ -64,7 +64,7 @@ env:
         name: ai-service-config
         key: AI_PG_DBNAME
   - name: TM_PG_URL
-    value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)"
+    value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)?sslmode=require"
   # ClickHouse
   - name: AI_CLICKHOUSE_USER
     valueFrom:

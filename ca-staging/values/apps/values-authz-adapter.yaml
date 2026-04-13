@@ -43,6 +43,8 @@ authzAdapter:
 env:
   - name: REDIS_BLACKLIST_ENABLED
     value: "true"
+  - name: REDIS_TLS_ENABLED
+    value: "true"
   - name: REDIS_HOST
     valueFrom:
       secretKeyRef:

@@ -61,7 +61,7 @@ env:
         name: ai-service-config
         key: AI_PG_DBNAME
   - name: TM_PG_URL
-    value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)"
+    value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)?sslmode=require"
 
 # Graviton (ARM64) 노드에 배치
 nodeSelector:

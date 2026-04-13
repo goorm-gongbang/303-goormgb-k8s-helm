@@ -57,7 +57,7 @@ env:
         key: AI_REDIS_PORT
   # 런타임 캐시용 Redis URL (동적 파싱)
   - name: TM_REDIS_URL
-    value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+    value: "rediss://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   # CORS 허용 Origin (Frontend)
   - name: TM_CORS_ALLOW_ORIGINS
     value: "https://playball.one"
@@ -91,7 +91,7 @@ env:
         name: ai-service-config
         key: AI_PG_DBNAME
   - name: TM_PG_URL
-    value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)"
+    value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)?sslmode=require"
   # Policy projection staleness 체크 완화 (reconciler 미구현 — 추후 코드 수정 후 제거)
   - name: TM_POLICY_PROJECTION_MAX_STALENESS_MS
     value: "2678400000"
