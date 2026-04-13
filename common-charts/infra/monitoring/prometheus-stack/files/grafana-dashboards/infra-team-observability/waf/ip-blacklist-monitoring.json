@@ -155,12 +155,13 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(authz_adapter_check_requests_total{reason=~\"$block_stage\", action=\"block\", path=~\"$path_filter\"}[$__range])) / (sum(increase(authz_adapter_check_requests_total{action=\"block\", path=~\"$path_filter\"}[$__range])) + 0.001) or vector(0)",
-          "legendFormat": "Blacklist Ratio",
+          "expr": "sum(increase(authz_adapter_check_requests_total{reason=\"blacklist\", action=\"block\"}[$__range])) / (sum(increase(authz_adapter_check_requests_total{action=\"block\"}[$__range])) + 0.001) or vector(0)",
+          "legendFormat": "Cache Hit Ratio",
           "refId": "A"
         }
       ],
-      "title": "블랙리스트 차단 비율",
+      "title": "캐시 히트 비율",
+      "description": "전체 차단 중 이전 판정 캐시로 즉시 차단된 비율 (높을수록 효율적)",
       "type": "stat"
     },
     {
@@ -473,7 +474,7 @@
     {
       "datasource": {"type": "loki", "uid": "loki"},
       "description": "블랙리스트 차단 로그 스트림 (reason 포함)",
-      "gridPos": {"h": 16, "w": 24, "x": 0, "y": 47},
+      "gridPos": {"h": 48, "w": 24, "x": 0, "y": 47},
       "id": 6,
       "options": {
         "dedupStrategy": "none",
@@ -513,13 +514,13 @@
         "name": "block_stage",
         "options": [
           {"selected": true, "text": "전체", "value": ".*"},
-          {"selected": false, "text": "IP Blacklist (Redis 캐시)", "value": "blacklist"},
+          {"selected": false, "text": "캐시 히트 (이전 판정 재차단)", "value": "blacklist"},
           {"selected": false, "text": "CDN Blocklist (Lambda)", "value": "cdn_blocklist"},
           {"selected": false, "text": "X-Bot-Token (위조/변조)", "value": "bot_token"},
           {"selected": false, "text": "Bot Fingerprint (다중IP/반복)", "value": "bot_fingerprint_multi_ip|bot_fingerprint_headless"},
           {"selected": false, "text": "AI Defense (정책 판정)", "value": "QUEUE_ENTER|SEAT_ENTRY|RECOMMENDATION_BLOCKS|SECTION_BLOCKS|ASSIGN_HOLD|SEAT_HOLDS"}
         ],
-        "query": "",
+        "query": "전체 : .*,캐시 히트 (이전 판정 재차단) : blacklist,CDN Blocklist (Lambda) : cdn_blocklist,X-Bot-Token (위조/변조) : bot_token,Bot Fingerprint (다중IP/반복) : bot_fingerprint_multi_ip|bot_fingerprint_headless,AI Defense (정책 판정) : QUEUE_ENTER|SEAT_ENTRY|RECOMMENDATION_BLOCKS|SECTION_BLOCKS|ASSIGN_HOLD|SEAT_HOLDS",
         "type": "custom"
       },
       {
@@ -537,7 +538,7 @@
           {"selected": false, "text": "/order/*", "value": "/order/.*"},
           {"selected": false, "text": "/auth/*", "value": "/auth/.*"}
         ],
-        "query": "",
+        "query": "전체 : .*,/queue/* : /queue/.*,/seat/* : /seat/.*,/order/* : /order/.*,/auth/* : /auth/.*",
         "type": "custom"
       }
     ]
@@ -545,7 +546,7 @@
   "time": {"from": "now-1h", "to": "now"},
   "timepicker": {},
   "timezone": "browser",
-  "title": "[WAF] IP Blacklist 모니터링",
+  "title": "[WAF] IP Blacklist 모니터링 (ext_authz)",
   "uid": "waf-ip-blacklist",
   "version": 2
 }
