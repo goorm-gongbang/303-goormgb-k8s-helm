@@ -506,6 +506,7 @@ adminTools:
       - "182.221.197.174"
       - "118.221.42.243"
       - "121.175.144.99"
+      - "203.251.185.110"
     # IP 제한 적용 대상 호스트
     protectedHosts:
       - "argocd.staging.playball.one"
