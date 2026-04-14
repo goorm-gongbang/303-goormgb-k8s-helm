@@ -278,7 +278,7 @@
     },
     {
       "id": 6,
-      "title": "CPU 사용량 (service별, istio-proxy 제외)",
+      "title": "CPU 사용량 (service별)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -305,30 +305,10 @@
         "defaults": {
           "unit": "short",
           "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 1.6
-              },
-              {
-                "color": "red",
-                "value": 1.9
-              }
-            ]
-          },
           "custom": {
             "drawStyle": "line",
             "lineWidth": 2,
-            "fillOpacity": 10,
-            "thresholdsStyle": {
-              "mode": "line"
-            }
+            "fillOpacity": 10
           },
           "links": [
             {
@@ -339,7 +319,7 @@
           ]
         }
       },
-      "description": "**컨테이너 CPU 실사용량** (java-service 만, istio-proxy 제외).\n\n- limit 은 **대시보드 thresholds 선**으로 표시 (기본 2 core).\n- 사용량이 이 선에 붙으면 throttle 중 → 'CPU throttled %' 패널 확인."
+      "description": "**컨테이너 CPU 실사용량** (java-service 만, istio-proxy 제외).\n\n값이 2 근처에서 flat 이면 limit 에 붙어 throttle 중 — 'CPU throttled %' 패널 확인."
     },
     {
       "id": 7,
