@@ -105,7 +105,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) by (destination_workload, response_code)",
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", response_code!=\"0\"}[1m])) by (destination_workload, response_code)",
           "legendFormat": "{{destination_workload}} [{{response_code}}]",
           "refId": "A",
           "datasource": {
@@ -464,7 +464,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) by (destination_workload, response_code)",
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", response_code!=\"0\"}[1m])) by (destination_workload, response_code)",
           "legendFormat": "{{destination_workload}} [{{response_code}}]",
           "refId": "A",
           "datasource": {
@@ -947,11 +947,11 @@
     },
     {
       "id": 703,
-      "title": "Redis (ElastiCache) 캐시 hit rate",
+      "title": "Redis 캐시 hit rate (%)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
-        "w": 24,
+        "w": 12,
         "x": 0,
         "y": 81
       },
@@ -959,7 +959,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "**Redis 서버 전체의 조회 적중률**.\n\n- `hits / (hits + misses) * 100`\n- 90% 이상 = 캐시 효과 좋음\n- 낮으면 앱이 Redis 를 write-only 로 쓰거나 TTL 너무 짧음",
+      "description": "**Redis 서버 적중률** (%)\n\n- hits ÷ (hits + misses) × 100\n- 90% 이상이면 캐시 효과 좋음\n- 낮으면 TTL 짧음 / write-only 패턴 / key 전략 재검토",
       "targets": [
         {
           "refId": "A",
@@ -968,10 +968,35 @@
             "uid": "prometheus"
           },
           "expr": "100 * sum(rate(redis_keyspace_hits_total[1m])) by (instance) / (sum(rate(redis_keyspace_hits_total[1m])) by (instance) + sum(rate(redis_keyspace_misses_total[1m])) by (instance))",
-          "legendFormat": "{{instance}} hit rate"
-        },
+          "legendFormat": "{{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": 704,
+      "title": "Redis hits/misses 초당",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 81
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Redis 의 초당 hit / miss 횟수. hit rate 패널이 비율, 이 패널이 절대량.",
+      "targets": [
         {
-          "refId": "B",
+          "refId": "A",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
@@ -980,7 +1005,7 @@
           "legendFormat": "{{instance}} hits/s"
         },
         {
-          "refId": "C",
+          "refId": "B",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
