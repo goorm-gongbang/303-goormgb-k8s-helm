@@ -608,6 +608,17 @@ gitCharts:
     valueFiles:
       - ../../../../ca-staging/values/messaging/values-kafka-ui.yaml
 
+  kafka-exporter:
+    enabled: true
+    description: "Kafka Exporter - consumer group lag 등 Prometheus 메트릭"
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus-kafka-exporter
+    version: "2.11.0"
+    namespace: messaging
+    syncWave: "1"
+    valueFiles:
+      - $values/ca-staging/values/messaging/values-kafka-exporter.yaml
+
 # =============================================================================
 # ApplicationSets
 # =============================================================================
