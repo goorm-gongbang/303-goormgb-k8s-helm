@@ -20,7 +20,18 @@ spec:
         any:
           - resources:
               kinds:
-                - "*"
+                - Pod
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+                - Service
+                - Ingress
+                - ConfigMap
+                - Secret
+                - CustomResourceDefinition
+                - Namespace
               namespaces:
                 {{- range .Values.criticalNamespaces }}
                 - {{ . }}
