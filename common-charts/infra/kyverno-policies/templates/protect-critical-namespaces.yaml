@@ -30,11 +30,11 @@ spec:
                 name: argocd-application-controller
                 namespace: argocd
       validate:
-        message: "핵심 네임스페이스({{ request.namespace }})의 리소스는 ArgoCD를 통해서만 수정/삭제할 수 있습니다."
+        message: "핵심 네임스페이스({{ "{{ request.namespace }}" }})의 리소스는 ArgoCD를 통해서만 수정/삭제할 수 있습니다."
         deny:
           conditions:
             all:
-              - key: "{{ request.operation }}"
+              - key: "{{ "{{ request.operation }}" }}"
                 operator: In
                 value:
                   - UPDATE
