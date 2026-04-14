@@ -153,6 +153,17 @@ ociCharts:
     syncWave: "1"
     valueFiles:
       - $values/ca-staging/values/messaging/values-kafka-exporter.yaml
+
+  redis-exporter:
+    enabled: true
+    description: "Redis Exporter - ElastiCache 서버 메트릭 (latency, ops, memory)"
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus-redis-exporter
+    version: "6.10.0"
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - $values/ca-staging/values/monitoring/values-redis-exporter.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
