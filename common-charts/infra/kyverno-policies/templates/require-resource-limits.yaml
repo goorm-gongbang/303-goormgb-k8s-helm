@@ -13,7 +13,7 @@ metadata:
       모든 컨테이너에 CPU 및 메모리 limits가 설정되어 있는지 확인합니다.
 spec:
   validationFailureAction: {{ .Values.validationAction | default "Audit" }}
-  background: true
+  background: false
   rules:
     - name: check-resource-limits
       match:
@@ -21,8 +21,6 @@ spec:
           - resources:
               kinds:
                 - Pod
-              operations:
-                - CREATE
       exclude:
         any:
           - resources:
@@ -31,17 +29,18 @@ spec:
                 - {{ . }}
                 {{- end }}
       validate:
+        message: "모든 컨테이너(containers 및 initContainers)에 CPU 및 메모리 limits가 설정되어 있어야 합니다."
         foreach:
           - list: "request.object.spec.containers"
             pattern:
               resources:
                 limits:
+                  cpu: "*"
                   memory: "*"
-            message: "컨테이너에 메모리 limits가 필요합니다."
-          - list: "request.object.spec.containers"
+          - list: "request.object.spec.initContainers"
             pattern:
               resources:
                 limits:
                   cpu: "*"
-            message: "컨테이너에 CPU limits가 필요합니다."
+                  memory: "*"
 {{- end }}

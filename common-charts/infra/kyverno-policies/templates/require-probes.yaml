@@ -13,7 +13,7 @@ metadata:
       모든 컨테이너에 readinessProbe와 livenessProbe가 설정되어 있는지 확인합니다.
 spec:
   validationFailureAction: {{ .Values.validationAction | default "Audit" }}
-  background: true
+  background: false
   rules:
     - name: check-probes
       match:
@@ -21,8 +21,6 @@ spec:
           - resources:
               kinds:
                 - Pod
-              operations:
-                - CREATE
       exclude:
         any:
           - resources:
@@ -31,13 +29,14 @@ spec:
                 - {{ . }}
                 {{- end }}
       validate:
+        message: "컨테이너에 readinessProbe 및 livenessProbe가 필요합니다."
         foreach:
           - list: "request.object.spec.containers"
             pattern:
               readinessProbe: "*"
-            message: "컨테이너에 readinessProbe가 필요합니다."
-          - list: "request.object.spec.containers"
-            pattern:
               livenessProbe: "*"
-            message: "컨테이너에 livenessProbe가 필요합니다."
+          - list: "request.object.spec.initContainers"
+            pattern:
+              readinessProbe: "*"
+              livenessProbe: "*"
 {{- end }}
