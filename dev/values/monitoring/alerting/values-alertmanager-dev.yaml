@@ -23,7 +23,7 @@ alertmanager:
       routes:
         - match:
             alertname: DevHttp5xxDetected
-          receiver: 'discord-critical'
+          receiver: 'discord-warning'
           repeat_interval: 30m
         - match:
             environment: dev
@@ -88,7 +88,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/warning-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.goormgb.space/d/dLsDQIUnzb'
+            title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -123,7 +123,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/info-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc'
+            title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -183,7 +183,7 @@ kube-prometheus-stack:
           # Dev 운영 정책: 5xx는 기존 규칙 유지, 그 외 알람은 환경/심각도 기준 라우팅
           - match:
               alertname: DevHttp5xxDetected
-            receiver: 'discord-critical'
+            receiver: 'discord-warning'
             repeat_interval: 30m
           - match:
               environment: dev
@@ -249,7 +249,7 @@ kube-prometheus-stack:
           slack_configs:
             - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/warning-webhook-url'
               send_resolved: true
-              title_link: 'https://grafana.goormgb.space/d/dLsDQIUnzb'
+              title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
               title: |-
                 {{- $incidentId := "" -}}
                 {{- range .Alerts -}}
@@ -285,7 +285,7 @@ kube-prometheus-stack:
           slack_configs:
             - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/info-webhook-url'
               send_resolved: true
-              title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc'
+              title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
               title: |-
                 {{- $incidentId := "" -}}
                 {{- range .Alerts -}}
