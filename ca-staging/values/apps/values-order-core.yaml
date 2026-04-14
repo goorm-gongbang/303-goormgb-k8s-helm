@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/order-core"
-  tag: "5aa43bf.37"
+  tag: "5aa43bf.38"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
