@@ -1571,8 +1571,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"}[5m]))",
-          "legendFormat": "{{pod}}",
+          "expr": "sum by (namespace, pod) (rate(container_cpu_usage_seconds_total{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"}[5m]))",
+          "legendFormat": "{{namespace}}/{{pod}}",
           "refId": "A"
         }
       ],
@@ -1623,8 +1623,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"})",
-          "legendFormat": "{{pod}}",
+          "expr": "sum by (namespace, pod) (container_memory_working_set_bytes{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"})",
+          "legendFormat": "{{namespace}}/{{pod}}",
           "refId": "A"
         }
       ],
