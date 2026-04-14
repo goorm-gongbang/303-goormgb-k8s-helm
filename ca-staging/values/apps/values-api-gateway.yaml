@@ -54,6 +54,8 @@ istio:
     enabled: true
     externalRef: "istio-system/api-gateway"
     host: "api.staging.playball.one"
+    extraHosts:
+      - "api.playball.one"
   cors:
     enabled: true
     allowOrigins:

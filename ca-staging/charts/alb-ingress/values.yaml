@@ -51,6 +51,16 @@ ingress:
         healthCheckPath: /
         healthCheckSuccessCodes: "200,301,302,404"
 
+    # API (prod CloudFront → 우선 staging ALB 공유) - Istio IngressGateway 거침
+    - host: api.playball.one
+      skipExternalDns: true
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"
+
     # CloudBeaver - Istio IngressGateway 거침 (DB 관리 - 부하테스트용)
     - host: cloudbeaver.staging.playball.one
       service:
