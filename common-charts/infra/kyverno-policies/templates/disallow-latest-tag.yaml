@@ -35,20 +35,20 @@ spec:
             deny:
               conditions:
                 any:
-                - key: "{{ element.image }}"
+                - key: "{{ "{{ element.image }}" }}"
                   operator: EndsWith
                   value: ":latest"
-                - key: "{{ element.image }}"
+                - key: "{{ "{{ element.image }}" }}"
                   operator: NotContains
                   value: ":"
           - list: "request.object.spec.initContainers"
             deny:
               conditions:
                 any:
-                - key: "{{ element.image }}"
+                - key: "{{ "{{ element.image }}" }}"
                   operator: EndsWith
                   value: ":latest"
-                - key: "{{ element.image }}"
+                - key: "{{ "{{ element.image }}" }}"
                   operator: NotContains
                   value: ":"
 {{- end }}
