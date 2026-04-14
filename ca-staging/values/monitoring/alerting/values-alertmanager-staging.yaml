@@ -27,15 +27,9 @@ alertmanager:
           receiver: 'discord-security-critical'
           repeat_interval: 30m
         - match:
-            alertname: StagingAuthFailureRateWarning
             team: security
             environment: staging
-          receiver: 'discord-security-warning'
-          repeat_interval: 30m
-        - match:
-            alertname: StagingWafBlockedRequestsWarning
-            team: security
-            environment: staging
+            severity: warning
           receiver: 'discord-security-warning'
           repeat_interval: 30m
         - match:
