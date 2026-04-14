@@ -1,6 +1,6 @@
 {{- if .Values.policies.disallowPrivileged.enabled }}
-apiVersion: policies.kyverno.io/v1
-kind: ValidatingPolicy
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
 metadata:
   name: disallow-privileged-containers
   labels:
@@ -11,59 +11,34 @@ metadata:
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >-
       privileged 모드로 실행되는 컨테이너를 차단합니다.
-      privileged 컨테이너는 호스트의 모든 장치에 접근할 수 있어 보안 위험이 있습니다.
 spec:
-  failurePolicy: {{ .Values.failurePolicy | default "Ignore" }}
-  matchConstraints:
-    resourceRules:
-      - apiGroups: [""]
-        apiVersions: ["v1"]
-        operations: ["CREATE", "UPDATE"]
-        resources: ["pods"]
-    namespaceSelector:
-      matchExpressions:
-        - key: kubernetes.io/metadata.name
-          operator: NotIn
-          values:
-            {{- range .Values.excludeNamespaces }}
-            - {{ . }}
-            {{- end }}
-  variables:
-    - name: containers
-      expression: "object.spec.containers"
-    - name: initContainers
-      expression: "object.spec.?initContainers.orValue([])"
-    - name: ephemeralContainers
-      expression: "object.spec.?ephemeralContainers.orValue([])"
-  validations:
-    - expression: |
-        variables.containers.all(c,
-          !has(c.securityContext) ||
-          !has(c.securityContext.privileged) ||
-          c.securityContext.privileged == false
-        )
-      message: "Privileged 컨테이너는 허용되지 않습니다. (container)"
-      validationActions:
-        - {{ .Values.validationAction | default "Deny" }}
-    - expression: |
-        variables.initContainers.all(c,
-          !has(c.securityContext) ||
-          !has(c.securityContext.privileged) ||
-          c.securityContext.privileged == false
-        )
-      message: "Privileged 컨테이너는 허용되지 않습니다. (initContainer)"
-      validationActions:
-        - {{ .Values.validationAction | default "Deny" }}
-    - expression: |
-        variables.ephemeralContainers.all(c,
-          !has(c.securityContext) ||
-          !has(c.securityContext.privileged) ||
-          c.securityContext.privileged == false
-        )
-      message: "Privileged 컨테이너는 허용되지 않습니다. (ephemeralContainer)"
-      validationActions:
-        - {{ .Values.validationAction | default "Deny" }}
-  auditAnnotations:
-    - key: "policy-violation"
-      valueExpression: "'disallow-privileged-containers'"
+  validationFailureAction: {{ .Values.validationAction | default "Audit" }}
+  background: true
+  rules:
+    - name: check-privileged
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                {{- range .Values.excludeNamespaces }}
+                - {{ . }}
+                {{- end }}
+      validate:
+        message: "Privileged 컨테이너는 허용되지 않습니다."
+        pattern:
+          spec:
+            =(containers):
+              - =(securityContext):
+                  =(privileged): false
+            =(initContainers):
+              - =(securityContext):
+                  =(privileged): false
+            =(ephemeralContainers):
+              - =(securityContext):
+                  =(privileged): false
 {{- end }}
