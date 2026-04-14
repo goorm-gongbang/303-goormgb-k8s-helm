@@ -18,6 +18,14 @@
 # ============================================================
 
 # ===== prometheus-extras용 설정 (ExternalSecrets, VirtualService) =====
+# grafana-provisioning-reconcile CronJob 등 prometheus-extras 차트의 공통 배치
+nodeSelector:
+  role: monitoring
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
 # Grafana Gateway
 gateway:
   grafana:

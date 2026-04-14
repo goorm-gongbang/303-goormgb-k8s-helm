@@ -301,7 +301,8 @@ ociCharts:
     version: "3.13.0"
     namespace: kube-system
     syncWave: "-9"
-    valueFiles: []
+    valueFiles:
+      - $values/ca-staging/values/infra/values-metrics-server.yaml
 
   # Kyverno - Policy Engine
   kyverno:
