@@ -70,6 +70,20 @@ spec:
                   {{- end }}
                 }
 
+                -- IP Whitelist (정확 매칭 — 여기에 해당하면 모든 WAF 검사 bypass)
+                local IP_WHITELIST = {
+                  {{- range .Values.ipWhitelist }}
+                  ["{{ . }}"] = true,
+                  {{- end }}
+                }
+
+                -- IP Whitelist 접두사 (예: "39.119.192." 로 /24 근사)
+                local IP_WHITELIST_PREFIXES = {
+                  {{- range .Values.ipWhitelistPrefixes }}
+                  "{{ . }}",
+                  {{- end }}
+                }
+
                 -- SQL Injection 패턴
                 local SQL_PATTERNS = {
                   {{- if .Values.patterns.sqlInjection.enabled }}
@@ -208,6 +222,22 @@ spec:
                 local function is_excluded_path(path)
                   for _, excluded in ipairs(EXCLUDE_PATHS) do
                     if string.find(path, excluded, 1, true) then
+                      return true
+                    end
+                  end
+                  return false
+                end
+
+                -- IP whitelist 체크 (정확 IP 또는 접두사 매칭)
+                local function is_whitelisted_ip(client_ip)
+                  if client_ip == nil or client_ip == "" or client_ip == "unknown" then
+                    return false
+                  end
+                  if IP_WHITELIST[client_ip] then
+                    return true
+                  end
+                  for _, prefix in ipairs(IP_WHITELIST_PREFIXES) do
+                    if string.sub(client_ip, 1, #prefix) == prefix then
                       return true
                     end
                   end
@@ -418,6 +448,15 @@ spec:
 
                   -- 첫 번째 IP만 추출 (X-Forwarded-For는 쉼표로 구분)
                   client_ip = string.match(client_ip, "([^,]+)")
+                  -- 앞뒤 공백 제거 (x-forwarded-for: "ip1, ip2" 포맷 대응)
+                  if client_ip then
+                    client_ip = string.match(client_ip, "^%s*(.-)%s*$")
+                  end
+
+                  -- IP Whitelist: 등록된 IP는 WAF 전부 bypass
+                  if is_whitelisted_ip(client_ip) then
+                    return
+                  end
 
                   -- 제외 경로 체크
                   if is_excluded_path(path) then

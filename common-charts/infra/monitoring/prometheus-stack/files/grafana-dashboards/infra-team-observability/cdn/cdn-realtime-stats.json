@@ -1,5 +1,7 @@
 {
-  "annotations": { "list": [] },
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -10,16 +12,30 @@
       "id": 1,
       "title": "실시간 고유 접속자 (분)",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
       "targets": [
         {
           "refId": "A",
           "namespace": "PlayBall/RealtimeStats",
           "metricName": "UniqueVisitors1Min",
-          "dimensions": { "Environment": ["${environment}"] },
-          "statistics": ["Maximum"],
-          "period": "60"
+          "dimensions": {
+            "Environment": [
+              "${environment}"
+            ]
+          },
+          "period": "60",
+          "statistic": "Maximum",
+          "region": "ap-northeast-2",
+          "matchExact": false
         }
       ],
       "fieldConfig": {
@@ -27,9 +43,18 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 1000 },
-              { "color": "red", "value": 5000 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1000
+              },
+              {
+                "color": "red",
+                "value": 5000
+              }
             ]
           },
           "unit": "short",
@@ -37,7 +62,11 @@
         }
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "background",
         "graphMode": "none",
         "textMode": "value"
@@ -47,16 +76,30 @@
       "id": 2,
       "title": "시간별 고유 접속자",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
       "targets": [
         {
           "refId": "A",
           "namespace": "PlayBall/RealtimeStats",
           "metricName": "UniqueVisitors1Hour",
-          "dimensions": { "Environment": ["${environment}"] },
-          "statistics": ["Maximum"],
-          "period": "300"
+          "dimensions": {
+            "Environment": [
+              "${environment}"
+            ]
+          },
+          "period": "300",
+          "statistic": "Maximum",
+          "region": "ap-northeast-2",
+          "matchExact": false
         }
       ],
       "fieldConfig": {
@@ -64,9 +107,18 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "blue", "value": null },
-              { "color": "yellow", "value": 5000 },
-              { "color": "red", "value": 20000 }
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 5000
+              },
+              {
+                "color": "red",
+                "value": 20000
+              }
             ]
           },
           "unit": "short",
@@ -74,7 +126,11 @@
         }
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "background",
         "graphMode": "none",
         "textMode": "value"
@@ -84,16 +140,30 @@
       "id": 3,
       "title": "오늘 총 고유 방문자",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
       "targets": [
         {
           "refId": "A",
           "namespace": "PlayBall/RealtimeStats",
           "metricName": "UniqueVisitorsToday",
-          "dimensions": { "Environment": ["${environment}"] },
-          "statistics": ["Maximum"],
-          "period": "300"
+          "dimensions": {
+            "Environment": [
+              "${environment}"
+            ]
+          },
+          "period": "300",
+          "statistic": "Maximum",
+          "region": "ap-northeast-2",
+          "matchExact": false
         }
       ],
       "fieldConfig": {
@@ -101,9 +171,18 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "purple", "value": null },
-              { "color": "yellow", "value": 10000 },
-              { "color": "red", "value": 50000 }
+              {
+                "color": "purple",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 10000
+              },
+              {
+                "color": "red",
+                "value": 50000
+              }
             ]
           },
           "unit": "short",
@@ -111,7 +190,11 @@
         }
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "background",
         "graphMode": "none",
         "textMode": "value"
@@ -121,16 +204,30 @@
       "id": 4,
       "title": "Lambda 처리 현황",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
       "targets": [
         {
           "refId": "A",
           "namespace": "AWS/Lambda",
           "metricName": "Invocations",
-          "dimensions": { "FunctionName": ["goormgb-${environment}-realtime-stats"] },
-          "statistics": ["Sum"],
-          "period": "60"
+          "dimensions": {
+            "FunctionName": [
+              "goormgb-${environment}-realtime-stats"
+            ]
+          },
+          "period": "60",
+          "statistic": "Sum",
+          "region": "ap-northeast-2",
+          "matchExact": false
         }
       ],
       "fieldConfig": {
@@ -140,7 +237,11 @@
         }
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "value",
         "graphMode": "area",
         "textMode": "value"
@@ -150,17 +251,31 @@
       "id": 10,
       "title": "고유 접속자 추이 (분별)",
       "type": "timeseries",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
       "targets": [
         {
           "refId": "A",
           "namespace": "PlayBall/RealtimeStats",
           "metricName": "UniqueVisitors1Min",
-          "dimensions": { "Environment": ["${environment}"] },
-          "statistics": ["Maximum"],
+          "dimensions": {
+            "Environment": [
+              "${environment}"
+            ]
+          },
           "period": "60",
-          "alias": "Unique Visitors (1min)"
+          "alias": "Unique Visitors (1min)",
+          "statistic": "Maximum",
+          "region": "ap-northeast-2",
+          "matchExact": false
         }
       ],
       "fieldConfig": {
@@ -173,30 +288,51 @@
             "pointSize": 5,
             "showPoints": "auto"
           },
-          "color": { "mode": "palette-classic" },
+          "color": {
+            "mode": "palette-classic"
+          },
           "unit": "short"
         }
       },
       "options": {
-        "tooltip": { "mode": "single" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "single"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       }
     },
     {
       "id": 11,
       "title": "고유 접속자 추이 (시간별)",
       "type": "timeseries",
-      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 16 },
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
       "targets": [
         {
           "refId": "A",
           "namespace": "PlayBall/RealtimeStats",
           "metricName": "UniqueVisitors1Hour",
-          "dimensions": { "Environment": ["${environment}"] },
-          "statistics": ["Maximum"],
+          "dimensions": {
+            "Environment": [
+              "${environment}"
+            ]
+          },
           "period": "300",
-          "alias": "Unique Visitors (hourly)"
+          "alias": "Unique Visitors (hourly)",
+          "statistic": "Maximum",
+          "region": "ap-northeast-2",
+          "matchExact": false
         }
       ],
       "fieldConfig": {
@@ -206,7 +342,10 @@
             "lineWidth": 1,
             "fillOpacity": 50
           },
-          "color": { "mode": "fixed", "fixedColor": "blue" },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
           "unit": "short"
         }
       }
@@ -215,17 +354,31 @@
       "id": 12,
       "title": "일별 고유 방문자 추이",
       "type": "timeseries",
-      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 16 },
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
       "targets": [
         {
           "refId": "A",
           "namespace": "PlayBall/RealtimeStats",
           "metricName": "UniqueVisitorsToday",
-          "dimensions": { "Environment": ["${environment}"] },
-          "statistics": ["Maximum"],
+          "dimensions": {
+            "Environment": [
+              "${environment}"
+            ]
+          },
           "period": "3600",
-          "alias": "Unique Visitors (daily)"
+          "alias": "Unique Visitors (daily)",
+          "statistic": "Maximum",
+          "region": "ap-northeast-2",
+          "matchExact": false
         }
       ],
       "fieldConfig": {
@@ -235,7 +388,10 @@
             "lineWidth": 1,
             "fillOpacity": 30
           },
-          "color": { "mode": "fixed", "fixedColor": "purple" },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "purple"
+          },
           "unit": "short"
         }
       }
@@ -244,23 +400,43 @@
       "id": 20,
       "title": "Lambda Errors",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 26 },
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
       "targets": [
         {
           "refId": "A",
           "namespace": "AWS/Lambda",
           "metricName": "Errors",
-          "dimensions": { "FunctionName": ["goormgb-${environment}-realtime-stats"] },
-          "statistics": ["Sum"],
+          "dimensions": {
+            "FunctionName": [
+              "goormgb-${environment}-realtime-stats"
+            ]
+          },
           "period": "60",
-          "alias": "Errors"
+          "alias": "Errors",
+          "statistic": "Sum",
+          "region": "ap-northeast-2",
+          "matchExact": false
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "custom": { "drawStyle": "line", "fillOpacity": 30 },
-          "color": { "mode": "fixed", "fixedColor": "red" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 30
+          },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "red"
+          },
           "unit": "short"
         }
       }
@@ -269,32 +445,57 @@
       "id": 21,
       "title": "Lambda Duration (ms)",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 26 },
-      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
       "targets": [
         {
           "refId": "A",
           "namespace": "AWS/Lambda",
           "metricName": "Duration",
-          "dimensions": { "FunctionName": ["goormgb-${environment}-realtime-stats"] },
-          "statistics": ["Average"],
+          "dimensions": {
+            "FunctionName": [
+              "goormgb-${environment}-realtime-stats"
+            ]
+          },
           "period": "60",
-          "alias": "Avg Duration"
+          "alias": "Avg Duration",
+          "statistic": "Average",
+          "region": "ap-northeast-2",
+          "matchExact": false
         },
         {
           "refId": "B",
           "namespace": "AWS/Lambda",
           "metricName": "Duration",
-          "dimensions": { "FunctionName": ["goormgb-${environment}-realtime-stats"] },
-          "statistics": ["p99"],
+          "dimensions": {
+            "FunctionName": [
+              "goormgb-${environment}-realtime-stats"
+            ]
+          },
           "period": "60",
-          "alias": "p99 Duration"
+          "alias": "p99 Duration",
+          "statistic": "p99",
+          "region": "ap-northeast-2",
+          "matchExact": false
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "custom": { "drawStyle": "line", "fillOpacity": 10 },
-          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
           "unit": "ms"
         }
       }
@@ -302,23 +503,42 @@
   ],
   "refresh": "10s",
   "schemaVersion": 39,
-  "tags": ["cdn", "realtime", "hyperloglog"],
+  "tags": [
+    "cdn",
+    "realtime",
+    "hyperloglog"
+  ],
   "templating": {
     "list": [
       {
-        "current": { "selected": false, "text": "staging", "value": "staging" },
+        "current": {
+          "selected": false,
+          "text": "staging",
+          "value": "staging"
+        },
         "hide": 0,
         "label": "Environment",
         "name": "environment",
         "options": [
-          { "selected": true, "text": "staging", "value": "staging" },
-          { "selected": false, "text": "prod", "value": "prod" }
+          {
+            "selected": true,
+            "text": "staging",
+            "value": "staging"
+          },
+          {
+            "selected": false,
+            "text": "prod",
+            "value": "prod"
+          }
         ],
         "type": "custom"
       }
     ]
   },
-  "time": { "from": "now-1h", "to": "now" },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
   "timepicker": {},
   "timezone": "Asia/Seoul",
   "title": "CDN Realtime Stats (HyperLogLog)",

@@ -74,8 +74,32 @@ excludePaths:
   - "/v3/api-docs"
   - "/openapi"
 
-  # Kiali (별도 도메인이지만 혹시 모를 내부 호출)
-  - "/kiali"
+  # OAuth callback (Google OAuth authorization code 내 '--' 문자열로 sql-comment 오탐)
+  # Grafana: /login/google, OAuth2 Proxy(CloudBeaver 등): /oauth2/callback, 기타: /auth/callback
+  - "/login/"
+  - "/oauth2/"
+  - "/auth/callback"
+
+# IP Whitelist (정확 매칭: WAF/차단 전부 bypass)
+# 팀원 사무실/홈 고정 IP
+ipWhitelist:
+  - "59.12.199.140"
+  - "219.241.49.248"
+  - "118.33.22.122"
+  - "182.222.162.2"
+  - "180.70.114.57"
+  - "59.7.27.64"
+  - "221.149.74.70"
+  - "58.148.70.203"
+  - "59.20.70.146"
+  - "39.119.192.15"
+  - "124.49.102.36"
+  - "122.34.166.131"
+  - "121.160.234.212"
+  - "59.30.250.162"
+  - "211.244.208.42"
+# IP Whitelist 접두사 (예: "39.119.192.")
+ipWhitelistPrefixes: []
 
 # 응답 설정
 response:

@@ -281,3 +281,23 @@ cronJobs:
     backoffLimit: 1
     command:
       - tm-ai-post-review
+
+  # S3 Audit → ClickHouse ETL (기존 staging-ai-etl 앱에서 흡수)
+  - name: tm-ai-etl
+    enabled: true
+    schedule: "15 * * * *"
+    concurrencyPolicy: Forbid
+    restartPolicy: OnFailure
+    backoffLimit: 2
+    command:
+      - tm-ai-etl
+    extraEnv:
+      - name: TM_ETL_PROCESSED_LEDGER_TTL_SECONDS
+        value: "2592000"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

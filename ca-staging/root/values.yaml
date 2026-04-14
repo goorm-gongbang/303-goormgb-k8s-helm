@@ -301,7 +301,8 @@ ociCharts:
     version: "3.13.0"
     namespace: kube-system
     syncWave: "-9"
-    valueFiles: []
+    valueFiles:
+      - $values/ca-staging/values/infra/values-metrics-server.yaml
 
   # Kyverno - Policy Engine
   kyverno:
@@ -391,6 +392,16 @@ gitCharts:
     syncWave: "-5"
     valueFiles:
       - ../../../ca-staging/values/apps/values-mail-config.yaml
+
+  # Mail Config - Load-test (loadtest-webs 네임스페이스 전용 복제)
+  loadtest-mail-config:
+    enabled: true
+    description: "[LoadTest] 메일 설정 - Gmail SMTP Secret"
+    path: common-charts/apps/mail-config
+    namespace: loadtest-webs
+    syncWave: "-5"
+    valueFiles:
+      - ../../../ca-staging/values/apps-loadtest/values-mail-config.yaml
 
   # KEDA ScaledObjects (앱별 오토스케일링 규칙)
   keda-scalers:
@@ -597,6 +608,17 @@ gitCharts:
     valueFiles:
       - ../../../../ca-staging/values/messaging/values-kafka-ui.yaml
 
+  kafka-exporter:
+    enabled: true
+    description: "Kafka Exporter - consumer group lag 등 Prometheus 메트릭"
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus-kafka-exporter
+    version: "2.11.0"
+    namespace: messaging
+    syncWave: "1"
+    valueFiles:
+      - $values/ca-staging/values/messaging/values-kafka-exporter.yaml
+
 # =============================================================================
 # ApplicationSets
 # =============================================================================
@@ -639,16 +661,7 @@ applicationSets:
       - name: authz-adapter
         description: "Authz Adapter - Istio ext_authz gRPC 어댑터"
 
-  staging-ai-etl:
-    enabled: true
-    syncWave: "11"
-    namespace: staging-ai
-    appNamePrefix: "staging"
-    chartPath: common-charts/apps/ai-etl
-    valueFilesPattern: ../../../ca-staging/values/apps/values-{{name}}.yaml
-    services:
-      - name: ai-etl
-        description: "AI ETL - S3 Audit -> ClickHouse 적재 CronJob"
+  # staging-ai-etl: ai-defense 앱으로 흡수됨 (같은 이미지 공유, cronJobs.tm-ai-etl)
 
   # Load-test 전용 서비스 (k6 부하 테스트용)
   loadtest-webs-services:

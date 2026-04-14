@@ -1,6 +1,6 @@
-# Alert rule set (staging)
-# 정리 기준: 5xx, PodCrashLoop, RedisDown만 유지 (security/spot 별도)
-# 제거: API P99, NodeNotReady, Cluster CPU/Memory, Postgres Connections, Redis Memory
+# Alert rule set (ca-staging)
+# 정리 기준: staging은 조기 탐지 목적이라 5xx와 보안 지표를 1건 이상 Warning으로 전파
+# 유지: PodCrashLoop, RedisDown, security, spot
 
 additionalPrometheusRulesMap:
   staging-ops-and-security:
@@ -28,28 +28,6 @@ additionalPrometheusRulesMap:
             annotations:
               summary: "{{ $labels.app }} 5xx 발생 ({{ $labels.http_response_status_code }})"
               description: "서비스: {{ $labels.app }}\n경로: {{ $labels.http_route }}\n상태코드: {{ $labels.http_response_status_code }}\n발생건수(5m): {{ $value | printf \"%.0f\" }}건\n\nGrafana 로그: https://grafana.staging.playball.one/explore?orgId=1&left=%7B%22queries%22:%5B%7B%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22loki%22%7D,%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D%20%7C%20json%20%7C%20level%20%3D%20%5C%22ERROR%5C%22%22%7D%5D%7D"
-
-          - alert: StagingHttp5xxCritical
-            expr: |
-              sum by (app) (
-                increase(
-                  http_server_request_duration_seconds_count{
-                    namespace="staging-webs",
-                    app=~"staging-(api-gateway|auth-guard|order-core|queue|seat)",
-                    http_response_status_code=~"5.."
-                  }[5m]
-                )
-              ) > 10
-            for: 0m
-            labels:
-              severity: critical
-              environment: staging
-              team: dev
-              service_name: "{{ $labels.app }}"
-              namespace: staging-webs
-            annotations:
-              summary: "{{ $labels.app }} 5xx 다수 발생"
-              description: "서비스: {{ $labels.app }}\n5xx 발생건수(5m): {{ $value | printf \"%.0f\" }}건\n\n즉시 확인 필요합니다."
 
           - alert: StagingPodCrashLoopCritical
             expr: |
@@ -81,7 +59,7 @@ additionalPrometheusRulesMap:
         rules:
           - alert: StagingMacroDetectedWarning
             expr: |
-              increase(ticketing_security_macro_detected_total[5m]) > 50
+              increase(ticketing_security_macro_detected_total[5m]) > 0
             for: 0m
             labels:
               severity: warning
@@ -89,23 +67,11 @@ additionalPrometheusRulesMap:
               team: security
             annotations:
               summary: "staging 매크로/봇 탐지 경고"
-              description: "최근 5m 동안 매크로/봇 탐지 수가 50건을 초과했습니다."
-
-          - alert: StagingMacroDetectedCritical
-            expr: |
-              increase(ticketing_security_macro_detected_total[5m]) > 200
-            for: 0m
-            labels:
-              severity: critical
-              environment: staging
-              team: security
-            annotations:
-              summary: "staging 매크로/봇 탐지 치명"
-              description: "최근 5m 동안 매크로/봇 탐지 수가 200건을 초과했습니다."
+              description: "최근 5m 동안 매크로/봇 탐지가 1건 이상 발생했습니다."
 
           - alert: StagingBlockedIpWarning
             expr: |
-              increase(ticketing_security_blocked_ip_total[5m]) > 100
+              increase(ticketing_security_blocked_ip_total[5m]) > 0
             for: 0m
             labels:
               severity: warning
@@ -113,55 +79,21 @@ additionalPrometheusRulesMap:
               team: security
             annotations:
               summary: "staging 차단 IP 수 경고"
-              description: "최근 5m 동안 차단 IP 수가 100건을 초과했습니다."
-
-          - alert: StagingBlockedIpCritical
-            expr: |
-              increase(ticketing_security_blocked_ip_total[5m]) > 500
-            for: 0m
-            labels:
-              severity: critical
-              environment: staging
-              team: security
-            annotations:
-              summary: "staging 차단 IP 수 치명"
-              description: "최근 5m 동안 차단 IP 수가 500건을 초과했습니다."
+              description: "최근 5m 동안 차단 IP가 1건 이상 발생했습니다."
 
           - alert: StagingAuthFailureRateWarning
             expr: |
-              (
-                1 - (
-                  sum(rate(ticketing_auth_success_total[5m]))
-                  /
-                  clamp_min(sum(rate(ticketing_auth_attempts_total[5m])), 1)
-                )
-              ) * 100 > 30
-            for: 5m
+              increase(ticketing_auth_attempts_total[5m]) > 0
+              and
+              increase(ticketing_auth_success_total[5m]) < increase(ticketing_auth_attempts_total[5m])
+            for: 0m
             labels:
               severity: warning
               environment: staging
               team: security
             annotations:
               summary: "staging 인증 실패율 경고"
-              description: "최근 5m 동안 인증 실패율이 30%를 초과했습니다."
-
-          - alert: StagingAuthFailureRateCritical
-            expr: |
-              (
-                1 - (
-                  sum(rate(ticketing_auth_success_total[5m]))
-                  /
-                  clamp_min(sum(rate(ticketing_auth_attempts_total[5m])), 1)
-                )
-              ) * 100 > 50
-            for: 5m
-            labels:
-              severity: critical
-              environment: staging
-              team: security
-            annotations:
-              summary: "staging 인증 실패율 치명"
-              description: "최근 5m 동안 인증 실패율이 50%를 초과했습니다."
+              description: "최근 5m 동안 인증 실패가 1건 이상 발생했습니다."
 
           - alert: StagingWafBlockedRequestsWarning
             expr: |
@@ -174,36 +106,15 @@ additionalPrometheusRulesMap:
                     response_code=~"403|429"
                   }[15m]
                 )
-              ) > 200
-            for: 5m
+              ) > 0
+            for: 0m
             labels:
               severity: warning
               environment: staging
               team: security
             annotations:
               summary: "staging WAF 차단 요청 급증 경고"
-              description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청 수가 200건을 초과했습니다."
-
-          - alert: StagingWafBlockedRequestsCritical
-            expr: |
-              sum(
-                increase(
-                  istio_requests_total{
-                    reporter="destination",
-                    destination_workload_namespace="istio-system",
-                    destination_workload="istio-ingressgateway",
-                    response_code=~"403|429"
-                  }[15m]
-                )
-              ) > 1000
-            for: 5m
-            labels:
-              severity: critical
-              environment: staging
-              team: security
-            annotations:
-              summary: "staging WAF 차단 요청 급증 치명"
-              description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청 수가 1000건을 초과했습니다."
+              description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청이 1건 이상 발생했습니다."
 
       # Spot 노드 교체 감지
       - name: staging.spot.rules

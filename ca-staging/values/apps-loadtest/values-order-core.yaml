@@ -66,6 +66,8 @@ envFrom:
       name: service-config
   - secretRef:
       name: service-config
+  - secretRef:
+      name: mail-config
 
 livenessProbe:
   httpGet:
@@ -93,4 +95,4 @@ metrics:
 
 pdb:
   enabled: true
-  minAvailable: 1
+  maxUnavailable: 1

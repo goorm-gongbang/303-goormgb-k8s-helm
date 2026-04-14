@@ -1,0 +1,39 @@
+# prometheus-kafka-exporter — Kafka consumer group lag metric 수집
+# 메트릭: kafka_consumergroup_lag, kafka_topic_partition_current_offset 등
+
+kafkaServer:
+  - kafka-headless.messaging.svc.cluster.local:9092
+
+# Kafka 프로토콜 — Istio sidecar 있으면 제외 (exporter 는 non-mesh kafka 와 통신)
+podAnnotations:
+  sidecar.istio.io/inject: "false"
+
+service:
+  port: 9308
+
+# Prometheus ServiceMonitor — kube-prometheus-stack 이 자동 discovery
+prometheus:
+  serviceMonitor:
+    enabled: true
+    namespace: messaging
+    interval: 30s
+    additionalLabels:
+      release: prom  # kube-prometheus-stack release 이름에 맞춰야 Prometheus 가 인식
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+# Monitoring 노드 배치 (스크레이퍼/exporter 류는 모니터링 스택에 함께)
+nodeSelector:
+  kubernetes.io/arch: arm64
+  role: monitoring
+tolerations:
+  - key: role
+    operator: Equal
+    value: monitoring
+    effect: NoSchedule

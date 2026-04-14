@@ -5,6 +5,7 @@ alertmanager:
     eso:
       enabled: true
       secretManagerKey: "staging/monitoring"
+      securityWebhooksEnabled: true
   alertmanagerSpec:
     secrets:
       - alertmanager-discord-webhooks
@@ -27,15 +28,9 @@ alertmanager:
           receiver: 'discord-security-critical'
           repeat_interval: 30m
         - match:
-            alertname: StagingAuthFailureRateWarning
             team: security
             environment: staging
-          receiver: 'discord-security-warning'
-          repeat_interval: 30m
-        - match:
-            alertname: StagingWafBlockedRequestsWarning
-            team: security
-            environment: staging
+            severity: warning
           receiver: 'discord-security-warning'
           repeat_interval: 30m
         - match:
@@ -44,24 +39,14 @@ alertmanager:
           receiver: 'discord-critical'
           repeat_interval: 30m
         - match:
-            alertname: StagingHttp5xxWarning
             environment: staging
+            severity: warning
           receiver: 'discord-warning'
           repeat_interval: 30m
         - match:
-            alertname: StagingApiP99Warning
             environment: staging
-          receiver: 'discord-warning'
-          repeat_interval: 30m
-        - match:
-            alertname: StagingPostgresConnectionsWarning
-            environment: staging
-          receiver: 'discord-warning'
-          repeat_interval: 30m
-        - match:
-            team: infra
-            environment: staging
-          receiver: 'discord-infra'
+            severity: info
+          receiver: 'discord-info'
           repeat_interval: 10m
         - match:
             alertname: Watchdog
@@ -75,7 +60,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/explore?orgId=1&left=%7B%22datasource%22:%22loki%22,%22queries%22:%5B%7B%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22loki%22%7D,%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D%20%7C%20json%20%7C%20level%3D%5C%22ERROR%5C%22%22%7D%5D%7D'
+            title_link: 'https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -113,7 +98,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/warning-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/explore?orgId=1&left=%7B%22datasource%22:%22loki%22,%22queries%22:%5B%7B%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22loki%22%7D,%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D%20%7C%20json%20%7C%20level%3D%5C%22ERROR%5C%22%22%7D%5D%7D'
+            title_link: 'https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -150,7 +135,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/info-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/ops-alert-overview'
+            title_link: 'https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -185,7 +170,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-critical-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title_link: 'https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -220,7 +205,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-warning-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title_link: 'https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -255,7 +240,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-info-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title_link: 'https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -285,24 +270,6 @@ alertmanager:
               {{ if eq $.Status "resolved" }}복구(KST): {{ if ne $resolvedAt "" }}{{ $resolvedAt }}{{ else }}N/A{{ end }}{{ end }}
               {{- end }}
               ```
-
-      - name: 'discord-infra'
-        slack_configs:
-          - api_url: 'https://discord.com/api/webhooks/1484105176867536988/N3C_085Bf_sPF57n8mggbDIW8DDhGmJkcmN8O1jhoH5FNAS-0KjhgDOX5DZLNqdXdq2S'
-            send_resolved: true
-            title: |-
-              [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}OK{{ else }}INFRA{{ end }} {{ .CommonLabels.alertname }}
-            text: |-
-              ```text
-              알림: {{ or .CommonLabels.alertname "N/A" }}
-              {{ with index .Alerts 0 -}}
-              노드: {{ or .Labels.node "N/A" }}
-              발생(KST): {{ .StartsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}
-              {{ if eq $.Status "resolved" }}복구(KST): {{ .EndsAt | tz "Asia/Seoul" | date "2006-01-02 15:04:05 KST" }}{{ end }}
-              {{- end }}
-              {{ or (index .Alerts 0).Annotations.description "N/A" }}
-              ```
-
       - name: 'null'
 
     inhibit_rules:

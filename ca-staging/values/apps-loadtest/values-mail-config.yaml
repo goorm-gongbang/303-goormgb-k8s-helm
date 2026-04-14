@@ -1,0 +1,12 @@
+# Mail Config - Load-test 환경
+enabled: true
+
+secretName: mail-config
+namespace: loadtest-webs
+
+secretManager:
+  secretStoreRef:
+    name: aws-secrets-manager
+    kind: ClusterSecretStore
+  key: staging/services/mail
+  refreshInterval: 1h
