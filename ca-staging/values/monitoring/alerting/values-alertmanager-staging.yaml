@@ -69,7 +69,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/explore?orgId=1&left=%7B%22datasource%22:%22loki%22,%22queries%22:%5B%7B%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22loki%22%7D,%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D%20%7C%20json%20%7C%20level%3D%5C%22ERROR%5C%22%22%7D%5D%7D'
+            title_link: 'https://grafana.staging.playball.one/explore?schemaVersion=1&panes=%7B%223v1%22%3A%7B%22datasource%22%3A%22loki%22%2C%22queries%22%3A%5B%7B%22datasource%22%3A%7B%22type%22%3A%22loki%22%2C%22uid%22%3A%22loki%22%7D%2C%22expr%22%3A%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D+%7C+json+%7C+level%3D%5C%22ERROR%5C%22%22%2C%22refId%22%3A%22A%22%2C%22editorMode%22%3A%22code%22%2C%22queryType%22%3A%22range%22%2C%22direction%22%3A%22backward%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -107,7 +107,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/warning-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/explore?orgId=1&left=%7B%22datasource%22:%22loki%22,%22queries%22:%5B%7B%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22loki%22%7D,%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D%20%7C%20json%20%7C%20level%3D%5C%22ERROR%5C%22%22%7D%5D%7D'
+            title_link: 'https://grafana.staging.playball.one/explore?schemaVersion=1&panes=%7B%223v1%22%3A%7B%22datasource%22%3A%22loki%22%2C%22queries%22%3A%5B%7B%22datasource%22%3A%7B%22type%22%3A%22loki%22%2C%22uid%22%3A%22loki%22%7D%2C%22expr%22%3A%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D+%7C+json+%7C+level%3D%5C%22ERROR%5C%22%22%2C%22refId%22%3A%22A%22%2C%22editorMode%22%3A%22code%22%2C%22queryType%22%3A%22range%22%2C%22direction%22%3A%22backward%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -144,7 +144,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/info-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/ops-alert-overview'
+            title_link: 'https://grafana.staging.playball.one/explore?schemaVersion=1&panes=%7B%223v1%22%3A%7B%22datasource%22%3A%22loki%22%2C%22queries%22%3A%5B%7B%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22loki%22%7D,%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D+%7C+json+%7C+level%3D%5C%22ERROR%5C%22%22%2C%22refId%22%3A%22A%22%2C%22editorMode%22%3A%22code%22%2C%22queryType%22%3A%22range%22%2C%22direction%22%3A%22backward%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -179,7 +179,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-critical-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title_link: 'https://grafana.staging.playball.one/explore?schemaVersion=1&panes=%7B%223v1%22%3A%7B%22datasource%22%3A%22loki%22%2C%22queries%22%3A%5B%7B%22datasource%22%3A%7B%22type%22%3A%22loki%22%2C%22uid%22%3A%22loki%22%7D%2C%22expr%22%3A%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D+%7C+json+%7C+level%3D%5C%22ERROR%5C%22%22%2C%22refId%22%3A%22A%22%2C%22editorMode%22%3A%22code%22%2C%22queryType%22%3A%22range%22%2C%22direction%22%3A%22backward%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -214,7 +214,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-warning-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title_link: 'https://grafana.staging.playball.one/explore?schemaVersion=1&panes=%7B%223v1%22%3A%7B%22datasource%22%3A%22loki%22%2C%22queries%22%3A%5B%7B%22datasource%22%3A%7B%22type%22%3A%22loki%22%2C%22uid%22%3A%22loki%22%7D%2C%22expr%22%3A%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D+%7C+json+%7C+level%3D%5C%22ERROR%5C%22%22%2C%22refId%22%3A%22A%22%2C%22editorMode%22%3A%22code%22%2C%22queryType%22%3A%22range%22%2C%22direction%22%3A%22backward%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -249,7 +249,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/security-info-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.staging.playball.one/d/security-alert-overview'
+            title_link: 'https://grafana.staging.playball.one/explore?schemaVersion=1&panes=%7B%223v1%22%3A%7B%22datasource%22%3A%22loki%22%2C%22queries%22%3A%5B%7B%22datasource%22%3A%7B%22type%22%3A%22loki%22%2C%22uid%22%3A%22loki%22%7D%2C%22expr%22%3A%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D+%7C+json+%7C+level%3D%5C%22ERROR%5C%22%22%2C%22refId%22%3A%22A%22%2C%22editorMode%22%3A%22code%22%2C%22queryType%22%3A%22range%22%2C%22direction%22%3A%22backward%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -284,6 +284,7 @@ alertmanager:
         slack_configs:
           - api_url: 'https://discord.com/api/webhooks/1484105176867536988/N3C_085Bf_sPF57n8mggbDIW8DDhGmJkcmN8O1jhoH5FNAS-0KjhgDOX5DZLNqdXdq2S'
             send_resolved: true
+            title_link: 'https://grafana.staging.playball.one/explore?schemaVersion=1&panes=%7B%223v1%22%3A%7B%22datasource%22%3A%22loki%22%2C%22queries%22%3A%5B%7B%22datasource%22%3A%7B%22type%22%3A%22loki%22%2C%22uid%22%3A%22loki%22%7D%2C%22expr%22%3A%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D+%7C+json+%7C+level%3D%5C%22ERROR%5C%22%22%2C%22refId%22%3A%22A%22%2C%22editorMode%22%3A%22code%22%2C%22queryType%22%3A%22range%22%2C%22direction%22%3A%22backward%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1'
             title: |-
               [{{ or .CommonLabels.environment "unknown" }}] {{ if eq .Status "resolved" }}OK{{ else }}INFRA{{ end }} {{ .CommonLabels.alertname }}
             text: |-
