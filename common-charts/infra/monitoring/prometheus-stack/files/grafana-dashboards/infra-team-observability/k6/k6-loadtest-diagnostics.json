@@ -313,10 +313,15 @@
               "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
               "targetBlank": true
             }
-          ]
+          ],
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
         }
       },
-      "description": "**Pod CPU : usage vs requests vs limits**\n\n노드 스케줄링과 throttle 판단 근거.\n\n---\n**읽는 법**\n- `usage == limit` : throttle 진행 중.\n- `usage >> request` : 노드의 다른 파드 밀릴 수 있음 (overcommit).\n- `usage << request` : request 낭비. 줄이면 노드 packing 효율 상승.\n"
+      "description": "**Pod CPU : usage vs requests vs limits**\n\n노드 스케줄링과 throttle 판단 근거.\n\n---\n**읽는 법**\n- `usage == limit` : throttle 진행 중.\n- `usage >> request` : 노드의 다른 파드 밀릴 수 있음 (overcommit).\n- `usage << request` : request 낭비. 줄이면 노드 packing 효율 상승.\n\n\n---\n**CPU 플랫 + limit 값 근접** = throttle 중 (아래 'CPU throttled %' 패널 같이 확인)."
     },
     {
       "id": 7,
@@ -830,6 +835,69 @@
             {
               "title": "loadtest-webs 전체 로그 보기",
               "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 500,
+      "title": "Pod 재시작 / OOMKill (503 원인 힌트)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 66
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Pod 재시작 급증 or OOMKill 발생 시 503 폭증.**\n\n- `restart` 수가 튀면 readiness/liveness 실패 또는 OOM.\n- `reason=OOMKilled` 는 메모리 limit 부족.\n- 503 폭증과 같이 보이면 재시작 루프가 원인.\n",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (pod) (kube_pod_container_status_restarts_total{namespace=\"$namespace\"})",
+          "legendFormat": "{{pod}} restart"
+        },
+        {
+          "refId": "B",
+          "expr": "sum by (pod, reason) (kube_pod_container_status_last_terminated_reason{namespace=\"$namespace\", reason!=\"\"})",
+          "legendFormat": "{{pod}} terminated: {{reason}}"
+        }
+      ]
+    },
+    {
+      "id": 501,
+      "title": "5xx 에러 RPS (503 업스트림 실패)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 66
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**503 많이 뜨는 서비스 = 포화 상태.**\n\n- 503 = Service Unavailable (업스트림 fail).\n- 보통 원인: CPU throttle / HikariCP 고갈 / Tomcat thread 고갈 / pod crash.\n- 패널 클릭으로 Loki 로그 이동해 에러 근거 확인.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", response_code=~\"5..\"}[1m])) by (destination_workload, response_code)",
+          "legendFormat": "{{destination_workload}} [{{response_code}}]"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "links": [
+            {
+              "title": "에러 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|503|Exception)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
               "targetBlank": true
             }
           ]
