@@ -644,6 +644,21 @@
               {
                 "id": "custom.width",
                 "value": 150
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "🔍 이 IP의 blacklist 등록 상세 로그 (matched/path/rule)",
+                    "url": "/explore?orgId=1&left=%7B%22datasource%22:%22loki%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22%7Bnamespace%3D%5C%22staging-ai%5C%22,app%3D%5C%22staging-authz-adapter%5C%22%7D%20%7C%3D%20%5C%22IP%20added%20to%20blacklist%5C%22%20%7C%3D%20%5C%22${__data.fields.IP}%5C%22%20%7C%20json%22%7D%5D,%22range%22:%7B%22from%22:%22${__from}%22,%22to%22:%22${__to}%22%7D%7D",
+                    "targetBlank": true
+                  },
+                  {
+                    "title": "🔍 이 IP의 WAF 탐지 전체 (istio-ingressgateway Lua 로그)",
+                    "url": "/explore?orgId=1&left=%7B%22datasource%22:%22loki%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22%7Bapp%3D%5C%22istio-ingressgateway%5C%22%7D%20%7C%3D%20%5C%22type%5C%5C%5C%22:%5C%5C%5C%22security%5C%22%20%7C%3D%20%5C%22${__data.fields.IP}%5C%22%20%7C%20regexp%20%5C%22script%20log:%20(?P%3Cevt%3E%5C%5C%7B.%2B%5C%5C%7D)%5C%22%20%7C%20line_format%20%5C%22%7B%7B.evt%7D%7D%5C%22%20%7C%20json%22%7D%5D,%22range%22:%7B%22from%22:%22${__from}%22,%22to%22:%22${__to}%22%7D%7D",
+                    "targetBlank": true
+                  }
+                ]
               }
             ]
           },
@@ -656,6 +671,16 @@
               {
                 "id": "custom.width",
                 "value": 200
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "🔍 이 IP+Reason 조합 상세 로그",
+                    "url": "/explore?orgId=1&left=%7B%22datasource%22:%22loki%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22%7Bnamespace%3D%5C%22staging-ai%5C%22,app%3D%5C%22staging-authz-adapter%5C%22%7D%20%7C%3D%20%5C%22IP%20added%20to%20blacklist%5C%22%20%7C%3D%20%5C%22${__data.fields.IP}%5C%22%20%7C%20json%20%7C%20reason%3D%5C%22${__data.fields.Reason}%5C%22%22%7D%5D,%22range%22:%7B%22from%22:%22${__from}%22,%22to%22:%22${__to}%22%7D%7D",
+                    "targetBlank": true
+                  }
+                ]
               }
             ]
           }
