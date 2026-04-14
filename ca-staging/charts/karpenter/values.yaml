@@ -5,7 +5,9 @@ nodeRole: goormgb-staging-karpenter-node
 # 공통 Zone 설정
 zones:
   - ap-northeast-2a
+  - ap-northeast-2b
   - ap-northeast-2c
+  - ap-northeast-2d
 
 # =============================================================================
 # NodePools - Workloads (Apps)
@@ -28,13 +30,14 @@ nodePools:
     # 인스턴스 설정 - arm64 (Graviton, 비용 효율)
     arch: arm64
     instanceCategories:
-      - t
       - m
       - c
+      - r
     minGeneration: "4"  # 5세대 이상 (t4g 제외, m5/c5+)
     instanceSizes:
-      - xlarge     # 4 vCPU, 16GB - 기본 (노드 개수 줄이기)
-      - 2xlarge    # 8 vCPU, 32GB - 버스트용
+      - large      # 2 vCPU, 8/16GB - Spot 풀 다양화
+      - xlarge     # 4 vCPU, 16/32GB - 기본
+      - 2xlarge    # 8 vCPU, 32/64GB - 버스트용
 
     # 리소스 제한 (앱용)
     limits:
