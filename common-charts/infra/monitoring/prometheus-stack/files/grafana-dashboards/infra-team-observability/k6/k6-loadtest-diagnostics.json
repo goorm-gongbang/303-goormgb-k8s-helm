@@ -150,16 +150,31 @@
       "description": "**HikariCP (DB 커넥션 풀) 상태**\n\n- `active` : 현재 쿼리 실행 중인 커넥션 수\n- `pending` : 커넥션을 대기 중인 쓰레드 수\n- `max` : 풀 상한\n\n---\n**읽는 법**\n- `pending > 0` 이 지속되면 풀 고갈 → 요청이 DB 커넥션 기다리느라 p99 튐.\n- `active ≈ max` : 이미 풀 풀가동.\n\n**조치**\n- app: `spring.datasource.hikari.maximum-pool-size` 상향\n- DB: max_connections 확인, RDS 인스턴스 스케일업\n- 코드: 느린 쿼리/N+1 튜닝으로 커넥션 점유 시간 줄이기\n",
       "targets": [
         {
-          "expr": "sum(hikaricp_connections_active{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
-          "legendFormat": "{{app}} active"
+          "expr": "sum by (service) (hikaricp_connections_active{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "legendFormat": "{{service}} active",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "sum(hikaricp_connections_pending{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
-          "legendFormat": "{{app}} pending"
+          "expr": "sum by (service) (hikaricp_connections_pending{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "legendFormat": "{{service}} pending",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "sum(hikaricp_connections_max{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
-          "legendFormat": "{{app}} max"
+          "expr": "sum by (service) (hikaricp_connections_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "legendFormat": "{{service}} max",
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
@@ -180,16 +195,31 @@
       "description": "**Tomcat (임베디드) 스레드 사용량**\n\n- `current` : 현재 생성된 워커 스레드\n- `busy` : 요청 처리 중인 스레드\n- `max` : 상한 (기본 200)\n\n---\n**읽는 법**\n- `busy ≈ max` : 스레드 풀 고갈. 새 요청이 OS 레벨에서 queue 대기 중 → latency 폭증.\n\n**조치**\n- `server.tomcat.threads.max` 상향 (예: 200 → 400)\n- 동시에 CPU/메모리 부담 상승 주의 → HPA 같이 검토\n",
       "targets": [
         {
-          "expr": "sum(tomcat_threads_current_threads{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
-          "legendFormat": "{{app}} current"
+          "expr": "sum by (service) (tomcat_threads_current_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "legendFormat": "{{service}} current",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "sum(tomcat_threads_busy_threads{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
-          "legendFormat": "{{app}} busy"
+          "expr": "sum by (service) (tomcat_threads_busy_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "legendFormat": "{{service}} busy",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "sum(tomcat_threads_config_max_threads{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
-          "legendFormat": "{{app}} max"
+          "expr": "sum by (service) (tomcat_threads_config_max_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "legendFormat": "{{service}} max",
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
@@ -272,8 +302,13 @@
       "description": "**JVM GC pause p95**\n\nMajor/Minor GC 각 action 별 pause 지연.\n\n---\n**읽는 법**\n- `major GC p95 > 100ms` : latency 튐의 주요 원인.\n- 빈도+크기 둘 다 보려면 아래 `GC 총 시간` 패널 병행 확인.\n\n**조치**\n- `-Xmx` 상향으로 heap 확대\n- G1GC → ZGC 전환 (large heap 에서 pause 짧음)\n",
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(jvm_gc_pause_seconds_bucket{namespace=\"$namespace\", app=~\"$app\"}[1m])) by (le, app, action))",
-          "legendFormat": "{{app}} {{action}} p95"
+          "expr": "histogram_quantile(0.95, sum by (le, service, action) (rate(jvm_gc_pause_seconds_bucket{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])))",
+          "legendFormat": "{{service}} {{action}} p95",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -403,8 +438,13 @@
       "description": "**JVM heap 사용률 (%)**\n\n`jvm_memory_used / jvm_memory_max * 100` (heap area).\n\n---\n**읽는 법**\n- `>80%` 지속 : heap 부족 → GC 풀가동 → latency 튐.\n\n**조치**\n- `JAVA_OPTS: -Xmx` 상향 (컨테이너 limit 까지 여유 두기)\n- 누수 의심이면 heap dump 분석\n",
       "targets": [
         {
-          "expr": "100 * sum(jvm_memory_used_bytes{namespace=\"$namespace\", app=~\"$app\", area=\"heap\"}) by (app) / sum(jvm_memory_max_bytes{namespace=\"$namespace\", app=~\"$app\", area=\"heap\"}) by (app)",
-          "legendFormat": "{{app}}"
+          "expr": "100 * sum by (service) (jvm_memory_used_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", area=\"heap\"}) / sum by (service) (jvm_memory_max_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", area=\"heap\"})",
+          "legendFormat": "{{service}}",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -432,8 +472,13 @@
       "description": "**초당 GC 총 pause 시간 합**\n\n값 `0.1` = 1초 중 0.1초를 GC 에 소비 = CPU 의 10%가 GC.\n\n---\n**읽는 법**\n- `>0.1` 지속 : GC 오버헤드 심각.\n\n**조치**\n- heap 확대\n- GC 로그 켜고 (`-Xlog:gc*`) 원인 분석\n- ZGC 고려\n",
       "targets": [
         {
-          "expr": "sum(rate(jvm_gc_pause_seconds_sum{namespace=\"$namespace\", app=~\"$app\"}[1m])) by (app, action)",
-          "legendFormat": "{{app}} {{action}}"
+          "expr": "sum by (service, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
+          "legendFormat": "{{service}} {{action}}",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -471,12 +516,22 @@
       "description": "**Lettuce (Spring Boot Redis 클라이언트) 성능**\n\n- avg 지연 (초)\n- ops/s (초당 호출 수)\n\n---\n**읽는 법**\n- `avg > 10ms` : Redis 응답 지연. 네트워크 / Redis CPU / TLS handshake 병목.\n- 부하 증가에도 ops/s 안 오르면 Redis 커넥션 풀 고갈.\n\n**조치**\n- `spring.data.redis.lettuce.pool.max-active` 상향\n- ElastiCache 인스턴스 스케일 또는 cluster mode\n",
       "targets": [
         {
-          "expr": "sum(rate(lettuce_command_completion_seconds_sum{namespace=\"$namespace\", app=~\"$app\"}[1m])) by (app) / sum(rate(lettuce_command_completion_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[1m])) by (app)",
-          "legendFormat": "{{app}} avg (Lettuce)"
+          "expr": "sum by (service) (rate(lettuce_command_completion_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) / sum by (service) (rate(lettuce_command_completion_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
+          "legendFormat": "{{service}} avg",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "sum(rate(lettuce_command_completion_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[1m])) by (app)",
-          "legendFormat": "{{app}} ops/s"
+          "expr": "sum by (service) (rate(lettuce_command_completion_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
+          "legendFormat": "{{service}} ops/s",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -589,10 +644,15 @@
       "description": "**가장 느린 엔드포인트 TOP10**\n\nActuator `http_server_requests_seconds` 기반 p95 계산.\n\n---\n**읽는 법**\n- 상단 uri 가 병목. 그 uri 처리 코드/쿼리 집중 튜닝.\n\n**주의**\n- `/load-test/...` 내부 경로 위주로 나옴 (부하 테스트 prefix)\n- 실제 production path 와 다를 수 있음\n",
       "targets": [
         {
-          "expr": "topk(10, histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", app=~\"$app\"}[5m])) by (le, app, uri, method)))",
-          "legendFormat": "{{app}} {{method}} {{uri}}",
+          "expr": "topk(10, histogram_quantile(0.95, sum by (le, service, uri, method) (rate(http_server_request_duration_seconds_bucket{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[5m]))))",
+          "legendFormat": "{{service}} {{method}} {{uri}}",
           "format": "table",
-          "instant": true
+          "instant": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
