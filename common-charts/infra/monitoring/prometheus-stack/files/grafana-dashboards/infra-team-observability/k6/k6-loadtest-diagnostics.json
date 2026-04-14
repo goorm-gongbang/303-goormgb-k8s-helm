@@ -166,7 +166,7 @@
     },
     {
       "id": 4,
-      "title": "HikariCP — active / pending",
+      "title": "HikariCP active / pending (pod별)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -178,34 +178,34 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "**HikariCP (DB 커넥션 풀) 상태**\n\n- `active` : 현재 쿼리 실행 중인 커넥션 수\n- `pending` : 커넥션을 대기 중인 쓰레드 수\n- `max` : 풀 상한\n\n---\n**읽는 법**\n- `pending > 0` 이 지속되면 풀 고갈 → 요청이 DB 커넥션 기다리느라 p99 튐.\n- `active ≈ max` : 이미 풀 풀가동.\n\n**조치**\n- app: `spring.datasource.hikari.maximum-pool-size` 상향\n- DB: max_connections 확인, RDS 인스턴스 스케일업\n- 코드: 느린 쿼리/N+1 튜닝으로 커넥션 점유 시간 줄이기\n",
+      "description": "**pod 단위 DB 커넥션 풀 상태**.\n\n- active: 쿼리 실행 중인 커넥션\n- pending: 커넥션 대기 쓰레드 (>0 지속 시 풀 고갈)\n- max: 해당 pod 의 풀 상한\n\n범례는 `service / pod-suffix` 형태. 서비스 합산이 아닌 pod 단위.",
       "targets": [
         {
-          "expr": "sum by (service) (hikaricp_connections_active{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} active",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
+          },
+          "expr": "sum by (service, pod) (hikaricp_connections_active{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} active [{{pod}}]"
         },
         {
-          "expr": "sum by (service) (hikaricp_connections_pending{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} pending",
           "refId": "B",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
+          },
+          "expr": "sum by (service, pod) (hikaricp_connections_pending{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} pending [{{pod}}]"
         },
         {
-          "expr": "sum by (service) (hikaricp_connections_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} max",
           "refId": "C",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
+          },
+          "expr": "sum by (service, pod) (hikaricp_connections_max{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} max [{{pod}}]"
         }
       ],
       "fieldConfig": {
