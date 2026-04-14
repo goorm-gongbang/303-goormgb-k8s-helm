@@ -303,6 +303,13 @@ excludePaths:
   - "/assets/"
   - "/api/ds/query"
 
+# IP Whitelist (정확 매칭: 해당 IP에서 오는 요청은 WAF 검사 전부 bypass)
+# 사무실 고정 IP, VPN 등 신뢰 IP 등록용. 빈 배열이면 whitelist 기능 비활성화.
+# 환경별 values 파일에서 override 가능.
+ipWhitelist: []
+# IP Whitelist 접두사 매칭 (예: "39.119.192." = 39.119.192.0/24 근사)
+ipWhitelistPrefixes: []
+
 # 응답 설정
 response:
   statusCode: 403
