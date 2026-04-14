@@ -44,6 +44,30 @@ spec:
               - kind: ServiceAccount
                 name: argocd-application-controller
                 namespace: argocd
+          # kube-controller-manager / kubelet / node-problem-detector 등 시스템 주체
+          - subjects:
+              - kind: User
+                name: system:kube-controller-manager
+              - kind: User
+                name: system:kube-scheduler
+              - kind: Group
+                name: system:nodes
+          # 각 critical namespace 에서 정상 동작 중인 ServiceAccount 들의
+          # 자체 리소스 갱신 (leader-election Lease/ConfigMap 등) 허용
+          {{- range .Values.criticalNamespaces }}
+          - subjects:
+              - kind: Group
+                name: system:serviceaccounts:{{ . }}
+          {{- end }}
+          # Lease 는 leader-election 용도이므로 보호 대상에서 아예 제외 (kind 차원에서 불가하므로 리소스명 wildcard)
+          - resources:
+              kinds:
+                - ConfigMap
+              names:
+                - "*-election"
+                - "*-leader"
+                - "kube-controller-manager"
+                - "kube-scheduler"
       validate:
         message: "핵심 네임스페이스({{ "{{ request.namespace }}" }})의 리소스는 ArgoCD를 통해서만 수정/삭제할 수 있습니다."
         deny:
