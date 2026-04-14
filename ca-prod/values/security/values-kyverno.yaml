@@ -6,10 +6,10 @@ admissionController:
   replicas: 1
   resources:
     limits:
-      memory: 384Mi
+      memory: 1Gi
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 200m
+      memory: 512Mi
 
   # Infra 노드에 배치
   nodeSelector:
