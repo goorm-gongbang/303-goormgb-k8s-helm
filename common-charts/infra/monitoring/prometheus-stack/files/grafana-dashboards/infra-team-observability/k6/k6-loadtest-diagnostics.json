@@ -278,7 +278,7 @@
     },
     {
       "id": 6,
-      "title": "Pod CPU 사용량 (vs requests / limits)",
+      "title": "CPU 사용량 (service별, istio-proxy 제외)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -292,40 +292,58 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod, container)",
-          "legendFormat": "{{pod}}/{{container}} usage"
-        },
-        {
-          "expr": "sum(kube_pod_container_resource_requests{namespace=\"$namespace\", resource=\"cpu\"}) by (pod, container)",
-          "legendFormat": "{{pod}}/{{container}} request"
-        },
-        {
-          "expr": "sum(kube_pod_container_resource_limits{namespace=\"$namespace\", resource=\"cpu\"}) by (pod, container)",
-          "legendFormat": "{{pod}}/{{container}} limit"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service) (label_replace(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container=\"java-service\"}[1m]),\"service\",\"$1\",\"pod\",\"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
+          "legendFormat": "{{service}}"
         }
       ],
       "fieldConfig": {
         "defaults": {
           "unit": "short",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1.6
+              },
+              {
+                "color": "red",
+                "value": 1.9
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
           "links": [
             {
               "title": "loadtest-webs 전체 로그 보기",
               "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
               "targetBlank": true
             }
-          ],
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 2,
-            "fillOpacity": 10
-          }
+          ]
         }
       },
-      "description": "**Pod CPU : usage vs requests vs limits**\n\n노드 스케줄링과 throttle 판단 근거.\n\n---\n**읽는 법**\n- `usage == limit` : throttle 진행 중.\n- `usage >> request` : 노드의 다른 파드 밀릴 수 있음 (overcommit).\n- `usage << request` : request 낭비. 줄이면 노드 packing 효율 상승.\n\n\n---\n**CPU 플랫 + limit 값 근접** = throttle 중 (아래 'CPU throttled %' 패널 같이 확인)."
+      "description": "**컨테이너 CPU 실사용량** (java-service 만, istio-proxy 제외).\n\n- limit 은 **대시보드 thresholds 선**으로 표시 (기본 2 core).\n- 사용량이 이 선에 붙으면 throttle 중 → 'CPU throttled %' 패널 확인."
     },
     {
       "id": 7,
-      "title": "Pod Memory 사용량",
+      "title": "Memory 사용량 (service별)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -339,8 +357,13 @@
       },
       "targets": [
         {
-          "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}) by (pod, container)",
-          "legendFormat": "{{pod}}/{{container}}"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service) (label_replace(container_memory_working_set_bytes{namespace=\"$namespace\", container=\"java-service\"},\"service\",\"$1\",\"pod\",\"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
+          "legendFormat": "{{service}}"
         }
       ],
       "fieldConfig": {
