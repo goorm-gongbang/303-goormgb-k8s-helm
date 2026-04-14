@@ -29,6 +29,12 @@ policies:
   requireProbes:
     enabled: false  # staging에서는 비활성화
 
+  protectCriticalNamespaces:
+    enabled: true
+
+  requireArgocdManagement:
+    enabled: true
+
 excludeNamespaces:
   # Kubernetes system
   - kube-system

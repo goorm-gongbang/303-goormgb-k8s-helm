@@ -29,6 +29,12 @@ policies:
   requireProbes:
     enabled: true
 
+  protectCriticalNamespaces:
+    enabled: true
+
+  requireArgocdManagement:
+    enabled: true
+
 excludeNamespaces:
   # Kubernetes system
   - kube-system
