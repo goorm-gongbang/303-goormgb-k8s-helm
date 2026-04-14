@@ -1,6 +1,6 @@
 {
   "annotations": { "list": [] },
-  "description": "loadtest-webs 네임스페이스의 Pod 리소스 현황. Pod 수, CPU/Memory requests/limits 설정값, 실제 사용량을 모니터링합니다.",
+  "description": "loadtest-webs / loadtest-ai 네임스페이스의 Pod 리소스 현황. Pod 수, CPU/Memory requests/limits 설정값, 실제 사용량을 모니터링합니다.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -10,11 +10,11 @@
     { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }, "id": 100, "panels": [], "title": "리소스 요약", "type": "row" },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "loadtest-webs 네임스페이스의 전체 Pod 수",
+      "description": "loadtest-webs / loadtest-ai 네임스페이스의 전체 Pod 수",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 3, "x": 0, "y": 1 }, "id": 1,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"}) or vector(0)", "legendFormat": "Pods", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}) or vector(0)", "legendFormat": "Pods", "refId": "A" }],
       "title": "Pod 수", "type": "stat"
     },
     {
@@ -23,7 +23,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short", "decimals": 1 }, "overrides": [] },
       "gridPos": { "h": 4, "w": 3, "x": 3, "y": 1 }, "id": 2,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"cpu\"}) or vector(0)", "legendFormat": "CPU Req", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{namespace=~\"loadtest-(webs|ai)\", resource=\"cpu\"}) or vector(0)", "legendFormat": "CPU Req", "refId": "A" }],
       "title": "CPU Requests", "type": "stat"
     },
     {
@@ -32,7 +32,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "orange", "value": null }] }, "unit": "short", "decimals": 1 }, "overrides": [] },
       "gridPos": { "h": 4, "w": 3, "x": 6, "y": 1 }, "id": 3,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"cpu\"}) or vector(0)", "legendFormat": "CPU Limit", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_limits{namespace=~\"loadtest-(webs|ai)\", resource=\"cpu\"}) or vector(0)", "legendFormat": "CPU Limit", "refId": "A" }],
       "title": "CPU Limits", "type": "stat"
     },
     {
@@ -41,7 +41,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "bytes" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 3, "x": 9, "y": 1 }, "id": 4,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"memory\"}) or vector(0)", "legendFormat": "Mem Req", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{namespace=~\"loadtest-(webs|ai)\", resource=\"memory\"}) or vector(0)", "legendFormat": "Mem Req", "refId": "A" }],
       "title": "Memory Requests", "type": "stat"
     },
     {
@@ -50,7 +50,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "orange", "value": null }] }, "unit": "bytes" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 3, "x": 12, "y": 1 }, "id": 5,
       "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"memory\"}) or vector(0)", "legendFormat": "Mem Limit", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_limits{namespace=~\"loadtest-(webs|ai)\", resource=\"memory\"}) or vector(0)", "legendFormat": "Mem Limit", "refId": "A" }],
       "title": "Memory Limits", "type": "stat"
     },
     {
@@ -59,7 +59,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] }, "unit": "percent", "min": 0, "max": 100 }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 15, "y": 1 }, "id": 6,
       "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "showThresholdLabels": false, "showThresholdMarkers": true, "sizing": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m])) / sum(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"cpu\"}) or vector(0)", "legendFormat": "CPU", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"}[5m])) / sum(kube_pod_container_resource_limits{namespace=~\"loadtest-(webs|ai)\", resource=\"cpu\"}) or vector(0)", "legendFormat": "CPU", "refId": "A" }],
       "title": "CPU 사용률 (vs Limits)", "type": "gauge"
     },
     {
@@ -68,7 +68,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] }, "unit": "percent", "min": 0, "max": 100 }, "overrides": [] },
       "gridPos": { "h": 4, "w": 5, "x": 19, "y": 1 }, "id": 7,
       "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "showThresholdLabels": false, "showThresholdMarkers": true, "sizing": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"memory\"}) or vector(0)", "legendFormat": "Memory", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "100 * sum(container_memory_working_set_bytes{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=~\"loadtest-(webs|ai)\", resource=\"memory\"}) or vector(0)", "legendFormat": "Memory", "refId": "A" }],
       "title": "Memory 사용률 (vs Limits)", "type": "gauge"
     },
     { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 }, "id": 103, "panels": [], "title": "노드/서비스 분포", "type": "row" },
@@ -78,7 +78,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "purple", "value": null }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 3, "w": 3, "x": 0, "y": 6 }, "id": 30,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})) or vector(0)", "legendFormat": "Nodes", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(count by (node) (kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"})) or vector(0)", "legendFormat": "Nodes", "refId": "A" }],
       "title": "노드 수", "type": "stat"
     },
     {
@@ -87,7 +87,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 3, "w": 3, "x": 3, "y": 6 }, "id": 33,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(count by (service) (label_replace(kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))) or vector(0)", "legendFormat": "Services", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(count by (service) (label_replace(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))) or vector(0)", "legendFormat": "Services", "refId": "A" }],
       "title": "서비스 수", "type": "stat"
     },
     {
@@ -96,7 +96,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 6, "w": 9, "x": 6, "y": 6 }, "id": 31,
       "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "pie", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "legendFormat": "{{node}}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"})", "legendFormat": "{{node}}", "refId": "A" }],
       "title": "노드별 Pod 분포", "type": "piechart"
     },
     {
@@ -105,7 +105,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 6, "w": 9, "x": 15, "y": 6 }, "id": 34,
       "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "pie", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (service) (label_replace(kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "legendFormat": "{{service}}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (service) (label_replace(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "legendFormat": "{{service}}", "refId": "A" }],
       "title": "서비스별 Pod 분포", "type": "piechart"
     },
     {
@@ -124,12 +124,12 @@
       "gridPos": { "h": 6, "w": 12, "x": 0, "y": 12 }, "id": 32,
       "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Pods" }] },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_labels * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"cpu\"} * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "C" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"memory\"} * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "D" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]) * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "E" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"} * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "F" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"})", "format": "table", "instant": true, "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_labels * on(node) group_left() count by (node) (kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"})", "format": "table", "instant": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"cpu\"} * on(node) group_left() count by (node) (kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"})", "format": "table", "instant": true, "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"memory\"} * on(node) group_left() count by (node) (kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"})", "format": "table", "instant": true, "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (rate(container_cpu_usage_seconds_total{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"}[5m]) * on(pod, namespace) group_left(node) kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"})", "format": "table", "instant": true, "refId": "E" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (container_memory_working_set_bytes{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"} * on(pod, namespace) group_left(node) kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"})", "format": "table", "instant": true, "refId": "F" }
       ],
       "title": "노드별 리소스 현황",
       "transformations": [
@@ -161,12 +161,12 @@
       "gridPos": { "h": 6, "w": 12, "x": 12, "y": 12 }, "id": 35,
       "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": true }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Pods" }] },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (service) (label_replace(kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"cpu\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"cpu\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "C" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"memory\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "D" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"memory\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "E" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(db_client_connections_max{namespace=\"loadtest-webs\"}, \"service\", \"$1\", \"app\", \"loadtest-(.+)\"))", "format": "table", "instant": true, "refId": "F" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (service) (label_replace(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_requests{namespace=~\"loadtest-(webs|ai)\", resource=\"cpu\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_limits{namespace=~\"loadtest-(webs|ai)\", resource=\"cpu\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_requests{namespace=~\"loadtest-(webs|ai)\", resource=\"memory\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_limits{namespace=~\"loadtest-(webs|ai)\", resource=\"memory\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "E" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(db_client_connections_max{namespace=~\"loadtest-(webs|ai)\"}, \"service\", \"$1\", \"app\", \"loadtest-(.+)\"))", "format": "table", "instant": true, "refId": "F" }
       ],
       "title": "서비스별 설정 현황",
       "transformations": [
@@ -199,12 +199,12 @@
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 19 }, "id": 10,
       "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "CPU %" }] },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"cpu\", container!=\"\", container!=\"istio-proxy\"}", "format": "table", "instant": true, "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"cpu\", container!=\"\", container!=\"istio-proxy\"}", "format": "table", "instant": true, "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (pod, container) (rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\", container!=\"istio-proxy\"}[5m]))", "format": "table", "instant": true, "refId": "C" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"memory\", container!=\"\", container!=\"istio-proxy\"}", "format": "table", "instant": true, "refId": "D" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"memory\", container!=\"\", container!=\"istio-proxy\"}", "format": "table", "instant": true, "refId": "E" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (pod, container) (container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\", container!=\"istio-proxy\"})", "format": "table", "instant": true, "refId": "F" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_pod_container_resource_requests{namespace=~\"loadtest-(webs|ai)\", resource=\"cpu\", container!=\"\", container!=\"istio-proxy\"}", "format": "table", "instant": true, "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_pod_container_resource_limits{namespace=~\"loadtest-(webs|ai)\", resource=\"cpu\", container!=\"\", container!=\"istio-proxy\"}", "format": "table", "instant": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (pod, container) (rate(container_cpu_usage_seconds_total{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\", container!=\"istio-proxy\"}[5m]))", "format": "table", "instant": true, "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_pod_container_resource_requests{namespace=~\"loadtest-(webs|ai)\", resource=\"memory\", container!=\"\", container!=\"istio-proxy\"}", "format": "table", "instant": true, "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_pod_container_resource_limits{namespace=~\"loadtest-(webs|ai)\", resource=\"memory\", container!=\"\", container!=\"istio-proxy\"}", "format": "table", "instant": true, "refId": "E" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (pod, container) (container_memory_working_set_bytes{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\", container!=\"istio-proxy\"})", "format": "table", "instant": true, "refId": "F" }
       ],
       "title": "Pod/Container 리소스 상세",
       "transformations": [
@@ -229,7 +229,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 30 }, "id": 20,
       "options": { "legend": { "calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]))", "legendFormat": "{{pod}}", "refId": "A" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"}[5m]))", "legendFormat": "{{pod}}", "refId": "A" }
       ],
       "title": "CPU 사용량 (cores)", "type": "timeseries"
     },
@@ -240,7 +240,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 30 }, "id": 21,
       "options": { "legend": { "calcs": ["mean", "max", "lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"})", "legendFormat": "{{pod}}", "refId": "A" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"})", "legendFormat": "{{pod}}", "refId": "A" }
       ],
       "title": "Memory 사용량", "type": "timeseries"
     },
@@ -255,9 +255,9 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 38 }, "id": 22,
       "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"cpu\"})", "legendFormat": "Requests", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"cpu\"})", "legendFormat": "Limits", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]))", "legendFormat": "Usage", "refId": "C" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{namespace=~\"loadtest-(webs|ai)\", resource=\"cpu\"})", "legendFormat": "Requests", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_limits{namespace=~\"loadtest-(webs|ai)\", resource=\"cpu\"})", "legendFormat": "Limits", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"}[5m]))", "legendFormat": "Usage", "refId": "C" }
       ],
       "title": "CPU: Requests vs Limits vs Usage", "type": "timeseries"
     },
@@ -272,9 +272,9 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 }, "id": 23,
       "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"memory\"})", "legendFormat": "Requests", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"memory\"})", "legendFormat": "Limits", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"})", "legendFormat": "Usage", "refId": "C" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_requests{namespace=~\"loadtest-(webs|ai)\", resource=\"memory\"})", "legendFormat": "Requests", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(kube_pod_container_resource_limits{namespace=~\"loadtest-(webs|ai)\", resource=\"memory\"})", "legendFormat": "Limits", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(container_memory_working_set_bytes{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"})", "legendFormat": "Usage", "refId": "C" }
       ],
       "title": "Memory: Requests vs Limits vs Usage", "type": "timeseries"
     }
@@ -302,7 +302,7 @@
   "time": { "from": "now-1h", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
-  "title": "K6 Loadtest-webs Resources",
+  "title": "K6 Loadtest Resources (webs + ai)",
   "uid": "k6-loadtest-webs-resources",
   "version": 1
 }
