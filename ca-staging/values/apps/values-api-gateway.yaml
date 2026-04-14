@@ -61,6 +61,9 @@ istio:
     allowOrigins:
       - "https://staging.playball.one"
       - "http://localhost:3000"
+      # TEMP: prod 클러스터 배포 전까지 playball.one 트래픽을 staging 으로 라우팅 (revert 예정)
+      - "https://playball.one"
+      - "https://www.playball.one"
     allowMethods:
       - GET
       - POST
