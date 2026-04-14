@@ -74,7 +74,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}) or vector(0)",
+          "expr": "count(kube_pod_status_ready{namespace=~\"loadtest-(webs|ai)\", condition=\"true\"} == 1) or vector(0)",
           "legendFormat": "Pods",
           "refId": "A"
         }
@@ -587,7 +587,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count(count by (service) (label_replace(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))) or vector(0)",
+          "expr": "count(count by (service) (label_replace(kube_pod_status_ready{namespace=~\"loadtest-(webs|ai)\", condition=\"true\"} == 1, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))) or vector(0)",
           "legendFormat": "Services",
           "refId": "A"
         }
@@ -642,7 +642,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count by (service) (label_replace(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
+          "expr": "count by (service) (label_replace(kube_pod_status_ready{namespace=~\"loadtest-(webs|ai)\", condition=\"true\"} == 1, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
           "legendFormat": "{{service}}",
           "refId": "A"
         }
@@ -1030,7 +1030,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count by (service) (label_replace(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
+          "expr": "count by (service) (label_replace(kube_pod_status_ready{namespace=~\"loadtest-(webs|ai)\", condition=\"true\"} == 1, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
           "format": "table",
           "instant": true,
           "refId": "A"
