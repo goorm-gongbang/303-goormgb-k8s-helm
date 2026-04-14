@@ -51,21 +51,6 @@
   },
   "panels": [
     {
-      "id": 999,
-      "type": "text",
-      "title": "진단 가이드 (펼쳐서 읽기)",
-      "gridPos": {
-        "h": 12,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "options": {
-        "mode": "markdown",
-        "content": "# 부하 테스트 진단 가이드\n\n## 서비스별 주로 보는 포인트\n| 서비스 | 주요 병목 패널 |\n|---|---|\n| **api-gateway** | Istio P95, Rate Limit 429, ext_authz 지연 |\n| **auth-guard** | HikariCP (active/pending), JVM throttled, Heap |\n| **order-core** | HikariCP, Kafka lag (order topic) |\n| **queue** | Redis 지연, Kafka lag |\n| **seat** | HikariCP, Redis 지연, 429 |\n\n## 진단 순서 (문제 생기면 위에서 아래로)\n\n### 1. 관찰 포인트 3곳 동시 체크\n- **JVM**: CPU throttled % / GC time / Tomcat threads (thread pool 고갈?)\n- **HikariCP**: active · pending · max (풀 고갈이면 pending ↑ → p99 튐)\n- **Istio sidecar**: 수신 P95 vs 앱 실제 latency → 네트워크 지연 vs 앱 지연 분리\n\n### 2. 원인별 조치\n| 증상 | 조치 |\n|---|---|\n| CPU throttled % 높음 (>10%) | `requests: 1` 까지 올리거나 limits 유지 + HPA 추가 |\n| HikariCP pending > 0 지속 | app 설정 `spring.datasource.hikari.maximum-pool-size ↑` / DB 스케일 |\n| Tomcat busy ≈ max | `server.tomcat.threads.max ↑` (기본 200 → 400) |\n| 리소스 여유 있는데 앱 latency 큼 | 코드/쿼리 튜닝 (N+1, 캐시, 비동기화) |\n| 429 많음 | Envoy rate limit descriptor 완화 또는 warm-up stage 추가 |\n| GC pause p95 > 100ms | heap 늘리기 or G1→ZGC |\n\n### 3. scale-out 판단\n- **HPA**: CPU > 70% 유지면 기본 추가 (`replicas: 2-10`)\n- **KEDA** (이미 설치됨): custom metric 기반 선제 스케일\n  - queue → Kafka lag 기반\n  - api-gateway → RPS 또는 Istio metric 기반\n- Karpenter 가 노드 자동 provisioning 해주므로 replicas만 맞추면 됨\n"
-      }
-    },
-    {
       "id": 1,
       "title": "Istio 요청 P95 (server-side)",
       "type": "timeseries",
@@ -73,7 +58,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 12
+        "y": 0
       },
       "datasource": {
         "type": "prometheus",
@@ -90,7 +75,7 @@
           "unit": "ms"
         }
       },
-      "description": "**Istio sidecar 기준 server-side P95**\n\n클라이언트가 실제로 느끼는 응답 지연 (앱 처리 + sidecar 오버헤드 포함).\n\n---\n**읽는 법**\n- `p95 > 1s` : 문제 존재. 아래 패널로 내려가며 병목 파악.\n- 앱 actuator p95 와 비교해서 차이가 크면 sidecar/네트워크 문제, 비슷하면 앱 내부 문제.\n"
+      "description": "## 진단 가이드\n\n**서비스별 병목 포인트**\n- api-gateway: Istio P95, 429, ext_authz\n- auth-guard: HikariCP, JVM throttled, Heap\n- order-core: HikariCP, Kafka lag\n- queue: Redis, Kafka lag\n- seat: HikariCP, Redis, 429\n\n**진단 순서**\n1. JVM throttled / HikariCP pending / Istio P95 동시 체크\n2. 원인별 조치:\n   - CPU throttled > 10% → limits 상향 + HPA\n   - HikariCP pending > 0 → pool size / DB 스케일\n   - Tomcat busy ≈ max → maxThreads 상향\n   - 리소스 여유인데 느림 → 코드/쿼리 튜닝 (N+1)\n   - 429 많음 → rate limit 완화 / warm-up\n   - GC p95 > 100ms → heap 상향 / ZGC\n3. scale-out: HPA (CPU 70%) / KEDA (Kafka lag, RPS)\n\n---\n\n**이 패널 (Istio P95)**: 클라이언트 체감 응답 지연. p95 > 1s 면 문제.\n"
     },
     {
       "id": 2,
@@ -100,7 +85,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 12
+        "y": 0
       },
       "datasource": {
         "type": "prometheus",
@@ -127,7 +112,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 19
+        "y": 7
       },
       "datasource": {
         "type": "prometheus",
@@ -156,7 +141,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 19
+        "y": 7
       },
       "datasource": {
         "type": "prometheus",
@@ -186,7 +171,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 19
+        "y": 7
       },
       "datasource": {
         "type": "prometheus",
@@ -216,7 +201,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 14
       },
       "datasource": {
         "type": "prometheus",
@@ -251,7 +236,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 26
+        "y": 14
       },
       "datasource": {
         "type": "prometheus",
@@ -278,7 +263,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 33
+        "y": 21
       },
       "datasource": {
         "type": "prometheus",
@@ -305,7 +290,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 33
+        "y": 21
       },
       "datasource": {
         "type": "prometheus",
@@ -332,7 +317,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 28
       }
     },
     {
@@ -343,7 +328,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 29
       },
       "datasource": {
         "type": "prometheus",
@@ -370,7 +355,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 29
       },
       "datasource": {
         "type": "prometheus",
@@ -398,7 +383,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 36
       }
     },
     {
@@ -409,7 +394,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 49
+        "y": 37
       },
       "datasource": {
         "type": "prometheus",
@@ -438,7 +423,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 49
+        "y": 37
       },
       "datasource": {
         "type": "prometheus",
@@ -466,7 +451,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 56
+        "y": 44
       }
     },
     {
@@ -477,7 +462,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 57
+        "y": 45
       },
       "datasource": {
         "type": "prometheus",
@@ -508,7 +493,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 57
+        "y": 45
       },
       "datasource": {
         "type": "prometheus",
@@ -530,7 +515,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 64
+        "y": 52
       },
       "datasource": {
         "type": "prometheus",
@@ -557,7 +542,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 64
+        "y": 52
       },
       "datasource": {
         "type": "prometheus",
@@ -584,7 +569,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 71
+        "y": 59
       }
     },
     {
@@ -595,7 +580,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 72
+        "y": 60
       },
       "datasource": {
         "type": "prometheus",
@@ -604,7 +589,7 @@
       "description": "**가장 느린 엔드포인트 TOP10**\n\nActuator `http_server_requests_seconds` 기반 p95 계산.\n\n---\n**읽는 법**\n- 상단 uri 가 병목. 그 uri 처리 코드/쿼리 집중 튜닝.\n\n**주의**\n- `/load-test/...` 내부 경로 위주로 나옴 (부하 테스트 prefix)\n- 실제 production path 와 다를 수 있음\n",
       "targets": [
         {
-          "expr": "topk(10, histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{namespace=\"$namespace\", app=~\"$app\"}[5m])) by (le, app, uri, method)))",
+          "expr": "topk(10, histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{namespace=\"$namespace\", app=~\"$app\"}[5m])) by (le, app, uri, method)))",
           "legendFormat": "{{app}} {{method}} {{uri}}",
           "format": "table",
           "instant": true
