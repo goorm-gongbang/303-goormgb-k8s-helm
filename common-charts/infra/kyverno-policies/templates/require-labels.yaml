@@ -1,6 +1,6 @@
 {{- if .Values.policies.requireLabels.enabled }}
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
 metadata:
   name: require-labels
   labels:
@@ -13,30 +13,33 @@ metadata:
       Pod에 필수 라벨(app, version)이 있는지 확인합니다.
       라벨은 리소스 식별과 서비스 디스커버리에 필수적입니다.
 spec:
-  validationFailureAction: {{ .Values.validationAction | default "Audit" }}
-  background: true
-  rules:
-    - name: check-labels
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      exclude:
-        any:
-          - resources:
-              namespaces:
-                {{- range .Values.excludeNamespaces }}
-                - {{ . }}
-                {{- end }}
-      validate:
-        foreach:
-          {{- range .Values.policies.requireLabels.requiredLabels }}
-          - name: check-label-{{ . }}
-            pattern:
-              metadata:
-                labels:
-                  {{ . }}: "?*"
-            message: "Pod에는 '{{ . }}' 라벨이 필요합니다."
-          {{- end }}
+  failurePolicy: {{ .Values.failurePolicy | default "Ignore" }}
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            {{- range .Values.excludeNamespaces }}
+            - {{ . }}
+            {{- end }}
+  variables:
+    - name: labels
+      expression: "object.metadata.?labels.orValue({})"
+  validations:
+    {{- range .Values.policies.requireLabels.requiredLabels }}
+    - expression: |
+        has(variables.labels.{{ . }}) && variables.labels.{{ . }} != ""
+      message: "Pod에는 '{{ . }}' 라벨이 필요합니다."
+      validationActions:
+        - {{ $.Values.validationAction | default "Deny" }}
+    {{- end }}
+  auditAnnotations:
+    - key: "policy-violation"
+      valueExpression: "'require-labels'"
 {{- end }}
