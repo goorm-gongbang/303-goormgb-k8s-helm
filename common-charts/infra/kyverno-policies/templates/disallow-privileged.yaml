@@ -3,6 +3,8 @@ apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
   name: disallow-privileged-containers
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Disallow Privileged Containers
     policies.kyverno.io/category: Pod Security Standards (Baseline)

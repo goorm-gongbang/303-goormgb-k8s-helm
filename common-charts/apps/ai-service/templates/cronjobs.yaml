@@ -1,0 +1,77 @@
+{{- range $job := .Values.cronJobs }}
+{{- if $job.enabled }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "ai-service.fullname" $ }}-{{ $job.name }}
+  labels:
+    {{- include "ai-service.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: cron-{{ $job.name }}
+spec:
+  schedule: {{ $job.schedule | quote }}
+  concurrencyPolicy: {{ $job.concurrencyPolicy | default "Forbid" }}
+  successfulJobsHistoryLimit: {{ $job.successfulJobsHistoryLimit | default 3 }}
+  failedJobsHistoryLimit: {{ $job.failedJobsHistoryLimit | default 3 }}
+  startingDeadlineSeconds: {{ $job.startingDeadlineSeconds | default 120 }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ $job.backoffLimit | default 1 }}
+      ttlSecondsAfterFinished: {{ $job.ttlSecondsAfterFinished | default 600 }}
+      template:
+        metadata:
+          labels:
+            {{- include "ai-service.selectorLabels" $ | nindent 12 }}
+            {{- include "ai-service.versionLabel" $ | nindent 12 }}
+            app.kubernetes.io/component: cron-{{ $job.name }}
+            sidecar.istio.io/inject: "false"
+        spec:
+          restartPolicy: {{ $job.restartPolicy | default "Never" }}
+          {{- if $.Values.serviceAccountName }}
+          serviceAccountName: {{ $.Values.serviceAccountName }}
+          {{- end }}
+          {{- with $.Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.podSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: {{ $job.name }}
+              {{- if and $.Values.ecr.accountId $.Values.image.name }}
+              image: "{{ $.Values.ecr.accountId }}.dkr.ecr.{{ $.Values.ecr.region }}.amazonaws.com/{{ $.Values.image.name }}:{{ $.Values.image.tag }}"
+              {{- else }}
+              image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+              {{- end }}
+              imagePullPolicy: {{ $.Values.image.pullPolicy }}
+              {{- with $.Values.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              command:
+                {{- toYaml $job.command | nindent 16 }}
+              {{- with $job.args }}
+              args:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              env:
+                {{- with $.Values.env }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+                {{- with $job.extraEnv }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+              {{- with $.Values.envFrom }}
+              envFrom:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              resources:
+                {{- toYaml ($job.resources | default $.Values.resources) | nindent 16 }}
+{{- end }}
+{{- end }}

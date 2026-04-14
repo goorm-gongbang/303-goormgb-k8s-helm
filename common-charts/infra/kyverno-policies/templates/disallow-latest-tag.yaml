@@ -3,6 +3,8 @@ apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
   name: disallow-latest-tag
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Disallow Latest Tag
     policies.kyverno.io/category: Best Practices

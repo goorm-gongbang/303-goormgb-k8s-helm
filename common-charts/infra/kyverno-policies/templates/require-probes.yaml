@@ -3,6 +3,8 @@ apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
   name: require-probes
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Require Probes
     policies.kyverno.io/category: Best Practices
