@@ -1,0 +1,1025 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "title": "부하테스트 진단 (병목 한 눈에)",
+  "tags": [
+    "k6",
+    "loadtest",
+    "diagnostics"
+  ],
+  "timezone": "Asia/Seoul",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "namespace",
+        "type": "constant",
+        "query": "loadtest-webs",
+        "current": {
+          "value": "loadtest-webs",
+          "text": "loadtest-webs"
+        }
+      },
+      {
+        "name": "app",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(up{namespace=\"$namespace\"}, app)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": {
+          "value": "$__all",
+          "text": "All"
+        }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Istio 요청 P95 (server-side)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) by (le, destination_workload))",
+          "legendFormat": "{{destination_workload}} p95",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      },
+      "description": "## 진단 가이드\n\n**서비스별 병목 포인트**\n- api-gateway: Istio P95, 429, ext_authz\n- auth-guard: HikariCP, JVM throttled, Heap\n- order-core: HikariCP, Kafka lag\n- queue: Redis, Kafka lag\n- seat: HikariCP, Redis, 429\n\n**진단 순서**\n1. JVM throttled / HikariCP pending / Istio P95 동시 체크\n2. 원인별 조치:\n   - CPU throttled > 10% → limits 상향 + HPA\n   - HikariCP pending > 0 → pool size / DB 스케일\n   - Tomcat busy ≈ max → maxThreads 상향\n   - 리소스 여유인데 느림 → 코드/쿼리 튜닝 (N+1)\n   - 429 많음 → rate limit 완화 / warm-up\n   - GC p95 > 100ms → heap 상향 / ZGC\n3. scale-out: HPA (CPU 70%) / KEDA (Kafka lag, RPS)\n\n---\n\n**이 패널 (Istio P95)**: 클라이언트 체감 응답 지연. p95 > 1s 면 문제.\n"
+    },
+    {
+      "id": 2,
+      "title": "Istio RPS",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", response_code!=\"0\"}[1m])) by (destination_workload, response_code)",
+          "legendFormat": "{{destination_workload}} [{{response_code}}]",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      },
+      "description": "**Istio 수신 RPS — 상태코드별 분리**\n\n성공(2xx) / 클라이언트 에러(4xx) / 서버 에러(5xx) / 레이트리밋(429) 구분해서 추이를 본다.\n\n---\n**읽는 법**\n- 총량이 부하 예상치 대비 너무 낮다 → 클라이언트가 요청을 못 보내는 중 (connection refused, 커넥션 timeout).\n- 5xx 비율 높다 → 앱 크래시, 백엔드 의존성 장애.\n- 429 비율 높다 → 아래 `Rate Limit 429` 패널로.\n"
+    },
+    {
+      "id": 3,
+      "title": "JVM CPU throttled (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**CPU CFS throttled 비율 (%)**\n\n컨테이너 CPU limit 에 막혀서 CPU 를 못 쓴 시간 비율.\n\n---\n**읽는 법**\n- `>10%` 지속 : CPU limit 이 작거나 workload 가 CPU bound. limit 상향 + HPA 검토.\n- `0%` 인데 latency 높다 : CPU 문제 아님. DB/네트워크/락 의심.\n\n**조치**\n`resources.limits.cpu` 상향 + `requests` 도 같이 올려야 실효성 있음.\n",
+      "targets": [
+        {
+          "expr": "100 * sum(rate(container_cpu_cfs_throttled_periods_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod) / sum(rate(container_cpu_cfs_periods_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod)",
+          "legendFormat": "{{pod}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "HikariCP active / pending (pod별)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**pod 단위 DB 커넥션 풀 상태**.\n\n- active: 쿼리 실행 중인 커넥션\n- pending: 커넥션 대기 쓰레드 (>0 지속 시 풀 고갈)\n- max: 해당 pod 의 풀 상한\n\n범례는 `service / pod-suffix` 형태. 서비스 합산이 아닌 pod 단위.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, pod) (hikaricp_connections_active{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} active [{{pod}}]"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, pod) (hikaricp_connections_pending{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} pending [{{pod}}]"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Tomcat 스레드 사용량",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Tomcat (임베디드) 스레드 사용량**\n\n- `current` : 현재 생성된 워커 스레드\n- `busy` : 요청 처리 중인 스레드\n- `max` : 상한 (기본 200)\n\n---\n**읽는 법**\n- `busy ≈ max` : 스레드 풀 고갈. 새 요청이 OS 레벨에서 queue 대기 중 → latency 폭증.\n\n**조치**\n- `server.tomcat.threads.max` 상향 (예: 200 → 400)\n- 동시에 CPU/메모리 부담 상승 주의 → HPA 같이 검토\n",
+      "targets": [
+        {
+          "expr": "sum by (service, pod) (jvm_threads_live_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} live [{{pod}}]",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "expr": "sum by (service, pod, state) (jvm_threads_states_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core\", state=\"runnable\"})",
+          "legendFormat": "{{service}} runnable [{{pod}}]",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "expr": "sum by (service, pod) (jvm_threads_peak_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} peak [{{pod}}]",
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "CPU 사용량 (pod별, java-service)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container=\"java-service\"}[1m]))",
+          "legendFormat": "{{pod}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 10
+          },
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      },
+      "description": "**컨테이너 CPU 실사용량** (java-service 만, istio-proxy 제외).\n\n값이 2 근처에서 flat 이면 limit 에 붙어 throttle 중 — 'CPU throttled %' 패널 확인."
+    },
+    {
+      "id": 7,
+      "title": "Memory 사용량 (pod별, java-service)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"$namespace\", container=\"java-service\"})",
+          "legendFormat": "{{pod}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      },
+      "description": "**Pod Memory working-set** (RSS 유사한 커널 지표)\n\n---\n**읽는 법**\n- `working-set → limit` 근접 : OOMKill 직전.\n- 우상향만 지속 : 메모리 누수 의심.\n\n**조치**\n- `limits.memory` 상향\n- 앱: heap dump + JFR 로 누수 구간 분석\n"
+    },
+    {
+      "id": 8,
+      "title": "JVM GC pause (p95)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**JVM GC pause p95**\n\nMajor/Minor GC 각 action 별 pause 지연.\n\n---\n**읽는 법**\n- `major GC p95 > 100ms` : latency 튐의 주요 원인.\n- 빈도+크기 둘 다 보려면 아래 `GC 총 시간` 패널 병행 확인.\n\n**조치**\n- `-Xmx` 상향으로 heap 확대\n- G1GC → ZGC 전환 (large heap 에서 pause 짧음)\n",
+      "targets": [
+        {
+          "expr": "max by (service, pod, action) (jvm_gc_pause_seconds_max{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} {{action}} max [{{pod}}]",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "expr": "sum by (service, pod, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m])) / sum by (service, pod, action) (rate(jvm_gc_pause_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}} {{action}} avg [{{pod}}]",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "Replica 수 (HPA 반응 확인)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_deployment_status_replicas_ready{namespace=\"$namespace\"}) by (deployment)",
+          "legendFormat": "{{deployment}} ready"
+        },
+        {
+          "expr": "sum(kube_deployment_spec_replicas{namespace=\"$namespace\"}) by (deployment)",
+          "legendFormat": "{{deployment}} desired"
+        }
+      ],
+      "description": "**Deployment replicas — ready vs desired**\n\nHPA / Karpenter 반응 관찰용.\n\n---\n**읽는 법**\n- `desired` 증가 → `ready` 지연 : cold start (이미지 풀 + JVM 부팅) 영향. 보통 30-90초.\n- 부하 와도 고정 : HPA 미설치 or 임계치 미달.\n\n**조치**\n- HPA 추가 (CPU 70%, replicas 2-10 권장)\n- readinessProbe initialDelay 줄여 cold start 체감 완화\n",
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 100,
+      "type": "row",
+      "title": "에러/쓰로틀링 (엔드포인트 공통)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      }
+    },
+    {
+      "id": 10,
+      "title": "상태코드별 RPS (4xx/5xx 분리)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 29
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", response_code!=\"0\"}[1m])) by (destination_workload, response_code)",
+          "legendFormat": "{{destination_workload}} [{{response_code}}]",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      },
+      "description": "**상태코드별 RPS (분석용 확대 뷰)**\n\n2번 패널과 동일 데이터. 장애 분석 시 한 화면에 넓게 보려고 분리.\n"
+    },
+    {
+      "id": 11,
+      "title": "Rate Limit 429 발생률",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 29
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Rate Limit 429 전용 트렌드**\n\nEnvoy local / global rate limit 에 막혀 돌려보낸 요청 수.\n\n---\n**읽는 법**\n- 부하 증가와 함께 429 치솟음 : 제한선 도달.\n\n**조치**\n- 부하테스트 시 warm-up stage 추가 (초반 낮은 VU 로 slow ramp).\n- 운영 완화 필요시 `rateLimiting.local.perClient.tokensPerFill` 또는 global descriptor 조정.\n",
+      "targets": [
+        {
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", response_code=\"429\"}[1m])) by (destination_workload)",
+          "legendFormat": "{{destination_workload}} 429/s",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 200,
+      "type": "row",
+      "title": "JVM / Heap (모든 Spring Boot 앱 공통)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      }
+    },
+    {
+      "id": 12,
+      "title": "Heap 사용률 (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 37
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**JVM heap 사용률 (%)**\n\n`jvm_memory_used / jvm_memory_max * 100` (heap area).\n\n---\n**읽는 법**\n- `>80%` 지속 : heap 부족 → GC 풀가동 → latency 튐.\n\n**조치**\n- `JAVA_OPTS: -Xmx` 상향 (컨테이너 limit 까지 여유 두기)\n- 누수 의심이면 heap dump 분석\n",
+      "targets": [
+        {
+          "expr": "100 * sum by (service, pod) (jvm_memory_used_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core\", area=\"heap\"}) / sum by (service, pod) (jvm_memory_max_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core\", area=\"heap\"})",
+          "legendFormat": "{{service}} [{{pod}}]",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 13,
+      "title": "GC 총 시간 (초당)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 37
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**초당 GC 총 pause 시간 합**\n\n값 `0.1` = 1초 중 0.1초를 GC 에 소비 = CPU 의 10%가 GC.\n\n---\n**읽는 법**\n- `>0.1` 지속 : GC 오버헤드 심각.\n\n**조치**\n- heap 확대\n- GC 로그 켜고 (`-Xlog:gc*`) 원인 분석\n- ZGC 고려\n",
+      "targets": [
+        {
+          "expr": "sum by (service, pod, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}} {{action}} [{{pod}}]",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 300,
+      "type": "row",
+      "title": "외부 의존성 (Redis, Kafka)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 44
+      }
+    },
+    {
+      "id": 14,
+      "title": "Redis (ElastiCache) — ops/s / 메모리",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 45
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**redis-exporter 가 ElastiCache 에 붙어 수집하는 서버 사이드 메트릭**.\n\n- `commands/sec` : 초당 명령 처리량\n- `memory used` : Redis 가 점유한 메모리\n- 부하 테스트 시 둘 다 치솟으면 Redis 가 병목.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "rate(redis_commands_processed_total[1m])",
+          "legendFormat": "commands/s"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "redis_memory_used_bytes / 1024 / 1024",
+          "legendFormat": "memory MB"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "redis_connected_clients",
+          "legendFormat": "clients"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 15,
+      "title": "Kafka Producer / Consumer lag",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 45
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Kafka consumer group lag**\n\n가장 오래된 미소비 메시지의 offset 지연 = 얼마나 밀렸는지.\n\n---\n**읽는 법**\n- 계속 증가 : consumer 처리속도 < producer. 밀리는 중.\n- order-core / queue 가 주 consumer.\n\n**조치**\n- consumer 파드 수 상향 (KEDA Kafka scaler 사용 가능)\n- 처리 로직 최적화 / batch 크기 조정\n",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (consumergroup, topic) (kafka_consumergroup_lag)",
+          "legendFormat": "{{consumergroup}} / {{topic}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 400,
+      "type": "row",
+      "title": "엔드포인트별 Slowest (p95) TOP",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 59
+      }
+    },
+    {
+      "id": 18,
+      "title": "가장 느린 엔드포인트 p95 (서비스 × path)",
+      "type": "table",
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 60
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**가장 느린 엔드포인트 TOP10**\n\nActuator `http_server_requests_seconds` 기반 p95 계산.\n\n---\n**읽는 법**\n- 상단 uri 가 병목. 그 uri 처리 코드/쿼리 집중 튜닝.\n\n**주의**\n- `/load-test/...` 내부 경로 위주로 나옴 (부하 테스트 prefix)\n- 실제 production path 와 다를 수 있음\n",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "topk(10, histogram_quantile(0.95, sum by (le, service, uri, method) (rate(http_server_requests_seconds_bucket{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", uri!=\"UNKNOWN\"}[15m]))) and on(service, uri, method) (sum by (service, uri, method) (rate(http_server_requests_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", uri!=\"UNKNOWN\"}[15m])) > 0))",
+          "legendFormat": "{{service}} {{method}} {{uri}}",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 500,
+      "title": "Pod 재시작 / OOMKill (503 원인 힌트)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 66
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Pod 재시작 급증 or OOMKill 발생 시 503 폭증.**\n\n- `restart` 수가 튀면 readiness/liveness 실패 또는 OOM.\n- `reason=OOMKilled` 는 메모리 limit 부족.\n- 503 폭증과 같이 보이면 재시작 루프가 원인.\n",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (pod) (kube_pod_container_status_restarts_total{namespace=\"$namespace\"})",
+          "legendFormat": "{{pod}} restart"
+        },
+        {
+          "refId": "B",
+          "expr": "sum by (pod, reason) (kube_pod_container_status_last_terminated_reason{namespace=\"$namespace\", reason!=\"\"})",
+          "legendFormat": "{{pod}} terminated: {{reason}}"
+        }
+      ]
+    },
+    {
+      "id": 501,
+      "title": "5xx 에러 RPS (503 업스트림 실패)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 66
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**5xx 발생 시에만 데이터 표시**.\n\n- No data = 최근 5분 내 5xx 0건 = 시스템 정상.\n- 503 폭증이면 업스트림 실패 (CPU throttle / HikariCP 고갈 / pod crash).\n- 패널 클릭해 Loki 에서 에러 로그 조회.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", response_code=~\"5..\"}[5m])) by (destination_workload, response_code)",
+          "legendFormat": "{{destination_workload}} [{{response_code}}]"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "links": [
+            {
+              "title": "에러 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|503|Exception)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 700,
+      "type": "row",
+      "title": "Caffeine 캐시 (DB hit 감소 효과)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 73
+      }
+    },
+    {
+      "id": 701,
+      "title": "Cache hit rate (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 74
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Caffeine 캐시 적중률**.\n\n- 높을수록 DB 조회 안 하고 로컬 메모리에서 처리 → DB 부하 감소\n- 70~90% 이상이면 효과 큼\n- 낮으면 TTL/크기/key 전략 재검토",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "100 * sum by (service, cache) (rate(cache_gets_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\", result=\"hit\"}[1m])) / sum by (service, cache) (rate(cache_gets_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}} / {{cache}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": 702,
+      "title": "Cache gets/puts/evictions/size",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 74
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**캐시 동작 상세**.\n\n- gets(hit/miss): 조회 요청 수\n- puts: 캐시 저장 (miss 후 DB 조회 → 저장)\n- evictions: 상한/TTL 로 제거된 수 — 과도하면 캐시 크기 늘려야\n- size: 현재 캐시에 있는 항목 수",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache, result) (rate(cache_gets_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}}/{{cache}} gets({{result}})"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache) (rate(cache_puts_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}}/{{cache}} puts"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache) (rate(cache_evictions_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}}/{{cache}} evict"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache) (cache_size{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}}/{{cache}} size"
+        }
+      ]
+    },
+    {
+      "id": 703,
+      "title": "Redis 캐시 hit rate (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 81
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Redis 서버 적중률** (%)\n\n- hits ÷ (hits + misses) × 100\n- 90% 이상이면 캐시 효과 좋음\n- 낮으면 TTL 짧음 / write-only 패턴 / key 전략 재검토",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "100 * sum(rate(redis_keyspace_hits_total[1m])) by (instance) / (sum(rate(redis_keyspace_hits_total[1m])) by (instance) + sum(rate(redis_keyspace_misses_total[1m])) by (instance))",
+          "legendFormat": "{{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": 704,
+      "title": "Redis hits/misses 초당",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 81
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Redis 의 초당 hit / miss 횟수. hit rate 패널이 비율, 이 패널이 절대량.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(redis_keyspace_hits_total[1m])) by (instance)",
+          "legendFormat": "{{instance}} hits/s"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(redis_keyspace_misses_total[1m])) by (instance)",
+          "legendFormat": "{{instance}} misses/s"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0
+        }
+      }
+    }
+  ]
+}

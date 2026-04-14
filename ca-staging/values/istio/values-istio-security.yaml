@@ -148,6 +148,7 @@ teamIPs: &teamIPs
   - "121.175.144.99"
   - "203.251.185.110"
   - "59.30.250.162"
+  - "211.217.131.15"
 
 # IP Whitelist (정확 매칭: WAF/차단 전부 bypass)
 ipWhitelist: *teamIPs
@@ -433,6 +434,38 @@ mtls:
       namespace: staging-webs
       selector:
         app: staging-api-gateway
+      metricsPort: 9090
+      mode: DISABLE
+
+    # loadtest-webs (Prometheus 가 actuator 9090 포트를 scrape 해야 HikariCP/Tomcat 메트릭 수집 가능)
+    - name: loadtest-auth-guard-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-auth-guard
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-queue-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-queue
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-seat-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-seat
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-order-core-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-order-core
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-api-gateway-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-api-gateway
       metricsPort: 9090
       mode: DISABLE
 
