@@ -14,7 +14,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 3, "x": 0, "y": 1 }, "id": 1,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_info{namespace=\"loadtest-webs\"}) or vector(0)", "legendFormat": "Pods", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"}) or vector(0)", "legendFormat": "Pods", "refId": "A" }],
       "title": "Pod 수", "type": "stat"
     },
     {
@@ -78,7 +78,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "purple", "value": null }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 3, "w": 3, "x": 0, "y": 6 }, "id": 30,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})) or vector(0)", "legendFormat": "Nodes", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})) or vector(0)", "legendFormat": "Nodes", "refId": "A" }],
       "title": "노드 수", "type": "stat"
     },
     {
@@ -87,7 +87,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 3, "w": 3, "x": 3, "y": 6 }, "id": 33,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(count by (service) (label_replace(kube_pod_info{namespace=\"loadtest-webs\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))) or vector(0)", "legendFormat": "Services", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(count by (service) (label_replace(kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))) or vector(0)", "legendFormat": "Services", "refId": "A" }],
       "title": "서비스 수", "type": "stat"
     },
     {
@@ -96,7 +96,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 6, "w": 9, "x": 6, "y": 6 }, "id": 31,
       "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "pie", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "legendFormat": "{{node}}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "legendFormat": "{{node}}", "refId": "A" }],
       "title": "노드별 Pod 분포", "type": "piechart"
     },
     {
@@ -105,7 +105,7 @@
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "mappings": [], "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 6, "w": 9, "x": 15, "y": 6 }, "id": 34,
       "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "pie", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
-      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (service) (label_replace(kube_pod_info{namespace=\"loadtest-webs\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "legendFormat": "{{service}}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (service) (label_replace(kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "legendFormat": "{{service}}", "refId": "A" }],
       "title": "서비스별 Pod 분포", "type": "piechart"
     },
     {
@@ -124,12 +124,12 @@
       "gridPos": { "h": 6, "w": 12, "x": 0, "y": 12 }, "id": 32,
       "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Pods" }] },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_labels * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"cpu\"} * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "C" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"memory\"} * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "D" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]) * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "E" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"} * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\"})", "format": "table", "instant": true, "refId": "F" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_labels * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"cpu\"} * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "kube_node_status_allocatable{resource=\"memory\"} * on(node) group_left() count by (node) (kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (rate(container_cpu_usage_seconds_total{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"}[5m]) * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "E" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (node) (container_memory_working_set_bytes{namespace=\"loadtest-webs\", container!=\"\", container!=\"POD\"} * on(pod, namespace) group_left(node) kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"})", "format": "table", "instant": true, "refId": "F" }
       ],
       "title": "노드별 리소스 현황",
       "transformations": [
@@ -161,7 +161,7 @@
       "gridPos": { "h": 6, "w": 12, "x": 12, "y": 12 }, "id": 35,
       "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": true }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Pods" }] },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (service) (label_replace(kube_pod_info{namespace=\"loadtest-webs\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count by (service) (label_replace(kube_pod_info{namespace=\"loadtest-webs\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "A" },
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"cpu\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "B" },
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_limits{namespace=\"loadtest-webs\", resource=\"cpu\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "C" },
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (service) (label_replace(kube_pod_container_resource_requests{namespace=\"loadtest-webs\", resource=\"memory\", container!=\"istio-proxy\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))", "format": "table", "instant": true, "refId": "D" },
