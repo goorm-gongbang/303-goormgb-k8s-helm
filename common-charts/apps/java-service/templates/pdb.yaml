@@ -6,7 +6,11 @@ metadata:
   labels:
     {{- include "java-service.labels" . | nindent 4 }}
 spec:
+  {{- if hasKey .Values.pdb "maxUnavailable" }}
+  maxUnavailable: {{ .Values.pdb.maxUnavailable }}
+  {{- else }}
   minAvailable: {{ .Values.pdb.minAvailable }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "java-service.selectorLabels" . | nindent 6 }}
