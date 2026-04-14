@@ -853,6 +853,157 @@
           ]
         }
       }
+    },
+    {
+      "id": 700,
+      "type": "row",
+      "title": "Caffeine 캐시 (DB hit 감소 효과)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 73
+      }
+    },
+    {
+      "id": 701,
+      "title": "Cache hit rate (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 74
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Caffeine 캐시 적중률**.\n\n- 높을수록 DB 조회 안 하고 로컬 메모리에서 처리 → DB 부하 감소\n- 70~90% 이상이면 효과 큼\n- 낮으면 TTL/크기/key 전략 재검토",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "100 * sum by (service, cache) (rate(cache_gets_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\", result=\"hit\"}[1m])) / sum by (service, cache) (rate(cache_gets_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}} / {{cache}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": 702,
+      "title": "Cache gets/puts/evictions/size",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 74
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**캐시 동작 상세**.\n\n- gets(hit/miss): 조회 요청 수\n- puts: 캐시 저장 (miss 후 DB 조회 → 저장)\n- evictions: 상한/TTL 로 제거된 수 — 과도하면 캐시 크기 늘려야\n- size: 현재 캐시에 있는 항목 수",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache, result) (rate(cache_gets_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}}/{{cache}} gets({{result}})"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache) (rate(cache_puts_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}}/{{cache}} puts"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache) (rate(cache_evictions_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}}/{{cache}} evict"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache) (cache_size{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}}/{{cache}} size"
+        }
+      ]
+    },
+    {
+      "id": 703,
+      "title": "Redis (ElastiCache) 캐시 hit rate",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 81
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Redis 서버 전체의 조회 적중률**.\n\n- `hits / (hits + misses) * 100`\n- 90% 이상 = 캐시 효과 좋음\n- 낮으면 앱이 Redis 를 write-only 로 쓰거나 TTL 너무 짧음",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "100 * sum(rate(redis_keyspace_hits_total[1m])) by (instance) / (sum(rate(redis_keyspace_hits_total[1m])) by (instance) + sum(rate(redis_keyspace_misses_total[1m])) by (instance))",
+          "legendFormat": "{{instance}} hit rate"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(redis_keyspace_hits_total[1m])) by (instance)",
+          "legendFormat": "{{instance}} hits/s"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(redis_keyspace_misses_total[1m])) by (instance)",
+          "legendFormat": "{{instance}} misses/s"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0
+        }
+      }
     }
   ]
 }
