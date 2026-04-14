@@ -121,7 +121,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /actuator/health/readiness
+    path: /actuator/health/readyz
     port: *port
   initialDelaySeconds: 60
   periodSeconds: 5
