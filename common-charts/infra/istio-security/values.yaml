@@ -120,9 +120,9 @@ patterns:
       - name: "cmd-pipe"
         pattern: "|%s*[a-zA-Z]"
         description: "Pipe command"
-      - name: "cmd-backtick"
-        pattern: "`[^`]+`"
-        description: "Backtick execution"
+      # cmd-backtick 제거(2026-04-14): Grafana 대시보드 URL(|= `` 빈 백틱쌍)이 Referer 로
+      # 붙으면서 팀원 IP 대량 오탐/차단. URL에 백틱 포함한 RCE는 현실성 낮고 body 미검사
+      # 구조상 어차피 잡지 못해 ROI 낮음. 상세: sprint7/troubleshooting/waf-grafana-fp.md
       - name: "cmd-dollar-paren"
         pattern: "%$%([^%)]+%)"
         description: "Dollar-paren execution"
