@@ -93,7 +93,7 @@ env:
   - name: SEAT_URL
     value: "http://seat.staging-webs.svc.cluster.local:8082"
   - name: ORDER_CORE_URL
-    value: "http://order-core.staging-webs.svc.cluster.local:8083"
+    value: "http://order-core.staging-webs.svc.cluster.local:18083"
   - name: REDIS_HOST
     valueFrom:
       secretKeyRef:
