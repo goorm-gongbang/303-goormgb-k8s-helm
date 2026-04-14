@@ -94,7 +94,7 @@ initialConfig:
             "host": "goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com",
             "port": "5432",
             "database": "ai_defense",
-            "user-name": "ai_defense_user",
+            "user-name": "ai_defense",
             "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/ai_defense?sslmode=require",
             "type": "dev",
             "provider-properties": {
@@ -103,7 +103,7 @@ initialConfig:
           }
         },
         "staging-clickhouse": {
-          "provider": "clickhouse",
+          "provider": "generic",
           "driver": "clickhouse",
           "name": "Staging ClickHouse (AI Team)",
           "save-password": false,
@@ -113,7 +113,7 @@ initialConfig:
             "host": "clickhouse.data.svc.cluster.local",
             "port": "8123",
             "database": "ai_defense",
-            "user-name": "default",
+            "user-name": "ai_defense",
             "url": "jdbc:clickhouse://clickhouse.data.svc.cluster.local:8123/ai_defense",
             "type": "dev"
           }
