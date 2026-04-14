@@ -197,15 +197,6 @@
           },
           "expr": "sum by (service, pod) (hikaricp_connections_pending{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
           "legendFormat": "{{service}} pending [{{pod}}]"
-        },
-        {
-          "refId": "C",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "sum by (service, pod) (hikaricp_connections_max{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
-          "legendFormat": "{{service}} max [{{pod}}]"
         }
       ],
       "fieldConfig": {
