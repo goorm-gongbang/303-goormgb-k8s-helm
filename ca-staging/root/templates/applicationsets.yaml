@@ -38,20 +38,20 @@ spec:
         notifications.argoproj.io/subscribe.on-health-degraded.discord-app: ""
     spec:
       project: {{ $project }}
-      sources:
-        - repoURL: {{ $git.repoURL }}
-          targetRevision: {{ $git.targetRevision }}
-          ref: values
-        - repoURL: {{ $git.repoURL }}
-          targetRevision: {{ $git.targetRevision }}
-          path: {{ $appSet.chartPath }}
-          helm:
-            valueFiles:
-              - $values/{{ $appSet.valueFilesPattern | replace "../../../" "" }}
-            valuesObject:
-              ecr:
-                accountId: "{{ $ecr.accountId }}"
-                region: "{{ $ecr.region }}"
+      # Single source — 같은 git repo 두 번 참조 시 ArgoCD 가
+      # 두 source 의 git revision 을 다른 시점에 resolve 해 충돌 발생.
+      # chart path 기준 상대 경로로 valueFiles 직접 지정해 single-source 로 통합.
+      source:
+        repoURL: {{ $git.repoURL }}
+        targetRevision: {{ $git.targetRevision }}
+        path: {{ $appSet.chartPath }}
+        helm:
+          valueFiles:
+            - {{ $appSet.valueFilesPattern }}
+          valuesObject:
+            ecr:
+              accountId: "{{ $ecr.accountId }}"
+              region: "{{ $ecr.region }}"
       destination:
         server: {{ $destination.server }}
         namespace: {{ $appSet.namespace }}
