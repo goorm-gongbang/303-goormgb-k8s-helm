@@ -1,0 +1,620 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "title": "부하테스트 진단 (병목 한 눈에)",
+  "tags": [
+    "k6",
+    "loadtest",
+    "diagnostics"
+  ],
+  "timezone": "Asia/Seoul",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "namespace",
+        "type": "constant",
+        "query": "loadtest-webs",
+        "current": {
+          "value": "loadtest-webs",
+          "text": "loadtest-webs"
+        }
+      },
+      {
+        "name": "app",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(up{namespace=\"$namespace\"}, app)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": {
+          "value": "$__all",
+          "text": "All"
+        }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 999,
+      "type": "text",
+      "title": "진단 가이드 (펼쳐서 읽기)",
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "# 부하 테스트 진단 가이드\n\n## 서비스별 주로 보는 포인트\n| 서비스 | 주요 병목 패널 |\n|---|---|\n| **api-gateway** | Istio P95, Rate Limit 429, ext_authz 지연 |\n| **auth-guard** | HikariCP (active/pending), JVM throttled, Heap |\n| **order-core** | HikariCP, Kafka lag (order topic) |\n| **queue** | Redis 지연, Kafka lag |\n| **seat** | HikariCP, Redis 지연, 429 |\n\n## 진단 순서 (문제 생기면 위에서 아래로)\n\n### 1. 관찰 포인트 3곳 동시 체크\n- **JVM**: CPU throttled % / GC time / Tomcat threads (thread pool 고갈?)\n- **HikariCP**: active · pending · max (풀 고갈이면 pending ↑ → p99 튐)\n- **Istio sidecar**: 수신 P95 vs 앱 실제 latency → 네트워크 지연 vs 앱 지연 분리\n\n### 2. 원인별 조치\n| 증상 | 조치 |\n|---|---|\n| CPU throttled % 높음 (>10%) | `requests: 1` 까지 올리거나 limits 유지 + HPA 추가 |\n| HikariCP pending > 0 지속 | app 설정 `spring.datasource.hikari.maximum-pool-size ↑` / DB 스케일 |\n| Tomcat busy ≈ max | `server.tomcat.threads.max ↑` (기본 200 → 400) |\n| 리소스 여유 있는데 앱 latency 큼 | 코드/쿼리 튜닝 (N+1, 캐시, 비동기화) |\n| 429 많음 | Envoy rate limit descriptor 완화 또는 warm-up stage 추가 |\n| GC pause p95 > 100ms | heap 늘리기 or G1→ZGC |\n\n### 3. scale-out 판단\n- **HPA**: CPU > 70% 유지면 기본 추가 (`replicas: 2-10`)\n- **KEDA** (이미 설치됨): custom metric 기반 선제 스케일\n  - queue → Kafka lag 기반\n  - api-gateway → RPS 또는 Istio metric 기반\n- Karpenter 가 노드 자동 provisioning 해주므로 replicas만 맞추면 됨\n"
+      }
+    },
+    {
+      "id": 1,
+      "title": "Istio 요청 P95 (server-side)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace=\"$namespace\", destination_workload=~\"$app\"}[1m])) by (le, destination_workload))",
+          "legendFormat": "{{destination_workload}} p95"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        }
+      },
+      "description": "**Istio sidecar 기준 server-side P95**\n\n클라이언트가 실제로 느끼는 응답 지연 (앱 처리 + sidecar 오버헤드 포함).\n\n---\n**읽는 법**\n- `p95 > 1s` : 문제 존재. 아래 패널로 내려가며 병목 파악.\n- 앱 actuator p95 와 비교해서 차이가 크면 sidecar/네트워크 문제, 비슷하면 앱 내부 문제.\n"
+    },
+    {
+      "id": 2,
+      "title": "Istio RPS",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"$app\"}[1m])) by (destination_workload, response_code)",
+          "legendFormat": "{{destination_workload}} [{{response_code}}]"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        }
+      },
+      "description": "**Istio 수신 RPS — 상태코드별 분리**\n\n성공(2xx) / 클라이언트 에러(4xx) / 서버 에러(5xx) / 레이트리밋(429) 구분해서 추이를 본다.\n\n---\n**읽는 법**\n- 총량이 부하 예상치 대비 너무 낮다 → 클라이언트가 요청을 못 보내는 중 (connection refused, 커넥션 timeout).\n- 5xx 비율 높다 → 앱 크래시, 백엔드 의존성 장애.\n- 429 비율 높다 → 아래 `Rate Limit 429` 패널로.\n"
+    },
+    {
+      "id": 3,
+      "title": "JVM CPU throttled (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 19
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**CPU CFS throttled 비율 (%)**\n\n컨테이너 CPU limit 에 막혀서 CPU 를 못 쓴 시간 비율.\n\n---\n**읽는 법**\n- `>10%` 지속 : CPU limit 이 작거나 workload 가 CPU bound. limit 상향 + HPA 검토.\n- `0%` 인데 latency 높다 : CPU 문제 아님. DB/네트워크/락 의심.\n\n**조치**\n`resources.limits.cpu` 상향 + `requests` 도 같이 올려야 실효성 있음.\n",
+      "targets": [
+        {
+          "expr": "100 * sum(rate(container_cpu_cfs_throttled_periods_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod) / sum(rate(container_cpu_cfs_periods_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod)",
+          "legendFormat": "{{pod}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "HikariCP — active / pending",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 19
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**HikariCP (DB 커넥션 풀) 상태**\n\n- `active` : 현재 쿼리 실행 중인 커넥션 수\n- `pending` : 커넥션을 대기 중인 쓰레드 수\n- `max` : 풀 상한\n\n---\n**읽는 법**\n- `pending > 0` 이 지속되면 풀 고갈 → 요청이 DB 커넥션 기다리느라 p99 튐.\n- `active ≈ max` : 이미 풀 풀가동.\n\n**조치**\n- app: `spring.datasource.hikari.maximum-pool-size` 상향\n- DB: max_connections 확인, RDS 인스턴스 스케일업\n- 코드: 느린 쿼리/N+1 튜닝으로 커넥션 점유 시간 줄이기\n",
+      "targets": [
+        {
+          "expr": "sum(hikaricp_connections_active{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
+          "legendFormat": "{{app}} active"
+        },
+        {
+          "expr": "sum(hikaricp_connections_pending{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
+          "legendFormat": "{{app}} pending"
+        },
+        {
+          "expr": "sum(hikaricp_connections_max{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
+          "legendFormat": "{{app}} max"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Tomcat 스레드 사용량",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 19
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Tomcat (임베디드) 스레드 사용량**\n\n- `current` : 현재 생성된 워커 스레드\n- `busy` : 요청 처리 중인 스레드\n- `max` : 상한 (기본 200)\n\n---\n**읽는 법**\n- `busy ≈ max` : 스레드 풀 고갈. 새 요청이 OS 레벨에서 queue 대기 중 → latency 폭증.\n\n**조치**\n- `server.tomcat.threads.max` 상향 (예: 200 → 400)\n- 동시에 CPU/메모리 부담 상승 주의 → HPA 같이 검토\n",
+      "targets": [
+        {
+          "expr": "sum(tomcat_threads_current_threads{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
+          "legendFormat": "{{app}} current"
+        },
+        {
+          "expr": "sum(tomcat_threads_busy_threads{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
+          "legendFormat": "{{app}} busy"
+        },
+        {
+          "expr": "sum(tomcat_threads_config_max_threads{namespace=\"$namespace\", app=~\"$app\"}) by (app)",
+          "legendFormat": "{{app}} max"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Pod CPU 사용량 (vs requests / limits)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod, container)",
+          "legendFormat": "{{pod}}/{{container}} usage"
+        },
+        {
+          "expr": "sum(kube_pod_container_resource_requests{namespace=\"$namespace\", resource=\"cpu\"}) by (pod, container)",
+          "legendFormat": "{{pod}}/{{container}} request"
+        },
+        {
+          "expr": "sum(kube_pod_container_resource_limits{namespace=\"$namespace\", resource=\"cpu\"}) by (pod, container)",
+          "legendFormat": "{{pod}}/{{container}} limit"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "**Pod CPU : usage vs requests vs limits**\n\n노드 스케줄링과 throttle 판단 근거.\n\n---\n**읽는 법**\n- `usage == limit` : throttle 진행 중.\n- `usage >> request` : 노드의 다른 파드 밀릴 수 있음 (overcommit).\n- `usage << request` : request 낭비. 줄이면 노드 packing 효율 상승.\n"
+    },
+    {
+      "id": 7,
+      "title": "Pod Memory 사용량",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}) by (pod, container)",
+          "legendFormat": "{{pod}}/{{container}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "**Pod Memory working-set** (RSS 유사한 커널 지표)\n\n---\n**읽는 법**\n- `working-set → limit` 근접 : OOMKill 직전.\n- 우상향만 지속 : 메모리 누수 의심.\n\n**조치**\n- `limits.memory` 상향\n- 앱: heap dump + JFR 로 누수 구간 분석\n"
+    },
+    {
+      "id": 8,
+      "title": "JVM GC pause (p95)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 33
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**JVM GC pause p95**\n\nMajor/Minor GC 각 action 별 pause 지연.\n\n---\n**읽는 법**\n- `major GC p95 > 100ms` : latency 튐의 주요 원인.\n- 빈도+크기 둘 다 보려면 아래 `GC 총 시간` 패널 병행 확인.\n\n**조치**\n- `-Xmx` 상향으로 heap 확대\n- G1GC → ZGC 전환 (large heap 에서 pause 짧음)\n",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(jvm_gc_pause_seconds_bucket{namespace=\"$namespace\", app=~\"$app\"}[1m])) by (le, app, action))",
+          "legendFormat": "{{app}} {{action}} p95"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "Replica 수 (HPA 반응 확인)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 33
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_deployment_status_replicas_ready{namespace=\"$namespace\"}) by (deployment)",
+          "legendFormat": "{{deployment}} ready"
+        },
+        {
+          "expr": "sum(kube_deployment_spec_replicas{namespace=\"$namespace\"}) by (deployment)",
+          "legendFormat": "{{deployment}} desired"
+        }
+      ],
+      "description": "**Deployment replicas — ready vs desired**\n\nHPA / Karpenter 반응 관찰용.\n\n---\n**읽는 법**\n- `desired` 증가 → `ready` 지연 : cold start (이미지 풀 + JVM 부팅) 영향. 보통 30-90초.\n- 부하 와도 고정 : HPA 미설치 or 임계치 미달.\n\n**조치**\n- HPA 추가 (CPU 70%, replicas 2-10 권장)\n- readinessProbe initialDelay 줄여 cold start 체감 완화\n"
+    },
+    {
+      "id": 100,
+      "type": "row",
+      "title": "에러/쓰로틀링 (엔드포인트 공통)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      }
+    },
+    {
+      "id": 10,
+      "title": "상태코드별 RPS (4xx/5xx 분리)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 41
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"$app\"}[1m])) by (destination_workload, response_code)",
+          "legendFormat": "{{destination_workload}} [{{response_code}}]"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        }
+      },
+      "description": "**상태코드별 RPS (분석용 확대 뷰)**\n\n2번 패널과 동일 데이터. 장애 분석 시 한 화면에 넓게 보려고 분리.\n"
+    },
+    {
+      "id": 11,
+      "title": "Rate Limit 429 발생률",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 41
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Rate Limit 429 전용 트렌드**\n\nEnvoy local / global rate limit 에 막혀 돌려보낸 요청 수.\n\n---\n**읽는 법**\n- 부하 증가와 함께 429 치솟음 : 제한선 도달.\n\n**조치**\n- 부하테스트 시 warm-up stage 추가 (초반 낮은 VU 로 slow ramp).\n- 운영 완화 필요시 `rateLimiting.local.perClient.tokensPerFill` 또는 global descriptor 조정.\n",
+      "targets": [
+        {
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"$app\", response_code=\"429\"}[1m])) by (destination_workload)",
+          "legendFormat": "{{destination_workload}} 429/s"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        }
+      }
+    },
+    {
+      "id": 200,
+      "type": "row",
+      "title": "JVM / Heap (모든 Spring Boot 앱 공통)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 48
+      }
+    },
+    {
+      "id": 12,
+      "title": "Heap 사용률 (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 49
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**JVM heap 사용률 (%)**\n\n`jvm_memory_used / jvm_memory_max * 100` (heap area).\n\n---\n**읽는 법**\n- `>80%` 지속 : heap 부족 → GC 풀가동 → latency 튐.\n\n**조치**\n- `JAVA_OPTS: -Xmx` 상향 (컨테이너 limit 까지 여유 두기)\n- 누수 의심이면 heap dump 분석\n",
+      "targets": [
+        {
+          "expr": "100 * sum(jvm_memory_used_bytes{namespace=\"$namespace\", app=~\"$app\", area=\"heap\"}) by (app) / sum(jvm_memory_max_bytes{namespace=\"$namespace\", app=~\"$app\", area=\"heap\"}) by (app)",
+          "legendFormat": "{{app}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": 13,
+      "title": "GC 총 시간 (초당)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 49
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**초당 GC 총 pause 시간 합**\n\n값 `0.1` = 1초 중 0.1초를 GC 에 소비 = CPU 의 10%가 GC.\n\n---\n**읽는 법**\n- `>0.1` 지속 : GC 오버헤드 심각.\n\n**조치**\n- heap 확대\n- GC 로그 켜고 (`-Xlog:gc*`) 원인 분석\n- ZGC 고려\n",
+      "targets": [
+        {
+          "expr": "sum(rate(jvm_gc_pause_seconds_sum{namespace=\"$namespace\", app=~\"$app\"}[1m])) by (app, action)",
+          "legendFormat": "{{app}} {{action}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    },
+    {
+      "id": 300,
+      "type": "row",
+      "title": "외부 의존성 (Redis, Kafka, gRPC authz)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 56
+      }
+    },
+    {
+      "id": 14,
+      "title": "Redis 명령 지연 / 초당 처리",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 57
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Lettuce (Spring Boot Redis 클라이언트) 성능**\n\n- avg 지연 (초)\n- ops/s (초당 호출 수)\n\n---\n**읽는 법**\n- `avg > 10ms` : Redis 응답 지연. 네트워크 / Redis CPU / TLS handshake 병목.\n- 부하 증가에도 ops/s 안 오르면 Redis 커넥션 풀 고갈.\n\n**조치**\n- `spring.data.redis.lettuce.pool.max-active` 상향\n- ElastiCache 인스턴스 스케일 또는 cluster mode\n",
+      "targets": [
+        {
+          "expr": "sum(rate(lettuce_command_completion_seconds_sum{namespace=\"$namespace\", app=~\"$app\"}[1m])) by (app) / sum(rate(lettuce_command_completion_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[1m])) by (app)",
+          "legendFormat": "{{app}} avg (Lettuce)"
+        },
+        {
+          "expr": "sum(rate(lettuce_command_completion_seconds_count{namespace=\"$namespace\", app=~\"$app\"}[1m])) by (app)",
+          "legendFormat": "{{app}} ops/s"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    },
+    {
+      "id": 15,
+      "title": "Kafka Producer / Consumer lag",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 57
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Kafka consumer group lag**\n\n가장 오래된 미소비 메시지의 offset 지연 = 얼마나 밀렸는지.\n\n---\n**읽는 법**\n- 계속 증가 : consumer 처리속도 < producer. 밀리는 중.\n- order-core / queue 가 주 consumer.\n\n**조치**\n- consumer 파드 수 상향 (KEDA Kafka scaler 사용 가능)\n- 처리 로직 최적화 / batch 크기 조정\n",
+      "targets": [
+        {
+          "expr": "sum(kafka_consumergroup_lag{namespace=\"$namespace\"}) by (consumergroup, topic)",
+          "legendFormat": "{{consumergroup}} / {{topic}}"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "title": "ext_authz (AI Defense) 지연 p95",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 64
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**ext_authz (Envoy → authz-adapter gRPC) p95**\n\n보호 대상 API 요청마다 ext_authz 가 먼저 호출됨.\n\n---\n**읽는 법**\n- 여기 느리면 queue-enter / seat-hold 등 전체가 함께 느려짐.\n\n**조치**\n- authz-adapter 파드 CPU/스레드 증설\n- `extAuthz.timeout` 조정 (현재 0.8s)\n- authz-adapter 내부 Redis 호출 지연 확인 (bot detection lookup)\n",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(envoy_ext_authz_upstream_rq_time_bucket{namespace=\"$namespace\"}[1m])) by (le))",
+          "legendFormat": "ext_authz p95"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "id": 17,
+      "title": "ext_authz 차단율",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 64
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**ext_authz denied vs ok**\n\n---\n**읽는 법**\n- `denied` 급증 : AI Defense 가 정상 트래픽도 차단할 가능성.\n\n**조치**\n- authz-adapter 로그에서 차단 사유 확인\n- `autoBlocklist.threshold` 완화 (ex. count 3 → 5)\n",
+      "targets": [
+        {
+          "expr": "sum(rate(envoy_ext_authz_denied{namespace=\"$namespace\"}[1m]))",
+          "legendFormat": "denied/s"
+        },
+        {
+          "expr": "sum(rate(envoy_ext_authz_ok{namespace=\"$namespace\"}[1m]))",
+          "legendFormat": "ok/s"
+        }
+      ]
+    },
+    {
+      "id": 400,
+      "type": "row",
+      "title": "엔드포인트별 Slowest (p95) TOP",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 71
+      }
+    },
+    {
+      "id": 18,
+      "title": "가장 느린 엔드포인트 p95 (서비스 × path)",
+      "type": "table",
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 72
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**가장 느린 엔드포인트 TOP10**\n\nActuator `http_server_requests_seconds` 기반 p95 계산.\n\n---\n**읽는 법**\n- 상단 uri 가 병목. 그 uri 처리 코드/쿼리 집중 튜닝.\n\n**주의**\n- `/load-test/...` 내부 경로 위주로 나옴 (부하 테스트 prefix)\n- 실제 production path 와 다를 수 있음\n",
+      "targets": [
+        {
+          "expr": "topk(10, histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{namespace=\"$namespace\", app=~\"$app\"}[5m])) by (le, app, uri, method)))",
+          "legendFormat": "{{app}} {{method}} {{uri}}",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    }
+  ]
+}
