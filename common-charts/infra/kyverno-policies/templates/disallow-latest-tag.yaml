@@ -34,23 +34,15 @@ spec:
         message: "이미지 태그 ':latest' 또는 태그 미지정은 허용되지 않습니다. 명시적인 버전 태그를 사용하세요."
         foreach:
           - list: "request.object.spec.containers"
-            deny:
-              conditions:
-                any:
-                - key: "{{ "{{ element.image }}" }}"
-                  operator: EndsWith
-                  value: ":latest"
-                - key: "{{ "{{ element.image }}" }}"
-                  operator: NotContains
-                  value: ":"
+            pattern:
+              image: "!*:latest"
+          - list: "request.object.spec.containers"
+            pattern:
+              image: "*:*"
           - list: "request.object.spec.initContainers"
-            deny:
-              conditions:
-                any:
-                - key: "{{ "{{ element.image }}" }}"
-                  operator: EndsWith
-                  value: ":latest"
-                - key: "{{ "{{ element.image }}" }}"
-                  operator: NotContains
-                  value: ":"
+            pattern:
+              image: "!*:latest"
+          - list: "request.object.spec.initContainers"
+            pattern:
+              image: "*:*"
 {{- end }}
