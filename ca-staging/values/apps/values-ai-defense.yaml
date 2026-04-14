@@ -36,6 +36,25 @@ env:
     value: /app/src
   - name: APP_PORT
     value: "8000"
+  # 환경 식별자
+  - name: TM_ENV
+    value: "staging"
+  # Rollout 해시 salt (Secrets Manager: ai-service-config 에 TM_ROLLOUT_SALT 키 추가 필요)
+  - name: TM_ROLLOUT_SALT
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: TM_ROLLOUT_SALT
+  # authoritative state 강제: 로컬 폴백 / 인메모리 Redis 금지
+  - name: TM_POLICY_ALLOW_LOCAL_FALLBACK
+    value: "false"
+  - name: TM_ALLOW_IN_MEMORY_REDIS
+    value: "false"
+  # Policy projection 재시도 튜닝
+  - name: TM_PROJECTION_RETRY_MAX_ATTEMPTS
+    value: "2"
+  - name: TM_PROJECTION_RETRY_BACKOFF_MS
+    value: "50"
   # JSON 로깅 활성화 (Loki 멀티라인 문제 해결)
   - name: TM_LOG_FORMAT
     value: "json"
@@ -94,9 +113,9 @@ env:
         key: AI_PG_DBNAME
   - name: TM_PG_URL
     value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)?sslmode=require"
-  # Policy projection staleness 체크 비활성화 (reconciler 미구현 — 추후 코드 수정 후 제거)
+  # Policy projection staleness 허용치 (ai-defense 내부 background task가 projection 유지)
   - name: TM_POLICY_PROJECTION_MAX_STALENESS_MS
-    value: "2678400000"
+    value: "300000"
   # ClickHouse (클러스터 내부 - Secrets Manager에서 인증 정보 가져옴)
   - name: AI_CLICKHOUSE_USER
     valueFrom:
@@ -208,3 +227,57 @@ metrics:
 otel:
   enabled: true
   collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"
+
+# PreSync Jobs — ArgoCD sync-wave 순서대로 실행, 하나라도 실패 시 Deployment/CronJob 진행 중단
+# wave 0 → 1 → 2 → (Deployment/CronJob)
+presyncJobs:
+  - name: tm-ai-storage-migrate
+    syncWave: "0"
+    command:
+      - tm-ai-storage-migrate
+  - name: tm-ai-policy-bootstrap
+    syncWave: "1"
+    command:
+      - tm-ai-policy-bootstrap
+  - name: tm-ai-policy-projection-resync
+    syncWave: "2"
+    command:
+      - tm-ai-policy-projection-resync
+      - --current
+
+# CronJobs — closed-loop 자동화 (최적화 + 사후판단)
+cronJobs:
+  - name: tm-ai-policy-optimizer
+    enabled: true
+    schedule: "*/10 * * * *"
+    concurrencyPolicy: Forbid
+    restartPolicy: Never
+    backoffLimit: 1
+    command:
+      - tm-ai-policy-optimizer
+    extraEnv:
+      - name: TM_POLICY_OPTIMIZER_ENABLED
+        value: "true"
+      - name: TM_POLICY_OPTIMIZER_DRY_RUN
+        value: "false"
+      - name: TM_POLICY_OPTIMIZER_APPLY_ENABLED
+        value: "true"
+      - name: TM_POLICY_OPTIMIZER_WINDOW_SECONDS
+        value: "600"
+      - name: TM_POLICY_OPTIMIZER_CANARY_RATIO
+        value: "0.05"
+      - name: TM_POLICY_OPTIMIZER_MIN_APPLY_COOLDOWN_SECONDS
+        value: "300"
+      - name: TM_POLICY_OPTIMIZER_ROLLOUT_ID
+        value: "offline-optimizer-default"
+      - name: TM_POLICY_OPTIMIZER_LOCK_TTL_SECONDS
+        value: "300"
+
+  - name: tm-ai-post-review
+    enabled: true
+    schedule: "*/10 * * * *"
+    concurrencyPolicy: Forbid
+    restartPolicy: Never
+    backoffLimit: 1
+    command:
+      - tm-ai-post-review

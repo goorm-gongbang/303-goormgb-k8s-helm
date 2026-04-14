@@ -1,0 +1,71 @@
+{{- range $idx, $job := .Values.presyncJobs }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "ai-service.fullname" $ }}-{{ $job.name }}
+  labels:
+    {{- include "ai-service.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: presync-{{ $job.name }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: {{ $job.syncWave | default (printf "%d" $idx) | quote }}
+spec:
+  backoffLimit: {{ $job.backoffLimit | default 0 }}
+  ttlSecondsAfterFinished: {{ $job.ttlSecondsAfterFinished | default 600 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ai-service.selectorLabels" $ | nindent 8 }}
+        app.kubernetes.io/component: presync-{{ $job.name }}
+        sidecar.istio.io/inject: "false"
+    spec:
+      restartPolicy: Never
+      {{- if $.Values.serviceAccountName }}
+      serviceAccountName: {{ $.Values.serviceAccountName }}
+      {{- end }}
+      {{- with $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ $job.name }}
+          {{- if and $.Values.ecr.accountId $.Values.image.name }}
+          image: "{{ $.Values.ecr.accountId }}.dkr.ecr.{{ $.Values.ecr.region }}.amazonaws.com/{{ $.Values.image.name }}:{{ $.Values.image.tag }}"
+          {{- else }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          {{- end }}
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          {{- with $.Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          command:
+            {{- toYaml $job.command | nindent 12 }}
+          {{- with $job.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            {{- with $.Values.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with $job.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with $.Values.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml ($job.resources | default $.Values.resources) | nindent 12 }}
+{{- end }}

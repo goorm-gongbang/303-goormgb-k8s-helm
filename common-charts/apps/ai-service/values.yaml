@@ -147,6 +147,14 @@ otel:
   enabled: false
   collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"
 
+# PreSync Jobs (ArgoCD sync-wave 기반 선행 실행)
+# 각 entry: name, syncWave, command, args?, extraEnv?, resources?
+presyncJobs: []
+
+# CronJobs (주기 실행)
+# 각 entry: name, enabled, schedule, command, args?, extraEnv?, concurrencyPolicy?, restartPolicy?, backoffLimit?, resources?
+cronJobs: []
+
 # authz-adapter 전용 설정
 authzAdapter:
   enabled: false
