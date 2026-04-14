@@ -638,7 +638,7 @@
     },
     {
       "id": 14,
-      "title": "Redis 명령 지연 / 초당 처리",
+      "title": "Redis 지연 (앱 client-side)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -650,25 +650,16 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "**Lettuce (Spring Boot Redis 클라이언트) 성능**\n\n- avg 지연 (초)\n- ops/s (초당 호출 수)\n\n---\n**읽는 법**\n- `avg > 10ms` : Redis 응답 지연. 네트워크 / Redis CPU / TLS handshake 병목.\n- 부하 증가에도 ops/s 안 오르면 Redis 커넥션 풀 고갈.\n\n**조치**\n- `spring.data.redis.lettuce.pool.max-active` 상향\n- ElastiCache 인스턴스 스케일 또는 cluster mode\n",
+      "description": "**현재 수집 안 됨** — 앱이 Jedis 사용 중이거나 Micrometer Lettuce metric 비노출.\n\n대안:\n- ElastiCache CloudWatch 메트릭 (Grafana CloudWatch datasource)\n- redis_exporter 추가 설치",
       "targets": [
         {
-          "expr": "sum by (service) (rate(lettuce_command_completion_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) / sum by (service) (rate(lettuce_command_completion_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
-          "legendFormat": "{{service}} avg",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
-        },
-        {
+          },
           "expr": "sum by (service) (rate(lettuce_command_completion_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
-          "legendFormat": "{{service}} ops/s",
-          "refId": "B",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          }
+          "legendFormat": "{{service}}"
         }
       ],
       "fieldConfig": {
@@ -731,7 +722,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "**ext_authz (Envoy → authz-adapter gRPC) p95**\n\n보호 대상 API 요청마다 ext_authz 가 먼저 호출됨.\n\n---\n**읽는 법**\n- 여기 느리면 queue-enter / seat-hold 등 전체가 함께 느려짐.\n\n**조치**\n- authz-adapter 파드 CPU/스레드 증설\n- `extAuthz.timeout` 조정 (현재 0.8s)\n- authz-adapter 내부 Redis 호출 지연 확인 (bot detection lookup)\n",
+      "description": "**ext_authz (Envoy → authz-adapter gRPC) p95**\n\n보호 대상 API 요청마다 ext_authz 가 먼저 호출됨.\n\n---\n**읽는 법**\n- 여기 느리면 queue-enter / seat-hold 등 전체가 함께 느려짐.\n\n**조치**\n- authz-adapter 파드 CPU/스레드 증설\n- `extAuthz.timeout` 조정 (현재 0.8s)\n- authz-adapter 내부 Redis 호출 지연 확인 (bot detection lookup)\n\n\n---\n**No data 인 경우**: Envoy `stats_matcher` 설정에서 `ext_authz` prefix 가 include 되어야 Prometheus 에 노출.",
       "targets": [
         {
           "expr": "histogram_quantile(0.95, sum(rate(envoy_ext_authz_upstream_rq_time_bucket{namespace=\"$namespace\"}[1m])) by (le))",
@@ -765,7 +756,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "**ext_authz denied vs ok**\n\n---\n**읽는 법**\n- `denied` 급증 : AI Defense 가 정상 트래픽도 차단할 가능성.\n\n**조치**\n- authz-adapter 로그에서 차단 사유 확인\n- `autoBlocklist.threshold` 완화 (ex. count 3 → 5)\n",
+      "description": "**ext_authz denied vs ok**\n\n---\n**읽는 법**\n- `denied` 급증 : AI Defense 가 정상 트래픽도 차단할 가능성.\n\n**조치**\n- authz-adapter 로그에서 차단 사유 확인\n- `autoBlocklist.threshold` 완화 (ex. count 3 → 5)\n\n\n---\n**No data 인 경우**: Envoy `stats_matcher` 설정에서 `ext_authz` prefix 가 include 되어야 Prometheus 에 노출.",
       "targets": [
         {
           "expr": "sum(rate(envoy_ext_authz_denied{namespace=\"$namespace\"}[1m]))",
@@ -817,15 +808,15 @@
       "description": "**가장 느린 엔드포인트 TOP10**\n\nActuator `http_server_requests_seconds` 기반 p95 계산.\n\n---\n**읽는 법**\n- 상단 uri 가 병목. 그 uri 처리 코드/쿼리 집중 튜닝.\n\n**주의**\n- `/load-test/...` 내부 경로 위주로 나옴 (부하 테스트 prefix)\n- 실제 production path 와 다를 수 있음\n",
       "targets": [
         {
-          "expr": "topk(10, histogram_quantile(0.95, sum by (le, service, uri, method) (rate(http_server_request_duration_seconds_bucket{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[5m]))))",
-          "legendFormat": "{{service}} {{method}} {{uri}}",
-          "format": "table",
-          "instant": true,
           "refId": "A",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
+          },
+          "expr": "topk(10, histogram_quantile(0.95, sum by (le, service, uri, method) (rate(http_server_requests_seconds_bucket{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", uri!=\"UNKNOWN\"}[5m]))))",
+          "legendFormat": "{{service}} {{method}} {{uri}}",
+          "format": "table",
+          "instant": true
         }
       ],
       "fieldConfig": {
