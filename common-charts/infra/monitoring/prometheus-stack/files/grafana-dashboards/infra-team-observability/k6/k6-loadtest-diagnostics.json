@@ -66,13 +66,25 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace=\"$namespace\", destination_workload=~\"$app\"}[1m])) by (le, destination_workload))",
-          "legendFormat": "{{destination_workload}} p95"
+          "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) by (le, destination_workload))",
+          "legendFormat": "{{destination_workload}} p95",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "ms"
+          "unit": "ms",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       },
       "description": "## 진단 가이드\n\n**서비스별 병목 포인트**\n- api-gateway: Istio P95, 429, ext_authz\n- auth-guard: HikariCP, JVM throttled, Heap\n- order-core: HikariCP, Kafka lag\n- queue: Redis, Kafka lag\n- seat: HikariCP, Redis, 429\n\n**진단 순서**\n1. JVM throttled / HikariCP pending / Istio P95 동시 체크\n2. 원인별 조치:\n   - CPU throttled > 10% → limits 상향 + HPA\n   - HikariCP pending > 0 → pool size / DB 스케일\n   - Tomcat busy ≈ max → maxThreads 상향\n   - 리소스 여유인데 느림 → 코드/쿼리 튜닝 (N+1)\n   - 429 많음 → rate limit 완화 / warm-up\n   - GC p95 > 100ms → heap 상향 / ZGC\n3. scale-out: HPA (CPU 70%) / KEDA (Kafka lag, RPS)\n\n---\n\n**이 패널 (Istio P95)**: 클라이언트 체감 응답 지연. p95 > 1s 면 문제.\n"
@@ -93,13 +105,25 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"$app\"}[1m])) by (destination_workload, response_code)",
-          "legendFormat": "{{destination_workload}} [{{response_code}}]"
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) by (destination_workload, response_code)",
+          "legendFormat": "{{destination_workload}} [{{response_code}}]",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "reqps"
+          "unit": "reqps",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       },
       "description": "**Istio 수신 RPS — 상태코드별 분리**\n\n성공(2xx) / 클라이언트 에러(4xx) / 서버 에러(5xx) / 레이트리밋(429) 구분해서 추이를 본다.\n\n---\n**읽는 법**\n- 총량이 부하 예상치 대비 너무 낮다 → 클라이언트가 요청을 못 보내는 중 (connection refused, 커넥션 timeout).\n- 5xx 비율 높다 → 앱 크래시, 백엔드 의존성 장애.\n- 429 비율 높다 → 아래 `Rate Limit 429` 패널로.\n"
@@ -129,7 +153,14 @@
         "defaults": {
           "unit": "percent",
           "min": 0,
-          "max": 100
+          "max": 100,
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       }
     },
@@ -176,7 +207,18 @@
             "uid": "prometheus"
           }
         }
-      ]
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
     },
     {
       "id": 5,
@@ -195,8 +237,8 @@
       "description": "**Tomcat (임베디드) 스레드 사용량**\n\n- `current` : 현재 생성된 워커 스레드\n- `busy` : 요청 처리 중인 스레드\n- `max` : 상한 (기본 200)\n\n---\n**읽는 법**\n- `busy ≈ max` : 스레드 풀 고갈. 새 요청이 OS 레벨에서 queue 대기 중 → latency 폭증.\n\n**조치**\n- `server.tomcat.threads.max` 상향 (예: 200 → 400)\n- 동시에 CPU/메모리 부담 상승 주의 → HPA 같이 검토\n",
       "targets": [
         {
-          "expr": "sum by (service) (tomcat_threads_current_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} current",
+          "expr": "sum by (service) (jvm_threads_live_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "legendFormat": "{{service}} live",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
@@ -204,8 +246,8 @@
           }
         },
         {
-          "expr": "sum by (service) (tomcat_threads_busy_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} busy",
+          "expr": "sum by (service, state) (jvm_threads_states_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", state=\"runnable\"})",
+          "legendFormat": "{{service}} runnable",
           "refId": "B",
           "datasource": {
             "type": "prometheus",
@@ -213,15 +255,26 @@
           }
         },
         {
-          "expr": "sum by (service) (tomcat_threads_config_max_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} max",
+          "expr": "sum by (service) (jvm_threads_peak_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "legendFormat": "{{service}} peak",
           "refId": "C",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           }
         }
-      ]
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
     },
     {
       "id": 6,
@@ -253,7 +306,14 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short"
+          "unit": "short",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       },
       "description": "**Pod CPU : usage vs requests vs limits**\n\n노드 스케줄링과 throttle 판단 근거.\n\n---\n**읽는 법**\n- `usage == limit` : throttle 진행 중.\n- `usage >> request` : 노드의 다른 파드 밀릴 수 있음 (overcommit).\n- `usage << request` : request 낭비. 줄이면 노드 packing 효율 상승.\n"
@@ -280,7 +340,14 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "bytes"
+          "unit": "bytes",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       },
       "description": "**Pod Memory working-set** (RSS 유사한 커널 지표)\n\n---\n**읽는 법**\n- `working-set → limit` 근접 : OOMKill 직전.\n- 우상향만 지속 : 메모리 누수 의심.\n\n**조치**\n- `limits.memory` 상향\n- 앱: heap dump + JFR 로 누수 구간 분석\n"
@@ -302,9 +369,18 @@
       "description": "**JVM GC pause p95**\n\nMajor/Minor GC 각 action 별 pause 지연.\n\n---\n**읽는 법**\n- `major GC p95 > 100ms` : latency 튐의 주요 원인.\n- 빈도+크기 둘 다 보려면 아래 `GC 총 시간` 패널 병행 확인.\n\n**조치**\n- `-Xmx` 상향으로 heap 확대\n- G1GC → ZGC 전환 (large heap 에서 pause 짧음)\n",
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum by (le, service, action) (rate(jvm_gc_pause_seconds_bucket{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])))",
-          "legendFormat": "{{service}} {{action}} p95",
+          "expr": "max by (service, action) (jvm_gc_pause_seconds_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "legendFormat": "{{service}} {{action}} max",
           "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "expr": "sum by (service, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) / sum by (service, action) (rate(jvm_gc_pause_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
+          "legendFormat": "{{service}} {{action}} avg",
+          "refId": "B",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
@@ -313,7 +389,14 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "s"
+          "unit": "s",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       }
     },
@@ -341,7 +424,18 @@
           "legendFormat": "{{deployment}} desired"
         }
       ],
-      "description": "**Deployment replicas — ready vs desired**\n\nHPA / Karpenter 반응 관찰용.\n\n---\n**읽는 법**\n- `desired` 증가 → `ready` 지연 : cold start (이미지 풀 + JVM 부팅) 영향. 보통 30-90초.\n- 부하 와도 고정 : HPA 미설치 or 임계치 미달.\n\n**조치**\n- HPA 추가 (CPU 70%, replicas 2-10 권장)\n- readinessProbe initialDelay 줄여 cold start 체감 완화\n"
+      "description": "**Deployment replicas — ready vs desired**\n\nHPA / Karpenter 반응 관찰용.\n\n---\n**읽는 법**\n- `desired` 증가 → `ready` 지연 : cold start (이미지 풀 + JVM 부팅) 영향. 보통 30-90초.\n- 부하 와도 고정 : HPA 미설치 or 임계치 미달.\n\n**조치**\n- HPA 추가 (CPU 70%, replicas 2-10 권장)\n- readinessProbe initialDelay 줄여 cold start 체감 완화\n",
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
     },
     {
       "id": 100,
@@ -371,13 +465,25 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"$app\"}[1m])) by (destination_workload, response_code)",
-          "legendFormat": "{{destination_workload}} [{{response_code}}]"
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) by (destination_workload, response_code)",
+          "legendFormat": "{{destination_workload}} [{{response_code}}]",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "reqps"
+          "unit": "reqps",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       },
       "description": "**상태코드별 RPS (분석용 확대 뷰)**\n\n2번 패널과 동일 데이터. 장애 분석 시 한 화면에 넓게 보려고 분리.\n"
@@ -399,13 +505,25 @@
       "description": "**Rate Limit 429 전용 트렌드**\n\nEnvoy local / global rate limit 에 막혀 돌려보낸 요청 수.\n\n---\n**읽는 법**\n- 부하 증가와 함께 429 치솟음 : 제한선 도달.\n\n**조치**\n- 부하테스트 시 warm-up stage 추가 (초반 낮은 VU 로 slow ramp).\n- 운영 완화 필요시 `rateLimiting.local.perClient.tokensPerFill` 또는 global descriptor 조정.\n",
       "targets": [
         {
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"$app\", response_code=\"429\"}[1m])) by (destination_workload)",
-          "legendFormat": "{{destination_workload}} 429/s"
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", response_code=\"429\"}[1m])) by (destination_workload)",
+          "legendFormat": "{{destination_workload}} 429/s",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "reqps"
+          "unit": "reqps",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       }
     },
@@ -451,7 +569,14 @@
         "defaults": {
           "unit": "percent",
           "min": 0,
-          "max": 100
+          "max": 100,
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       }
     },
@@ -483,7 +608,14 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "s"
+          "unit": "s",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       }
     },
@@ -536,7 +668,14 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "s"
+          "unit": "s",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       }
     },
@@ -560,7 +699,18 @@
           "expr": "sum(kafka_consumergroup_lag{namespace=\"$namespace\"}) by (consumergroup, topic)",
           "legendFormat": "{{consumergroup}} / {{topic}}"
         }
-      ]
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
     },
     {
       "id": 16,
@@ -585,7 +735,14 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "ms"
+          "unit": "ms",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       }
     },
@@ -613,7 +770,18 @@
           "expr": "sum(rate(envoy_ext_authz_ok{namespace=\"$namespace\"}[1m]))",
           "legendFormat": "ok/s"
         }
-      ]
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
+        }
+      }
     },
     {
       "id": 400,
@@ -657,7 +825,14 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "s"
+          "unit": "s",
+          "links": [
+            {
+              "title": "loadtest-webs 전체 로그 보기",
+              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
+              "targetBlank": true
+            }
+          ]
         }
       }
     }
