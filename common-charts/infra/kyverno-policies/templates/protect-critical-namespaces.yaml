@@ -3,6 +3,8 @@ apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: protect-critical-namespaces
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Protect Critical Namespaces
     policies.kyverno.io/category: Best Practices, Security

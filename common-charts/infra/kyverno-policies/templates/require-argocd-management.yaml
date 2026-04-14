@@ -3,6 +3,8 @@ apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: require-argocd-management
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Enforce ArgoCD Management
     policies.kyverno.io/category: Best Practices, Security
