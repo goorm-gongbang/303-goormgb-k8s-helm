@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/queue"
-  tag: "55c4719.34"
+  tag: "5aa43bf.36"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
