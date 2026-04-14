@@ -94,4 +94,4 @@ metrics:
 # PodDisruptionBudget - 최소 1개 유지
 pdb:
   enabled: true
-  minAvailable: 1
+  maxUnavailable: 1

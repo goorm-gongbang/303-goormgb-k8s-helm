@@ -33,14 +33,6 @@ ingress:
         healthCheckPath: /
         healthCheckSuccessCodes: "200,301,302,404"
 
-    # Kiali - Istio IngressGateway 거침 (IP Whitelist 적용)
-      service:
-        name: istio-ingressgateway
-        namespace: istio-system
-        port: 80
-        healthCheckPath: /
-        healthCheckSuccessCodes: "200,301,302,404"
-
     # API - Istio IngressGateway 거침 (CloudFront 경유 - external-dns 제외)
     - host: api.staging.playball.one
       skipExternalDns: true
@@ -63,14 +55,6 @@ ingress:
 
     # CloudBeaver - Istio IngressGateway 거침 (DB 관리 - 부하테스트용)
     - host: cloudbeaver.staging.playball.one
-      service:
-        name: istio-ingressgateway
-        namespace: istio-system
-        port: 80
-        healthCheckPath: /
-        healthCheckSuccessCodes: "200,301,302,404"
-
-    # Infra Console - Istio IngressGateway 거침
       service:
         name: istio-ingressgateway
         namespace: istio-system
