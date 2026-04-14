@@ -142,6 +142,17 @@ ociCharts:
       - $values/ca-staging/values/monitoring/metrics/values-prometheus-stack.yaml
       - $values/ca-staging/values/monitoring/alerting/values-rules-staging.yaml
       - $values/ca-staging/values/monitoring/alerting/values-alertmanager-staging.yaml
+
+  kafka-exporter:
+    enabled: true
+    description: "Kafka Exporter - consumer group lag 등 Prometheus 메트릭"
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus-kafka-exporter
+    version: "2.11.0"
+    namespace: messaging
+    syncWave: "1"
+    valueFiles:
+      - $values/ca-staging/values/messaging/values-kafka-exporter.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -608,16 +619,6 @@ gitCharts:
     valueFiles:
       - ../../../../ca-staging/values/messaging/values-kafka-ui.yaml
 
-  kafka-exporter:
-    enabled: true
-    description: "Kafka Exporter - consumer group lag 등 Prometheus 메트릭"
-    repoURL: https://prometheus-community.github.io/helm-charts
-    chart: prometheus-kafka-exporter
-    version: "2.11.0"
-    namespace: messaging
-    syncWave: "1"
-    valueFiles:
-      - $values/ca-staging/values/messaging/values-kafka-exporter.yaml
 
 # =============================================================================
 # ApplicationSets
