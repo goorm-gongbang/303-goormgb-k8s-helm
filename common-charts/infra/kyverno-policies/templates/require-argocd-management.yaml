@@ -21,7 +21,18 @@ spec:
         any:
           - resources:
               kinds:
-                - "*"
+                - Pod
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+                - Service
+                - Ingress
+                - ConfigMap
+                - Secret
+                - CustomResourceDefinition
+                - Namespace
       exclude:
         any:
           - clusterRoles:
@@ -43,6 +54,9 @@ spec:
                 - Node
                 - NodePool
                 - EC2NodeClass
+                - ClusterPolicy
+                - Policy
+                - ValidatingPolicy
           - resources:
               kinds:
                 - "*"

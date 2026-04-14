@@ -22,6 +22,7 @@ spec:
         metadata:
           labels:
             {{- include "ai-service.selectorLabels" $ | nindent 12 }}
+            {{- include "ai-service.versionLabel" $ | nindent 12 }}
             app.kubernetes.io/component: cron-{{ $job.name }}
             sidecar.istio.io/inject: "false"
         spec:
