@@ -145,7 +145,7 @@
       "description": "**CPU CFS throttled 비율 (%)**\n\n컨테이너 CPU limit 에 막혀서 CPU 를 못 쓴 시간 비율.\n\n---\n**읽는 법**\n- `>10%` 지속 : CPU limit 이 작거나 workload 가 CPU bound. limit 상향 + HPA 검토.\n- `0%` 인데 latency 높다 : CPU 문제 아님. DB/네트워크/락 의심.\n\n**조치**\n`resources.limits.cpu` 상향 + `requests` 도 같이 올려야 실효성 있음.\n",
       "targets": [
         {
-          "expr": "100 * sum(rate(container_cpu_cfs_throttled_periods_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod) / sum(rate(container_cpu_cfs_periods_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod)",
+          "expr": "(100 * sum(rate(container_cpu_cfs_throttled_periods_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod) / sum(rate(container_cpu_cfs_periods_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod)) and max_over_time(container_cpu_cfs_throttled_periods_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[15m]) > 0",
           "legendFormat": "{{pod}}"
         }
       ],
@@ -181,7 +181,7 @@
       "description": "**HikariCP (DB 커넥션 풀) 상태**\n\n- `active` : 현재 쿼리 실행 중인 커넥션 수\n- `pending` : 커넥션을 대기 중인 쓰레드 수\n- `max` : 풀 상한\n\n---\n**읽는 법**\n- `pending > 0` 이 지속되면 풀 고갈 → 요청이 DB 커넥션 기다리느라 p99 튐.\n- `active ≈ max` : 이미 풀 풀가동.\n\n**조치**\n- app: `spring.datasource.hikari.maximum-pool-size` 상향\n- DB: max_connections 확인, RDS 인스턴스 스케일업\n- 코드: 느린 쿼리/N+1 튜닝으로 커넥션 점유 시간 줄이기\n",
       "targets": [
         {
-          "expr": "sum by (service) (hikaricp_connections_active{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "expr": "(sum by (service) (hikaricp_connections_active{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})) and max_over_time(hikaricp_connections_active{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[15m]) > 0",
           "legendFormat": "{{service}} active",
           "refId": "A",
           "datasource": {
@@ -190,7 +190,7 @@
           }
         },
         {
-          "expr": "sum by (service) (hikaricp_connections_pending{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "expr": "(sum by (service) (hikaricp_connections_pending{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})) and max_over_time(hikaricp_connections_pending{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[15m]) > 0",
           "legendFormat": "{{service}} pending",
           "refId": "B",
           "datasource": {
@@ -199,7 +199,7 @@
           }
         },
         {
-          "expr": "sum by (service) (hikaricp_connections_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "expr": "(sum by (service) (hikaricp_connections_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})) and max_over_time(hikaricp_connections_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[15m]) > 0",
           "legendFormat": "{{service}} max",
           "refId": "C",
           "datasource": {
@@ -237,7 +237,7 @@
       "description": "**Tomcat (임베디드) 스레드 사용량**\n\n- `current` : 현재 생성된 워커 스레드\n- `busy` : 요청 처리 중인 스레드\n- `max` : 상한 (기본 200)\n\n---\n**읽는 법**\n- `busy ≈ max` : 스레드 풀 고갈. 새 요청이 OS 레벨에서 queue 대기 중 → latency 폭증.\n\n**조치**\n- `server.tomcat.threads.max` 상향 (예: 200 → 400)\n- 동시에 CPU/메모리 부담 상승 주의 → HPA 같이 검토\n",
       "targets": [
         {
-          "expr": "sum by (service) (jvm_threads_live_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "expr": "(sum by (service) (jvm_threads_live_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})) and max_over_time(jvm_threads_live_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[15m]) > 0",
           "legendFormat": "{{service}} live",
           "refId": "A",
           "datasource": {
@@ -246,7 +246,7 @@
           }
         },
         {
-          "expr": "sum by (service, state) (jvm_threads_states_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", state=\"runnable\"})",
+          "expr": "(sum by (service, state) (jvm_threads_states_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", state=\"runnable\"})) and max_over_time(jvm_threads_states_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", state=\"runnable\"}[15m]) > 0",
           "legendFormat": "{{service}} runnable",
           "refId": "B",
           "datasource": {
@@ -255,7 +255,7 @@
           }
         },
         {
-          "expr": "sum by (service) (jvm_threads_peak_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "expr": "(sum by (service) (jvm_threads_peak_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})) and max_over_time(jvm_threads_peak_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[15m]) > 0",
           "legendFormat": "{{service}} peak",
           "refId": "C",
           "datasource": {
@@ -377,7 +377,7 @@
       "description": "**JVM GC pause p95**\n\nMajor/Minor GC 각 action 별 pause 지연.\n\n---\n**읽는 법**\n- `major GC p95 > 100ms` : latency 튐의 주요 원인.\n- 빈도+크기 둘 다 보려면 아래 `GC 총 시간` 패널 병행 확인.\n\n**조치**\n- `-Xmx` 상향으로 heap 확대\n- G1GC → ZGC 전환 (large heap 에서 pause 짧음)\n",
       "targets": [
         {
-          "expr": "max by (service, action) (jvm_gc_pause_seconds_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
+          "expr": "(max by (service, action) (jvm_gc_pause_seconds_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})) and max_over_time(jvm_gc_pause_seconds_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[15m]) > 0",
           "legendFormat": "{{service}} {{action}} max",
           "refId": "A",
           "datasource": {
@@ -386,7 +386,7 @@
           }
         },
         {
-          "expr": "sum by (service, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) / sum by (service, action) (rate(jvm_gc_pause_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
+          "expr": "(sum by (service, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) / sum by (service, action) (rate(jvm_gc_pause_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))) and max_over_time(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[15m]) > 0",
           "legendFormat": "{{service}} {{action}} avg",
           "refId": "B",
           "datasource": {
@@ -564,7 +564,7 @@
       "description": "**JVM heap 사용률 (%)**\n\n`jvm_memory_used / jvm_memory_max * 100` (heap area).\n\n---\n**읽는 법**\n- `>80%` 지속 : heap 부족 → GC 풀가동 → latency 튐.\n\n**조치**\n- `JAVA_OPTS: -Xmx` 상향 (컨테이너 limit 까지 여유 두기)\n- 누수 의심이면 heap dump 분석\n",
       "targets": [
         {
-          "expr": "100 * sum by (service) (jvm_memory_used_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", area=\"heap\"}) / sum by (service) (jvm_memory_max_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", area=\"heap\"})",
+          "expr": "(100 * sum by (service) (jvm_memory_used_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", area=\"heap\"}) / sum by (service) (jvm_memory_max_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", area=\"heap\"})) and max_over_time(jvm_memory_used_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", area=\"heap\"}[15m]) > 0",
           "legendFormat": "{{service}}",
           "refId": "A",
           "datasource": {
@@ -605,7 +605,7 @@
       "description": "**초당 GC 총 pause 시간 합**\n\n값 `0.1` = 1초 중 0.1초를 GC 에 소비 = CPU 의 10%가 GC.\n\n---\n**읽는 법**\n- `>0.1` 지속 : GC 오버헤드 심각.\n\n**조치**\n- heap 확대\n- GC 로그 켜고 (`-Xlog:gc*`) 원인 분석\n- ZGC 고려\n",
       "targets": [
         {
-          "expr": "sum by (service, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
+          "expr": "(sum by (service, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))) and max_over_time(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[15m]) > 0",
           "legendFormat": "{{service}} {{action}}",
           "refId": "A",
           "datasource": {
