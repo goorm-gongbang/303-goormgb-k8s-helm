@@ -2,11 +2,11 @@
 # CPU 사용량 높음 - JWT 검증/발급 (5000 VU 기준)
 fullnameOverride: "auth-guard"
 contextPath: "/auth"
-replicaCount: 1
+replicaCount: 2
 
 image:
   name: "staging/playball/web/auth-guard"
-  tag: "3050b8d.48"
+  tag: "fe8ca2b.40"
   pullPolicy: Always
 
 imagePullSecrets: []
