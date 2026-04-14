@@ -31,13 +31,11 @@ spec:
                 - {{ . }}
                 {{- end }}
       validate:
-        foreach:
-          {{- range .Values.policies.requireLabels.requiredLabels }}
-          - name: check-label-{{ . }}
-            pattern:
-              metadata:
-                labels:
-                  {{ . }}: "?*"
-            message: "Pod에는 '{{ . }}' 라벨이 필요합니다."
-          {{- end }}
+        message: "Pod에는 운영에 필요한 필수 라벨들이 포함되어야 합니다."
+        pattern:
+          metadata:
+            labels:
+              {{- range .Values.policies.requireLabels.requiredLabels }}
+              {{ . }}: "?*"
+              {{- end }}
 {{- end }}
