@@ -1,7 +1,7 @@
 # queue - Load-test 환경
 fullnameOverride: "queue"
 contextPath: "/queue"
-replicaCount: 0
+replicaCount: 2
 
 image:
   name: "staging/playball/web/queue"
@@ -52,9 +52,9 @@ service:
 # 4 replicas x 10 pool = 40 connections
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "10"
+    value: "30"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "3"
+    value: "10"
 
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
