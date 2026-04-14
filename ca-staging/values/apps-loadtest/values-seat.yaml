@@ -33,7 +33,7 @@ affinity:
 
 resources:
   requests:
-    cpu: "1"
+    cpu: 500m
     memory: 256Mi
   limits:
     cpu: "2"
@@ -55,6 +55,10 @@ env:
     value: "25"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
     value: "8"
+  - name: SERVER_TOMCAT_THREADS_MAX
+    value: "400"
+  - name: SERVER_TOMCAT_THREADS_MIN_SPARE
+    value: "50"
 
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
