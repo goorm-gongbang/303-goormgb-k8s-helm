@@ -278,7 +278,7 @@
     },
     {
       "id": 6,
-      "title": "CPU 사용량 (service별)",
+      "title": "CPU 사용량 (pod별, java-service)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -297,8 +297,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (service) (label_replace(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container=\"java-service\"}[1m]),\"service\",\"$1\",\"pod\",\"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
-          "legendFormat": "{{service}}"
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container=\"java-service\"}[1m]))",
+          "legendFormat": "{{pod}}"
         }
       ],
       "fieldConfig": {
@@ -323,7 +323,7 @@
     },
     {
       "id": 7,
-      "title": "Memory 사용량 (service별)",
+      "title": "Memory 사용량 (pod별, java-service)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -342,8 +342,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (service) (label_replace(container_memory_working_set_bytes{namespace=\"$namespace\", container=\"java-service\"},\"service\",\"$1\",\"pod\",\"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
-          "legendFormat": "{{service}}"
+          "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"$namespace\", container=\"java-service\"})",
+          "legendFormat": "{{pod}}"
         }
       ],
       "fieldConfig": {
