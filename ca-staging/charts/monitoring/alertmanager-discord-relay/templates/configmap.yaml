@@ -33,7 +33,7 @@ data:
         },
         "/info": {
             "env": "INFO_WEBHOOK_URL",
-            "title": {"firing": "🔵 정보 발생", "resolved": "✅ 정보 복구"},
+            "title": {"firing": "🔵 상태 알림", "resolved": "✅ 상태 정상화"},
             "color": {"firing": 3447003, "resolved": 3066993},
             "mention": lambda status: "",
         },
