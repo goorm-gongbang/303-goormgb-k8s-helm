@@ -82,8 +82,10 @@ data:
     def build_description(payload):
         alerts = payload.get("alerts") or []
         common_labels = payload.get("commonLabels") or {}
+        common_annotations = payload.get("commonAnnotations") or {}
         first = alerts[0] if alerts else {}
         first_labels = first.get("labels") or {}
+        first_annotations = first.get("annotations") or {}
         service_name = first_non_empty(
             common_labels.get("service_name"),
             common_labels.get("app"),
@@ -97,6 +99,20 @@ data:
             first_labels.get("namespace"),
             "prod-webs",
         )
+        source_name = first_non_empty(
+            common_labels.get("source_name"),
+            first_labels.get("source_name"),
+        )
+        policy_name = first_non_empty(
+            common_labels.get("policy_name"),
+            first_labels.get("policy_name"),
+        )
+        alert_display = first_non_empty(
+            common_annotations.get("summary"),
+            first_annotations.get("summary"),
+            common_labels.get("alertname"),
+            first_labels.get("alertname"),
+        )
         instance = first_non_empty(first_labels.get("instance"), first_labels.get("node"))
         started_candidates = [parse_dt(alert.get("startsAt")) for alert in alerts if alert.get("startsAt")]
         started_candidates = [value for value in started_candidates if value]
@@ -108,13 +124,17 @@ data:
             resolved = max(resolved_candidates) if resolved_candidates else None
 
         lines = [
-            f"알림: {first_non_empty(common_labels.get('alertname'), first_labels.get('alertname'))}",
+            f"알림: {alert_display}",
             f"서비스: {service_name}",
             f"네임스페이스: {namespace}",
             f"대상건수: {len(alerts)}",
             f"인스턴스: {instance}",
             f"발생(KST): {started.strftime('%Y-%m-%d %H:%M:%S KST') if started else 'N/A'}",
         ]
+        if source_name != "N/A":
+            lines.insert(2, f"소스: {source_name}")
+        if policy_name != "N/A":
+            lines.insert(3 if source_name != "N/A" else 2, f"정책: {policy_name}")
         if resolved:
             lines.append(f"복구(KST): {resolved.strftime('%Y-%m-%d %H:%M:%S KST')}")
         return "```text\n" + "\n".join(lines) + "\n```"
