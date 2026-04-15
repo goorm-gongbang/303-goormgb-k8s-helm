@@ -46,7 +46,7 @@ spec:
             - --skip-provider-button=false
             - --reverse-proxy=true
             - --proxy-prefix=/oauth2
-            - --upstream=http://127.0.0.1:8082
+            - --upstream=http://127.0.0.1:8080
           envFrom:
             - secretRef:
                 name: policy-reporter-ui-oauth
@@ -64,21 +64,24 @@ spec:
           image: ghcr.io/kyverno/policy-reporter:3.7.3
           args:
             - run-ui
+          env:
+            - name: POLICY_REPORTER_HOST
+              value: "http://policy-reporter.kyverno.svc.cluster.local:8080"
           ports:
             - name: http
-              containerPort: 8082
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /
               port: http
-            initialDelaySeconds: 10
-            periodSeconds: 10
+            initialDelaySeconds: 15
+            periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /
               port: http
-            initialDelaySeconds: 5
+            initialDelaySeconds: 10
             periodSeconds: 10
           resources:
             requests:
