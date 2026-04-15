@@ -4,18 +4,15 @@
 
 target:
   discord:
-    host: https://discord.com
-    webhook: /api/webhooks/1493781545293451345/LpvwKo77OcEsMOv5Ci7YEnQyeEmxvMkfAqVYkrOmP5_pPtmEjkqSgtPRi66Nu9Mugf6u
-    minimumPriority: "warning"
+    webhook: https://discord.com/api/webhooks/1493781545293451345/LpvwKo77OcEsMOv5Ci7YEnQyeEmxvMkfAqVYkrOmP5_pPtmEjkqSgtPRi66Nu9Mugf6u
+    minimumPriority: "critical"
     sources:
       - kyverno
     skipExistingOnStartup: true
 
-# Kyverno 전용 UI 활성화
+# Kyverno 전용 UI 활성화 (커스텀 OAuth Proxy 사용을 위해 기본 UI 비활성화)
 ui:
-  enabled: true
-  plugins:
-    kyverno: true
+  enabled: false
 
 # Kyverno Plugin 활성화 (상세 리포팅)
 kyvernoPlugin:
