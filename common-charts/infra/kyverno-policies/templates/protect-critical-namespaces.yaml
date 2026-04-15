@@ -79,13 +79,14 @@ spec:
         deny:
           conditions:
             all:
-              - key: "{{ "{{ request.operation }}" }}"
+              - key: '{{ "{{ request.operation }}" }}'
                 operator: In
                 value:
                   - UPDATE
                   - DELETE
               # Break-glass: manual-override annotation 있으면 통과 (사유 필수)
-              - key: "{{ "{{ request.object.metadata.annotations.\"ops.playball.one/manual-override\" }}" }}"
+              # Dotted key 참조를 위해 큰따옴표로 감싸고 전체를 싱글 따옴표로 보호
+              - key: '{{ "{{ request.object.metadata.annotations.\"ops.playball.one/manual-override\" }}" }}'
                 operator: Equals
                 value: ""
 {{- end }}
