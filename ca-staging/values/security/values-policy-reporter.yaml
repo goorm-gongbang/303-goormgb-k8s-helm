@@ -24,6 +24,7 @@ ui:
   # 서비스 포트를 oauth2-proxy 포트로 변경
   service:
     port: 4180
+    targetPort: 4180
 
   # OAuth2 Proxy 사이드카 추가 (RedisInsight 방식)
   extraContainers:
