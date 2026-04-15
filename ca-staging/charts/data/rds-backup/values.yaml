@@ -15,7 +15,7 @@ databases:
 
 # S3 configuration
 s3:
-  bucket: goormgb-backup
+  bucket: playball-web-backup
   prefix: staging/postgres
 
 # ServiceAccount with IRSA
