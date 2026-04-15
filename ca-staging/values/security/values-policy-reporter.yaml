@@ -17,23 +17,29 @@ ui:
   plugins:
     kyverno: true
   
-  # 사이드카 주입 비활성화 (oauth2-proxy 사용을 위해)
+  # 사이드카 주입 비활성화
   annotations:
     sidecar.istio.io/inject: "false"
 
-  # 서비스 포트를 oauth2-proxy 포트로 변경
-  service:
-    port: 4180
-    targetPort: 4180
+  # 실제 UI 컨테이너 포트를 8081로 변경 (환경 변수 지원 여부 확인 필요하나 보통 PORT 사용)
+  containerPort: 8081
+  env:
+    - name: PORT
+      value: "8081"
 
-  # OAuth2 Proxy 사이드카 추가 (RedisInsight 방식)
+  # 서비스 설정 (기본값 사용하되 명시)
+  service:
+    port: 8080
+    targetPort: 8080
+
+  # OAuth2 Proxy 사이드카 - 8080 포트를 점유하여 트래픽 가로채기
   extraContainers:
     - name: oauth2-proxy
       image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
       args:
         - --provider=google
         - --email-domain=*
-        - --http-address=0.0.0.0:4180
+        - --http-address=0.0.0.0:8080
         - --redirect-url=https://policy-reporter.staging.playball.one/oauth2/callback
         - --cookie-secure=true
         - --cookie-samesite=lax
@@ -43,13 +49,13 @@ ui:
         - --skip-provider-button=false
         - --reverse-proxy=true
         - --proxy-prefix=/oauth2
-        - --upstream=http://127.0.0.1:8080
+        - --upstream=http://127.0.0.1:8081
       envFrom:
         - secretRef:
             name: policy-reporter-ui-oauth
       ports:
         - name: http
-          containerPort: 4180
+          containerPort: 8080
           protocol: TCP
       volumeMounts:
         - name: oauth-emails
