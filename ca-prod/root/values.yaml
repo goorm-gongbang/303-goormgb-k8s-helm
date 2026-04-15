@@ -53,7 +53,7 @@ ociCharts:
     enabled: true
     repoURL: https://kyverno.github.io/policy-reporter
     chart: policy-reporter
-    version: "2.21.0"
+    version: "3.7.3"
     namespace: kyverno
     syncWave: "-6"
     valueFiles:
