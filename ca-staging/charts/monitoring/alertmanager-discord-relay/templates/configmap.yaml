@@ -16,6 +16,7 @@ data:
     KST = ZoneInfo("Asia/Seoul")
     USERNAME = os.environ.get("DISCORD_USERNAME", "Alertmanager")
     LOGS_URL = os.environ.get("STAGING_LOGS_URL", "")
+    SECURITY_INFO_URL = os.environ.get("SECURITY_INFO_URL", "")
     CRITICAL_MENTION = os.environ.get("CRITICAL_MENTION", "")
 
     ROUTES = {
@@ -51,7 +52,7 @@ data:
         },
         "/security-info": {
             "env": "SECURITY_INFO_WEBHOOK_URL",
-            "title": {"firing": "🔵 보안/감사 정보 발생", "resolved": "✅ 보안/감사 정보 복구"},
+            "title": {"firing": "🔵 보안/감사 상태 알림", "resolved": "✅ 보안/감사 상태 정상화"},
             "color": {"firing": 3447003, "resolved": 3066993},
             "mention": lambda status: "",
         },
@@ -145,13 +146,14 @@ data:
         labels = payload.get("commonLabels") or {}
         title = f"[{first_non_empty(labels.get('environment'), 'unknown')}] {route['title'][status]} [{incident_id(payload.get('alerts') or [])}]"
         content = route["mention"](status)
+        title_url = SECURITY_INFO_URL if path == "/security-info" and SECURITY_INFO_URL else LOGS_URL
         body = {
             "username": USERNAME,
             "content": content or None,
             "embeds": [
                 {
                     "title": title,
-                    "url": LOGS_URL or None,
+                    "url": title_url or None,
                     "description": build_description(payload),
                     "color": route["color"][status],
                 }
