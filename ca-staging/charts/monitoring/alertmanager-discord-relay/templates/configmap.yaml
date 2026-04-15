@@ -76,6 +76,9 @@ data:
                 return value
         return "N/A"
 
+    def normalize_webhook_url(url):
+        return url[:-6] if url.endswith("/slack") else url
+
     def build_description(payload):
         alerts = payload.get("alerts") or []
         common_labels = payload.get("commonLabels") or {}
@@ -115,23 +118,6 @@ data:
         if resolved:
             lines.append(f"복구(KST): {resolved.strftime('%Y-%m-%d %H:%M:%S KST')}")
         return "```text\n" + "\n".join(lines) + "\n```"
-
-    def slack_payload(path, payload):
-        route = ROUTES[path]
-        status = payload.get("status", "firing")
-        labels = payload.get("commonLabels") or {}
-        title = f"[{first_non_empty(labels.get('environment'), 'unknown')}] {route['title'][status]} [{incident_id(payload.get('alerts') or [])}]"
-        mention = route["mention"](status)
-        body_lines = [title]
-        if LOGS_URL:
-            body_lines.append(LOGS_URL)
-        if mention:
-            body_lines.append(mention)
-        body_lines.append(build_description(payload))
-        return {
-            "username": USERNAME,
-            "text": "\n".join(body_lines),
-        }
 
     def discord_payload(path, payload):
         route = ROUTES[path]
@@ -175,17 +161,18 @@ data:
             length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(length) or b"{}")
             webhook_url = os.environ.get(ROUTES[self.path]["env"], "")
-            if not webhook_url:
-                self.send_response(500)
-                self.end_headers()
-                self.wfile.write(b"missing webhook url")
-                return
-            body = json.dumps(slack_payload(self.path, payload)).encode("utf-8")
-            req = request.Request(
-                webhook_url,
-                data=body,
-                headers={
-                    "Content-Type": "application/json",
+        if not webhook_url:
+            self.send_response(500)
+            self.end_headers()
+            self.wfile.write(b"missing webhook url")
+            return
+        webhook_url = normalize_webhook_url(webhook_url)
+        body = json.dumps(discord_payload(self.path, payload)).encode("utf-8")
+        req = request.Request(
+            webhook_url,
+            data=body,
+            headers={
+                "Content-Type": "application/json",
                     "Accept": "application/json",
                     "User-Agent": "Alertmanager/0.32.0",
                 },
