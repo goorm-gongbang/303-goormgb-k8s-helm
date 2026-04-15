@@ -86,6 +86,7 @@ ipWhitelist:
   - "59.12.199.140"
   - "219.241.49.248"
   - "118.33.22.122"
+  - "211.217.131.15"
   - "182.222.162.2"
   - "180.70.114.57"
   - "59.7.27.64"
@@ -183,7 +184,7 @@ extAuthz:
 # Rate Limiting - Dev 환경에서는 비활성화 (부하테스트용)
 rateLimiting:
   local:
-    enabled: false  # Dev 환경에서 rate limiting 비활성화
+    enabled: false # Dev 환경에서 rate limiting 비활성화
     default:
       enabled: false
     perClient:
