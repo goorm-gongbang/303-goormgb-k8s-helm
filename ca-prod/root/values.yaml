@@ -455,6 +455,13 @@ gitCharts:
     syncOptions:
       - Replace=true
 
+  alertmanager-discord-relay:
+    enabled: true
+    description: "Alertmanager Discord relay - native webhook 포맷 전송"
+    path: ca-prod/charts/monitoring/alertmanager-discord-relay
+    namespace: monitoring
+    syncWave: "1"
+
   redis-exporter-ai:
     enabled: true
     path: ca-prod/charts/monitoring/redis-exporter-ai
@@ -494,6 +501,14 @@ gitCharts:
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
+
+  logs-backup:
+    enabled: true
+    path: common-charts/infra/logs-backup
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - ../../../ca-prod/values/monitoring/logs/values-logs-backup.yaml
 
 # =============================================================================
 # ApplicationSets
@@ -539,4 +554,3 @@ applicationSets:
     services:
       - name: ai-etl
         syncWave: "15"
-

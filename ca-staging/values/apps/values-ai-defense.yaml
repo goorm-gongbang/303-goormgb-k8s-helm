@@ -233,6 +233,10 @@ otel:
 # PreSync Jobs — ArgoCD sync-wave 순서대로 실행, 하나라도 실패 시 Deployment/CronJob 진행 중단
 # wave 0 → 1 → 2 → (Deployment/CronJob)
 presyncJobs:
+  - name: tm-ai-clickhouse-migrate
+    syncWave: "-1"
+    command:
+      - tm-ai-clickhouse-migrate
   - name: tm-ai-storage-migrate
     syncWave: "0"
     command:
