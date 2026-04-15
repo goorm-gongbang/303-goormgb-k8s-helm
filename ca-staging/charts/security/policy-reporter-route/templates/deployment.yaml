@@ -61,7 +61,7 @@ spec:
         
         # 2. 실제 Policy Reporter UI 컨테이너
         - name: policy-reporter-ui
-          image: ghcr.io/kyverno/policy-reporter-ui:2.17.0
+          image: ghcr.io/kyverno/policy-reporter-ui:3.7.3
           ports:
             - name: http
               containerPort: 8080
