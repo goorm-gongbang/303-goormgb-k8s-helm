@@ -85,7 +85,8 @@ spec:
                   - UPDATE
                   - DELETE
               # Break-glass: manual-override annotation 있으면 통과 (사유 필수)
-              - key: '{{ "{{ request.object.metadata.annotations[\"ops.playball.one/manual-override\"] || '''' }}" }}'
+              # Dotted key 참조를 위해 큰따옴표로 감싸는 표준 방식 사용
+              - key: '{{ "{{ request.object.metadata.annotations.\"ops.playball.one/manual-override\" }}" }}'
                 operator: Equals
                 value: ""
 {{- end }}
