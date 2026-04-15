@@ -1,0 +1,44 @@
+serviceAccount:
+  name: logs-backup
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-logs-backup
+
+nodeSelector:
+  role: infra
+
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+jobs:
+  - name: infra
+    schedule: "40 17 * * *"
+    s3Bucket: playball-web-backup
+    s3Prefix: staging/logs/infra
+    targetNamespaces:
+      - argocd
+      - data
+      - external-dns
+      - external-secrets
+      - istio-system
+      - karpenter
+      - kube-system
+      - kyverno
+      - messaging
+      - monitoring
+  - name: service
+    schedule: "50 17 * * *"
+    s3Bucket: playball-web-backup
+    s3Prefix: staging/logs/service
+    targetNamespaces:
+      - staging-ai
+      - staging-webs

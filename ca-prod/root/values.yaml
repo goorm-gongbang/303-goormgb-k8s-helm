@@ -495,6 +495,14 @@ gitCharts:
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
 
+  logs-backup:
+    enabled: true
+    path: common-charts/infra/logs-backup
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - ../../../ca-prod/values/monitoring/logs/values-logs-backup.yaml
+
 # =============================================================================
 # ApplicationSets
 # =============================================================================
@@ -539,4 +547,3 @@ applicationSets:
     services:
       - name: ai-etl
         syncWave: "15"
-

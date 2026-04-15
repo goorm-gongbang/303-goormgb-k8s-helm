@@ -1,0 +1,51 @@
+serviceAccount:
+  name: logs-backup
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-logs-backup
+
+nodeSelector:
+  role: infra
+
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+jobs:
+  - name: infra
+    schedule: "10 18 * * *"
+    s3Bucket: playball-web-backup
+    s3Prefix: prod/logs/infra
+    targetNamespaces:
+      - argocd
+      - data
+      - external-dns
+      - external-secrets
+      - istio-system
+      - karpenter
+      - kube-system
+      - kyverno
+      - messaging
+      - monitoring
+  - name: service
+    schedule: "20 18 * * *"
+    s3Bucket: playball-web-backup
+    s3Prefix: prod/logs/service
+    targetNamespaces:
+      - prod-ai
+      - prod-webs
+  - name: payment
+    schedule: "30 18 * * *"
+    s3Bucket: playball-web-backup
+    s3Prefix: prod/logs/payment
+    targetNamespaces:
+      - prod-webs
+    podNameRegex: "^prod-(api-gateway|auth-guard|order-core|queue|seat)-"
