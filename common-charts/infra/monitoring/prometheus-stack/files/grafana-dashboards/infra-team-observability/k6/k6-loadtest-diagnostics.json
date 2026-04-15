@@ -186,7 +186,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (service, pod) (hikaricp_connections_active{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "expr": "sum by (service, pod) (hikaricp_connections_active{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
           "legendFormat": "{{service}} active [{{pod}}]"
         },
         {
@@ -195,7 +195,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (service, pod) (hikaricp_connections_pending{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "expr": "sum by (service, pod) (hikaricp_connections_pending{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
           "legendFormat": "{{service}} pending [{{pod}}]"
         }
       ],
@@ -228,7 +228,7 @@
       "description": "**Tomcat (임베디드) 스레드 사용량**\n\n- `current` : 현재 생성된 워커 스레드\n- `busy` : 요청 처리 중인 스레드\n- `max` : 상한 (기본 200)\n\n---\n**읽는 법**\n- `busy ≈ max` : 스레드 풀 고갈. 새 요청이 OS 레벨에서 queue 대기 중 → latency 폭증.\n\n**조치**\n- `server.tomcat.threads.max` 상향 (예: 200 → 400)\n- 동시에 CPU/메모리 부담 상승 주의 → HPA 같이 검토\n",
       "targets": [
         {
-          "expr": "sum by (service, pod) (jvm_threads_live_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "expr": "sum by (service, pod) (jvm_threads_live_threads{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
           "legendFormat": "{{service}} live [{{pod}}]",
           "refId": "A",
           "datasource": {
@@ -237,7 +237,7 @@
           }
         },
         {
-          "expr": "sum by (service, pod, state) (jvm_threads_states_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core\", state=\"runnable\"})",
+          "expr": "sum by (service, pod, state) (jvm_threads_states_threads{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\", state=\"runnable\"})",
           "legendFormat": "{{service}} runnable [{{pod}}]",
           "refId": "B",
           "datasource": {
@@ -246,7 +246,7 @@
           }
         },
         {
-          "expr": "sum by (service, pod) (jvm_threads_peak_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "expr": "sum by (service, pod) (jvm_threads_peak_threads{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
           "legendFormat": "{{service}} peak [{{pod}}]",
           "refId": "C",
           "datasource": {
@@ -368,7 +368,7 @@
       "description": "**JVM GC pause p95**\n\nMajor/Minor GC 각 action 별 pause 지연.\n\n---\n**읽는 법**\n- `major GC p95 > 100ms` : latency 튐의 주요 원인.\n- 빈도+크기 둘 다 보려면 아래 `GC 총 시간` 패널 병행 확인.\n\n**조치**\n- `-Xmx` 상향으로 heap 확대\n- G1GC → ZGC 전환 (large heap 에서 pause 짧음)\n",
       "targets": [
         {
-          "expr": "max by (service, pod, action) (jvm_gc_pause_seconds_max{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "expr": "max by (service, pod, action) (jvm_gc_pause_seconds_max{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
           "legendFormat": "{{service}} {{action}} max [{{pod}}]",
           "refId": "A",
           "datasource": {
@@ -377,7 +377,7 @@
           }
         },
         {
-          "expr": "sum by (service, pod, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m])) / sum by (service, pod, action) (rate(jvm_gc_pause_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "expr": "sum by (service, pod, action) (rate(jvm_gc_pause_seconds_sum{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m])) / sum by (service, pod, action) (rate(jvm_gc_pause_seconds_count{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
           "legendFormat": "{{service}} {{action}} avg [{{pod}}]",
           "refId": "B",
           "datasource": {
@@ -555,7 +555,7 @@
       "description": "**JVM heap 사용률 (%)**\n\n`jvm_memory_used / jvm_memory_max * 100` (heap area).\n\n---\n**읽는 법**\n- `>80%` 지속 : heap 부족 → GC 풀가동 → latency 튐.\n\n**조치**\n- `JAVA_OPTS: -Xmx` 상향 (컨테이너 limit 까지 여유 두기)\n- 누수 의심이면 heap dump 분석\n",
       "targets": [
         {
-          "expr": "100 * sum by (service, pod) (jvm_memory_used_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core\", area=\"heap\"}) / sum by (service, pod) (jvm_memory_max_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core\", area=\"heap\"})",
+          "expr": "100 * sum by (service, pod) (jvm_memory_used_bytes{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\", area=\"heap\"}) / sum by (service, pod) (jvm_memory_max_bytes{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\", area=\"heap\"})",
           "legendFormat": "{{service}} [{{pod}}]",
           "refId": "A",
           "datasource": {
@@ -596,7 +596,7 @@
       "description": "**초당 GC 총 pause 시간 합**\n\n값 `0.1` = 1초 중 0.1초를 GC 에 소비 = CPU 의 10%가 GC.\n\n---\n**읽는 법**\n- `>0.1` 지속 : GC 오버헤드 심각.\n\n**조치**\n- heap 확대\n- GC 로그 켜고 (`-Xlog:gc*`) 원인 분석\n- ZGC 고려\n",
       "targets": [
         {
-          "expr": "sum by (service, pod, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "expr": "sum by (service, pod, action) (rate(jvm_gc_pause_seconds_sum{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
           "legendFormat": "{{service}} {{action}} [{{pod}}]",
           "refId": "A",
           "datasource": {
@@ -759,7 +759,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "topk(10, histogram_quantile(0.95, sum by (le, service, uri, method) (rate(http_server_requests_seconds_bucket{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", uri!=\"UNKNOWN\"}[15m]))) and on(service, uri, method) (sum by (service, uri, method) (rate(http_server_requests_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", uri!=\"UNKNOWN\"}[15m])) > 0))",
+          "expr": "topk(10, histogram_quantile(0.95, sum by (le, service, uri, method) (rate(http_server_requests_seconds_bucket{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", uri!=\"UNKNOWN\"}[15m]))) and on(service, uri, method) (sum by (service, uri, method) (rate(http_server_requests_seconds_count{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", uri!=\"UNKNOWN\"}[15m])) > 0))",
           "legendFormat": "{{service}} {{method}} {{uri}}",
           "format": "table",
           "instant": true
