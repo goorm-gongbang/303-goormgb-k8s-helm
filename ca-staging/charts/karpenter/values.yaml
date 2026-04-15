@@ -75,10 +75,10 @@ nodePools:
     instanceSizes:
       - xlarge    # 4 vCPU, 16GB
 
-    # 리소스 제한 - webs 5개 서비스만 (requests ~4 cores)
+    # 리소스 제한 - 대규모 부하테스트 대응 (seat/queue 25 + order 10 + 기타)
     limits:
-      cpu: 16
-      memory: 32Gi
+      cpu: 64
+      memory: 128Gi
 
     # Taint 설정 (부하 테스트 전용 격리)
     taints:
