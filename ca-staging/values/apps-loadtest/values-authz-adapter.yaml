@@ -1,7 +1,7 @@
 # authz-adapter - Load-test 환경
 # Go 기반 gRPC ext_authz 서비스
 
-replicaCount: 0
+replicaCount: 2
 
 image:
   name: "staging/playball/ai/authz-adapter"

@@ -1,7 +1,7 @@
 # queue - Load-test 환경
 fullnameOverride: "queue"
 contextPath: "/queue"
-replicaCount: 0
+replicaCount: 3
 
 image:
   name: "staging/playball/web/queue"
@@ -52,9 +52,9 @@ service:
 # 4 replicas x 10 pool = 40 connections
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "30"
+    value: "25"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "10"
+    value: "8"
   - name: SERVER_TOMCAT_THREADS_MAX
     value: "400"
   - name: SERVER_TOMCAT_THREADS_MIN_SPARE
