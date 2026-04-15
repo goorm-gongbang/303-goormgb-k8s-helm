@@ -563,3 +563,4 @@ adminTools:
       - "kafka-ui.staging.playball.one"
       - "prometheus.staging.playball.one"
       - "redisinsight.staging.playball.one"
+      - "policy-reporter.staging.playball.one"
