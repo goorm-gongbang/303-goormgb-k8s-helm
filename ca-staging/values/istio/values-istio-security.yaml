@@ -148,6 +148,7 @@ teamIPs: &teamIPs
   - "121.175.144.99"
   - "203.251.185.110"
   - "59.30.250.162"
+  - "211.217.131.15"
 
 # IP Whitelist (정확 매칭: WAF/차단 전부 bypass)
 ipWhitelist: *teamIPs
