@@ -5,7 +5,7 @@ replicaCount: 3
 
 image:
   name: "staging/playball/web/queue"
-  tag: "bf075d3.40"
+  tag: "ad596a4.41"
   pullPolicy: Always
 
 imagePullSecrets: []
