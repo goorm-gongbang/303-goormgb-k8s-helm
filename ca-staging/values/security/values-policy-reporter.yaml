@@ -51,16 +51,17 @@ ui:
           - name: http-proxy
             containerPort: 4180
             protocol: TCP
-              volumeMounts:
-                - name: oauth-emails
-                  mountPath: /etc/oauth2-proxy
-                  readOnly: true
-        
-            extraVolumes:
-              - name: oauth-emails
-                secret:
-                  secretName: policy-reporter-ui-emails
-        # Kyverno Plugin 활성화 (상세 리포팅)
+        volumeMounts:
+          - name: oauth-emails
+            mountPath: /etc/oauth2-proxy
+            readOnly: true
+    
+    extraVolumes:
+      - name: oauth-emails
+        secret:
+          secretName: policy-reporter-ui-emails
+
+# Kyverno Plugin 활성화 (상세 리포팅)
 kyvernoPlugin:
   enabled: true
 
