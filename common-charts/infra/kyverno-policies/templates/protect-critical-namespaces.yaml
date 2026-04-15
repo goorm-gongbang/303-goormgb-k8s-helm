@@ -79,14 +79,13 @@ spec:
         deny:
           conditions:
             all:
-              - key: "{{ "{{ request.operation }}" }}"
+              - key: '{{ "{{ request.operation }}" }}'
                 operator: In
                 value:
                   - UPDATE
                   - DELETE
               # Break-glass: manual-override annotation 있으면 통과 (사유 필수)
-              # JMESPath 에서 따옴표 이스케이프를 피하기 위해 대괄호 표기법 사용
-              - key: "{{ "{{ request.object.metadata.annotations[\"ops.playball.one/manual-override\"] || '' }}" }}"
+              - key: '{{ "{{ request.object.metadata.annotations[\"ops.playball.one/manual-override\"] || '''' }}" }}'
                 operator: Equals
                 value: ""
 {{- end }}
