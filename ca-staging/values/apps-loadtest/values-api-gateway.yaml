@@ -57,6 +57,18 @@ service:
 
 # Environment variables - loadtest-webs 서비스 참조
 env:
+  # Spring Cloud Gateway HTTP client pool (부하테스트 병목 대응)
+  # 기본 500 → 1000 으로 상향. 2000 VU 때 outbound 요청 대기 완화.
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_TYPE
+    value: "fixed"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_MAX_CONNECTIONS
+    value: "1000"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_ACQUIRE_TIMEOUT
+    value: "3000"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_MAX_IDLE_TIME
+    value: "30s"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_RESPONSE_TIMEOUT
+    value: "5s"
   - name: ALLOWED_ORIGINS
   - name: AUTH_GUARD_URL
     value: "http://auth-guard.loadtest-webs.svc.cluster.local:8080"
