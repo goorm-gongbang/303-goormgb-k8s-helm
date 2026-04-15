@@ -64,6 +64,12 @@ spec:
                 {{- range .Values.excludeNamespaces }}
                 - {{ . }}
                 {{- end }}
+          # Prometheus Operator가 helm pre-install 훅으로 설치하는 CRD들은 label 미부여
+          - resources:
+              kinds:
+                - CustomResourceDefinition
+              names:
+                - "*.monitoring.coreos.com"
       validate:
         message: "ArgoCD를 통해서만 리소스를 생성할 수 있습니다. (app.kubernetes.io/instance 라벨 누락)"
         pattern:

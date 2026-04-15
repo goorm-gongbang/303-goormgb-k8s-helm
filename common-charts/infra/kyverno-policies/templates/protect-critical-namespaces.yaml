@@ -68,8 +68,14 @@ spec:
                 - "*-leader"
                 - "kube-controller-manager"
                 - "kube-scheduler"
+          # DevOps(SSO) 운영 주체 허용 — TODO: DevOps-Staging/Prod 권한 마이그레이션 후 좁히기
+          {{- range .Values.devopsSsoRolePatterns }}
+          - subjects:
+              - kind: User
+                name: {{ . | quote }}
+          {{- end }}
       validate:
-        message: "핵심 네임스페이스({{ "{{ request.namespace }}" }})의 리소스는 ArgoCD를 통해서만 수정/삭제할 수 있습니다."
+        message: "핵심 네임스페이스({{ "{{ request.namespace }}" }})의 리소스는 ArgoCD를 통해서만 수정/삭제할 수 있습니다. 비상시에는 리소스에 annotation `ops.playball.one/manual-override: <사유>` 를 달아 우회 가능."
         deny:
           conditions:
             all:
@@ -78,4 +84,8 @@ spec:
                 value:
                   - UPDATE
                   - DELETE
+              # Break-glass: manual-override annotation 있으면 통과 (사유 필수)
+              - key: "{{ "{{ request.object.metadata.annotations.\"ops.playball.one/manual-override\" || '' }}" }}"
+                operator: Equals
+                value: ""
 {{- end }}
