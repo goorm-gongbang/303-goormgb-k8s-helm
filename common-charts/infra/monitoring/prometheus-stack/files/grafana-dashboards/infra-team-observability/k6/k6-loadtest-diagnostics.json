@@ -628,11 +628,12 @@
         "w": 24,
         "x": 0,
         "y": 44
-      }
+      },
+      "description": ""
     },
     {
       "id": 14,
-      "title": "Redis (ElastiCache) — ops/s / 메모리",
+      "title": "Redis (ElastiCache) — ops/s / 메모리 (공용)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -644,7 +645,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "**redis-exporter 가 ElastiCache 에 붙어 수집하는 서버 사이드 메트릭**.\n\n- `commands/sec` : 초당 명령 처리량\n- `memory used` : Redis 가 점유한 메모리\n- 부하 테스트 시 둘 다 치솟으면 Redis 가 병목.",
+      "description": "⚠️ ElastiCache 공용 인스턴스 — staging-webs 등 다른 네임스페이스 트래픽도 포함됨\n\n**redis-exporter 가 ElastiCache 에 붙어 수집하는 서버 사이드 메트릭**.\n\n- `commands/sec` : 초당 명령 처리량\n- `memory used` : Redis 가 점유한 메모리\n- 부하 테스트 시 둘 다 치솟으면 Redis 가 병목.",
       "targets": [
         {
           "refId": "A",
@@ -709,7 +710,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (consumergroup, topic) (kafka_consumergroup_lag)",
+          "expr": "sum by (consumergroup, topic) (kafka_consumergroup_lag{consumergroup=~\"loadtest-.*\"})",
           "legendFormat": "{{consumergroup}} / {{topic}}"
         }
       ],
@@ -879,7 +880,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 * sum by (service, cache) (rate(cache_gets_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\", result=\"hit\"}[1m])) / sum by (service, cache) (rate(cache_gets_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "expr": "100 * sum by (service, cache) (rate(cache_gets_total{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\", result=\"hit\"}[1m])) / sum by (service, cache) (rate(cache_gets_total{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
           "legendFormat": "{{service}} / {{cache}}"
         }
       ],
@@ -913,7 +914,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (service, cache, result) (rate(cache_gets_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "expr": "sum by (service, cache, result) (rate(cache_gets_total{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
           "legendFormat": "{{service}}/{{cache}} gets({{result}})"
         },
         {
@@ -922,7 +923,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (service, cache) (rate(cache_puts_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "expr": "sum by (service, cache) (rate(cache_puts_total{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
           "legendFormat": "{{service}}/{{cache}} puts"
         },
         {
@@ -931,7 +932,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (service, cache) (rate(cache_evictions_total{service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "expr": "sum by (service, cache) (rate(cache_evictions_total{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
           "legendFormat": "{{service}}/{{cache}} evict"
         },
         {
@@ -940,14 +941,14 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (service, cache) (cache_size{service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "expr": "sum by (service, cache) (cache_size{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
           "legendFormat": "{{service}}/{{cache}} size"
         }
       ]
     },
     {
       "id": 703,
-      "title": "Redis 캐시 hit rate (%)",
+      "title": "Redis 캐시 hit rate (%) (공용)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -959,7 +960,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "**Redis 서버 적중률** (%)\n\n- hits ÷ (hits + misses) × 100\n- 90% 이상이면 캐시 효과 좋음\n- 낮으면 TTL 짧음 / write-only 패턴 / key 전략 재검토",
+      "description": "⚠️ ElastiCache 공용 인스턴스 — staging-webs 등 다른 네임스페이스 트래픽도 포함됨\n\n**Redis 서버 적중률** (%)\n\n- hits ÷ (hits + misses) × 100\n- 90% 이상이면 캐시 효과 좋음\n- 낮으면 TTL 짧음 / write-only 패턴 / key 전략 재검토",
       "targets": [
         {
           "refId": "A",
@@ -981,7 +982,7 @@
     },
     {
       "id": 704,
-      "title": "Redis hits/misses 초당",
+      "title": "Redis hits/misses 초당 (공용)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -993,7 +994,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Redis 의 초당 hit / miss 횟수. hit rate 패널이 비율, 이 패널이 절대량.",
+      "description": "⚠️ ElastiCache 공용 인스턴스 — staging-webs 등 다른 네임스페이스 트래픽도 포함됨\n\nRedis 의 초당 hit / miss 횟수. hit rate 패널이 비율, 이 패널이 절대량.",
       "targets": [
         {
           "refId": "A",
