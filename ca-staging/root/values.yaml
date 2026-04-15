@@ -362,7 +362,7 @@ ociCharts:
     description: "Policy Reporter - Kyverno 정책 위반 시각화 및 Discord 알림"
     repoURL: https://kyverno.github.io/policy-reporter
     chart: policy-reporter
-    version: "2.21.0"
+    version: "3.7.3"
     namespace: kyverno
     syncWave: "-6"
     valueFiles:
