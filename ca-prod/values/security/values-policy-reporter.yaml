@@ -11,11 +11,9 @@ target:
       - kyverno
     skipExistingOnStartup: true
 
-# Kyverno 전용 UI 활성화
+# Kyverno 전용 UI 활성화 (커스텀 OAuth Proxy 사용을 위해 기본 UI 비활성화)
 ui:
-  enabled: true
-  plugins:
-    kyverno: true
+  enabled: false
 
 # Kyverno Plugin 활성화 (상세 리포팅)
 kyvernoPlugin:

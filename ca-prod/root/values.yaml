@@ -343,6 +343,14 @@ gitCharts:
     valueFiles:
       - ../../../ca-prod/values/security/values-kyverno-policies.yaml
 
+  # Policy Reporter Route (Google OAuth Proxy)
+  policy-reporter-route:
+    enabled: true
+    description: "Policy Reporter UI - Google OAuth Proxy (Standalone for Prod)"
+    path: ca-prod/charts/security/policy-reporter-route
+    namespace: kyverno
+    syncWave: "0"
+
   network-policies:
     enabled: true
     path: common-charts/infra/namespaces
