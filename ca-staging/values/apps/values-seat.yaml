@@ -1,7 +1,7 @@
 # seat - Staging 환경
 fullnameOverride: "seat"
 contextPath: "/seat"
-replicaCount: 1
+replicaCount: 3
 
 image:
   name: "staging/playball/web/seat"
