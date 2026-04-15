@@ -356,6 +356,21 @@ ociCharts:
           - /metadata/annotations
           - /metadata/labels
 
+  # Policy Reporter - Kyverno UI & Notifications
+  policy-reporter:
+    enabled: true
+    description: "Policy Reporter - Kyverno 정책 위반 시각화 및 Discord 알림"
+    repoURL: https://kyverno.github.io/policy-reporter
+    chart: policy-reporter
+    version: "2.21.0"
+    namespace: kyverno
+    syncWave: "-6"
+    valueFiles:
+      - $values/ca-staging/values/security/values-policy-reporter.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
 # =============================================================================

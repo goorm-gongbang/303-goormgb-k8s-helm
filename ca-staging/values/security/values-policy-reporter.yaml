@@ -1,0 +1,46 @@
+# Policy Reporter - Kyverno 정책 위반 리포팅 및 Discord 알림 설정
+# Chart: policy-reporter/policy-reporter
+# https://github.com/kyverno/policy-reporter
+
+target:
+  discord:
+    host: https://discord.com
+    webhook: /api/webhooks/1493781545293451345/LpvwKo77OcEsMOv5Ci7YEnQyeEmxvMkfAqVYkrOmP5_pPtmEjkqSgtPRi66Nu9Mugf6u
+    minimumPriority: "warning"
+    sources:
+      - kyverno
+    skipExistingOnStartup: true
+
+# Kyverno 전용 UI 활성화
+ui:
+  enabled: true
+  plugins:
+    kyverno: true
+
+# Kyverno Plugin 활성화 (상세 리포팅)
+kyvernoPlugin:
+  enabled: true
+
+# 리소스 할당량 설정
+resources:
+  limits:
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Staging 환경용 모니터링 노드 배치
+nodeSelector:
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
+# Prometheus 메트릭 수집 설정
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
