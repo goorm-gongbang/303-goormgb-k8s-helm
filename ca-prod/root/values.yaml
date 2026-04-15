@@ -47,6 +47,21 @@ ociCharts:
           - /status
           - /metadata/annotations
           - /metadata/labels
+
+  # Policy Reporter - Kyverno UI & Notifications
+  policy-reporter:
+    enabled: true
+    repoURL: https://kyverno.github.io/policy-reporter
+    chart: policy-reporter
+    version: "2.21.0"
+    namespace: kyverno
+    syncWave: "-6"
+    valueFiles:
+      - $values/ca-prod/values/security/values-policy-reporter.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+
   istio-base:
     enabled: true
     repoURL: https://istio-release.storage.googleapis.com/charts
