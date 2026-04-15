@@ -561,6 +561,14 @@ gitCharts:
     syncOptions:
       - SkipDryRunOnMissingResource=true
 
+  # Policy Reporter Route (Google OAuth Proxy)
+  policy-reporter-route:
+    enabled: true
+    description: "Policy Reporter UI - Google OAuth Proxy (Standalone)"
+    path: ca-staging/charts/security/policy-reporter-route
+    namespace: kyverno
+    syncWave: "0"
+
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
