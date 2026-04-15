@@ -4,7 +4,7 @@ metadata:
   name: policy-reporter-ui-disable-mtls
   namespace: kyverno
 spec:
-  host: policy-reporter-ui-proxy.kyverno.svc.cluster.local
+  host: policy-reporter-ui.kyverno.svc.cluster.local
   trafficPolicy:
     tls:
       mode: DISABLE
