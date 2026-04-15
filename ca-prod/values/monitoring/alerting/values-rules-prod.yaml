@@ -224,3 +224,129 @@ additionalPrometheusRulesMap:
             annotations:
               summary: "prod WAF 차단 요청 급증 치명"
               description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청 수가 1000건을 초과했습니다."
+
+          - alert: ProdKyvernoPrivilegedInfo
+            expr: |
+              (
+                sum(policy_report_result{source="kyverno", policy="disallow-privileged-containers", status="fail"})
+                +
+                sum(cluster_policy_report_result{source="kyverno", policy="disallow-privileged-containers", status="fail"})
+              ) > 1
+            for: 0m
+            labels:
+              severity: info
+              environment: prod
+              team: security
+              service_name: kyverno
+              namespace: kyverno
+            annotations:
+              summary: "prod Kyverno privileged 컨테이너 위반"
+              description: "disallow-privileged-containers 정책 위반이 1건을 초과했습니다."
+
+          - alert: ProdKyvernoCriticalNamespaceInfo
+            expr: |
+              (
+                sum(policy_report_result{source="kyverno", policy="protect-critical-namespaces", status="fail"})
+                +
+                sum(cluster_policy_report_result{source="kyverno", policy="protect-critical-namespaces", status="fail"})
+              ) > 1
+            for: 0m
+            labels:
+              severity: info
+              environment: prod
+              team: security
+              service_name: kyverno
+              namespace: kyverno
+            annotations:
+              summary: "prod Kyverno 중요 네임스페이스 변경 시도"
+              description: "protect-critical-namespaces 정책 위반이 1건을 초과했습니다."
+
+          - alert: ProdKyvernoLatestTagInfo
+            expr: |
+              (
+                sum(policy_report_result{source="kyverno", policy="disallow-latest-tag", status="fail"})
+                +
+                sum(cluster_policy_report_result{source="kyverno", policy="disallow-latest-tag", status="fail"})
+              ) > 3
+            for: 0m
+            labels:
+              severity: info
+              environment: prod
+              team: security
+              service_name: kyverno
+              namespace: kyverno
+            annotations:
+              summary: "prod Kyverno latest 태그 사용 위반"
+              description: "disallow-latest-tag 정책 위반이 3건을 초과했습니다."
+
+          - alert: ProdKyvernoResourceLimitsInfo
+            expr: |
+              (
+                sum(policy_report_result{source="kyverno", policy="require-resource-limits", status="fail"})
+                +
+                sum(cluster_policy_report_result{source="kyverno", policy="require-resource-limits", status="fail"})
+              ) > 5
+            for: 0m
+            labels:
+              severity: info
+              environment: prod
+              team: security
+              service_name: kyverno
+              namespace: kyverno
+            annotations:
+              summary: "prod Kyverno 리소스 제한 누락"
+              description: "require-resource-limits 정책 위반이 5건을 초과했습니다."
+
+          - alert: ProdKyvernoRequiredLabelsInfo
+            expr: |
+              (
+                sum(policy_report_result{source="kyverno", policy="require-labels", status="fail"})
+                +
+                sum(cluster_policy_report_result{source="kyverno", policy="require-labels", status="fail"})
+              ) > 5
+            for: 0m
+            labels:
+              severity: info
+              environment: prod
+              team: security
+              service_name: kyverno
+              namespace: kyverno
+            annotations:
+              summary: "prod Kyverno 필수 라벨 누락"
+              description: "require-labels 정책 위반이 5건을 초과했습니다."
+
+          - alert: ProdKyvernoArgocdManagementInfo
+            expr: |
+              (
+                sum(policy_report_result{source="kyverno", policy="require-argocd-management", status="fail"})
+                +
+                sum(cluster_policy_report_result{source="kyverno", policy="require-argocd-management", status="fail"})
+              ) > 3
+            for: 0m
+            labels:
+              severity: info
+              environment: prod
+              team: security
+              service_name: kyverno
+              namespace: kyverno
+            annotations:
+              summary: "prod Kyverno ArgoCD 관리 라벨 누락"
+              description: "require-argocd-management 정책 위반이 3건을 초과했습니다."
+
+          - alert: ProdKyvernoProbesInfo
+            expr: |
+              (
+                sum(policy_report_result{source="kyverno", policy="require-probes", status="fail"})
+                +
+                sum(cluster_policy_report_result{source="kyverno", policy="require-probes", status="fail"})
+              ) > 5
+            for: 0m
+            labels:
+              severity: info
+              environment: prod
+              team: security
+              service_name: kyverno
+              namespace: kyverno
+            annotations:
+              summary: "prod Kyverno Probe 누락"
+              description: "require-probes 정책 위반이 5건을 초과했습니다."
