@@ -105,7 +105,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) by (destination_workload, response_code)",
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", response_code!=\"0\"}[1m])) by (destination_workload, response_code)",
           "legendFormat": "{{destination_workload}} [{{response_code}}]",
           "refId": "A",
           "datasource": {
@@ -166,7 +166,7 @@
     },
     {
       "id": 4,
-      "title": "HikariCP — active / pending",
+      "title": "HikariCP active / pending (pod별)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -178,34 +178,25 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "**HikariCP (DB 커넥션 풀) 상태**\n\n- `active` : 현재 쿼리 실행 중인 커넥션 수\n- `pending` : 커넥션을 대기 중인 쓰레드 수\n- `max` : 풀 상한\n\n---\n**읽는 법**\n- `pending > 0` 이 지속되면 풀 고갈 → 요청이 DB 커넥션 기다리느라 p99 튐.\n- `active ≈ max` : 이미 풀 풀가동.\n\n**조치**\n- app: `spring.datasource.hikari.maximum-pool-size` 상향\n- DB: max_connections 확인, RDS 인스턴스 스케일업\n- 코드: 느린 쿼리/N+1 튜닝으로 커넥션 점유 시간 줄이기\n",
+      "description": "**pod 단위 DB 커넥션 풀 상태**.\n\n- active: 쿼리 실행 중인 커넥션\n- pending: 커넥션 대기 쓰레드 (>0 지속 시 풀 고갈)\n- max: 해당 pod 의 풀 상한\n\n범례는 `service / pod-suffix` 형태. 서비스 합산이 아닌 pod 단위.",
       "targets": [
         {
-          "expr": "sum by (service) (hikaricp_connections_active{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} active",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
+          },
+          "expr": "sum by (service, pod) (hikaricp_connections_active{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} active [{{pod}}]"
         },
         {
-          "expr": "sum by (service) (hikaricp_connections_pending{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} pending",
           "refId": "B",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
-        },
-        {
-          "expr": "sum by (service) (hikaricp_connections_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} max",
-          "refId": "C",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          }
+          },
+          "expr": "sum by (service, pod) (hikaricp_connections_pending{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} pending [{{pod}}]"
         }
       ],
       "fieldConfig": {
@@ -237,8 +228,8 @@
       "description": "**Tomcat (임베디드) 스레드 사용량**\n\n- `current` : 현재 생성된 워커 스레드\n- `busy` : 요청 처리 중인 스레드\n- `max` : 상한 (기본 200)\n\n---\n**읽는 법**\n- `busy ≈ max` : 스레드 풀 고갈. 새 요청이 OS 레벨에서 queue 대기 중 → latency 폭증.\n\n**조치**\n- `server.tomcat.threads.max` 상향 (예: 200 → 400)\n- 동시에 CPU/메모리 부담 상승 주의 → HPA 같이 검토\n",
       "targets": [
         {
-          "expr": "sum by (service) (jvm_threads_live_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} live",
+          "expr": "sum by (service, pod) (jvm_threads_live_threads{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} live [{{pod}}]",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
@@ -246,8 +237,8 @@
           }
         },
         {
-          "expr": "sum by (service, state) (jvm_threads_states_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", state=\"runnable\"})",
-          "legendFormat": "{{service}} runnable",
+          "expr": "sum by (service, pod, state) (jvm_threads_states_threads{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\", state=\"runnable\"})",
+          "legendFormat": "{{service}} runnable [{{pod}}]",
           "refId": "B",
           "datasource": {
             "type": "prometheus",
@@ -255,8 +246,8 @@
           }
         },
         {
-          "expr": "sum by (service) (jvm_threads_peak_threads{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} peak",
+          "expr": "sum by (service, pod) (jvm_threads_peak_threads{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} peak [{{pod}}]",
           "refId": "C",
           "datasource": {
             "type": "prometheus",
@@ -278,7 +269,7 @@
     },
     {
       "id": 6,
-      "title": "Pod CPU 사용량 (vs requests / limits)",
+      "title": "CPU 사용량 (pod별, java-service)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -292,40 +283,38 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}[1m])) by (pod, container)",
-          "legendFormat": "{{pod}}/{{container}} usage"
-        },
-        {
-          "expr": "sum(kube_pod_container_resource_requests{namespace=\"$namespace\", resource=\"cpu\"}) by (pod, container)",
-          "legendFormat": "{{pod}}/{{container}} request"
-        },
-        {
-          "expr": "sum(kube_pod_container_resource_limits{namespace=\"$namespace\", resource=\"cpu\"}) by (pod, container)",
-          "legendFormat": "{{pod}}/{{container}} limit"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container=\"java-service\"}[1m]))",
+          "legendFormat": "{{pod}}"
         }
       ],
       "fieldConfig": {
         "defaults": {
           "unit": "short",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 10
+          },
           "links": [
             {
               "title": "loadtest-webs 전체 로그 보기",
               "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
               "targetBlank": true
             }
-          ],
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 2,
-            "fillOpacity": 10
-          }
+          ]
         }
       },
-      "description": "**Pod CPU : usage vs requests vs limits**\n\n노드 스케줄링과 throttle 판단 근거.\n\n---\n**읽는 법**\n- `usage == limit` : throttle 진행 중.\n- `usage >> request` : 노드의 다른 파드 밀릴 수 있음 (overcommit).\n- `usage << request` : request 낭비. 줄이면 노드 packing 효율 상승.\n\n\n---\n**CPU 플랫 + limit 값 근접** = throttle 중 (아래 'CPU throttled %' 패널 같이 확인)."
+      "description": "**컨테이너 CPU 실사용량** (java-service 만, istio-proxy 제외).\n\n값이 2 근처에서 flat 이면 limit 에 붙어 throttle 중 — 'CPU throttled %' 패널 확인."
     },
     {
       "id": 7,
-      "title": "Pod Memory 사용량",
+      "title": "Memory 사용량 (pod별, java-service)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -339,8 +328,13 @@
       },
       "targets": [
         {
-          "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", container!=\"\", container!=\"POD\"}) by (pod, container)",
-          "legendFormat": "{{pod}}/{{container}}"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"$namespace\", container=\"java-service\"})",
+          "legendFormat": "{{pod}}"
         }
       ],
       "fieldConfig": {
@@ -374,8 +368,8 @@
       "description": "**JVM GC pause p95**\n\nMajor/Minor GC 각 action 별 pause 지연.\n\n---\n**읽는 법**\n- `major GC p95 > 100ms` : latency 튐의 주요 원인.\n- 빈도+크기 둘 다 보려면 아래 `GC 총 시간` 패널 병행 확인.\n\n**조치**\n- `-Xmx` 상향으로 heap 확대\n- G1GC → ZGC 전환 (large heap 에서 pause 짧음)\n",
       "targets": [
         {
-          "expr": "max by (service, action) (jvm_gc_pause_seconds_max{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"})",
-          "legendFormat": "{{service}} {{action}} max",
+          "expr": "max by (service, pod, action) (jvm_gc_pause_seconds_max{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}} {{action}} max [{{pod}}]",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
@@ -383,8 +377,8 @@
           }
         },
         {
-          "expr": "sum by (service, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) / sum by (service, action) (rate(jvm_gc_pause_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
-          "legendFormat": "{{service}} {{action}} avg",
+          "expr": "sum by (service, pod, action) (rate(jvm_gc_pause_seconds_sum{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m])) / sum by (service, pod, action) (rate(jvm_gc_pause_seconds_count{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}} {{action}} avg [{{pod}}]",
           "refId": "B",
           "datasource": {
             "type": "prometheus",
@@ -470,7 +464,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m])) by (destination_workload, response_code)",
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", response_code!=\"0\"}[1m])) by (destination_workload, response_code)",
           "legendFormat": "{{destination_workload}} [{{response_code}}]",
           "refId": "A",
           "datasource": {
@@ -561,8 +555,8 @@
       "description": "**JVM heap 사용률 (%)**\n\n`jvm_memory_used / jvm_memory_max * 100` (heap area).\n\n---\n**읽는 법**\n- `>80%` 지속 : heap 부족 → GC 풀가동 → latency 튐.\n\n**조치**\n- `JAVA_OPTS: -Xmx` 상향 (컨테이너 limit 까지 여유 두기)\n- 누수 의심이면 heap dump 분석\n",
       "targets": [
         {
-          "expr": "100 * sum by (service) (jvm_memory_used_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", area=\"heap\"}) / sum by (service) (jvm_memory_max_bytes{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", area=\"heap\"})",
-          "legendFormat": "{{service}}",
+          "expr": "100 * sum by (service, pod) (jvm_memory_used_bytes{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\", area=\"heap\"}) / sum by (service, pod) (jvm_memory_max_bytes{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\", area=\"heap\"})",
+          "legendFormat": "{{service}} [{{pod}}]",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
@@ -602,8 +596,8 @@
       "description": "**초당 GC 총 pause 시간 합**\n\n값 `0.1` = 1초 중 0.1초를 GC 에 소비 = CPU 의 10%가 GC.\n\n---\n**읽는 법**\n- `>0.1` 지속 : GC 오버헤드 심각.\n\n**조치**\n- heap 확대\n- GC 로그 켜고 (`-Xlog:gc*`) 원인 분석\n- ZGC 고려\n",
       "targets": [
         {
-          "expr": "sum by (service, action) (rate(jvm_gc_pause_seconds_sum{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
-          "legendFormat": "{{service}} {{action}}",
+          "expr": "sum by (service, pod, action) (rate(jvm_gc_pause_seconds_sum{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}} {{action}} [{{pod}}]",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
@@ -627,18 +621,19 @@
     {
       "id": 300,
       "type": "row",
-      "title": "외부 의존성 (Redis, Kafka, gRPC authz)",
+      "title": "외부 의존성 (Redis, Kafka)",
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 44
-      }
+      },
+      "description": ""
     },
     {
       "id": 14,
-      "title": "Redis 지연 (앱 client-side)",
+      "title": "Redis (ElastiCache) — ops/s / 메모리 (공용)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -650,7 +645,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "**현재 수집 안 됨** — 앱이 Jedis 사용 중이거나 Micrometer Lettuce metric 비노출.\n\n대안:\n- ElastiCache CloudWatch 메트릭 (Grafana CloudWatch datasource)\n- redis_exporter 추가 설치",
+      "description": "⚠️ ElastiCache 공용 인스턴스 — staging-webs 등 다른 네임스페이스 트래픽도 포함됨\n\n**redis-exporter 가 ElastiCache 에 붙어 수집하는 서버 사이드 메트릭**.\n\n- `commands/sec` : 초당 명령 처리량\n- `memory used` : Redis 가 점유한 메모리\n- 부하 테스트 시 둘 다 치솟으면 Redis 가 병목.",
       "targets": [
         {
           "refId": "A",
@@ -658,8 +653,26 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (service) (rate(lettuce_command_completion_seconds_count{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\"}[1m]))",
-          "legendFormat": "{{service}}"
+          "expr": "rate(redis_commands_processed_total[1m])",
+          "legendFormat": "commands/s"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "redis_memory_used_bytes / 1024 / 1024",
+          "legendFormat": "memory MB"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "redis_connected_clients",
+          "legendFormat": "clients"
         }
       ],
       "fieldConfig": {
@@ -692,79 +705,13 @@
       "description": "**Kafka consumer group lag**\n\n가장 오래된 미소비 메시지의 offset 지연 = 얼마나 밀렸는지.\n\n---\n**읽는 법**\n- 계속 증가 : consumer 처리속도 < producer. 밀리는 중.\n- order-core / queue 가 주 consumer.\n\n**조치**\n- consumer 파드 수 상향 (KEDA Kafka scaler 사용 가능)\n- 처리 로직 최적화 / batch 크기 조정\n",
       "targets": [
         {
-          "expr": "sum(kafka_consumergroup_lag{namespace=\"$namespace\"}) by (consumergroup, topic)",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (consumergroup, topic) (kafka_consumergroup_lag{consumergroup=~\"loadtest-.*\"})",
           "legendFormat": "{{consumergroup}} / {{topic}}"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "links": [
-            {
-              "title": "loadtest-webs 전체 로그 보기",
-              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
-              "targetBlank": true
-            }
-          ]
-        }
-      }
-    },
-    {
-      "id": 16,
-      "title": "ext_authz (AI Defense) 지연 p95",
-      "type": "timeseries",
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 52
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "**ext_authz (Envoy → authz-adapter gRPC) p95**\n\n보호 대상 API 요청마다 ext_authz 가 먼저 호출됨.\n\n---\n**읽는 법**\n- 여기 느리면 queue-enter / seat-hold 등 전체가 함께 느려짐.\n\n**조치**\n- authz-adapter 파드 CPU/스레드 증설\n- `extAuthz.timeout` 조정 (현재 0.8s)\n- authz-adapter 내부 Redis 호출 지연 확인 (bot detection lookup)\n\n\n---\n**No data 인 경우**: Envoy `stats_matcher` 설정에서 `ext_authz` prefix 가 include 되어야 Prometheus 에 노출.",
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.95, sum(rate(envoy_ext_authz_upstream_rq_time_bucket{namespace=\"$namespace\"}[1m])) by (le))",
-          "legendFormat": "ext_authz p95"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "ms",
-          "links": [
-            {
-              "title": "loadtest-webs 전체 로그 보기",
-              "url": "/explore?left={\"datasource\":\"loki\",\"queries\":[{\"refId\":\"A\",\"expr\":\"{namespace=\\\"loadtest-webs\\\"} |~ \\\"(?i)(ERROR|WARN|Exception|503)\\\"\"}],\"range\":{\"from\":\"${__from}\",\"to\":\"${__to}\"}}",
-              "targetBlank": true
-            }
-          ]
-        }
-      }
-    },
-    {
-      "id": 17,
-      "title": "ext_authz 차단율",
-      "type": "timeseries",
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 52
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "**ext_authz denied vs ok**\n\n---\n**읽는 법**\n- `denied` 급증 : AI Defense 가 정상 트래픽도 차단할 가능성.\n\n**조치**\n- authz-adapter 로그에서 차단 사유 확인\n- `autoBlocklist.threshold` 완화 (ex. count 3 → 5)\n\n\n---\n**No data 인 경우**: Envoy `stats_matcher` 설정에서 `ext_authz` prefix 가 include 되어야 Prometheus 에 노출.",
-      "targets": [
-        {
-          "expr": "sum(rate(envoy_ext_authz_denied{namespace=\"$namespace\"}[1m]))",
-          "legendFormat": "denied/s"
-        },
-        {
-          "expr": "sum(rate(envoy_ext_authz_ok{namespace=\"$namespace\"}[1m]))",
-          "legendFormat": "ok/s"
         }
       ],
       "fieldConfig": {
@@ -813,7 +760,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "topk(10, histogram_quantile(0.95, sum by (le, service, uri, method) (rate(http_server_requests_seconds_bucket{service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", uri!=\"UNKNOWN\"}[5m]))))",
+          "expr": "topk(10, histogram_quantile(0.95, sum by (le, service, uri, method) (rate(http_server_requests_seconds_bucket{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", uri!=\"UNKNOWN\"}[15m]))) and on(service, uri, method) (sum by (service, uri, method) (rate(http_server_requests_seconds_count{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", uri!=\"UNKNOWN\"}[15m])) > 0))",
           "legendFormat": "{{service}} {{method}} {{uri}}",
           "format": "table",
           "instant": true
@@ -874,11 +821,15 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "**503 많이 뜨는 서비스 = 포화 상태.**\n\n- 503 = Service Unavailable (업스트림 fail).\n- 보통 원인: CPU throttle / HikariCP 고갈 / Tomcat thread 고갈 / pod crash.\n- 패널 클릭으로 Loki 로그 이동해 에러 근거 확인.",
+      "description": "**5xx 발생 시에만 데이터 표시**.\n\n- No data = 최근 5분 내 5xx 0건 = 시스템 정상.\n- 503 폭증이면 업스트림 실패 (CPU throttle / HikariCP 고갈 / pod crash).\n- 패널 클릭해 Loki 에서 에러 로그 조회.",
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", response_code=~\"5..\"}[1m])) by (destination_workload, response_code)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(istio_requests_total{destination_workload_namespace=\"$namespace\", destination_workload=~\"api-gateway|auth-guard|queue|seat|order-core|ai-defense|authz-adapter\", response_code=~\"5..\"}[5m])) by (destination_workload, response_code)",
           "legendFormat": "{{destination_workload}} [{{response_code}}]"
         }
       ],
@@ -892,6 +843,182 @@
               "targetBlank": true
             }
           ]
+        }
+      }
+    },
+    {
+      "id": 700,
+      "type": "row",
+      "title": "Caffeine 캐시 (DB hit 감소 효과)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 73
+      }
+    },
+    {
+      "id": 701,
+      "title": "Cache hit rate (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 74
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**Caffeine 캐시 적중률**.\n\n- 높을수록 DB 조회 안 하고 로컬 메모리에서 처리 → DB 부하 감소\n- 70~90% 이상이면 효과 큼\n- 낮으면 TTL/크기/key 전략 재검토",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "100 * sum by (service, cache) (rate(cache_gets_total{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\", result=\"hit\"}[1m])) / sum by (service, cache) (rate(cache_gets_total{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}} / {{cache}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": 702,
+      "title": "Cache gets/puts/evictions/size",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 74
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "**캐시 동작 상세**.\n\n- gets(hit/miss): 조회 요청 수\n- puts: 캐시 저장 (miss 후 DB 조회 → 저장)\n- evictions: 상한/TTL 로 제거된 수 — 과도하면 캐시 크기 늘려야\n- size: 현재 캐시에 있는 항목 수",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache, result) (rate(cache_gets_total{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}}/{{cache}} gets({{result}})"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache) (rate(cache_puts_total{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}}/{{cache}} puts"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache) (rate(cache_evictions_total{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"}[1m]))",
+          "legendFormat": "{{service}}/{{cache}} evict"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (service, cache) (cache_size{namespace=\"$namespace\", service=~\"api-gateway|auth-guard|queue|seat|order-core\"})",
+          "legendFormat": "{{service}}/{{cache}} size"
+        }
+      ]
+    },
+    {
+      "id": 703,
+      "title": "Redis 캐시 hit rate (%) (공용)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 81
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "⚠️ ElastiCache 공용 인스턴스 — staging-webs 등 다른 네임스페이스 트래픽도 포함됨\n\n**Redis 서버 적중률** (%)\n\n- hits ÷ (hits + misses) × 100\n- 90% 이상이면 캐시 효과 좋음\n- 낮으면 TTL 짧음 / write-only 패턴 / key 전략 재검토",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "100 * sum(rate(redis_keyspace_hits_total[1m])) by (instance) / (sum(rate(redis_keyspace_hits_total[1m])) by (instance) + sum(rate(redis_keyspace_misses_total[1m])) by (instance))",
+          "legendFormat": "{{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": 704,
+      "title": "Redis hits/misses 초당 (공용)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 81
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "⚠️ ElastiCache 공용 인스턴스 — staging-webs 등 다른 네임스페이스 트래픽도 포함됨\n\nRedis 의 초당 hit / miss 횟수. hit rate 패널이 비율, 이 패널이 절대량.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(redis_keyspace_hits_total[1m])) by (instance)",
+          "legendFormat": "{{instance}} hits/s"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(redis_keyspace_misses_total[1m])) by (instance)",
+          "legendFormat": "{{instance}} misses/s"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0
         }
       }
     }

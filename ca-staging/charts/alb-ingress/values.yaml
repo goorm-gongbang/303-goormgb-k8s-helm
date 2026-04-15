@@ -69,3 +69,12 @@ ingress:
         port: 80
         healthCheckPath: /
         healthCheckSuccessCodes: "200,301,302,404"
+
+    # Policy Reporter - Istio IngressGateway 거침 (Kyverno UI)
+    - host: policy-reporter.staging.playball.one
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+        healthCheckSuccessCodes: "200,301,302,404"

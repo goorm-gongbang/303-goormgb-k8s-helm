@@ -74,7 +74,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}) or vector(0)",
+          "expr": "count(kube_pod_status_ready{namespace=~\"loadtest-(webs|ai)\", condition=\"true\"} == 1) or vector(0)",
           "legendFormat": "Pods",
           "refId": "A"
         }
@@ -501,8 +501,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
+        "h": 6,
+        "w": 6,
         "x": 0,
         "y": 6
       },
@@ -561,9 +561,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 3,
+        "h": 6,
+        "w": 6,
+        "x": 6,
         "y": 6
       },
       "id": 33,
@@ -587,7 +587,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count(count by (service) (label_replace(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))) or vector(0)",
+          "expr": "count(count by (service) (label_replace(kube_pod_status_ready{namespace=~\"loadtest-(webs|ai)\", condition=\"true\"} == 1, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))) or vector(0)",
           "legendFormat": "Services",
           "refId": "A"
         }
@@ -613,8 +613,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 9,
-        "x": 15,
+        "w": 12,
+        "x": 12,
         "y": 6
       },
       "id": 34,
@@ -642,7 +642,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count by (service) (label_replace(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
+          "expr": "count by (service) (label_replace(kube_pod_status_ready{namespace=~\"loadtest-(webs|ai)\", condition=\"true\"} == 1, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
           "legendFormat": "{{service}}",
           "refId": "A"
         }
@@ -1030,7 +1030,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count by (service) (label_replace(kube_pod_info{namespace=~\"loadtest-(webs|ai)\", node!=\"\"}, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
+          "expr": "count by (service) (label_replace(kube_pod_status_ready{namespace=~\"loadtest-(webs|ai)\", condition=\"true\"} == 1, \"service\", \"$1\", \"pod\", \"(.+)-[a-z0-9]{8,10}-[a-z0-9]{5}\"))",
           "format": "table",
           "instant": true,
           "refId": "A"
@@ -1571,8 +1571,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"}[5m]))",
-          "legendFormat": "{{pod}}",
+          "expr": "sum by (namespace, pod) (rate(container_cpu_usage_seconds_total{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"}[5m]))",
+          "legendFormat": "{{namespace}}/{{pod}}",
           "refId": "A"
         }
       ],
@@ -1623,8 +1623,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"})",
-          "legendFormat": "{{pod}}",
+          "expr": "sum by (namespace, pod) (container_memory_working_set_bytes{namespace=~\"loadtest-(webs|ai)\", container!=\"\", container!=\"POD\"})",
+          "legendFormat": "{{namespace}}/{{pod}}",
           "refId": "A"
         }
       ],

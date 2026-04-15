@@ -72,6 +72,7 @@ apiGatewayConfig:
     - "grafana.staging.playball.one"
     - "kafka-ui.staging.playball.one"
     - "redisinsight.staging.playball.one"
+    - "policy-reporter.staging.playball.one"
 
 # =============================================================================
 # Kiali - Service Mesh Observability

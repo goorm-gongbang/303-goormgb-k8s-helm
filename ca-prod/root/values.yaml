@@ -47,6 +47,21 @@ ociCharts:
           - /status
           - /metadata/annotations
           - /metadata/labels
+
+  # Policy Reporter - Kyverno UI & Notifications
+  policy-reporter:
+    enabled: true
+    repoURL: https://kyverno.github.io/policy-reporter
+    chart: policy-reporter
+    version: "3.7.3"
+    namespace: kyverno
+    syncWave: "-6"
+    valueFiles:
+      - $values/ca-prod/values/security/values-policy-reporter.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+
   istio-base:
     enabled: true
     repoURL: https://istio-release.storage.googleapis.com/charts
@@ -328,6 +343,14 @@ gitCharts:
     valueFiles:
       - ../../../ca-prod/values/security/values-kyverno-policies.yaml
 
+  # Policy Reporter Route (Google OAuth Proxy)
+  policy-reporter-route:
+    enabled: true
+    description: "Policy Reporter UI - Google OAuth Proxy (Standalone for Prod)"
+    path: ca-prod/charts/security/policy-reporter-route
+    namespace: kyverno
+    syncWave: "0"
+
   network-policies:
     enabled: true
     path: common-charts/infra/namespaces
@@ -386,7 +409,7 @@ gitCharts:
 
   # PostgreSQL 보조 백업 (pg_dump -> S3)
   rds-backup:
-    enabled: false
+    enabled: true
     path: ca-prod/charts/data/rds-backup
     namespace: data
     syncWave: "-5"
@@ -440,6 +463,13 @@ gitCharts:
     syncOptions:
       - Replace=true
 
+  alertmanager-discord-relay:
+    enabled: true
+    description: "Alertmanager Discord relay - native webhook 포맷 전송"
+    path: ca-prod/charts/monitoring/alertmanager-discord-relay
+    namespace: monitoring
+    syncWave: "1"
+
   redis-exporter-ai:
     enabled: true
     path: ca-prod/charts/monitoring/redis-exporter-ai
@@ -479,6 +509,14 @@ gitCharts:
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
+
+  logs-backup:
+    enabled: true
+    path: common-charts/infra/logs-backup
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - ../../../ca-prod/values/monitoring/logs/values-logs-backup.yaml
 
 # =============================================================================
 # ApplicationSets
@@ -524,5 +562,3 @@ applicationSets:
     services:
       - name: ai-etl
         syncWave: "15"
-
-

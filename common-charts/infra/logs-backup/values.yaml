@@ -1,0 +1,22 @@
+serviceAccount:
+  create: true
+  name: logs-backup
+  annotations: {}
+
+nodeSelector:
+  role: infra
+
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+jobs: []

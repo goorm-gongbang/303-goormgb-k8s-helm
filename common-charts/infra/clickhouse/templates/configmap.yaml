@@ -49,8 +49,8 @@ data:
 
   # Session rollups view
   002_defense_session_rollups.sql: |
-    CREATE VIEW IF NOT EXISTS {{ .Values.database }}.defense_session_rollups AS
-    WITH 300000 AS window_ms
+    CREATE OR REPLACE VIEW {{ .Values.database }}.defense_session_rollups AS
+    WITH 600000 AS window_ms
     SELECT
         intDiv(ts_ms, window_ms) * window_ms AS window_start_ms,
         (intDiv(ts_ms, window_ms) * window_ms) + window_ms AS window_end_ms,
@@ -75,8 +75,8 @@ data:
 
   # Match rollups view
   003_defense_match_rollups.sql: |
-    CREATE VIEW IF NOT EXISTS {{ .Values.database }}.defense_match_rollups AS
-    WITH 300000 AS window_ms
+    CREATE OR REPLACE VIEW {{ .Values.database }}.defense_match_rollups AS
+    WITH 600000 AS window_ms
     SELECT
         window_start_ms,
         window_end_ms,
@@ -130,7 +130,7 @@ data:
 
   # Post-review candidates view
   004_defense_post_review_candidates.sql: |
-    CREATE VIEW IF NOT EXISTS {{ .Values.database }}.defense_post_review_candidates_v1 AS
+    CREATE OR REPLACE VIEW {{ .Values.database }}.defense_post_review_candidates_v1 AS
     SELECT
         window_start_ms,
         window_end_ms,

@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: policy-reporter-ui
+  namespace: kyverno
+spec:
+  hosts:
+    - "policy-reporter.playball.one"
+  gateways:
+    - istio-system/api-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /oauth2/
+      route:
+        - destination:
+            host: policy-reporter-oauth-svc.kyverno.svc.cluster.local
+            port:
+              number: 80
+    - route:
+        - destination:
+            host: policy-reporter-oauth-svc.kyverno.svc.cluster.local
+            port:
+              number: 80

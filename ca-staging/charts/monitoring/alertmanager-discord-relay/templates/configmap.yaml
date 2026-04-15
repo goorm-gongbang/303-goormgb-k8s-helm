@@ -1,0 +1,202 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-discord-relay
+  namespace: {{ .Release.Namespace }}
+data:
+  relay.py: |
+    import json
+    import os
+    from datetime import datetime, timezone
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+    from urllib import request
+    from urllib.error import HTTPError
+    from zoneinfo import ZoneInfo
+
+    KST = ZoneInfo("Asia/Seoul")
+    USERNAME = os.environ.get("DISCORD_USERNAME", "Alertmanager")
+    LOGS_URL = os.environ.get("STAGING_LOGS_URL", "")
+    CRITICAL_MENTION = os.environ.get("CRITICAL_MENTION", "")
+
+    ROUTES = {
+        "/critical": {
+            "env": "CRITICAL_WEBHOOK_URL",
+            "title": {"firing": "🚨 장애 감지", "resolved": "✅ 장애 복구"},
+            "color": {"firing": 15158332, "resolved": 3066993},
+            "mention": lambda status: CRITICAL_MENTION if status != "resolved" else "",
+        },
+        "/warning": {
+            "env": "WARNING_WEBHOOK_URL",
+            "title": {"firing": "🟡 경고 발생", "resolved": "✅ 경고 복구"},
+            "color": {"firing": 16776960, "resolved": 3066993},
+            "mention": lambda status: "",
+        },
+        "/info": {
+            "env": "INFO_WEBHOOK_URL",
+            "title": {"firing": "🔵 상태 알림", "resolved": "✅ 상태 정상화"},
+            "color": {"firing": 3447003, "resolved": 3066993},
+            "mention": lambda status: "",
+        },
+        "/security-critical": {
+            "env": "SECURITY_CRITICAL_WEBHOOK_URL",
+            "title": {"firing": "🚨 보안/감사 알림", "resolved": "✅ 보안/감사 알림 복구"},
+            "color": {"firing": 15158332, "resolved": 3066993},
+            "mention": lambda status: "",
+        },
+        "/security-warning": {
+            "env": "SECURITY_WARNING_WEBHOOK_URL",
+            "title": {"firing": "🟡 보안/감사 경고 발생", "resolved": "✅ 보안/감사 경고 복구"},
+            "color": {"firing": 16776960, "resolved": 3066993},
+            "mention": lambda status: "",
+        },
+        "/security-info": {
+            "env": "SECURITY_INFO_WEBHOOK_URL",
+            "title": {"firing": "🔵 보안/감사 정보 발생", "resolved": "✅ 보안/감사 정보 복구"},
+            "color": {"firing": 3447003, "resolved": 3066993},
+            "mention": lambda status: "",
+        },
+    }
+
+    def parse_dt(value):
+        if not value:
+            return None
+        if value.endswith("Z"):
+            value = value[:-1] + "+00:00"
+        return datetime.fromisoformat(value).astimezone(KST)
+
+    def incident_id(alerts):
+        starts = [parse_dt(alert.get("startsAt")) for alert in alerts]
+        starts = [value for value in starts if value]
+        current = min(starts) if starts else datetime.now(timezone.utc).astimezone(KST)
+        return current.strftime("%Y%m%d-%H%M%S")
+
+    def first_non_empty(*values):
+        for value in values:
+            if value:
+                return value
+        return "N/A"
+
+    def normalize_webhook_url(url):
+        return url[:-6] if url.endswith("/slack") else url
+
+    def build_description(payload):
+        alerts = payload.get("alerts") or []
+        common_labels = payload.get("commonLabels") or {}
+        first = alerts[0] if alerts else {}
+        first_labels = first.get("labels") or {}
+        service_name = first_non_empty(
+            common_labels.get("service_name"),
+            common_labels.get("app"),
+            common_labels.get("job"),
+            first_labels.get("service_name"),
+            first_labels.get("app"),
+            first_labels.get("job"),
+        )
+        namespace = first_non_empty(
+            common_labels.get("namespace"),
+            first_labels.get("namespace"),
+            "staging-webs",
+        )
+        instance = first_non_empty(first_labels.get("instance"), first_labels.get("node"))
+        started_candidates = [parse_dt(alert.get("startsAt")) for alert in alerts if alert.get("startsAt")]
+        started_candidates = [value for value in started_candidates if value]
+        started = min(started_candidates) if started_candidates else None
+        resolved = None
+        if payload.get("status") == "resolved":
+            resolved_candidates = [parse_dt(alert.get("endsAt")) for alert in alerts if alert.get("endsAt")]
+            resolved_candidates = [value for value in resolved_candidates if value]
+            resolved = max(resolved_candidates) if resolved_candidates else None
+
+        lines = [
+            f"알림: {first_non_empty(common_labels.get('alertname'), first_labels.get('alertname'))}",
+            f"서비스: {service_name}",
+            f"네임스페이스: {namespace}",
+            f"대상건수: {len(alerts)}",
+            f"인스턴스: {instance}",
+            f"발생(KST): {started.strftime('%Y-%m-%d %H:%M:%S KST') if started else 'N/A'}",
+        ]
+        if resolved:
+            lines.append(f"복구(KST): {resolved.strftime('%Y-%m-%d %H:%M:%S KST')}")
+        return "```text\n" + "\n".join(lines) + "\n```"
+
+    def discord_payload(path, payload):
+        route = ROUTES[path]
+        status = payload.get("status", "firing")
+        labels = payload.get("commonLabels") or {}
+        title = f"[{first_non_empty(labels.get('environment'), 'unknown')}] {route['title'][status]} [{incident_id(payload.get('alerts') or [])}]"
+        content = route["mention"](status)
+        body = {
+            "username": USERNAME,
+            "content": content or None,
+            "embeds": [
+                {
+                    "title": title,
+                    "url": LOGS_URL or None,
+                    "description": build_description(payload),
+                    "color": route["color"][status],
+                }
+            ],
+            "allowed_mentions": {"parse": []},
+        }
+        if content:
+            body["allowed_mentions"] = {"parse": ["roles", "users", "everyone"]}
+        return body
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            if self.path == "/healthz":
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(b"ok")
+                return
+            self.send_response(404)
+            self.end_headers()
+
+        def do_POST(self):
+            if self.path not in ROUTES:
+                self.send_response(404)
+                self.end_headers()
+                return
+
+            length = int(self.headers.get("Content-Length", "0"))
+            payload = json.loads(self.rfile.read(length) or b"{}")
+            webhook_url = os.environ.get(ROUTES[self.path]["env"], "")
+            if not webhook_url:
+                self.send_response(500)
+                self.end_headers()
+                self.wfile.write(b"missing webhook url")
+                return
+
+            webhook_url = normalize_webhook_url(webhook_url)
+            body = json.dumps(discord_payload(self.path, payload)).encode("utf-8")
+            req = request.Request(
+                webhook_url,
+                data=body,
+                headers={
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "User-Agent": "Alertmanager/0.32.0",
+                },
+                method="POST",
+            )
+            try:
+                with request.urlopen(req) as resp:
+                    status = resp.status
+            except HTTPError as exc:
+                self.send_response(502)
+                self.end_headers()
+                error_body = exc.read().decode("utf-8", errors="replace")
+                self.wfile.write(f"HTTP {exc.code}: {error_body}".encode("utf-8"))
+                return
+            except Exception as exc:
+                self.send_response(502)
+                self.end_headers()
+                self.wfile.write(str(exc).encode("utf-8"))
+                return
+
+            self.send_response(200 if status in (200, 204) else 502)
+            self.end_headers()
+
+    if __name__ == "__main__":
+        server = HTTPServer(("0.0.0.0", 8080), Handler)
+        server.serve_forever()

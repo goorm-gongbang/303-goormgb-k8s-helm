@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: policy-reporter-oauth-svc
+  namespace: kyverno
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 4180
+  selector:
+    app: policy-reporter-oauth-proxy
+  type: ClusterIP

@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: policy-reporter-ui-disable-mtls
+  namespace: kyverno
+spec:
+  host: policy-reporter-ui.kyverno.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: policy-reporter-oauth-disable-mtls
+  namespace: kyverno
+spec:
+  host: policy-reporter-oauth-svc.kyverno.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

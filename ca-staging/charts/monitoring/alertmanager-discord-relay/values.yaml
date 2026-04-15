@@ -1,0 +1,22 @@
+nameOverride: alertmanager-discord-relay
+
+image:
+  repository: python
+  tag: "3.12-alpine"
+  pullPolicy: IfNotPresent
+
+service:
+  port: 8080
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+env:
+  username: Alertmanager
+  logsUrl: https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs
+  criticalMention: "@개발팀 @admins"
