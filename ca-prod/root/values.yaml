@@ -455,6 +455,13 @@ gitCharts:
     syncOptions:
       - Replace=true
 
+  alertmanager-discord-relay:
+    enabled: true
+    description: "Alertmanager Discord relay - native webhook 포맷 전송"
+    path: ca-prod/charts/monitoring/alertmanager-discord-relay
+    namespace: monitoring
+    syncWave: "1"
+
   redis-exporter-ai:
     enabled: true
     path: ca-prod/charts/monitoring/redis-exporter-ai
