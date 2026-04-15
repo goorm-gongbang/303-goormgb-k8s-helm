@@ -16,7 +16,15 @@ spec:
         sidecar.istio.io/inject: "false" # 프록시 자체는 Istio 사이드카 없이 동작
     spec:
       nodeSelector:
-        role: monitoring
+        role: infra
+      tolerations:
+        - key: role
+          value: infra
+          effect: NoSchedule
+        - key: loadtest
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
       containers:
         - name: oauth2-proxy
           image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
