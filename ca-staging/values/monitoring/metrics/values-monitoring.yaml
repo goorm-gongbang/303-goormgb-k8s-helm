@@ -397,7 +397,7 @@ promtail:
 backup:
   enabled: true
   schedule: "0 4 * * *"  # 매일 오전 4시 (UTC)
-  s3Bucket: goormgb-backup
+  s3Bucket: playball-web-backup
   s3Prefix: staging/logs
   externalSecret:
     remoteRef: staging/services/db
