@@ -1,7 +1,7 @@
 # ai-defense - Staging 환경
 # Python FastAPI 기반 AI Defense API
 
-replicaCount: 3
+replicaCount: 1
 
 # IRSA ServiceAccount (S3 접근용)
 serviceAccountName: ai-defense

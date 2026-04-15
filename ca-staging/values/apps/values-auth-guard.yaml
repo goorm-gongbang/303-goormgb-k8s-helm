@@ -1,7 +1,7 @@
 # auth-guard - Staging 환경
 fullnameOverride: "auth-guard"
 contextPath: "/auth"
-replicaCount: 3
+replicaCount: 1
 
 image:
   name: "staging/playball/web/auth-guard"
@@ -56,9 +56,9 @@ service:
 # HikariCP connection pool 크기 조정
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "20"
+    value: "5"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "10"
+    value: "2"
 
 envFrom:
   - configMapRef:
