@@ -51,3 +51,23 @@ excludeNamespaces:
   - cert-manager
   # Data
   - messaging
+
+# 핵심 보호 네임스페이스
+criticalNamespaces:
+  - kube-system
+  - kube-public
+  - kube-node-lease
+  - kyverno
+  - argocd
+  - istio-system
+  - monitoring
+  - external-secrets
+  - external-dns
+  - karpenter
+  - cert-manager
+  - messaging
+  - data
+
+# DevOps 운영 주체 허용 (구글 계정 패턴)
+devopsSsoRolePatterns:
+  - "*@google.com"
