@@ -12,4 +12,5 @@ spec:
   selector:
     app.kubernetes.io/name: policy-reporter
     app.kubernetes.io/instance: policy-reporter
+    app.kubernetes.io/component: ui
   type: ClusterIP
