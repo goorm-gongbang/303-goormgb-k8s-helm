@@ -68,7 +68,7 @@ initialConfig:
           "provider": "postgresql",
           "driver": "postgres-jdbc",
           "name": "playball-pg",
-          "save-password": true,
+          "save-password": false,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
@@ -87,7 +87,7 @@ initialConfig:
           "provider": "postgresql",
           "driver": "postgres-jdbc",
           "name": "ai-defense-pg",
-          "save-password": true,
+          "save-password": false,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
@@ -103,10 +103,10 @@ initialConfig:
           }
         },
         "staging-clickhouse": {
-          "provider": "generic",
-          "driver": "clickhouse",
+          "provider": "clickhouse",
+          "driver": "com_clickhouse",
           "name": "Staging ClickHouse (AI Team)",
-          "save-password": true,
+          "save-password": false,
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
