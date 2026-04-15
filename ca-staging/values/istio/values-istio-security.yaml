@@ -267,35 +267,21 @@ rateLimiting:
       maxTokens: 100
 
     # 경로별 제한
-    # 백엔드 앱 레벨 카테고리(LOGIN 5/min 등) 와 정합성 맞춰 Istio 도 강화.
-    # Istio = 1차 방어 (초 단위 burst 컷), 백엔드 = 2차 방어 (분 단위 누적 컷).
     perRoute:
       enabled: true
       routes:
-        - path: "/auth/"           # LOGIN/SIGNUP/REFRESH 등 전체
-          tokensPerFill: 3         # 기존 10 → 감소
+        - path: "/auth/"
+          tokensPerFill: 10
           fillInterval: 1s
-          maxTokens: 5             # 기존 20 → 감소
+          maxTokens: 20
         - path: "/payment/"
-          tokensPerFill: 2         # 기존 5 → 감소
-          fillInterval: 1s
-          maxTokens: 3             # 기존 10 → 감소
-        - path: "/signup"
-          tokensPerFill: 1         # 기존 3 → 감소
-          fillInterval: 1s
-          maxTokens: 2             # 기존 5 → 감소
-        - path: "/seat/"           # 신규 — /seat/*/hold 등 좌석 API
           tokensPerFill: 5
           fillInterval: 1s
           maxTokens: 10
-        - path: "/queue/matches/"  # 신규 — 대기열 진입
+        - path: "/signup"
           tokensPerFill: 3
           fillInterval: 1s
           maxTokens: 5
-        - path: "/ai/precheck"     # 신규 — 봇탐지 엔드포인트 남용 방지
-          tokensPerFill: 5
-          fillInterval: 1s
-          maxTokens: 10
 
     response:
       statusCode: 429
