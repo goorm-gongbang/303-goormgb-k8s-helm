@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-discord-relay
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: alertmanager-discord-relay
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: alertmanager-discord-relay
+    spec:
+      containers:
+        - name: relay
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - python
+            - /app/relay.py
+          env:
+            - name: DISCORD_USERNAME
+              value: {{ .Values.env.username | quote }}
+            - name: STAGING_LOGS_URL
+              value: {{ .Values.env.logsUrl | quote }}
+            - name: CRITICAL_MENTION
+              value: {{ .Values.env.criticalMention | quote }}
+            - name: CRITICAL_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: alertmanager-discord-webhooks
+                  key: critical-webhook-url
+            - name: WARNING_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: alertmanager-discord-webhooks
+                  key: warning-webhook-url
+            - name: INFO_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: alertmanager-discord-webhooks
+                  key: info-webhook-url
+            - name: SECURITY_CRITICAL_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: alertmanager-discord-webhooks
+                  key: security-critical-webhook-url
+            - name: SECURITY_WARNING_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: alertmanager-discord-webhooks
+                  key: security-warning-webhook-url
+            - name: SECURITY_INFO_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: alertmanager-discord-webhooks
+                  key: security-info-webhook-url
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: relay-script
+              mountPath: /app
+      volumes:
+        - name: relay-script
+          configMap:
+            name: alertmanager-discord-relay

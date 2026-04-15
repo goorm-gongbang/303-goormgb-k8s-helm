@@ -533,6 +533,13 @@ gitCharts:
     syncOptions:
       - Replace=true
 
+  alertmanager-discord-relay:
+    enabled: true
+    description: "Alertmanager Discord relay - native webhook 포맷 전송"
+    path: ca-staging/charts/monitoring/alertmanager-discord-relay
+    namespace: monitoring
+    syncWave: "1"
+
   # === ArgoCD Config (OAuth, Applications) ===
   argocd-config:
     enabled: true
