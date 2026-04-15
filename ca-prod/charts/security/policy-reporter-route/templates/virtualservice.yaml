@@ -5,7 +5,7 @@ metadata:
   namespace: kyverno
 spec:
   hosts:
-    - "policy-reporter.prod.playball.one"
+    - "policy-reporter.playball.one"
   gateways:
     - istio-system/api-gateway
   http:

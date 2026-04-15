@@ -49,3 +49,11 @@ ingress:
         namespace: istio-system
         port: 80
         healthCheckPath: /
+
+    # Policy Reporter - Istio IngressGateway 거침
+    - host: policy-reporter.playball.one
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /

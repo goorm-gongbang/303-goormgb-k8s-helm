@@ -28,7 +28,7 @@ spec:
             - --provider=google
             - --email-domain=*
             - --http-address=0.0.0.0:4180
-            - --redirect-url=https://policy-reporter.prod.playball.one/oauth2/callback
+            - --redirect-url=https://policy-reporter.playball.one/oauth2/callback
             - --cookie-secure=true
             - --cookie-samesite=lax
             - --cookie-refresh=1h
