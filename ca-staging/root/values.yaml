@@ -561,14 +561,6 @@ gitCharts:
     syncOptions:
       - SkipDryRunOnMissingResource=true
 
-  # Policy Reporter Route
-  policy-reporter-route:
-    enabled: true
-    description: "Policy Reporter UI - 외부 도메인 라우팅 (VirtualService)"
-    path: ca-staging/charts/security/policy-reporter-route
-    namespace: kyverno
-    syncWave: "0"
-
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
   # otel-collector: OCI로 이동 (ociCharts.opentelemetry-collector)
