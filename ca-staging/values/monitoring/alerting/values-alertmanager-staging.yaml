@@ -34,6 +34,12 @@ alertmanager:
           receiver: 'discord-security-warning'
           repeat_interval: 30m
         - match:
+            team: security
+            environment: staging
+            severity: info
+          receiver: 'discord-security-info'
+          repeat_interval: 10m
+        - match:
             environment: staging
             severity: critical
           receiver: 'discord-critical'
