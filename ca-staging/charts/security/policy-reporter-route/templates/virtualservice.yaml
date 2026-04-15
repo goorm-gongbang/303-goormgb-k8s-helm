@@ -16,9 +16,9 @@ spec:
         - destination:
             host: policy-reporter-ui.kyverno.svc.cluster.local
             port:
-              number: 4180
+              number: 8080
     - route:
         - destination:
             host: policy-reporter-ui.kyverno.svc.cluster.local
             port:
-              number: 4180
+              number: 8080
