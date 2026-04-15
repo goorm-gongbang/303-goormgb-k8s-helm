@@ -161,18 +161,19 @@ data:
             length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(length) or b"{}")
             webhook_url = os.environ.get(ROUTES[self.path]["env"], "")
-        if not webhook_url:
-            self.send_response(500)
-            self.end_headers()
-            self.wfile.write(b"missing webhook url")
-            return
-        webhook_url = normalize_webhook_url(webhook_url)
-        body = json.dumps(discord_payload(self.path, payload)).encode("utf-8")
-        req = request.Request(
-            webhook_url,
-            data=body,
-            headers={
-                "Content-Type": "application/json",
+            if not webhook_url:
+                self.send_response(500)
+                self.end_headers()
+                self.wfile.write(b"missing webhook url")
+                return
+
+            webhook_url = normalize_webhook_url(webhook_url)
+            body = json.dumps(discord_payload(self.path, payload)).encode("utf-8")
+            req = request.Request(
+                webhook_url,
+                data=body,
+                headers={
+                    "Content-Type": "application/json",
                     "Accept": "application/json",
                     "User-Agent": "Alertmanager/0.32.0",
                 },
