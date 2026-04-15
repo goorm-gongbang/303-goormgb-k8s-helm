@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: policy-reporter-ui-proxy
+  namespace: kyverno
+  labels:
+    app.kubernetes.io/name: policy-reporter
+    app.kubernetes.io/instance: policy-reporter
+    app.kubernetes.io/component: ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: policy-reporter
+      app.kubernetes.io/instance: policy-reporter
+      app.kubernetes.io/component: ui
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: policy-reporter
+        app.kubernetes.io/instance: policy-reporter
+        app.kubernetes.io/component: ui
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      nodeSelector:
+        role: monitoring
+      tolerations:
+        - key: role
+          value: monitoring
+          effect: NoSchedule
+      containers:
+        # 1. OAuth2 Proxy 컨테이너
+        - name: oauth2-proxy
+          image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+          args:
+            - --provider=google
+            - --email-domain=*
+            - --http-address=0.0.0.0:4180
+            - --redirect-url=https://policy-reporter.staging.playball.one/oauth2/callback
+            - --cookie-secure=true
+            - --cookie-samesite=lax
+            - --cookie-refresh=1h
+            - --cookie-expire=4h
+            - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails.txt
+            - --skip-provider-button=false
+            - --reverse-proxy=true
+            - --proxy-prefix=/oauth2
+            - --upstream=http://127.0.0.1:8080
+          envFrom:
+            - secretRef:
+                name: policy-reporter-ui-oauth
+          ports:
+            - name: http-proxy
+              containerPort: 4180
+              protocol: TCP
+          volumeMounts:
+            - name: oauth-emails
+              mountPath: /etc/oauth2-proxy
+              readOnly: true
+        
+        # 2. 실제 Policy Reporter UI 컨테이너
+        - name: policy-reporter-ui
+          image: ghcr.io/kyverno/policy-reporter-ui:2.17.0
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+      volumes:
+        - name: oauth-emails
+          secret:
+            secretName: policy-reporter-ui-emails
