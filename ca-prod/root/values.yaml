@@ -401,7 +401,7 @@ gitCharts:
 
   # PostgreSQL 보조 백업 (pg_dump -> S3)
   rds-backup:
-    enabled: false
+    enabled: true
     path: ca-prod/charts/data/rds-backup
     namespace: data
     syncWave: "-5"
@@ -539,5 +539,4 @@ applicationSets:
     services:
       - name: ai-etl
         syncWave: "15"
-
 
