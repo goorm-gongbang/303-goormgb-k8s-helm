@@ -10,6 +10,7 @@ data:
     from datetime import datetime, timezone
     from http.server import BaseHTTPRequestHandler, HTTPServer
     from urllib import request
+    from urllib.error import HTTPError
     from zoneinfo import ZoneInfo
 
     KST = ZoneInfo("Asia/Seoul")
@@ -75,9 +76,6 @@ data:
                 return value
         return "N/A"
 
-    def normalize_webhook_url(url):
-        return url[:-6] if url.endswith("/slack") else url
-
     def build_description(payload):
         alerts = payload.get("alerts") or []
         common_labels = payload.get("commonLabels") or {}
@@ -117,6 +115,23 @@ data:
         if resolved:
             lines.append(f"복구(KST): {resolved.strftime('%Y-%m-%d %H:%M:%S KST')}")
         return "```text\n" + "\n".join(lines) + "\n```"
+
+    def slack_payload(path, payload):
+        route = ROUTES[path]
+        status = payload.get("status", "firing")
+        labels = payload.get("commonLabels") or {}
+        title = f"[{first_non_empty(labels.get('environment'), 'unknown')}] {route['title'][status]} [{incident_id(payload.get('alerts') or [])}]"
+        mention = route["mention"](status)
+        body_lines = [title]
+        if LOGS_URL:
+            body_lines.append(LOGS_URL)
+        if mention:
+            body_lines.append(mention)
+        body_lines.append(build_description(payload))
+        return {
+            "username": USERNAME,
+            "text": "\n".join(body_lines),
+        }
 
     def discord_payload(path, payload):
         route = ROUTES[path]
@@ -165,9 +180,7 @@ data:
                 self.end_headers()
                 self.wfile.write(b"missing webhook url")
                 return
-            webhook_url = normalize_webhook_url(webhook_url)
-
-            body = json.dumps(discord_payload(self.path, payload)).encode("utf-8")
+            body = json.dumps(slack_payload(self.path, payload)).encode("utf-8")
             req = request.Request(
                 webhook_url,
                 data=body,
@@ -177,6 +190,12 @@ data:
             try:
                 with request.urlopen(req) as resp:
                     status = resp.status
+            except HTTPError as exc:
+                self.send_response(502)
+                self.end_headers()
+                error_body = exc.read().decode("utf-8", errors="replace")
+                self.wfile.write(f"HTTP {exc.code}: {error_body}".encode("utf-8"))
+                return
             except Exception as exc:
                 self.send_response(502)
                 self.end_headers()
