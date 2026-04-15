@@ -46,7 +46,7 @@ spec:
             - --skip-provider-button=false
             - --reverse-proxy=true
             - --proxy-prefix=/oauth2
-            - --upstream=http://127.0.0.1:8080
+            - --upstream=http://127.0.0.1:8082
           envFrom:
             - secretRef:
                 name: policy-reporter-ui-oauth
@@ -66,7 +66,7 @@ spec:
             - run-ui
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 8082
               protocol: TCP
           livenessProbe:
             httpGet:
