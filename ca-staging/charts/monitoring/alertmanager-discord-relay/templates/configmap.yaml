@@ -184,7 +184,11 @@ data:
             req = request.Request(
                 webhook_url,
                 data=body,
-                headers={"Content-Type": "application/json"},
+                headers={
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "User-Agent": "Alertmanager/0.32.0",
+                },
                 method="POST",
             )
             try:
