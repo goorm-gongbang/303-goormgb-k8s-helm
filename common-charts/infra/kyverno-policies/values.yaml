@@ -82,3 +82,10 @@ criticalNamespaces:
   - external-secrets
   - cert-manager
   - karpenter
+
+# protect-critical-namespaces 정책에서 UPDATE/DELETE 허용할 SSO 운영 역할 (User name 패턴, wildcard 지원)
+# TODO: DevOps-Staging / DevOps-Prod access entry 등록 후 Admin-Full 제거
+devopsSsoRolePatterns:
+  - "arn:aws:sts::*:assumed-role/AWSReservedSSO_Admin-Full_*/*"
+  - "arn:aws:sts::*:assumed-role/AWSReservedSSO_DevOps-Staging_*/*"
+  - "arn:aws:sts::*:assumed-role/AWSReservedSSO_DevOps-Prod_*/*"
