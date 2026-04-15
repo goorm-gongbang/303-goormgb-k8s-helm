@@ -26,41 +26,41 @@ ui:
     port: 8080
 
   # OAuth2 Proxy 사이드카 추가 (RedisInsight 방식)
-  extraContainers:
-    - name: oauth2-proxy
-      image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
-      args:
-        - --provider=google
-        - --email-domain=*
-        - --http-address=0.0.0.0:4180
-        - --redirect-url=https://policy-reporter.staging.playball.one/oauth2/callback
-        - --cookie-secure=true
-        - --cookie-samesite=lax
-        - --cookie-refresh=1h
-        - --cookie-expire=4h
-        - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails.txt
-        - --skip-provider-button=false
-        - --reverse-proxy=true
-        - --proxy-prefix=/oauth2
-        - --upstream=http://127.0.0.1:8080
-      envFrom:
-        - secretRef:
-            name: policy-reporter-ui-oauth
-      ports:
-        - name: http-proxy
-          containerPort: 4180
-          protocol: TCP
-      volumeMounts:
-        - name: oauth-emails
-          mountPath: /etc/oauth2-proxy
-          readOnly: true
-
-  extraVolumes:
-    - name: oauth-emails
-      secret:
-        secretName: policy-reporter-ui-emails
-
-# Kyverno Plugin 활성화 (상세 리포팅)
+  deployment:
+    extraContainers:
+      - name: oauth2-proxy
+        image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+        args:
+          - --provider=google
+          - --email-domain=*
+          - --http-address=0.0.0.0:4180
+          - --redirect-url=https://policy-reporter.staging.playball.one/oauth2/callback
+          - --cookie-secure=true
+          - --cookie-samesite=lax
+          - --cookie-refresh=1h
+          - --cookie-expire=4h
+          - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails.txt
+          - --skip-provider-button=false
+          - --reverse-proxy=true
+          - --proxy-prefix=/oauth2
+          - --upstream=http://127.0.0.1:8080
+        envFrom:
+          - secretRef:
+              name: policy-reporter-ui-oauth
+        ports:
+          - name: http-proxy
+            containerPort: 4180
+            protocol: TCP
+              volumeMounts:
+                - name: oauth-emails
+                  mountPath: /etc/oauth2-proxy
+                  readOnly: true
+        
+            extraVolumes:
+              - name: oauth-emails
+                secret:
+                  secretName: policy-reporter-ui-emails
+        # Kyverno Plugin 활성화 (상세 리포팅)
 kyvernoPlugin:
   enabled: true
 
