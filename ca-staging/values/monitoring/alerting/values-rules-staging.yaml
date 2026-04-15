@@ -128,8 +128,10 @@ additionalPrometheusRulesMap:
               severity: info
               environment: staging
               team: security
-              service_name: kyverno
+              service_name: Kyverno
               namespace: kyverno
+              source_name: Kyverno
+              policy_name: disallow-privileged-containers
             annotations:
               summary: "staging Kyverno privileged 컨테이너 위반"
               description: "disallow-privileged-containers 정책 위반이 1건 이상 발생했습니다."
@@ -146,8 +148,10 @@ additionalPrometheusRulesMap:
               severity: info
               environment: staging
               team: security
-              service_name: kyverno
+              service_name: Kyverno
               namespace: kyverno
+              source_name: Kyverno
+              policy_name: protect-critical-namespaces
             annotations:
               summary: "staging Kyverno 중요 네임스페이스 변경 시도"
               description: "protect-critical-namespaces 정책 위반이 1건 이상 발생했습니다."
@@ -164,8 +168,10 @@ additionalPrometheusRulesMap:
               severity: info
               environment: staging
               team: security
-              service_name: kyverno
+              service_name: Kyverno
               namespace: kyverno
+              source_name: Kyverno
+              policy_name: disallow-latest-tag
             annotations:
               summary: "staging Kyverno latest 태그 사용 위반"
               description: "disallow-latest-tag 정책 위반이 1건 이상 발생했습니다."
@@ -182,8 +188,10 @@ additionalPrometheusRulesMap:
               severity: info
               environment: staging
               team: security
-              service_name: kyverno
+              service_name: Kyverno
               namespace: kyverno
+              source_name: Kyverno
+              policy_name: require-resource-limits
             annotations:
               summary: "staging Kyverno 리소스 제한 누락"
               description: "require-resource-limits 정책 위반이 1건 이상 발생했습니다."
@@ -200,8 +208,10 @@ additionalPrometheusRulesMap:
               severity: info
               environment: staging
               team: security
-              service_name: kyverno
+              service_name: Kyverno
               namespace: kyverno
+              source_name: Kyverno
+              policy_name: require-labels
             annotations:
               summary: "staging Kyverno 필수 라벨 누락"
               description: "require-labels 정책 위반이 1건 이상 발생했습니다."
@@ -218,8 +228,10 @@ additionalPrometheusRulesMap:
               severity: info
               environment: staging
               team: security
-              service_name: kyverno
+              service_name: Kyverno
               namespace: kyverno
+              source_name: Kyverno
+              policy_name: require-argocd-management
             annotations:
               summary: "staging Kyverno ArgoCD 관리 라벨 누락"
               description: "require-argocd-management 정책 위반이 1건 이상 발생했습니다."
