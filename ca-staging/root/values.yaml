@@ -599,6 +599,15 @@ gitCharts:
     namespace: data
     syncWave: "0"
 
+  logs-backup:
+    enabled: true
+    description: "운영 로그 백업 - namespace별 로그 S3 적재"
+    path: common-charts/infra/logs-backup
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - ../../../ca-staging/values/monitoring/logs/values-logs-backup.yaml
+
   # RedisInsight (Redis GUI with Google OAuth)
   redisinsight:
     enabled: true
