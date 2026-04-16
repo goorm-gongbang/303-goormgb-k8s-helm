@@ -1,0 +1,40 @@
+{{- if and .Values.enabled .Values.jwt.enabled }}
+# Ingress gateway 에서 JWT 서명/issuer/aud 검증.
+# - 토큰 유효 → Envoy 가 claim 을 request metadata 에 기록 (AuthorizationPolicy 에서 활용)
+# - 토큰 무효 → 401 즉시 반환 (backend 까지 가지 않음)
+# - 토큰 없음 → 통과 (AuthorizationPolicy 에서 요구 여부 판정)
+apiVersion: security.istio.io/v1
+kind: RequestAuthentication
+metadata:
+  name: load-test-jwt
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      # istio-ingressgateway 기본 label. values-istio-gateway.yaml 에서 커스텀 label 사용시 맞춰야 함.
+      istio: ingressgateway
+  jwtRules:
+    - issuer: {{ .Values.jwt.issuer | quote }}
+      audiences:
+        {{- range .Values.jwt.audiences }}
+        - {{ . | quote }}
+        {{- end }}
+      jwks: |
+        {{- .Values.jwt.jwksJson | nindent 8 }}
+      # backend (auth-guard 등) 에서도 원본 Authorization 헤더가 필요하므로 forward.
+      forwardOriginalToken: true
+      # Authorization: Bearer <token> 및 쿼리파라미터 access_token 허용
+      fromHeaders:
+        - name: Authorization
+          prefix: "Bearer "
+      outputPayloadToHeader: "X-Jwt-Payload"
+      # Cloud-gateway 가 JWT 에서 추출해 전달하던 X-User-Id 헤더를 Envoy 가 대체 주입.
+      # 백엔드 XUserIdAuthenticationFilter 가 이 헤더로 인증하므로 필수.
+      outputClaimToHeaders:
+        - header: "X-User-Id"
+          claim: "sub"
+        - header: "X-User-Role"
+          claim: "auth"
+        - header: "X-Session-Id"
+          claim: "sid"
+{{- end }}

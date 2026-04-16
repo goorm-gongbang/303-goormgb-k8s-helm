@@ -9,7 +9,46 @@ spec:
   gateways:
     - {{ .Values.gatewayRef }}
   http:
-    # /load-test/ prefix로 시작하는 요청만 loadtest로 라우팅
+    # ─── Per-service direct routing (api-gateway 우회) ──────────────
+    # /load-test/{service-prefix}/** → {service}.{ns}.svc.cluster.local
+    # api-gateway 의 JWT / Rate Limit / Routing 기능은 Istio 로 이관됨.
+    {{- if .Values.directRoutes.enabled }}
+    {{- range .Values.directRoutes.services }}
+    - match:
+        - uri:
+            prefix: {{ printf "%s%s" $.Values.sourcePath (trimPrefix "/" .prefix) | quote }}
+      rewrite:
+        uri: {{ .prefix | quote }}
+      route:
+        - destination:
+            host: {{ printf "%s.%s.svc.cluster.local" .name $.Values.directRoutes.namespace | quote }}
+            port:
+              number: {{ .port }}
+      {{- if $.Values.cors.enabled }}
+      corsPolicy:
+        allowOrigins:
+          {{- range $.Values.cors.allowOrigins }}
+          - exact: {{ . | quote }}
+          {{- end }}
+        allowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - OPTIONS
+        allowHeaders:
+          - "*"
+        allowCredentials: true
+        maxAge: "24h"
+      {{- end }}
+    {{- end }}
+    {{- end }}
+
+    # ─── Fallback: Spring Cloud Gateway (운영중 점진 이관용) ──────────
+    # directRoutes 에 매칭되지 않은 /load-test/* 요청을 api-gateway 로.
+    # 검증 끝나면 gatewayProxy.enabled: false 로 두고 삭제 예정.
+    {{- if .Values.gatewayProxy.enabled }}
     - match:
         - uri:
             prefix: {{ .Values.sourcePath }}
@@ -17,9 +56,9 @@ spec:
         uri: /
       route:
         - destination:
-            host: {{ .Values.destination.host }}
+            host: {{ .Values.gatewayProxy.destination.host }}
             port:
-              number: {{ .Values.destination.port }}
+              number: {{ .Values.gatewayProxy.destination.port }}
       {{- if .Values.cors.enabled }}
       corsPolicy:
         allowOrigins:
@@ -38,4 +77,5 @@ spec:
         allowCredentials: true
         maxAge: "24h"
       {{- end }}
+    {{- end }}
 {{- end }}

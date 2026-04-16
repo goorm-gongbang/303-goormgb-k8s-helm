@@ -1,9 +1,10 @@
-# api-gateway - Load-test 환경
-# /load-test/ prefix로 라우팅되는 부하 테스트 전용
-# 라우팅만 담당, DB 사용 거의 없음 (5000 VU 기준)
+# [DEPRECATED] api-gateway - Istio ingress gateway 로 이관 완료 (2026-04-16)
+# JWT 검증/라우팅을 istio-ingressgateway 에서 직접 처리하므로 이 서비스는 더 이상 사용하지 않음.
+# replicaCount=0 유지. ArgoCD Application 은 app-of-apps 구조 안전성을 위해 잔존.
+# 향후 안정 확인 후 ArgoCD Application CR 과 함께 완전 제거 예정.
 fullnameOverride: "api-gateway"
 contextPath: ""
-replicaCount: 3
+replicaCount: 0
 
 image:
   name: "staging/playball/web/api-gateway"
