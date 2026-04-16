@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Require Resource Limits
-    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/category: Reliability, Resource Management
     policies.kyverno.io/severity: medium
     policies.kyverno.io/description: >-
       모든 컨테이너에 CPU 및 메모리 limits가 설정되어 있는지 확인합니다.
