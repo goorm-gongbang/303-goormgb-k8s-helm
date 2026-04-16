@@ -7,7 +7,13 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
+    {{- if .Values.faro.virtualService.hosts }}
+    {{- range .Values.faro.virtualService.hosts }}
+    - {{ . | quote }}
+    {{- end }}
+    {{- else }}
     - {{ .Values.faro.virtualService.host | quote }}
+    {{- end }}
   gateways:
     - {{ .Values.faro.virtualService.gateway }}
   http:
