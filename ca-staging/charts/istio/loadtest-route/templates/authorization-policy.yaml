@@ -1,0 +1,52 @@
+{{- if and .Values.enabled .Values.authz.enabled }}
+# /load-test/* 경로 중 JWT 불필요 경로를 제외한 모든 경로에 JWT 요구.
+# 1) ALLOW publicPaths  — JWT 없이도 통과 (로그인/토큰/공개조회)
+# 2) DENY (requestPrincipals = "") — 나머지는 JWT 있어야 통과
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: load-test-public-allow
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+  action: ALLOW
+  rules:
+    {{- range .Values.authz.publicPaths }}
+    - to:
+        - operation:
+            methods:
+              {{- range .methods }}
+              - {{ . | quote }}
+              {{- end }}
+            paths:
+              - {{ printf "%s*" .prefix | quote }}
+              - {{ .prefix | quote }}
+    {{- end }}
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: load-test-require-jwt
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+  action: DENY
+  rules:
+    - from:
+        - source:
+            # requestPrincipals 비어있음 = JWT 없음 or 검증 실패
+            notRequestPrincipals: ["*"]
+      to:
+        - operation:
+            paths:
+              - {{ printf "%s*" .Values.sourcePath | quote }}
+            notPaths:
+              {{- range .Values.authz.publicPaths }}
+              - {{ printf "%s*" .prefix | quote }}
+              - {{ .prefix | quote }}
+              {{- end }}
+{{- end }}
