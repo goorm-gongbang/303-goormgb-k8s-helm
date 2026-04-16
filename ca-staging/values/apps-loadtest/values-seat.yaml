@@ -49,12 +49,13 @@ service:
 
 # HikariCP connection pool 크기 조정 (부하테스트용)
 # Seat - DB 쿼리 많음: 블럭/좌석/온보딩 조회, Hold 생성 (5000 VU 대상)
-# 4 replicas x 15 pool = 60 connections
+# 3 replicas x 60 pool = 180 connections (3000 VUs 기준 booking-options 동시성 대응)
+# 2026-04-16: 25 → 60 상향. acquire wait P99 6.5s 관측 → pool 포화가 seat P99 6s 원인.
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "25"
+    value: "60"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "8"
+    value: "20"
   - name: SERVER_TOMCAT_THREADS_MAX
     value: "400"
   - name: SERVER_TOMCAT_THREADS_MIN_SPARE
