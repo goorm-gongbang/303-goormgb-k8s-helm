@@ -57,7 +57,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 8, "y": 1},
       "id": 3,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT COUNT(*) as count FROM post_review_session_results WHERE final_label = 'SUSPICIOUS' AND $__timeFilter(created_at)", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT COUNT(*) as count FROM post_review_session_results WHERE review_result = 'SUSPICIOUS' AND $__timeFilter(created_at)", "refId": "A"}],
       "title": "의심 세션 수",
       "type": "stat"
     },
@@ -68,7 +68,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 12, "y": 1},
       "id": 4,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT CASE WHEN COUNT(*) > 0 THEN 100.0 * SUM(CASE WHEN final_label = 'SUSPICIOUS' THEN 1 ELSE 0 END) / COUNT(*) ELSE 0 END as rate FROM post_review_session_results WHERE $__timeFilter(created_at)", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT CASE WHEN COUNT(*) > 0 THEN 100.0 * SUM(CASE WHEN review_result = 'SUSPICIOUS' THEN 1 ELSE 0 END) / COUNT(*) ELSE 0 END as rate FROM post_review_session_results WHERE $__timeFilter(created_at)", "refId": "A"}],
       "title": "의심 비율",
       "type": "stat"
     },
@@ -120,7 +120,7 @@
       "gridPos": {"h": 7, "w": 12, "x": 12, "y": 6},
       "id": 11,
       "options": {"legend": {"calcs": ["sum", "mean"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"datasource": "PostgreSQL", "format": "time_series", "rawSql": "SELECT date_trunc('hour', created_at) as time, COUNT(*) as \"의심 세션\" FROM post_review_session_results WHERE final_label = 'SUSPICIOUS' AND $__timeFilter(created_at) GROUP BY 1 ORDER BY 1", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "time_series", "rawSql": "SELECT date_trunc('hour', created_at) as time, COUNT(*) as \"의심 세션\" FROM post_review_session_results WHERE review_result = 'SUSPICIOUS' AND $__timeFilter(created_at) GROUP BY 1 ORDER BY 1", "refId": "A"}],
       "title": "의심 세션 수 추이",
       "type": "timeseries"
     },
@@ -151,7 +151,7 @@
       "gridPos": {"h": 7, "w": 6, "x": 6, "y": 14},
       "id": 21,
       "options": {"displayLabels": ["name", "percent"], "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "values": ["value", "percent"]}, "pieType": "pie", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "tooltip": {"mode": "single", "sort": "none"}},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT final_label as review_result, COUNT(*) as count FROM post_review_session_results WHERE $__timeFilter(created_at) GROUP BY final_label", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT review_result, COUNT(*) as count FROM post_review_session_results WHERE $__timeFilter(created_at) GROUP BY review_result", "refId": "A"}],
       "title": "판정 결과 분포",
       "transformations": [{"id": "rowsToFields", "options": {"mappings": [{"fieldName": "review_result", "handlerKey": "field.name"}, {"fieldName": "count", "handlerKey": "field.value"}]}}],
       "type": "piechart"
@@ -224,7 +224,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 30},
       "id": 40,
       "options": {"cellHeight": "sm", "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false}, "showHeader": true, "sortBy": [{"desc": true, "displayName": "created_at"}]},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT r.match_id as \"경기 ID\", COUNT(s.id) as \"검토 수\", COUNT(s.id) FILTER (WHERE s.final_label = 'SUSPICIOUS') as \"의심 수\", r.status as \"상태\", r.created_at as \"시간\" FROM post_review_runs r LEFT JOIN post_review_session_results s ON s.post_review_run_id = r.id WHERE $__timeFilter(r.created_at) GROUP BY r.id, r.match_id, r.status, r.created_at HAVING COUNT(s.id) FILTER (WHERE s.final_label = 'SUSPICIOUS') > 0 ORDER BY r.created_at DESC LIMIT 20", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT r.match_id as \"경기 ID\", COUNT(s.session_id) as \"검토 수\", COUNT(s.session_id) FILTER (WHERE s.review_result = 'SUSPICIOUS') as \"의심 수\", r.status as \"상태\", r.created_at as \"시간\" FROM post_review_runs r LEFT JOIN post_review_session_results s ON s.match_id = r.match_id WHERE $__timeFilter(r.created_at) GROUP BY r.match_id, r.status, r.created_at HAVING COUNT(s.session_id) FILTER (WHERE s.review_result = 'SUSPICIOUS') > 0 ORDER BY r.created_at DESC LIMIT 20", "refId": "A"}],
       "title": "최근 의심 경기 목록",
       "type": "table"
     },
@@ -235,7 +235,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 30},
       "id": 41,
       "options": {"cellHeight": "sm", "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false}, "showHeader": true, "sortBy": [{"desc": true, "displayName": "created_at"}]},
-      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT r.match_id as \"경기 ID\", s.session_id as \"세션 ID\", s.final_label as \"판정\", s.decision_summary_json::text as \"판단 근거\", s.created_at as \"시간\" FROM post_review_session_results s JOIN post_review_runs r ON s.post_review_run_id = r.id WHERE s.final_label = 'SUSPICIOUS' AND $__timeFilter(s.created_at) ORDER BY s.created_at DESC LIMIT 20", "refId": "A"}],
+      "targets": [{"datasource": "PostgreSQL", "format": "table", "rawSql": "SELECT r.match_id as \"경기 ID\", s.session_id as \"세션 ID\", s.review_result as \"판정\", s.session_analysis_json::text as \"판단 근거\", s.created_at as \"시간\" FROM post_review_session_results s JOIN post_review_runs r ON s.match_id = r.match_id WHERE s.review_result = 'SUSPICIOUS' AND $__timeFilter(s.created_at) ORDER BY s.created_at DESC LIMIT 20", "refId": "A"}],
       "title": "최근 의심 세션 목록",
       "type": "table"
     },
