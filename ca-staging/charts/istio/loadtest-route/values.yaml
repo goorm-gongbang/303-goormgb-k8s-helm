@@ -73,6 +73,10 @@ authz:
       methods: ["POST"]
     - prefix: /load-test/auth/loadtest-login
       methods: ["POST"]
+    - prefix: /load-test/auth/loadtest/login
+      methods: ["POST"]
+    - prefix: /load-test/auth/loadtest/signup
+      methods: ["POST"]
     # 공개 조회 API
     - prefix: /load-test/order/clubs
       methods: ["GET"]
