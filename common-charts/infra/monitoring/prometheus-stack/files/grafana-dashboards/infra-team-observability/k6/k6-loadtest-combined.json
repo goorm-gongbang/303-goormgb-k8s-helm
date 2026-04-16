@@ -1598,7 +1598,7 @@
           "refId": "A"
         }
       ],
-      "title": "CPU 사용량 (Pod별)",
+      "title": "CPU 사용량 (Pod별, Limit 대비 %)",
       "type": "timeseries"
     },
     {
@@ -1688,7 +1688,7 @@
           "refId": "A"
         }
       ],
-      "title": "메모리 사용량 (Pod별)",
+      "title": "메모리 사용량 (Pod별, 실사용량)",
       "type": "timeseries"
     },
     {
