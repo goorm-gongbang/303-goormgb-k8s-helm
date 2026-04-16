@@ -4,36 +4,13 @@ enabled: true
 host: "api.staging.playball.one"
 gatewayRef: "istio-system/api-gateway"
 
-# Source path prefix (will be stripped from all matches)
+# Source path prefix (will be stripped)
 sourcePath: "/load-test/"
 
-# Legacy destination (api-gateway). 2026-04-16 부터 per-service routing 으로 이전중.
-# enabled=true 로 두면 /load-test/* 트래픽이 api-gateway 를 거치고,
-# false 로 두면 directRoutes 만 사용하여 api-gateway 를 우회한다.
-gatewayProxy:
-  enabled: false
-  destination:
-    host: "api-gateway.loadtest-webs.svc.cluster.local"
-    port: 8085
-
-# Per-service direct routing (api-gateway 우회)
-# /load-test/{prefix}/** → {svc}.{ns}.svc.cluster.local:{port}
-directRoutes:
-  enabled: true
-  namespace: "loadtest-webs"
-  services:
-    - name: auth-guard
-      prefix: /auth/
-      port: 8080
-    - name: queue
-      prefix: /queue/
-      port: 8081
-    - name: seat
-      prefix: /seat/
-      port: 8082
-    - name: order-core
-      prefix: /order/
-      port: 8083
+# Destination service
+destination:
+  host: "api-gateway.loadtest-webs.svc.cluster.local"
+  port: 8085
 
 # CORS settings
 cors:
@@ -41,51 +18,3 @@ cors:
   allowOrigins:
     - "https://staging.playball.one"
     - "https://loadtest.playball.one"
-
-# Istio RequestAuthentication (ingress 에서 JWT 검증)
-# loadtest 트래픽은 istio-ingressgateway 에서 JWT 를 검증하여
-# Spring Cloud Gateway 의 JwtAuthenticationFilter CPU 부하를 제거한다.
-jwt:
-  enabled: true
-  issuer: "playball-goormgb-auth-service"
-  audiences:
-    - "playball-goormgb-api"
-  # PEM → JWKS(JSON) 변환값. kid 는 임의(backend 가 kid 검증하지 않으면 무관).
-  # 변경 시: kubectl -n loadtest-webs get secret service-config -o jsonpath='{.data.JWT_PUBLIC_KEY}' | base64 -d
-  jwksJson: |
-    {"keys":[{"kty":"RSA","alg":"RS256","use":"sig","kid":"playball-jwt-key","n":"m4wJ3d9FvnF7H7vY6lUpDZuUnmMiRtBvnC4aFu1hpNOkQ000PPidVP8epwU26N7tISivpEk4mud3OUQOVgjgiuRlOj4BAgC-I2Qgv0s_haHMvxnUIg7I8dojk2_Y7v80O3IiEL6Knba0mGFJLZVH3KuAVHbZtUt0akVRYJ5OLIq7iReBu7a_5rNJXXgPUA_OsFfeJ653-qspc3rYnByspKEvkp296QldXLPziEpSfQd5C68uBSqDkwRzekRjxc19-TdJwQP44Yfn9qxhzstkiGpL3U9meH7rxuvqSTpos5sBMPj4gDEgjBX9Yz4Vo8EdeMykaFG1mFLZW9OyXQfIjQ","e":"AQAB"}]}
-
-# AuthorizationPolicy — JWT 요구 경로 화이트리스트
-# 백엔드 JwtAuthenticationFilter 의 화이트리스트 정책을 Istio 에 이식.
-# 여기 명시 안 된 /load-test/* 경로는 JWT 필수.
-authz:
-  enabled: true
-  # 인증 없이 허용할 (path prefix, methods) 쌍
-  publicPaths:
-    # Auth 관련 - 로그인/회원가입/토큰 발급
-    - prefix: /load-test/auth/kakao/login-url
-      methods: ["GET"]
-    - prefix: /load-test/auth/kakao/login
-      methods: ["POST"]
-    - prefix: /load-test/auth/token/refresh
-      methods: ["POST"]
-    - prefix: /load-test/auth/loadtest-signup
-      methods: ["POST"]
-    - prefix: /load-test/auth/loadtest-login
-      methods: ["POST"]
-    # 공개 조회 API
-    - prefix: /load-test/order/clubs
-      methods: ["GET"]
-    - prefix: /load-test/order/matches
-      methods: ["GET"]
-    - prefix: /load-test/seat/blocks
-      methods: ["GET"]
-
-# Local Rate Limit (Spring Cloud Gateway RequestRateLimiter 이관)
-# 부하테스트에서는 측정 방해되므로 default false. 운영 반영 시 활성.
-rateLimit:
-  enabled: false
-  queueEnter:
-    # 기존 gateway 설정과 동일 (pod-local, burst 기준)
-    replenishRate: 3
-    burstCapacity: 10
