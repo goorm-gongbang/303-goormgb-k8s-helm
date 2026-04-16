@@ -1869,8 +1869,6 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-<<<<<<< Updated upstream
-=======
       "description": "RDS 사용 가능 메모리 (FreeableMemory)\n\n[현재 인스턴스: db.t4g.small — 총 2 GB RAM]\nOS/shared_buffers 등 제외하고 OS가 해제 가능한 메모리.\n\n[임계치]\n- 512 MB 이상: 정상\n- 256 MB 이하: 노란불 (스왑/쿼리 성능 저하 가능)\n- 0 근접: 빨간불 (OOM 위험, 인스턴스 스케일업 검토)",
       "fieldConfig": {
         "defaults": {
@@ -1951,7 +1949,6 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
->>>>>>> Stashed changes
       "description": "RDS IOPS (Read/Write)",
       "fieldConfig": {
         "defaults": {
