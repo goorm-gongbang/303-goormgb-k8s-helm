@@ -7,11 +7,10 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Enforce ArgoCD Management
-    policies.kyverno.io/category: Best Practices, Security
+    policies.kyverno.io/category: GitOps, Governance, Security
     policies.kyverno.io/severity: medium
     policies.kyverno.io/description: >-
       ArgoCD가 관리하지 않는 리소스(app.kubernetes.io/instance 라벨이 없는 경우)의 생성을 차단합니다.
-      이를 통해 Shadow IT 및 비공식적인 리소스 주입을 방지합니다.
 spec:
   validationFailureAction: {{ .Values.validationAction | default "Audit" }}
   background: false
