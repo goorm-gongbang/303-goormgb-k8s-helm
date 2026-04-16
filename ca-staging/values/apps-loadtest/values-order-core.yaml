@@ -1,7 +1,7 @@
 # order-core - Load-test 환경
 fullnameOverride: "order-core"
 contextPath: "/order"
-replicaCount: 0
+replicaCount: 2
 
 image:
   name: "staging/playball/web/order-core"
