@@ -3,7 +3,7 @@
 # 라우팅만 담당, DB 사용 거의 없음 (5000 VU 기준)
 fullnameOverride: "api-gateway"
 contextPath: ""
-replicaCount: 0
+replicaCount: 3
 
 image:
   name: "staging/playball/web/api-gateway"
@@ -47,7 +47,7 @@ resources:
 istio:
   sidecar: true
   gateway:
-    enabled: false  # /load-test/ 라우팅은 별도 VirtualService
+    enabled: false # /load-test/ 라우팅은 별도 VirtualService
 
 # Service
 servicePort: &port 8085
