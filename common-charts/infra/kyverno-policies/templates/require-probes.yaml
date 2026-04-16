@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Require Probes
-    policies.kyverno.io/category: Best Practices
-    policies.kyverno.io/severity: low
+    policies.kyverno.io/category: Reliability, Availability
+    policies.kyverno.io/severity: medium
     policies.kyverno.io/description: >-
       모든 컨테이너에 readinessProbe와 livenessProbe가 설정되어 있는지 확인합니다.
 spec:
