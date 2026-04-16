@@ -191,10 +191,10 @@ grafana.ini:
     role_attribute_path: >-
       contains(['212clab@gmail.com', 'rhuba23@gmail.com', 'chamchi0129@gmail.com'], email) && 'Admin' ||
       contains(['jusanha17@gmail.com', 'lab.jehyun@gmail.com', 'wnconc@gmail.com', 'jbyun1105@gmail.com', 'sayiamseyoun9@gmail.com', 'jminwook0120@gmail.com', 'siyeon0713@gmail.com', 'cdh4112618@gmail.com', 'rhkdgur120@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'yuuijin863@gmail.com', 'hs4734@gmail.com', 'hejwien@gmail.com'], email) && 'Admin' ||
-      'Viewer'
+      'Editor'
   users:
     auto_assign_org: true
-    auto_assign_org_role: Viewer
+    auto_assign_org_role: Editor
   auth:
     disable_login_form: true  # Google OAuth만 허용
 
