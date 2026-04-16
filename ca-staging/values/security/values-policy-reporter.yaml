@@ -5,7 +5,7 @@
 target:
   discord:
     webhook: https://discord.com/api/webhooks/1493781545293451345/LpvwKo77OcEsMOv5Ci7YEnQyeEmxvMkfAqVYkrOmP5_pPtmEjkqSgtPRi66Nu9Mugf6u
-    minimumPriority: "critical"
+    minimumPriority: "low"
     sources:
       - kyverno
     skipExistingOnStartup: true
