@@ -142,6 +142,12 @@ env:
       secretKeyRef:
         name: ai-service-config
         key: INTERNAL_API_KEY
+  # Offline LLM API key (post-review / backoffice copilot fallback adapter)
+  - name: TM_OFFLINE_LLM_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: TM_OFFLINE_LLM_API_KEY
   # OpenTelemetry: 새 Semantic Convention 사용 (Java와 통일)
   - name: OTEL_SEMCONV_STABILITY_OPT_IN
     value: "http"
