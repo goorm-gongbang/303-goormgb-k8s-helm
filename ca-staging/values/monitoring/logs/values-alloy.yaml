@@ -1,38 +1,37 @@
 alloy:
-  alloy:
-    configMap:
-      create: true
-      content: |
-        faro.receiver "frontend" {
-          server {
-            listen_address = "0.0.0.0"
-            listen_port = 12347
+  configMap:
+    create: true
+    content: |
+      faro.receiver "frontend" {
+        server {
+          listen_address = "0.0.0.0"
+          listen_port = 12347
 
-            cors_allowed_origins = ["*"]
-          }
-
-          sourcemaps {}
-
-          output {
-            logs   = [loki.write.faro.receiver]
-            traces = [otelcol.exporter.otlp.tempo.input]
-          }
+          cors_allowed_origins = ["*"]
         }
 
-        loki.write "faro" {
-          endpoint {
-            url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
-          }
-        }
+        sourcemaps {}
 
-        otelcol.exporter.otlp "tempo" {
-          client {
-            endpoint = "tempo.monitoring.svc.cluster.local:4317"
-            tls {
-              insecure = true
-            }
+        output {
+          logs   = [loki.write.faro.receiver]
+          traces = [otelcol.exporter.otlp.tempo.input]
+        }
+      }
+
+      loki.write "faro" {
+        endpoint {
+          url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+        }
+      }
+
+      otelcol.exporter.otlp "tempo" {
+        client {
+          endpoint = "tempo.monitoring.svc.cluster.local:4317"
+          tls {
+            insecure = true
           }
         }
+      }
 
   resources:
     requests:
@@ -42,15 +41,15 @@ alloy:
       cpu: 200m
       memory: 256Mi
 
-  service:
-    enabled: true
-    type: ClusterIP
-
   extraPorts:
     - name: faro
       port: 12347
       targetPort: 12347
       protocol: TCP
+
+service:
+  enabled: true
+  type: ClusterIP
 
 faro:
   virtualService:

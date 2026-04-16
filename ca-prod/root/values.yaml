@@ -479,7 +479,7 @@ gitCharts:
     namespace: monitoring
     syncWave: "1"
     valueFiles:
-      - ../../../ca-prod/values/monitoring/logs/values-alloy.yaml
+      - ../../../../ca-prod/values/monitoring/logs/values-alloy.yaml
 
   alertmanager-discord-relay:
     enabled: true
