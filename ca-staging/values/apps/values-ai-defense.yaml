@@ -28,7 +28,7 @@ args:
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
-  tag: "b4f4113.20"
+  tag: "e8d9228.21"
   name: "staging/playball/ai/defense"
   pullPolicy: Always
 
