@@ -8,7 +8,7 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
-  "description": "프론트엔드 사용자 행동과 화면 전환 흐름을 확인하기 위한 PM용 대시보드입니다. 유입, 주요 클릭, 온보딩, API 오류를 함께 보며 사용자 경험을 파악합니다. 모든 패널이 비면 Faro SDK 초기화, NEXT_PUBLIC_FARO_URL, /faro 수집 경로, 프론트 staging 배포 상태를 먼저 확인하세요. page_view만 보이고 다른 이벤트가 비면 trackAction 계측이 아직 붙지 않았을 가능성이 크고, 최근 24시간 패널이 비면 staging 실제 사용 트래픽이 거의 없었을 수 있습니다.",
+  "description": "프론트엔드 사용자 행동과 화면 전환 흐름을 확인하기 위한 PM용 대시보드입니다. 유입, 주요 클릭, 결제 전환, 프론트 오류를 함께 보며 사용자 경험을 파악합니다. 모든 패널이 비면 Faro SDK 초기화, NEXT_PUBLIC_FARO_URL, /faro 수집 경로, 프론트 staging 배포 상태를 먼저 확인하세요. page_view만 보이고 다른 이벤트가 비면 trackAction 계측이 아직 붙지 않았을 가능성이 크고, 최근 24시간 패널이 비면 staging 실제 사용 트래픽이 거의 없었을 수 있습니다.",
   "panels": [
     {
       "type": "stat",
@@ -248,7 +248,7 @@
     },
     {
       "type": "timeseries",
-      "description": "사용자 주요 행동의 시간대별 추이입니다. 클릭과 체크아웃 시작이 어떻게 변하는지 비교할 수 있습니다.",
+      "description": "사용자 주요 행동의 시간대별 추이입니다. 경기 상세 진입, 체크아웃 시작, 결제 시작이 어떻게 변하는지 비교할 수 있습니다.",
       "title": "사용자 행동 추이",
       "gridPos": {
         "h": 8,
@@ -269,8 +269,8 @@
           "refId": "B"
         },
         {
-          "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"match_tab_change\" [$__interval])",
-          "legendFormat": "Tab Change",
+          "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"payment_start\" [$__interval])",
+          "legendFormat": "Payment Start",
           "refId": "C"
         }
       ],
@@ -427,8 +427,8 @@
     },
     {
       "type": "timeseries",
-      "description": "온보딩 시작부터 완료까지 단계별 추이입니다. 어느 단계에서 이탈이 발생하는지 파악할 때 사용합니다.",
-      "title": "온보딩 퍼널",
+      "description": "경기 진입부터 결제 완료까지 단계별 추이입니다. 어느 단계에서 이탈이 발생하는지 파악할 때 사용합니다.",
+      "title": "결제 퍼널",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -438,18 +438,18 @@
       "datasource": "Loki",
       "targets": [
         {
-          "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"onboarding_start\" [$__interval])",
-          "legendFormat": "Start",
+          "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"match_click\" [$__interval])",
+          "legendFormat": "Match Click",
           "refId": "A"
         },
         {
-          "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"onboarding_step1_submit\" [$__interval])",
-          "legendFormat": "Step 1 Submit",
+          "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"checkout_start\" [$__interval])",
+          "legendFormat": "Checkout Start",
           "refId": "B"
         },
         {
-          "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"onboarding_complete\" [$__interval])",
-          "legendFormat": "Complete",
+          "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"payment_success\" [$__interval])",
+          "legendFormat": "Payment Success",
           "refId": "C"
         }
       ],
@@ -477,7 +477,7 @@
     },
     {
       "type": "timeseries",
-      "description": "프론트엔드에서 관측한 API 오류 추이입니다. 사용자 행동 이상이 백엔드 오류와 같이 움직이는지 볼 수 있습니다.",
+      "description": "프론트엔드에서 관측한 실패 이벤트 추이입니다. 로그인, 결제, 좌석 조회 등 사용자 흐름 실패가 언제 증가하는지 확인할 수 있습니다.",
       "title": "API 오류 추이",
       "gridPos": {
         "h": 8,
@@ -488,8 +488,8 @@
       "datasource": "Loki",
       "targets": [
         {
-          "expr": "count_over_time({app=\"goormgb-frontend\"} |= \"api_error\" [$__interval])",
-          "legendFormat": "API Errors",
+          "expr": "count_over_time({app=\"goormgb-frontend\"} |~ \"[a-z_]+_fail\" [$__interval])",
+          "legendFormat": "Fail Events",
           "refId": "A"
         }
       ],
@@ -563,5 +563,5 @@
   "timezone": "Asia/Seoul",
   "title": "사용자 행동 분석 (PM)",
   "uid": "frontend-analytics-pm",
-  "version": 2
+  "version": 3
 }
