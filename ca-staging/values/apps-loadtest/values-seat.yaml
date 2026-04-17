@@ -1,7 +1,7 @@
 # seat - Load-test 환경
 fullnameOverride: "seat"
 contextPath: "/seat"
-replicaCount: 10
+replicaCount: 6
 
 image:
   name: "staging/playball/web/seat"
@@ -52,13 +52,12 @@ service:
 
 # HikariCP connection pool 크기 조정 (부하테스트용)
 # Seat - DB 쿼리 많음: 블럭/좌석/온보딩 조회, Hold 생성 (5000 VU 대상)
-# 3 replicas x 40 pool = 120 connections (3000 VUs 기준 booking-options 동시성 대응)
-# 2026-04-16: 25 → 40 상향. acquire wait P99 6.5s 관측 → pool 포화가 seat P99 6s 원인.
+# 10 replicas x 15 pool = 150 connections (RDS max_connections 270 기준)
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "40"
+    value: "20"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "15"
+    value: "10"
   - name: SERVER_TOMCAT_THREADS_MAX
     value: "400"
   - name: SERVER_TOMCAT_THREADS_MIN_SPARE
