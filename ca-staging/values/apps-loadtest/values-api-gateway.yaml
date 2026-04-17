@@ -3,11 +3,11 @@
 # 라우팅만 담당, DB 사용 거의 없음 (5000 VU 기준)
 fullnameOverride: "api-gateway"
 contextPath: ""
-replicaCount: 5
+replicaCount: 0
 
 image:
   name: "staging/playball/web/api-gateway"
-  tag: "432992f.40"
+  tag: "fe8ca2b.32"
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -48,6 +48,9 @@ istio:
   sidecar: true
   gateway:
     enabled: false # /load-test/ 라우팅은 별도 VirtualService
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
 
 # Service
 servicePort: &port 8085
@@ -57,19 +60,6 @@ service:
 
 # Environment variables - loadtest-webs 서비스 참조
 env:
-  # Spring Cloud Gateway HTTP client pool (부하테스트 병목 대응)
-  # fixed 1000 → elastic 2000: P50 은 개선됐으나 acquire-timeout 3s 로
-  # 인한 tail (P99 8s) 발생. elastic 으로 burst 흡수 + timeout 짧게.
-  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_TYPE
-    value: "elastic"
-  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_MAX_CONNECTIONS
-    value: "2000"
-  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_ACQUIRE_TIMEOUT
-    value: "1500"
-  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_MAX_IDLE_TIME
-    value: "30s"
-  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_RESPONSE_TIMEOUT
-    value: "5s"
   - name: ALLOWED_ORIGINS
   - name: AUTH_GUARD_URL
     value: "http://auth-guard.loadtest-webs.svc.cluster.local:8080"
