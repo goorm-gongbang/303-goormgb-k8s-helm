@@ -60,6 +60,17 @@ service:
 
 # Environment variables - loadtest-webs 서비스 참조
 env:
+  # Spring Cloud Gateway HTTP client pool (P99 tail 대응)
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_TYPE
+    value: "elastic"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_MAX_CONNECTIONS
+    value: "2000"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_ACQUIRE_TIMEOUT
+    value: "1500"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_MAX_IDLE_TIME
+    value: "30s"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_RESPONSE_TIMEOUT
+    value: "5s"
   - name: ALLOWED_ORIGINS
   - name: AUTH_GUARD_URL
     value: "http://auth-guard.loadtest-webs.svc.cluster.local:8080"
