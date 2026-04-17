@@ -47,7 +47,10 @@ resources:
 istio:
   sidecar: true
   gateway:
-    enabled: false  # /load-test/ 라우팅은 별도 VirtualService
+    enabled: false # /load-test/ 라우팅은 별도 VirtualService
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
 
 # Service
 servicePort: &port 8085
