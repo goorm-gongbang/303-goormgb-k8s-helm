@@ -81,7 +81,7 @@ env:
         key: SPRING_DATA_REDIS_PORT
   # HikariCP connection pool - 라우팅만 담당, DB 거의 안 씀
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "3"
+    value: "10"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
     value: "2"
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
