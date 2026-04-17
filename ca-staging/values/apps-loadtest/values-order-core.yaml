@@ -5,7 +5,7 @@ replicaCount: 2
 
 image:
   name: "staging/playball/web/order-core"
-  tag: "97be6dd.43"
+  tag: "432992f.44"
   pullPolicy: Always
 
 imagePullSecrets: []
