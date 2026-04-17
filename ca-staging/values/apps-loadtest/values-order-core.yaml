@@ -1,7 +1,7 @@
 # order-core - Load-test 환경
 fullnameOverride: "order-core"
 contextPath: "/order"
-replicaCount: 2
+replicaCount: 1
 
 image:
   name: "staging/playball/web/order-core"
@@ -50,7 +50,7 @@ service:
 # HikariCP connection pool 크기 조정 (부하테스트용)
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "30"
+    value: "5"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
     value: "10"
 
