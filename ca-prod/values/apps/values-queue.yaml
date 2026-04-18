@@ -62,6 +62,8 @@ env:
     value: "5"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
     value: "2"
+  - name: REDIS_DATABASE
+    value: "0"
   - name: KAFKA_CONSUMER_GROUP_ID
     value: "queue-service"
   - name: QUEUE_READY_TTL_SECONDS

@@ -110,6 +110,8 @@ env:
       secretKeyRef:
         name: service-config
         key: SPRING_DATA_REDIS_PORT
+  - name: REDIS_DATABASE
+    value: "3"
 
 envFrom:
   - configMapRef:
