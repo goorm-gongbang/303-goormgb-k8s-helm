@@ -19,7 +19,7 @@ extraArgs:
   - --txt-owner-id=playball-prod-eks
   # 관리할 도메인 필터
   - --domain-filter=playball.one
-  - --domain-filter=staging.playball.one
+  - --domain-filter=playball.one
 
 # 정책: upsert-only (레코드 생성/갱신만, 삭제 안 함)
 # sync는 EKS 축소/재기동 시 Route53 레코드가 삭제되는 위험이 있음

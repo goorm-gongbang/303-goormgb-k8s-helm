@@ -4,7 +4,7 @@ contextPath: "/seat"
 replicaCount: 1
 
 image:
-  name: "staging/playball/web/seat"
+  name: "prod/playball/web/seat"
   tag: "432992f.50"
   pullPolicy: Always
 

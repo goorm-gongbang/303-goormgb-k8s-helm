@@ -21,7 +21,7 @@ mode: block
 autoBlocklist:
   enabled: true
   cluster:
-    host: staging-authz-adapter.staging-ai.svc.cluster.local
+    host: prod-authz-adapter.prod-ai.svc.cluster.local
     port: 9090
   path: /admin/blacklist
   timeoutMs: 200
@@ -185,7 +185,7 @@ extAuthz:
 
   # gRPC authz adapter 연결 설정 (202-playball-authz-adapter)
   service:
-    host: staging-authz-adapter.staging-ai.svc.cluster.local
+    host: prod-authz-adapter.prod-ai.svc.cluster.local
     port: 9001
 
   # 타임아웃 설정
@@ -367,9 +367,9 @@ mtls:
   enabled: true
   mode: STRICT # STRICT: mTLS 필수, PERMISSIVE: 허용
   namespaces:
-    - staging-webs
+    - prod-webs
     - monitoring
-    # - staging-ai  # AI 서비스 사용시 활성화
+    # - prod-ai  # AI 서비스 사용시 활성화
 
   # Non-mesh 네임스페이스 mTLS 비활성화
   # Istio sidecar가 없는 네임스페이스로의 트래픽은 PLAINTEXT로 보내야 함
@@ -392,16 +392,16 @@ mtls:
   # Prometheus 메트릭 스크래핑을 위해 PERMISSIVE 모드 필요
   aiServices:
     enabled: true
-    namespace: staging-ai
+    namespace: prod-ai
     # AI Defense 메트릭 포트 (8000)에 대해 PERMISSIVE 허용
     services:
       - name: ai-defense
         selector:
-          app: staging-ai-defense
+          app: prod-ai-defense
         metricsPort: 8000
       - name: authz-adapter
         selector:
-          app: staging-authz-adapter
+          app: prod-authz-adapter
         metricsPort: 9090
 
   # App 서비스 예외 설정
@@ -409,33 +409,33 @@ mtls:
   # 앱 메트릭 포트에만 mTLS 비활성화 (management 포트 9090 분리)
   metricsScrapeExceptions:
     - name: auth-guard-metrics
-      namespace: staging-webs
+      namespace: prod-webs
       selector:
-        app: staging-auth-guard
+        app: prod-auth-guard
       metricsPort: 9090
       mode: DISABLE
     - name: queue-metrics
-      namespace: staging-webs
+      namespace: prod-webs
       selector:
-        app: staging-queue
+        app: prod-queue
       metricsPort: 9090
       mode: DISABLE
     - name: seat-metrics
-      namespace: staging-webs
+      namespace: prod-webs
       selector:
-        app: staging-seat
+        app: prod-seat
       metricsPort: 9090
       mode: DISABLE
     - name: order-core-metrics
-      namespace: staging-webs
+      namespace: prod-webs
       selector:
-        app: staging-order-core
+        app: prod-order-core
       metricsPort: 9090
       mode: DISABLE
     - name: api-gateway-metrics
-      namespace: staging-webs
+      namespace: prod-webs
       selector:
-        app: staging-api-gateway
+        app: prod-api-gateway
       metricsPort: 9090
       mode: DISABLE
 
@@ -489,7 +489,7 @@ jwtAuth:
     # 자체 Auth 서비스 (staging 네임스페이스)
     - name: playball-auth
       issuer: "https://auth.playball.one"
-      jwksUri: "http://auth-guard.staging-webs.svc.cluster.local:8080/.well-known/jwks.json"
+      jwksUri: "http://auth-guard.prod-webs.svc.cluster.local:8080/.well-known/jwks.json"
       fromHeaders:
         - name: Authorization
           prefix: "Bearer "
@@ -559,10 +559,10 @@ adminTools:
     allowedIPs: *teamIPs
     # IP 제한 적용 대상 호스트
     protectedHosts:
-      - "argocd.staging.playball.one"
-      - "cloudbeaver.staging.playball.one"
-      - "grafana.staging.playball.one"
-      - "kafka-ui.staging.playball.one"
-      - "prometheus.staging.playball.one"
-      - "redisinsight.staging.playball.one"
-      - "policy-reporter.staging.playball.one"
+      - "argocd.playball.one"
+      - "cloudbeaver.playball.one"
+      - "grafana.playball.one"
+      - "kafka-ui.playball.one"
+      - "prometheus.playball.one"
+      - "redisinsight.playball.one"
+      - "policy-reporter.playball.one"

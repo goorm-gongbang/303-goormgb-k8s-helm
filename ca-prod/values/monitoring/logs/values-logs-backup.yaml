@@ -40,5 +40,5 @@ jobs:
     s3Bucket: playball-web-backup
     s3Prefix: staging/logs/service
     targetNamespaces:
-      - staging-ai
-      - staging-webs
+      - prod-ai
+      - prod-webs

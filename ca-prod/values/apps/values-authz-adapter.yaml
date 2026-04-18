@@ -4,7 +4,7 @@
 replicaCount: 1
 
 image:
-  name: "staging/playball/ai/authz-adapter"
+  name: "prod/playball/ai/authz-adapter"
   tag: "871857a.14"
   pullPolicy: Always
 
@@ -35,7 +35,7 @@ metrics:
 # authz-adapter 전용 설정
 authzAdapter:
   enabled: true
-  aiDefenseUrl: "http://staging-ai-defense.staging-ai.svc.cluster.local:8000/ai/evaluate"
+  aiDefenseUrl: "http://prod-ai-defense.prod-ai.svc.cluster.local:8000/ai/evaluate"
   aiDefenseTimeoutMs: 800
   logLevel: info
 

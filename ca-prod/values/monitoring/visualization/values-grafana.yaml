@@ -62,7 +62,7 @@ plugins:
 
 grafana.ini:
   server:
-    root_url: https://grafana.staging.playball.one
+    root_url: https://grafana.playball.one
   unified_alerting:
     enabled: false
   alerting:

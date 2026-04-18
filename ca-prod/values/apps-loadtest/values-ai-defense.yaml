@@ -44,7 +44,7 @@ env:
   - name: TM_REDIS_URL
     value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   - name: TM_CORS_ALLOW_ORIGINS
-    value: "https://staging.playball.one"
+    value: "https://playball.one"
   - name: TM_S3_BUCKET
     value: ""
   - name: TM_CLICKHOUSE_URL

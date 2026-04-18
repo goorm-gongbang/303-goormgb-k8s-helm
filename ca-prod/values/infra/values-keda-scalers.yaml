@@ -5,7 +5,7 @@ scalers:
   # === Web Services ===
   api-gateway:
     enabled: true
-    namespace: staging-webs
+    namespace: prod-webs
     minReplicas: 1
     maxReplicas: 10
     cpu:
@@ -18,7 +18,7 @@ scalers:
 
   auth-guard:
     enabled: true
-    namespace: staging-webs
+    namespace: prod-webs
     minReplicas: 1
     maxReplicas: 10
     cpu:
@@ -30,7 +30,7 @@ scalers:
 
   queue:
     enabled: true
-    namespace: staging-webs
+    namespace: prod-webs
     minReplicas: 1
     maxReplicas: 16
     cpu:
@@ -46,7 +46,7 @@ scalers:
 
   seat:
     enabled: true
-    namespace: staging-webs
+    namespace: prod-webs
     minReplicas: 1
     maxReplicas: 16
     cpu:
@@ -58,7 +58,7 @@ scalers:
 
   order-core:
     enabled: true
-    namespace: staging-webs
+    namespace: prod-webs
     minReplicas: 1
     maxReplicas: 10
     cpu:
@@ -75,8 +75,8 @@ scalers:
   # === AI Services ===
   ai-defense:
     enabled: true
-    namespace: staging-ai
-    deploymentName: staging-ai-defense
+    namespace: prod-ai
+    deploymentName: prod-ai-defense
     minReplicas: 1
     maxReplicas: 3
     cpu:
@@ -84,8 +84,8 @@ scalers:
 
   authz-adapter:
     enabled: true
-    namespace: staging-ai
-    deploymentName: staging-authz-adapter
+    namespace: prod-ai
+    deploymentName: prod-authz-adapter
     minReplicas: 1
     maxReplicas: 3
     cpu:

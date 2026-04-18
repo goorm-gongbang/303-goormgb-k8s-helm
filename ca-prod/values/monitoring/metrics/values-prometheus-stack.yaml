@@ -1,5 +1,5 @@
 # EKS Staging - kube-prometheus-stack Configuration
-# Domain: staging.playball.one
+# Domain: playball.one
 # Note: kube-prometheus-stack을 직접 OCI 배포하므로 prefix 없이 root level에 값 설정
 #
 # ============================================================
@@ -12,7 +12,7 @@
 # - endpoints 설정 (kubeadm 전용)
 #
 # [변경됨 - EKS 환경]
-# - 도메인: playball.one -> staging.playball.one
+# - 도메인: playball.one -> playball.one
 # - 리소스: 스케일 업 (EKS 환경에 맞게)
 # - retention: 7일로 증가
 # ============================================================
@@ -30,11 +30,11 @@ tolerations:
 gateway:
   grafana:
     enabled: true
-    host: "grafana.staging.playball.one"
+    host: "grafana.playball.one"
     # EKS: TLS는 CloudFront + ACM에서 처리
   prometheus:
     enabled: false
-    host: "prometheus.staging.playball.one"
+    host: "prometheus.playball.one"
     gatewayRef: "istio-system/api-gateway"
     # Remote Write 인증 (k6, OTel 등 외부 메트릭 전송용)
     remoteWriteAuth:
@@ -58,9 +58,9 @@ dashboards:
       - "hubble-overview.json"
   devTeam:
     folderName: "STAGING 서비스 관측(개발)"
-    namespacePattern: "staging-webs"
-    defaultNamespace: "staging-webs"
-    namespaceRegex: "/(staging-webs)/"
+    namespacePattern: "prod-webs"
+    defaultNamespace: "prod-webs"
+    namespaceRegex: "/(prod-webs)/"
     redisClusterPattern: "playball-prod-.*"
     dbInstancePattern: "playball-prod-postgresql"
     awsAccountId: "990521646433"
@@ -70,15 +70,15 @@ dashboards:
       - "cache-redis-local.json"
   aiTeam:
     folderName: "STAGING 서비스 관측(AI)"
-    aiNamespace: "staging-ai"
-    websNamespace: "staging-webs"
+    aiNamespace: "prod-ai"
+    websNamespace: "prod-webs"
     redisInfo: "ElastiCache: playball-prod-redis.ihyerz.ng.0001.apn2.cache.amazonaws.com:6379 (AI IP Blacklist / Session, DB2)"
   alertOps:
     enabled: true
     folderName: "STAGING 알람 현황판"
     envName: "staging"
-    appNamespace: "staging-webs"
-    appJobPattern: "staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+    appNamespace: "prod-webs"
+    appJobPattern: "prod-webs/(api-gateway|auth-guard|order-core|queue|seat)"
     dbInstanceName: "playball-prod-postgresql"
     redisClusterName: "playball-prod-redis-001"
   businessKpi:

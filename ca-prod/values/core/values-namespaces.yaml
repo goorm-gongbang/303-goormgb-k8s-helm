@@ -3,9 +3,9 @@
 
 namespaces:
   # Application namespaces
-  - name: staging-webs
+  - name: prod-webs
     istio: true
-  - name: staging-ai
+  - name: prod-ai
     istio: true
 
   # Load-test namespaces (부하 테스트 전용)

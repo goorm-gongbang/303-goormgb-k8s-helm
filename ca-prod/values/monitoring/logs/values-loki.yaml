@@ -15,7 +15,7 @@ loki:
     allow_structured_metadata: true
     # Per-stream retention (namespace별 보관 기간)
     retention_stream:
-      - selector: '{namespace=~"(staging-webs|staging-ai)"}'
+      - selector: '{namespace=~"(prod-webs|prod-ai)"}'
         priority: 1
         period: 336h  # 문서 기준 staging 서비스 로그 14일
       - selector: '{namespace="k6-tests"}'
