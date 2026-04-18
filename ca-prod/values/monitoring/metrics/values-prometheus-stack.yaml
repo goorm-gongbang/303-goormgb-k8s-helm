@@ -63,7 +63,7 @@ dashboards:
     namespaceRegex: "/(staging-webs)/"
     redisClusterPattern: "playball-prod-.*"
     dbInstancePattern: "playball-prod-postgresql"
-    awsAccountId: "406223549139"
+    awsAccountId: "990521646433"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
@@ -168,7 +168,7 @@ prometheus:
     create: true
     name: prometheus-prom
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/playball-prod-thanos"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::990521646433:role/playball-prod-thanos"
 
   # Thanos sidecar 활성화
   thanosService:

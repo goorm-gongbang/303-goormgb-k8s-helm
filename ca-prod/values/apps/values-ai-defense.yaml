@@ -8,7 +8,7 @@ serviceAccountName: ai-defense
 serviceAccount:
   create: true
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/playball-prod-ai-defense
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-ai-defense
 
 # Uvicorn 실행 명령어 (root-path 설정 for /ai prefix)
 command:
@@ -27,9 +27,9 @@ args:
   - "4"
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/prod/playball/ai/defense
   tag: "c3ff0e0.25"
-  name: "staging/playball/ai/defense"
+  name: "prod/playball/ai/defense"
   pullPolicy: Always
 
 # Python 모듈 경로 설정 + AI Defense 환경변수

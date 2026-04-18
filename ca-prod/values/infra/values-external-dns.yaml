@@ -1,12 +1,12 @@
 # ExternalDNS - Route53 DNS Record Management
-# Staging Environment (Main Account: 406223549139)
+# Staging Environment (Main Account: 990521646433)
 
 # ServiceAccount with IRSA
 serviceAccount:
   create: true
   name: external-dns
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/playball-prod-external-dns
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-external-dns
 
 # AWS Provider 설정
 provider: aws

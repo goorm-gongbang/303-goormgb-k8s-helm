@@ -53,7 +53,7 @@ serviceAccount:
   create: true
   name: loki
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/playball-prod-loki"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::990521646433:role/playball-prod-loki"
 
 singleBinary:
   replicas: 1
