@@ -6,7 +6,7 @@ serviceAccount:
   create: true
   name: external-dns
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-external-dns
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/goormgb-prod-external-dns
 
 # AWS Provider 설정
 provider: aws

@@ -50,7 +50,7 @@ dashboards:
     namespaceRegex: "/(prod-webs)/"
     redisClusterPattern: "goormgb-prod-.*"
     dbInstancePattern: "goormgb-prod-postgresql"
-    awsAccountId: "406223549139"
+    awsAccountId: "990521646433"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
@@ -137,7 +137,7 @@ prometheus:
     create: true
     name: prometheus-prom
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-prod-thanos"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::990521646433:role/goormgb-prod-thanos"
 
   thanosService:
     enabled: true

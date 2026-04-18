@@ -4,7 +4,7 @@
 # Service Account with IRSA
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-karpenter-controller
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/goormgb-prod-karpenter-controller
 
 # Controller Settings
 settings:

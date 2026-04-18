@@ -4,7 +4,7 @@
 replicaCount: 1
 
 image:
-  name: "staging/playball/ai/authz-adapter"
+  name: "prod/playball/ai/authz-adapter"
   tag: "7fecb3d.5"
   pullPolicy: Always
 

@@ -10,7 +10,7 @@ schedule: "15 * * * *"
 serviceAccountName: ai-defense
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/prod/playball/ai/defense
   tag: "8fcad64.6"
   pullPolicy: Always
 
