@@ -1,7 +1,6 @@
 # api-gateway - Staging 환경
 fullnameOverride: "api-gateway"
-contextPath: ""  # api-gateway는 context path 없음
-replicaCount: 3
+contextPath: "" # api-gateway는 context path 없음
 
 image:
   name: "staging/playball/web/api-gateway"
