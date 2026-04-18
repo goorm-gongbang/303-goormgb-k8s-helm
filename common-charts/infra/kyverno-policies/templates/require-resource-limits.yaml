@@ -1,54 +1,46 @@
 {{- if .Values.policies.requireResourceLimits.enabled }}
-apiVersion: policies.kyverno.io/v1
-kind: ValidatingPolicy
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
 metadata:
   name: require-resource-limits
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Require Resource Limits
-    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/category: Reliability, Resource Management
     policies.kyverno.io/severity: medium
     policies.kyverno.io/description: >-
       모든 컨테이너에 CPU 및 메모리 limits가 설정되어 있는지 확인합니다.
-      리소스 제한은 노드 리소스 고갈을 방지하고 안정적인 워크로드 스케줄링을 보장합니다.
 spec:
-  failurePolicy: {{ .Values.failurePolicy | default "Ignore" }}
-  matchConstraints:
-    resourceRules:
-      - apiGroups: [""]
-        apiVersions: ["v1"]
-        operations: ["CREATE", "UPDATE"]
-        resources: ["pods"]
-    namespaceSelector:
-      matchExpressions:
-        - key: kubernetes.io/metadata.name
-          operator: NotIn
-          values:
-            {{- range .Values.excludeNamespaces }}
-            - {{ . }}
-            {{- end }}
-  variables:
-    - name: containers
-      expression: "object.spec.containers"
-  validations:
-    - expression: |
-        variables.containers.all(c,
-          has(c.resources) &&
-          has(c.resources.limits) &&
-          has(c.resources.limits.memory)
-        )
-      message: "컨테이너에 메모리 limits가 필요합니다."
-      validationActions:
-        - {{ .Values.validationAction | default "Deny" }}
-    - expression: |
-        variables.containers.all(c,
-          has(c.resources) &&
-          has(c.resources.limits) &&
-          has(c.resources.limits.cpu)
-        )
-      message: "컨테이너에 CPU limits가 필요합니다."
-      validationActions:
-        - {{ .Values.validationAction | default "Deny" }}
-  auditAnnotations:
-    - key: "policy-violation"
-      valueExpression: "'require-resource-limits'"
+  validationFailureAction: {{ .Values.validationAction | default "Audit" }}
+  background: false
+  rules:
+    - name: check-resource-limits
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                {{- range .Values.excludeNamespaces }}
+                - {{ . }}
+                {{- end }}
+      validate:
+        message: "모든 컨테이너(containers 및 initContainers)에 CPU 및 메모리 limits가 설정되어 있어야 합니다."
+        foreach:
+          - list: "request.object.spec.containers"
+            pattern:
+              resources:
+                limits:
+                  cpu: "*"
+                  memory: "*"
+          - list: "request.object.spec.initContainers"
+            pattern:
+              resources:
+                limits:
+                  cpu: "*"
+                  memory: "*"
 {{- end }}

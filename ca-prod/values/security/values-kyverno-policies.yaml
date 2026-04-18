@@ -1,12 +1,12 @@
-# Kyverno Policies - Prod Environment
+# Kyverno Policies - Staging Environment
 # ValidatingPolicy (CEL based) - Kyverno 1.17+
-# prod 초기 배포 안정성을 위해 Audit 모드로 위반 로깅만 수행
+# staging 환경에서는 Audit 모드로 위반 로깅만 수행
 
 # failurePolicy: 웹훅 실패 시 동작 (Ignore: 허용, Fail: 차단)
 failurePolicy: Ignore
 
 # validationAction: 정책 위반 시 동작
-# Audit: 로깅만, 리소스 생성 허용 (prod 초기 도입시 사용)
+# Audit: 로깅만, 리소스 생성 허용 (staging)
 # Deny: 리소스 생성 차단 (production)
 validationAction: Audit
 
@@ -27,6 +27,12 @@ policies:
     enabled: true
 
   requireProbes:
+    enabled: false  # staging에서는 비활성화
+
+  protectCriticalNamespaces:
+    enabled: true
+
+  requireArgocdManagement:
     enabled: true
 
 excludeNamespaces:
@@ -45,3 +51,23 @@ excludeNamespaces:
   - cert-manager
   # Data
   - messaging
+
+# 핵심 보호 네임스페이스
+criticalNamespaces:
+  - kube-system
+  - kube-public
+  - kube-node-lease
+  - kyverno
+  - argocd
+  - istio-system
+  - monitoring
+  - external-secrets
+  - external-dns
+  - karpenter
+  - cert-manager
+  - messaging
+  - data
+
+# DevOps 운영 주체 허용 (구글 계정 패턴)
+devopsSsoRolePatterns:
+  - "*@google.com"

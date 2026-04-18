@@ -1,5 +1,7 @@
 {
-  "annotations": { "list": [] },
+  "annotations": {
+    "list": []
+  },
   "description": "Rate Limiting 모니터링 - IP별/경로별 요청 제한 현황, 차단된 요청 분석",
   "editable": true,
   "fiscalYearStartMonth": 0,
@@ -10,123 +12,208 @@
   "panels": [
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
       "panels": [],
       "title": "Rate Limit 현황 요약",
       "type": "row"
     },
     {
-      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${lokidatasource}"
+      },
       "description": "Rate Limit으로 차단된 총 요청 수",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "noValue": "0",
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 100 },
-              { "color": "red", "value": 1000 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
             ]
           },
           "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
       "id": 2,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "textMode": "auto"
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "datasource": {
+            "type": "loki",
+            "uid": "${lokidatasource}"
+          },
           "expr": "sum(count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` [$__range]))",
           "legendFormat": "Blocked",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "차단된 요청",
       "type": "stat"
     },
     {
-      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${lokidatasource}"
+      },
       "description": "Rate Limit 검사를 통과한 요청 수",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "noValue": "0",
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null }
+              {
+                "color": "green",
+                "value": null
+              }
             ]
           },
           "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
       "id": 3,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "textMode": "auto"
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "datasource": {
+            "type": "loki",
+            "uid": "${lokidatasource}"
+          },
           "expr": "sum(count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":false` [$__range]))",
           "legendFormat": "Allowed",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "title": "허용된 요청",
       "type": "stat"
     },
     {
-      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${lokidatasource}"
+      },
       "description": "Rate Limit에 걸린 고유 IP 수",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "noValue": "0",
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 10 },
-              { "color": "red", "value": 50 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
             ]
           },
           "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
       "id": 4,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "textMode": "auto"
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "count(sum by (client_ip) (count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` | json [$__range])))",
+          "datasource": {
+            "type": "loki",
+            "uid": "${lokidatasource}"
+          },
+          "expr": "count(sum by (client_ip) (count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` | pattern `<_>script log: <msg>` | line_format `{{.msg}}` | json [$__range])))",
           "legendFormat": "Unique IPs",
           "refId": "A"
         }
@@ -135,11 +222,16 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${lokidatasource}"
+      },
       "description": "차단률 = 차단 / (차단 + 허용) x 100",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "max": 100,
           "min": 0,
@@ -147,25 +239,48 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 10 },
-              { "color": "red", "value": 30 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "red",
+                "value": 30
+              }
             ]
           },
           "unit": "percent"
         }
       },
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
       "id": 5,
       "options": {
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "datasource": {
+            "type": "loki",
+            "uid": "${lokidatasource}"
+          },
           "expr": "sum(count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` [$__range])) / (sum(count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` [$__range])) + 0.001) * 100",
           "legendFormat": "Block Rate",
           "refId": "A"
@@ -176,18 +291,28 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
       "id": 10,
       "panels": [],
       "title": "Rate Limit 추이",
       "type": "row"
     },
     {
-      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-      "description": "Local Rate Limit 차단/허용 추이 (Envoy Lua 로그)",
+      "datasource": {
+        "type": "loki",
+        "uid": "${lokidatasource}"
+      },
+      "description": "Local Rate Limit 차단/허용 추이 (Envoy Lua 로그)\n\n**Local RL = ingressgateway Pod별 token bucket** (Pod 간 카운터 공유 X. Pod N개면 실효 limit ×N)\n\n**기본 (전체 경로)**: 100 req/s, burst 100\n**IP별 (perClient)**: 50 req/s, burst 100\n**경로별 (perRoute)**:\n- /auth/ : 10 req/s, burst 20\n- /payment/ : 5 req/s, burst 10\n- /signup : 3 req/s, burst 5\n\n**제외 경로**: /load-test/, /health, /healthz, /ready, /metrics, /actuator/health\n**응답**: 429 + Retry-After:60\n**로깅**: 차단된 요청만 (onlyLimited:true)\n\n*설정: ca-staging/values/istio/values-istio-security.yaml > rateLimiting.local*",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -197,40 +322,108 @@
             "drawStyle": "line",
             "fillOpacity": 20,
             "gradientMode": "none",
-            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
             "lineInterpolation": "smooth",
             "lineWidth": 2,
             "pointSize": 5,
-            "scaleDistribution": { "type": "linear" },
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "never",
             "spanNulls": false,
-            "stacking": { "group": "A", "mode": "none" },
-            "thresholdsStyle": { "mode": "off" }
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
           "unit": "short"
         },
         "overrides": [
-          { "matcher": { "id": "byName", "options": "Local 차단" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] },
-          { "matcher": { "id": "byName", "options": "Local 허용" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] }
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Local 차단"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Local 허용"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
         ]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
       "id": 43,
       "options": {
-        "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom", "showLegend": true },
-        "tooltip": { "mode": "multi", "sort": "desc" }
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "datasource": {
+            "type": "loki",
+            "uid": "${lokidatasource}"
+          },
           "expr": "sum(count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"scope\":\"local\"` |= `\"limited\":true` [$__interval]))",
           "legendFormat": "Local 차단",
           "refId": "A"
         },
         {
-          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "datasource": {
+            "type": "loki",
+            "uid": "${lokidatasource}"
+          },
           "expr": "sum(count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"scope\":\"local\"` |= `\"limited\":false` [$__interval]))",
           "legendFormat": "Local 허용",
           "refId": "B"
@@ -240,11 +433,16 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Global Rate Limit 차단 추이 (Istio 429 응답 중 RL 플래그)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Global Rate Limit 차단 추이 (Istio 429 응답 중 RL 플래그)\n\n**Global RL = Redis 카운터 공유**, 클러스터 전체 합산 limit (Pod 수 무관)\n도메인: `goormgb-staging-ratelimit` / 서비스: envoyproxy/ratelimit (replicas:1)\n\n**IP별 전역**: 300 req/min (key=remote_address)\n**경로별 (IP당)**:\n- /auth/kakao/login : 10 req/min\n- /auth/signup : 5 req/min\n- /order/payment : 20 req/min\n- /seat/hold : 30 req/min\n\n**예외**: 내부 대역 10.0.0.0/8 unlimited (Pod 간 통신)\n**제외 경로**: Local RL과 동일 (/load-test, /health 등)\n\n*설정: ca-staging/values/istio/values-istio-security.yaml > rateLimiting.global*",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -254,33 +452,84 @@
             "drawStyle": "line",
             "fillOpacity": 20,
             "gradientMode": "none",
-            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
             "lineInterpolation": "smooth",
             "lineWidth": 2,
             "pointSize": 5,
-            "scaleDistribution": { "type": "linear" },
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "never",
             "spanNulls": false,
-            "stacking": { "group": "A", "mode": "none" },
-            "thresholdsStyle": { "mode": "off" }
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
           "unit": "reqps"
         },
         "overrides": [
-          { "matcher": { "id": "byName", "options": "Global 429" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Global 429"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
         ]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
       "id": 44,
       "options": {
-        "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom", "showLegend": true },
-        "tooltip": { "mode": "multi", "sort": "desc" }
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "sum(rate(istio_requests_total{reporter=\"destination\", response_code=\"429\", response_flags=~\".*RL.*\"}[$__rate_interval])) or vector(0)",
           "legendFormat": "Global 429",
           "refId": "A"
@@ -291,18 +540,28 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
       "id": 20,
       "panels": [],
       "title": "경로/IP 분석",
       "type": "row"
     },
     {
-      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${lokidatasource}"
+      },
       "description": "경로별 차단 현황 (시계열)",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -312,31 +571,68 @@
             "drawStyle": "bars",
             "fillOpacity": 80,
             "gradientMode": "none",
-            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": { "type": "linear" },
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "never",
             "spanNulls": false,
-            "stacking": { "group": "A", "mode": "normal" },
-            "thresholdsStyle": { "mode": "off" }
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
           "unit": "short"
         }
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
       "id": 12,
       "options": {
-        "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true },
-        "tooltip": { "mode": "multi", "sort": "desc" }
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum by (path) (count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` | json [$__interval]))",
+          "datasource": {
+            "type": "loki",
+            "uid": "${lokidatasource}"
+          },
+          "expr": "sum by (path) (count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` | pattern `<_>script log: <msg>` | line_format `{{.msg}}` | json [$__interval]))",
           "legendFormat": "{{path}}",
           "refId": "A"
         }
@@ -345,77 +641,168 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${lokidatasource}"
+      },
       "description": "가장 많이 차단된 IP 목록",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
             "align": "auto",
-            "cellOptions": { "type": "auto" },
+            "cellOptions": {
+              "type": "auto"
+            },
             "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 50 },
-              { "color": "red", "value": 200 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 200
+              }
             ]
           }
         },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "client_ip" },
-            "properties": [{ "id": "custom.width", "value": 150 }]
+            "matcher": {
+              "id": "byName",
+              "options": "client_ip"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
           },
           {
-            "matcher": { "id": "byName", "options": "count" },
+            "matcher": {
+              "id": "byName",
+              "options": "count"
+            },
             "properties": [
-              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge" } },
-              { "id": "custom.width", "value": 200 }
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 200
+              }
             ]
           }
         ]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
       "id": 21,
       "options": {
         "cellHeight": "sm",
-        "footer": { "countRows": false, "enablePagination": true, "fields": "", "reducer": ["sum"], "show": false },
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
-        "sortBy": [{ "desc": true, "displayName": "count" }]
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "count"
+          }
+        ]
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "topk(20, sum by (client_ip) (count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` | json [$__range])))",
+          "datasource": {
+            "type": "loki",
+            "uid": "${lokidatasource}"
+          },
+          "expr": "topk(20, sum by (client_ip) (count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` | pattern `<_>script log: <msg>` | line_format `{{.msg}}` | json [$__range])))",
           "legendFormat": "{{client_ip}}",
           "refId": "A"
         }
       ],
       "title": "Top 20 차단 IP",
       "transformations": [
-        { "id": "reduce", "options": { "reducers": ["sum"] } },
-        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Total" }] } }
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "sum"
+            ]
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Total"
+              }
+            ]
+          }
+        }
       ],
       "type": "table"
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
       "id": 30,
       "panels": [],
       "title": "설정 참고 / 로그",
       "type": "row"
     },
     {
-      "datasource": { "type": "datasource", "uid": "-- Dashboard --" },
-      "gridPos": { "h": 4, "w": 12, "x": 0, "y": 24 },
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
       "id": 45,
       "options": {
-        "code": { "language": "plaintext", "showLineNumbers": false },
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false
+        },
         "content": "**Local Rate Limit** (Envoy Lua, 초당)\n- 전체: 100 req/s | IP별: 50 req/s\n- /auth/: 10 req/s | /payment/: 5 req/s | /signup: 3 req/s\n\n**Global Rate Limit** (Redis, 분당)\n- IP별: 300 req/min\n- /auth/kakao/login: 10 | /auth/signup: 5 | /order/payment: 20 | /seat/hold: 30",
         "mode": "markdown"
       },
@@ -423,27 +810,63 @@
       "type": "text"
     },
     {
-      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${lokidatasource}"
+      },
       "description": "차단된 요청의 경로 분포",
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
           "mappings": []
         }
       },
-      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 24 },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
       "id": 22,
       "options": {
-        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
         "pieType": "donut",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": false },
-        "tooltip": { "mode": "single", "sort": "none" }
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
-          "expr": "sum by (path) (count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` | json [$__range]))",
+          "datasource": {
+            "type": "loki",
+            "uid": "${lokidatasource}"
+          },
+          "expr": "sum by (path) (count_over_time({namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"` |= `\"limited\":true` | pattern `<_>script log: <msg>` | line_format `{{.msg}}` | json [$__range]))",
           "legendFormat": "{{path}}",
           "refId": "A"
         }
@@ -452,9 +875,17 @@
       "type": "piechart"
     },
     {
-      "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+      "datasource": {
+        "type": "loki",
+        "uid": "${lokidatasource}"
+      },
       "description": "실시간 Rate Limit 로그",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 28 },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
       "id": 31,
       "options": {
         "dedupStrategy": "none",
@@ -468,7 +899,10 @@
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${lokidatasource}" },
+          "datasource": {
+            "type": "loki",
+            "uid": "${lokidatasource}"
+          },
           "expr": "{namespace=\"istio-system\", container=\"istio-proxy\"} |= `\"type\":\"ratelimit\"`",
           "legendFormat": "",
           "refId": "A"
@@ -480,11 +914,19 @@
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["istio", "ratelimit", "security"],
+  "tags": [
+    "istio",
+    "ratelimit",
+    "security"
+  ],
   "templating": {
     "list": [
       {
-        "current": { "selected": false, "text": "Loki", "value": "loki" },
+        "current": {
+          "selected": false,
+          "text": "Loki",
+          "value": "loki"
+        },
         "hide": 0,
         "includeAll": false,
         "label": "Loki Datasource",
@@ -499,7 +941,10 @@
       }
     ]
   },
-  "time": { "from": "now-1h", "to": "now" },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
   "timepicker": {},
   "timezone": "browser",
   "title": "Rate Limit 모니터링",

@@ -1,12 +1,12 @@
-# Mail Config - Prod 환경
+# Mail Config - Staging 환경
 enabled: true
 
 secretName: mail-config
-namespace: prod-webs
+namespace: staging-webs
 
 secretManager:
   secretStoreRef:
     name: aws-secrets-manager
     kind: ClusterSecretStore
-  key: prod/services/mail
+  key: staging/services/mail
   refreshInterval: 1h

@@ -1,11 +1,11 @@
-# authz-adapter - Prod 환경
+# authz-adapter - Staging 환경
 # Go 기반 gRPC ext_authz 서비스
 
 replicaCount: 1
 
 image:
   name: "staging/playball/ai/authz-adapter"
-  tag: "7fecb3d.5"
+  tag: "871857a.14"
   pullPolicy: Always
 
 # EKS 노드 IAM Role이 ECR 접근 권한 보유 - imagePullSecrets 불필요
@@ -21,8 +21,8 @@ service:
   port: 9001
   portName: grpc
   grpc:
-    enabled: false  # 메인 포트가 이미 gRPC
-    port: 9001      # GRPC_PORT 환경변수용
+    enabled: false # 메인 포트가 이미 gRPC
+    port: 9001 # GRPC_PORT 환경변수용
 
 # Prometheus Metrics
 metrics:
@@ -35,8 +35,8 @@ metrics:
 # authz-adapter 전용 설정
 authzAdapter:
   enabled: true
-  aiDefenseUrl: "http://ai-defense.prod-ai.svc.cluster.local:8000/ai/evaluate"
-  aiDefenseTimeoutMs: 1000
+  aiDefenseUrl: "http://staging-ai-defense.staging-ai.svc.cluster.local:8000/ai/evaluate"
+  aiDefenseTimeoutMs: 800
   logLevel: info
 
 # Redis Blacklist 설정 (ElastiCache)
@@ -60,9 +60,16 @@ env:
   - name: REDIS_DB
     value: "2"
   - name: BLACKLIST_TTL_SECS
-    value: "604800"  # 7일
+    value: "604800" # 7일
   - name: WHITELIST_TTL_SECS
-    value: "2592000"  # 30일
+    value: "2592000" # 30일
+  # CDN Blocklist (Lambda가 쓰는 Redis DB 3)
+  - name: CDN_BLOCKLIST_ENABLED
+    value: "true"
+  - name: CDN_BLOCKLIST_DB
+    value: "3"
+  - name: ENVIRONMENT
+    value: "staging"
 
 # OpenTelemetry
 otel:
@@ -95,12 +102,3 @@ resources:
 # Istio sidecar 비활성화 (ext_authz는 sidecar 없이 동작)
 istio:
   sidecar: false
-
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: role
-              operator: In
-              values: ["app"]

@@ -11,6 +11,17 @@ selector:
 # 차단 모드 설정
 mode: block  # block | detect (detect는 로그만, 차단 안 함)
 
+# WAF 탐지 시 IP를 authz-adapter blacklist에 자동등록 (옵션)
+# 카테고리는 FP 위험 낮은 것만 화이트리스트로 명시. SQLi는 따옴표 FP 위험으로 제외 권장.
+autoBlocklist:
+  enabled: false
+  cluster:
+    host: ""   # ex) staging-authz-adapter.staging-ai.svc.cluster.local
+    port: 9090
+  path: /admin/blacklist
+  timeoutMs: 200
+  categories: []  # ex) [LOG4SHELL, XXE_INJECTION, HEADER_INJECTION, BOT_SCANNER, LDAP_INJECTION, COMMAND_INJECTION, XSS, SSRF, PATH_TRAVERSAL]
+
 # 로깅 설정
 logging:
   enabled: true
@@ -109,9 +120,9 @@ patterns:
       - name: "cmd-pipe"
         pattern: "|%s*[a-zA-Z]"
         description: "Pipe command"
-      - name: "cmd-backtick"
-        pattern: "`[^`]+`"
-        description: "Backtick execution"
+      # cmd-backtick 제거(2026-04-14): Grafana 대시보드 URL(|= `` 빈 백틱쌍)이 Referer 로
+      # 붙으면서 팀원 IP 대량 오탐/차단. URL에 백틱 포함한 RCE는 현실성 낮고 body 미검사
+      # 구조상 어차피 잡지 못해 ROI 낮음. 상세: sprint7/troubleshooting/waf-grafana-fp.md
       - name: "cmd-dollar-paren"
         pattern: "%$%([^%)]+%)"
         description: "Dollar-paren execution"
@@ -291,6 +302,13 @@ excludePaths:
   - "/explore"
   - "/assets/"
   - "/api/ds/query"
+
+# IP Whitelist (정확 매칭: 해당 IP에서 오는 요청은 WAF 검사 전부 bypass)
+# 사무실 고정 IP, VPN 등 신뢰 IP 등록용. 빈 배열이면 whitelist 기능 비활성화.
+# 환경별 values 파일에서 override 가능.
+ipWhitelist: []
+# IP Whitelist 접두사 매칭 (예: "39.119.192." = 39.119.192.0/24 근사)
+ipWhitelistPrefixes: []
 
 # 응답 설정
 response:

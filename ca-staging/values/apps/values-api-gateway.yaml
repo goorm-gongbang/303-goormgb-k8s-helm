@@ -1,11 +1,11 @@
 # api-gateway - Staging 환경
 fullnameOverride: "api-gateway"
-contextPath: ""  # api-gateway는 context path 없음
+contextPath: "" # api-gateway는 context path 없음
 replicaCount: 1
 
 image:
   name: "staging/playball/web/api-gateway"
-  tag: "fe8ca2b.32"
+  tag: "432992f.40"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -41,8 +41,8 @@ affinity:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 384Mi
+    cpu: 300m
+    memory: 512Mi
   limits:
     cpu: "2"
     memory: 2Gi
@@ -50,15 +50,23 @@ resources:
 # Istio
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
   gateway:
     enabled: true
     externalRef: "istio-system/api-gateway"
     host: "api.staging.playball.one"
+    extraHosts:
+      - "api.playball.one"
   cors:
     enabled: true
     allowOrigins:
       - "https://staging.playball.one"
       - "http://localhost:3000"
+      # TEMP: prod 클러스터 배포 전까지 playball.one 트래픽을 staging 으로 라우팅 (revert 예정)
+      - "https://playball.one"
+      - "https://www.playball.one"
     allowMethods:
       - GET
       - POST
@@ -139,4 +147,4 @@ metrics:
 # PodDisruptionBudget - 최소 1개 유지
 pdb:
   enabled: true
-  minAvailable: 1
+  maxUnavailable: 1

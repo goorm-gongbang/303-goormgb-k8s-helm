@@ -1,15 +1,15 @@
-# Karpenter Configuration - Prod
-# EKS Cluster: goormgb-prod-eks
+# Karpenter Configuration - Staging
+# EKS Cluster: goormgb-staging-eks
 
 # Service Account with IRSA
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-karpenter-controller
+    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-karpenter-controller
 
 # Controller Settings
 settings:
-  clusterName: goormgb-prod-eks
-  interruptionQueue: goormgb-prod-karpenter-interruption
+  clusterName: goormgb-staging-eks
+  interruptionQueue: goormgb-staging-karpenter-interruption
 
 # Controller Resources
 controller:

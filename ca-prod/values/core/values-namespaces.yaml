@@ -1,18 +1,25 @@
-# EKS Prod - Namespace 설정
+# EKS Staging - Namespace 설정
 # Istio sidecar injection 활성화
 
 namespaces:
-  - name: prod-webs
+  # Application namespaces
+  - name: staging-webs
+    istio: true
+  - name: staging-ai
+    istio: true
+
+  # Load-test namespaces (부하 테스트 전용)
+  - name: loadtest-webs
+    istio: true
+  - name: loadtest-ai
     istio: true
   - name: data
-    istio: false
-  - name: monitoring
-    istio: false  # 모니터링은 sidecar 불필요
-  - name: external-dns
-    istio: false  # ExternalDNS는 sidecar 불필요
-  - name: prod-ai
-    istio: true
-  - name: data
-    istio: false
+    istio: false  # Redis 등 데이터 레이어
   - name: messaging
+    istio: false  # Kafka - 이벤트 스트리밍
+
+  # Infrastructure namespaces
+  - name: monitoring
+    istio: false
+  - name: external-dns
     istio: false

@@ -1,5 +1,5 @@
-# EKS Prod - kube-prometheus-stack Configuration
-# Domain: playball.one
+# EKS Staging - kube-prometheus-stack Configuration
+# Domain: staging.playball.one
 # Note: kube-prometheus-stack을 직접 OCI 배포하므로 prefix 없이 root level에 값 설정
 #
 # ============================================================
@@ -12,75 +12,93 @@
 # - endpoints 설정 (kubeadm 전용)
 #
 # [변경됨 - EKS 환경]
-# - 도메인: goormgb.space -> playball.one
+# - 도메인: goormgb.space -> staging.playball.one
 # - 리소스: 스케일 업 (EKS 환경에 맞게)
 # - retention: 7일로 증가
 # ============================================================
 
 # ===== prometheus-extras용 설정 (ExternalSecrets, VirtualService) =====
+# grafana-provisioning-reconcile CronJob 등 prometheus-extras 차트의 공통 배치
+nodeSelector:
+  role: monitoring
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
+
 # Grafana Gateway
 gateway:
   grafana:
     enabled: true
-    host: "grafana.playball.one"
+    host: "grafana.staging.playball.one"
     # EKS: TLS는 CloudFront + ACM에서 처리
   prometheus:
-    enabled: true
-    host: "prometheus.playball.one"
+    enabled: false
+    host: "prometheus.staging.playball.one"
     gatewayRef: "istio-system/api-gateway"
+    # Remote Write 인증 (k6, OTel 등 외부 메트릭 전송용)
+    remoteWriteAuth:
+      enabled: true
+      # 토큰은 Secrets Manager에서 관리 권장, 임시로 여기 설정
+      # openssl rand -hex 32 로 생성
+      token: "k6-remote-write-staging-2026-t4goormgb"
 
 # Dashboard 설정 (EKS 환경: Calico, 로컬 exporter 대시보드 제외)
 dashboards:
   infraTeam:
-    folderName: "PROD 플랫폼 관측(인프라)"
-    k6Enabled: false
-    k6FolderName: "PROD 부하 테스트(k6)"
-    wafFolderName: "PROD 보안 모니터링"
-    cicdFolderName: "PROD CICD 모니터링"
-    cdnFolderName: "PROD CDN 실시간 통계"
+    folderName: "STAGING 플랫폼 관측(인프라)"
+    k6FolderName: "STAGING 부하 테스트(k6)"
+    wafFolderName: "STAGING 보안 모니터링"
+    cicdFolderName: "STAGING CICD 모니터링"
+    cdnFolderName: "STAGING CDN 실시간 통계"
     exclude:
       - "calico-felix.json"
     ciliumExclude:
       - "cilium-overview.json"
       - "hubble-overview.json"
   devTeam:
-    folderName: "PROD 서비스 관측(개발)"
-    namespacePattern: "prod-webs"
-    defaultNamespace: "prod-webs"
-    namespaceRegex: "/(prod-webs)/"
-    redisClusterPattern: "goormgb-prod-.*"
-    dbInstancePattern: "goormgb-prod-postgresql"
+    folderName: "STAGING 서비스 관측(개발)"
+    namespacePattern: "staging-webs"
+    defaultNamespace: "staging-webs"
+    namespaceRegex: "/(staging-webs)/"
+    redisClusterPattern: "goormgb-staging-.*"
+    dbInstancePattern: "goormgb-staging-postgresql"
     awsAccountId: "406223549139"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
       - "database-postgresql-local.json"
       - "cache-redis-local.json"
   aiTeam:
-    folderName: "PROD 서비스 관측(AI)"
-    aiNamespace: "prod-ai"
-    websNamespace: "prod-webs"
+    folderName: "STAGING 서비스 관측(AI)"
+    aiNamespace: "staging-ai"
+    websNamespace: "staging-webs"
+    redisInfo: "ElastiCache: goormgb-staging-redis.ihyerz.ng.0001.apn2.cache.amazonaws.com:6379 (AI IP Blacklist / Session, DB2)"
   alertOps:
     enabled: true
-    folderName: "PROD 알람 현황판"
-    envName: "prod"
-    appNamespace: "prod-webs"
-    appJobPattern: "prod-webs/(api-gateway|auth-guard|order-core|queue|seat)"
-    dbInstanceName: "goormgb-prod-postgresql"
-    redisClusterName: "goormgb-prod-redis-001"
+    folderName: "STAGING 알람 현황판"
+    envName: "staging"
+    appNamespace: "staging-webs"
+    appJobPattern: "staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
+    dbInstanceName: "goormgb-staging-postgresql"
+    redisClusterName: "goormgb-staging-redis-001"
   businessKpi:
     enabled: true
-    folderName: "PROD 알람 현황판"
+    folderName: "STAGING 알람 현황판"
   businessPm:
-    folderName: "PROD 사용자 행동 분석(PM)"
+    folderName: "STAGING 사용자 행동 분석(PM)"
   securityOps:
     enabled: true
-    folderName: "PROD 알람 현황판"
+    folderName: "STAGING 알람 현황판"
 
 thanosObjstore:
   enabled: true
   secretName: "thanos-objstore-secret"
-  bucket: "playball-prod-thanos"
+  bucket: "playball-staging-thanos"
   region: "ap-northeast-2"
+
+# VPC CNI Metrics (EKS eBPF)
+vpcCniMetrics:
+  enabled: true
 
 # ===== kube-prometheus-stack 직접 배포용 설정 =====
 fullnameOverride: prom
@@ -108,6 +126,8 @@ prometheusOperator:
 
 # kube-state-metrics
 kube-state-metrics:
+  metricLabelsAllowlist:
+    - nodes=[nodepool,role,topology.kubernetes.io/zone,node.kubernetes.io/instance-type]
   nodeSelector:
     role: monitoring
   tolerations:
@@ -133,12 +153,14 @@ kubeProxy:
   enabled: true
 
 prometheus:
+  # Thanos sidecar SA (IRSA)
   serviceAccount:
     create: true
     name: prometheus-prom
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-prod-thanos"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-thanos"
 
+  # Thanos sidecar 활성화
   thanosService:
     enabled: true
   thanosServiceMonitor:
@@ -171,12 +193,15 @@ prometheus:
         cpu: 1000m
         memory: 3Gi
 
+    # Thanos sidecar 설정
     thanos:
       objectStorageConfig:
         existingSecret:
           name: thanos-objstore-secret
           key: objstore.yml
 
+  # VPC CNI ServiceMonitor (awscni_* 메트릭 수집)
+  # Service는 prometheus-stack 차트에서 생성 (vpc-cni-service.yaml)
   additionalServiceMonitors:
     - name: aws-vpc-cni
       jobLabel: k8s-app
@@ -190,35 +215,19 @@ prometheus:
         - port: metrics
           interval: 30s
           path: /metrics
+          # VPC CNI metrics port
+          targetPort: 61678
 
-    # EBS CSI driver 미사용 - emptyDir 사용
-    # storageSpec:
-    #   volumeClaimTemplate:
-    #     metadata:
-    #       name: data
-    #     spec:
-    #       storageClassName: gp2
-    #       accessModes: ["ReadWriteOnce"]
-    #       resources:
-    #         requests:
-    #           storage: 30Gi
-
+# Grafana는 별도 Application으로 분리 (ociCharts.grafana)
+# values-grafana.yaml 참조
 grafana:
   enabled: false
-  forceDeployDashboards: false
+  # ExternalSecret은 prometheus-extras에서 생성 (common-charts 템플릿 사용)
   eso:
     enabled: true
-    secretManagerKey: prod/monitoring
-    oauthSecretManagerKey: prod/infra/oauth
+    secretManagerKey: staging/monitoring
+    oauthSecretManagerKey: staging/infra/oauth
     oauthAllowInsecureEmailLookup: true
-    oauthRoleAttributePathFromSecret: true
-    oauthRoleAttributeStrictFromSecret: true
-  sidecar:
-    dashboards:
-      enabled: true
-      label: grafana_dashboard
-      labelValue: "1"
-      searchNamespace: monitoring
   provisioning:
     enabled: true
     successfulJobsHistoryLimit: 1
@@ -286,62 +295,6 @@ grafana:
           - jbyun1105@gmail.com
           - sayiamseyoun9@gmail.com
           - hs4734@gmail.com
-
-
-  # EBS CSI driver 미사용 - persistence 비활성화
-  persistence:
-    enabled: false
-
-  nodeSelector:
-    role: monitoring
-  tolerations:
-    - key: role
-      value: monitoring
-      effect: NoSchedule
-
-  resources:
-    requests:
-      cpu: 200m
-      memory: 512Mi
-    limits:
-      cpu: 500m
-      memory: 1Gi
-
-  # Loki + Tempo + CloudWatch datasource
-  additionalDataSources:
-    - name: Loki
-      type: loki
-      uid: loki
-      access: proxy
-      url: http://loki.monitoring.svc.cluster.local:3100
-      isDefault: false
-      jsonData:
-        maxLines: 1000
-
-    - name: Tempo
-      type: tempo
-      uid: tempo
-      access: proxy
-      url: http://tempo.monitoring.svc.cluster.local:3100
-      isDefault: false
-      jsonData:
-        tracesToLogsV2:
-          datasourceUid: loki
-          spanStartTimeShift: "-1h"
-          spanEndTimeShift: "1h"
-          filterByTraceID: true
-          filterBySpanID: true
-
-    # CloudWatch Data Source (RDS, ElastiCache 메트릭)
-    - name: CloudWatch
-      type: cloudwatch
-      uid: cloudwatch
-      access: proxy
-      isDefault: false
-      editable: true
-      jsonData:
-        authType: default  # IRSA 사용
-        defaultRegion: ap-northeast-2
 
 alertmanager:
   alertmanagerSpec:

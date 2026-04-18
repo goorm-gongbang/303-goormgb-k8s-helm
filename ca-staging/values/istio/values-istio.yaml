@@ -68,10 +68,12 @@ apiGatewayConfig:
   selector: ingressgateway
   hosts:
     - "api.staging.playball.one"
+    - "api.playball.one"
     - "cloudbeaver.staging.playball.one"
     - "grafana.staging.playball.one"
     - "kafka-ui.staging.playball.one"
     - "redisinsight.staging.playball.one"
+    - "policy-reporter.staging.playball.one"
 
 # =============================================================================
 # Kiali - Service Mesh Observability

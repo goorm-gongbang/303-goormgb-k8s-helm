@@ -1,43 +1,41 @@
 {{- if .Values.policies.requireLabels.enabled }}
-apiVersion: policies.kyverno.io/v1
-kind: ValidatingPolicy
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
 metadata:
   name: require-labels
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Require Labels
-    policies.kyverno.io/category: Best Practices
-    policies.kyverno.io/severity: medium
+    policies.kyverno.io/category: Governance, Observability
+    policies.kyverno.io/severity: low
     policies.kyverno.io/description: >-
-      Pod에 필수 라벨(app, version)이 있는지 확인합니다.
-      라벨은 리소스 식별과 서비스 디스커버리에 필수적입니다.
+      Pod에 필수 라벨이 있는지 확인합니다.
 spec:
-  failurePolicy: {{ .Values.failurePolicy | default "Ignore" }}
-  matchConstraints:
-    resourceRules:
-      - apiGroups: [""]
-        apiVersions: ["v1"]
-        operations: ["CREATE", "UPDATE"]
-        resources: ["pods"]
-    namespaceSelector:
-      matchExpressions:
-        - key: kubernetes.io/metadata.name
-          operator: NotIn
-          values:
-            {{- range .Values.excludeNamespaces }}
-            - {{ . }}
-            {{- end }}
-  variables:
-    - name: labels
-      expression: "object.metadata.?labels.orValue({})"
-  validations:
-    {{- range .Values.policies.requireLabels.requiredLabels }}
-    - expression: |
-        has(variables.labels.{{ . }}) && variables.labels.{{ . }} != ""
-      message: "Pod에는 '{{ . }}' 라벨이 필요합니다."
-      validationActions:
-        - {{ $.Values.validationAction | default "Deny" }}
-    {{- end }}
-  auditAnnotations:
-    - key: "policy-violation"
-      valueExpression: "'require-labels'"
+  validationFailureAction: {{ .Values.validationAction | default "Audit" }}
+  background: true
+  rules:
+    - name: check-labels
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              operations:
+                - CREATE
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                {{- range .Values.excludeNamespaces }}
+                - {{ . }}
+                {{- end }}
+      validate:
+        message: "Pod에는 운영에 필요한 필수 라벨들이 포함되어야 합니다."
+        pattern:
+          metadata:
+            labels:
+              {{- range .Values.policies.requireLabels.requiredLabels }}
+              {{ . }}: "?*"
+              {{- end }}
 {{- end }}

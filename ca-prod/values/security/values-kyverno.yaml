@@ -1,4 +1,4 @@
-# Kyverno Configuration for Prod
+# Kyverno Configuration for Staging
 # Chart version: 3.7.1
 
 # Admission controller settings
@@ -6,17 +6,15 @@ admissionController:
   replicas: 1
   resources:
     limits:
-      memory: 384Mi
+      memory: 1Gi
     requests:
-      cpu: 100m
-      memory: 128Mi
-
-  # Infra 노드에 배치
+      cpu: 200m
+      memory: 512Mi
   nodeSelector:
-    role: infra
+    role: monitoring
   tolerations:
     - key: role
-      value: infra
+      value: monitoring
       effect: NoSchedule
 
 # Background controller
@@ -26,13 +24,13 @@ backgroundController:
     limits:
       memory: 128Mi
     requests:
-      cpu: 50m
+      cpu: 25m
       memory: 64Mi
   nodeSelector:
-    role: infra
+    role: monitoring
   tolerations:
     - key: role
-      value: infra
+      value: monitoring
       effect: NoSchedule
 
 # Cleanup controller
@@ -42,13 +40,13 @@ cleanupController:
     limits:
       memory: 128Mi
     requests:
-      cpu: 50m
+      cpu: 25m
       memory: 64Mi
   nodeSelector:
-    role: infra
+    role: monitoring
   tolerations:
     - key: role
-      value: infra
+      value: monitoring
       effect: NoSchedule
 
 # Reports controller
@@ -58,18 +56,17 @@ reportsController:
     limits:
       memory: 128Mi
     requests:
-      cpu: 50m
+      cpu: 25m
       memory: 64Mi
   nodeSelector:
-    role: infra
+    role: monitoring
   tolerations:
     - key: role
-      value: infra
+      value: monitoring
       effect: NoSchedule
 
 # Config settings
 config:
-  # Namespaces to exclude from policy enforcement
   excludeNamespaces:
     - kube-system
     - kube-public
@@ -81,7 +78,7 @@ config:
 
 # Webhook configuration
 webhooks:
-  failurePolicy: Ignore  # prod에서도 초기에는 Ignore로 설정하여 이슈 방지
+  failurePolicy: Ignore
 
 # ServiceMonitor for Prometheus
 serviceMonitor:

@@ -23,10 +23,12 @@ args:
   - "8000"
   - "--root-path"
   - "/ai"
+  - "--workers"
+  - "4"
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
-  tag: "0720109.10"
+  tag: "c3ff0e0.25"
   name: "staging/playball/ai/defense"
   pullPolicy: Always
 
@@ -36,6 +38,25 @@ env:
     value: /app/src
   - name: APP_PORT
     value: "8000"
+  # 환경 식별자
+  - name: TM_ENV
+    value: "staging"
+  # Rollout 해시 salt (Secrets Manager: ai-service-config 에 TM_ROLLOUT_SALT 키 추가 필요)
+  - name: TM_ROLLOUT_SALT
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: TM_ROLLOUT_SALT
+  # authoritative state 강제: 로컬 폴백 / 인메모리 Redis 금지
+  - name: TM_POLICY_ALLOW_LOCAL_FALLBACK
+    value: "false"
+  - name: TM_ALLOW_IN_MEMORY_REDIS
+    value: "false"
+  # Policy projection 재시도 튜닝
+  - name: TM_PROJECTION_RETRY_MAX_ATTEMPTS
+    value: "2"
+  - name: TM_PROJECTION_RETRY_BACKOFF_MS
+    value: "50"
   # JSON 로깅 활성화 (Loki 멀티라인 문제 해결)
   - name: TM_LOG_FORMAT
     value: "json"
@@ -94,9 +115,9 @@ env:
         key: AI_PG_DBNAME
   - name: TM_PG_URL
     value: "postgresql://$(AI_PG_USERNAME):$(AI_PG_PASSWORD)@$(AI_PG_HOST):$(AI_PG_PORT)/$(AI_PG_DBNAME)?sslmode=require"
-  # Policy projection staleness 체크 비활성화 (reconciler 미구현 — 추후 코드 수정 후 제거)
+  # Policy projection staleness 허용치 (ai-defense 내부 background task가 projection 유지)
   - name: TM_POLICY_PROJECTION_MAX_STALENESS_MS
-    value: "2678400000"
+    value: "300000"
   # ClickHouse (클러스터 내부 - Secrets Manager에서 인증 정보 가져옴)
   - name: AI_CLICKHOUSE_USER
     valueFrom:
@@ -121,6 +142,12 @@ env:
       secretKeyRef:
         name: ai-service-config
         key: INTERNAL_API_KEY
+  # Offline LLM API key (post-review / backoffice copilot fallback adapter)
+  - name: TM_OFFLINE_LLM_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: TM_OFFLINE_LLM_API_KEY
   # OpenTelemetry: 새 Semantic Convention 사용 (Java와 통일)
   - name: OTEL_SEMCONV_STABILITY_OPT_IN
     value: "http"
@@ -139,11 +166,11 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 300m
+    memory: 384Mi
   limits:
-    cpu: "1"
-    memory: 1Gi
+    cpu: "2"
+    memory: 3Gi
 
 # Istio VirtualService for /ai/* routing
 istio:
@@ -151,6 +178,8 @@ istio:
   gateway:
     enabled: true
     host: "api.staging.playball.one"
+    extraHosts:
+      - "api.playball.one"
     externalRef: "istio-system/api-gateway"
     contextPath: "/ai/"
     redirect:
@@ -180,13 +209,15 @@ service:
   port: 8000
 
 # Health checks (FastAPI endpoints)
+# burst 부하에서 worker 점유 시 1초 안에 응답 못 해 SIGKILL 당하는 문제 완화
 livenessProbe:
   httpGet:
     path: /healthz
     port: 8000
   initialDelaySeconds: 30
   periodSeconds: 10
-  failureThreshold: 3
+  timeoutSeconds: 5
+  failureThreshold: 5
 
 readinessProbe:
   httpGet:
@@ -194,6 +225,7 @@ readinessProbe:
     port: 8000
   initialDelaySeconds: 10
   periodSeconds: 5
+  timeoutSeconds: 3
   failureThreshold: 3
 
 # Prometheus Metrics (FastAPI - 같은 포트에서 /metrics 노출)
@@ -208,3 +240,81 @@ metrics:
 otel:
   enabled: true
   collectorEndpoint: "otel-collector.monitoring.svc.cluster.local:4317"
+
+# PreSync Jobs — ArgoCD sync-wave 순서대로 실행, 하나라도 실패 시 Deployment/CronJob 진행 중단
+# wave 0 → 1 → 2 → (Deployment/CronJob)
+presyncJobs:
+  - name: tm-ai-clickhouse-migrate
+    syncWave: "-1"
+    command:
+      - tm-ai-clickhouse-migrate
+  - name: tm-ai-storage-migrate
+    syncWave: "0"
+    command:
+      - tm-ai-storage-migrate
+  - name: tm-ai-policy-bootstrap
+    syncWave: "1"
+    command:
+      - tm-ai-policy-bootstrap
+  - name: tm-ai-policy-projection-resync
+    syncWave: "2"
+    command:
+      - tm-ai-policy-projection-resync
+      - --current
+
+# CronJobs — closed-loop 자동화 (최적화 + 사후판단)
+cronJobs:
+  - name: tm-ai-policy-optimizer
+    enabled: true
+    schedule: "*/10 * * * *"
+    concurrencyPolicy: Forbid
+    restartPolicy: Never
+    backoffLimit: 1
+    command:
+      - tm-ai-policy-optimizer
+    extraEnv:
+      - name: TM_POLICY_OPTIMIZER_ENABLED
+        value: "true"
+      - name: TM_POLICY_OPTIMIZER_DRY_RUN
+        value: "false"
+      - name: TM_POLICY_OPTIMIZER_APPLY_ENABLED
+        value: "true"
+      - name: TM_POLICY_OPTIMIZER_WINDOW_SECONDS
+        value: "600"
+      - name: TM_POLICY_OPTIMIZER_CANARY_RATIO
+        value: "0.05"
+      - name: TM_POLICY_OPTIMIZER_MIN_APPLY_COOLDOWN_SECONDS
+        value: "300"
+      - name: TM_POLICY_OPTIMIZER_ROLLOUT_ID
+        value: "offline-optimizer-default"
+      - name: TM_POLICY_OPTIMIZER_LOCK_TTL_SECONDS
+        value: "300"
+
+  - name: tm-ai-post-review
+    enabled: true
+    schedule: "*/10 * * * *"
+    concurrencyPolicy: Forbid
+    restartPolicy: Never
+    backoffLimit: 1
+    command:
+      - tm-ai-post-review
+
+  # S3 Audit → ClickHouse ETL (기존 staging-ai-etl 앱에서 흡수)
+  - name: tm-ai-etl
+    enabled: true
+    schedule: "15 * * * *"
+    concurrencyPolicy: Forbid
+    restartPolicy: OnFailure
+    backoffLimit: 2
+    command:
+      - tm-ai-etl
+    extraEnv:
+      - name: TM_ETL_PROCESSED_LEDGER_TTL_SECONDS
+        value: "2592000"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

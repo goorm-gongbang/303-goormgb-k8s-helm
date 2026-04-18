@@ -10,24 +10,6 @@
   "links": [],
   "panels": [
     {
-      "datasource": {"type": "prometheus", "uid": "${datasource}"},
-      "description": "",
-      "fieldConfig": {"defaults": {}, "overrides": []},
-      "gridPos": {"h": 3, "w": 24, "x": 0, "y": 0},
-      "id": 999,
-      "options": {
-        "code": {"language": "plaintext", "showLineNumbers": false, "showMiniMap": false},
-        "content": "# 현재 부하테스트가 실행 중이지 않습니다\n\n`loadtest-webs` / `loadtest-ai` 네임스페이스에 Pod가 없으면 데이터가 표시되지 않습니다. 부하테스트를 시작하면 자동으로 메트릭이 수집됩니다.",
-        "mode": "markdown"
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "absent(count(kube_pod_info{namespace=~\"loadtest-(webs|ai)\"}))", "refId": "A"}],
-      "title": "",
-      "transformations": [{"id": "filterByValue", "options": {"filters": [{"config": {"id": "equal", "options": {"value": 1}}, "fieldName": "Value"}], "match": "any", "type": "include"}}],
-      "transparent": true,
-      "type": "text"
-    },
-    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
@@ -1616,7 +1598,7 @@
           "refId": "A"
         }
       ],
-      "title": "CPU 사용량 (Pod별)",
+      "title": "CPU 사용량 (Pod별, Limit 대비 %)",
       "type": "timeseries"
     },
     {
@@ -1706,7 +1688,7 @@
           "refId": "A"
         }
       ],
-      "title": "메모리 사용량 (Pod별)",
+      "title": "메모리 사용량 (Pod별, 실사용량)",
       "type": "timeseries"
     },
     {
@@ -1727,7 +1709,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "RDS 활성 연결 수",
+      "description": "RDS 활성 연결 수 (DatabaseConnections)\n\n[현재 인스턴스: db.t4g.small — max_connections ≈ 270]\n(PostgreSQL 공식: LEAST(DBInstanceClassMemory/9531392, 5000))\n\n[임계치]\n- 평시: 50 이하 (각 앱 HikariCP min-idle 합)\n- 180 이상: 부하테스트/rollout 직후 정상, 10분 내 축소되는지 확인\n- 240 이상: max_connections(270) 근접, 신규 커넥션 거부 위험",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1743,11 +1725,11 @@
               },
               {
                 "color": "yellow",
-                "value": 50
+                "value": 180
               },
               {
                 "color": "red",
-                "value": 100
+                "value": 240
               }
             ]
           },
@@ -1807,7 +1789,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "RDS CPU 사용률",
+      "description": "RDS CPU 사용률 (CPUUtilization)\n\n[현재 인스턴스: db.t4g.small — 2 vCPU, 2 GB RAM]\n\nt계열은 버스트 크레딧 기반 — 장시간 고부하 시 크레딧 소진되면 baseline(20%)으로 throttle.\n\n[임계치]\n- 70%: 경고 (지속 시 크레딧 감소)\n- 90%: 위험 (크레딧 소진 시 baseline 제한)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1880,6 +1862,86 @@
         }
       ],
       "title": "CPU Utilization",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "cloudwatch"
+      },
+      "description": "RDS 사용 가능 메모리 (FreeableMemory)\n\n[현재 인스턴스: db.t4g.small — 총 2 GB RAM]\nOS/shared_buffers 등 제외하고 OS가 해제 가능한 메모리.\n\n[임계치]\n- 512 MB 이상: 정상\n- 256 MB 이하: 노란불 (스왑/쿼리 성능 저하 가능)\n- 0 근접: 빨간불 (OOM 위험, 인스턴스 스케일업 검토)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 268435456
+              },
+              {
+                "color": "green",
+                "value": 536870912
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 42
+      },
+      "id": 151,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "cloudwatch"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "goormgb-staging-postgresql"
+          },
+          "expression": "",
+          "id": "",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "FreeableMemory",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "refId": "A",
+          "region": "ap-northeast-2",
+          "sqlExpression": "",
+          "statistic": "Average"
+        }
+      ],
+      "title": "사용 가능 메모리",
       "type": "stat"
     },
     {
@@ -1972,8 +2034,8 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 12,
-        "x": 12,
+        "w": 6,
+        "x": 18,
         "y": 42
       },
       "id": 52,
@@ -2059,7 +2121,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "ElastiCache 연결된 클라이언트 수",
+      "description": "ElastiCache 에 연결된 전체 클라이언트 수 (모든 앱 pod × connection pool 합산).\n\n[인스턴스별 최대 연결 수 — cache.t4g.*: 65,000]\n\n평시 100~200 수준은 정상 (여러 서비스 × replica × min-idle).\n부하테스트 중 500 이상이면 관찰, 1000 이상이면 커넥션 풀 과다 의심.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2075,11 +2137,11 @@
               },
               {
                 "color": "yellow",
-                "value": 100
+                "value": 500
               },
               {
                 "color": "red",
-                "value": 500
+                "value": 1000
               }
             ]
           },
@@ -2139,7 +2201,7 @@
         "type": "cloudwatch",
         "uid": "cloudwatch"
       },
-      "description": "Redis 메모리 사용률 (%)\n\n[인스턴스별 최대 메모리]\n- cache.t3.micro: 0.5GB\n- cache.t3.small: 1.37GB\n- cache.t3.medium: 3.09GB\n\n[80% 넘으면 주의]",
+      "description": "Redis 메모리 사용률 (%) — DatabaseMemoryUsagePercentage\n\n[현재 인스턴스: cache.t4g.small (1.37GB)]\n\n[인스턴스별 최대 메모리 참고]\n- cache.t4g.micro: 0.5GB\n- cache.t4g.small: 1.37GB\n- cache.t4g.medium: 3.09GB\n\n[임계치]\n- 70% 이상: 노란불 (키 증가 추이 확인)\n- 90% 이상: 빨간불 (eviction/OOM 위험, 스케일업 검토)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2764,84 +2826,487 @@
       "title": "ElastiCache Evictions",
       "type": "stat"
     },
-    {"collapsed": false, "gridPos": {"h": 1, "w": 24, "x": 0, "y": 80}, "id": 500, "title": "Kafka 메시징", "type": "row"},
     {
-      "datasource": {"type": "prometheus", "uid": "${datasource}"},
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 80
+      },
+      "id": 500,
+      "title": "Kafka 메시징",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
       "description": "Kafka Consumer Group별 처리 지연 (lag이 높으면 consumer가 못 따라가는 것)",
-      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 20, "lineWidth": 2, "showPoints": "never", "stacking": {"mode": "none"}}, "unit": "short"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineWidth": 2,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none"
+            }
+          },
+          "unit": "short"
+        },
         "overrides": [
-          {"matcher": {"id": "byRegexp", "options": ".*payment-completed.*"}, "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}]},
-          {"matcher": {"id": "byRegexp", "options": ".*order-cancelled.*"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]},
-          {"matcher": {"id": "byRegexp", "options": ".*bank-transfer.*"}, "properties": [{"id": "color", "value": {"fixedColor": "orange", "mode": "fixed"}}]},
-          {"matcher": {"id": "byRegexp", "options": ".*user-blocked.*"}, "properties": [{"id": "color", "value": {"fixedColor": "purple", "mode": "fixed"}}]}
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*payment-completed.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*order-cancelled.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*bank-transfer.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*user-blocked.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
         ]
       },
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 81}, "id": 501,
-      "options": {"legend": {"calcs": ["max", "last"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"expr": "sum by (consumergroup, topic) (kafka_consumergroup_lag) > 0", "legendFormat": "{{consumergroup}} - {{topic}}", "refId": "A"}],
-      "title": "Consumer Lag (seat: Con, order-core: Pub/Con, auth-guard: Pub)", "type": "timeseries"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "${datasource}"},
-      "description": "토픽별 초당 메시지 인입량",
-      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 20, "lineWidth": 2, "showPoints": "never"}, "unit": "cps"},
-        "overrides": [
-          {"matcher": {"id": "byRegexp", "options": ".*payment-completed.*"}, "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}]},
-          {"matcher": {"id": "byRegexp", "options": ".*order-cancelled.*"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]},
-          {"matcher": {"id": "byRegexp", "options": ".*bank-transfer.*"}, "properties": [{"id": "color", "value": {"fixedColor": "orange", "mode": "fixed"}}]},
-          {"matcher": {"id": "byRegexp", "options": ".*user-blocked.*"}, "properties": [{"id": "color", "value": {"fixedColor": "purple", "mode": "fixed"}}]}
-        ]
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 81
       },
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 81}, "id": 502,
-      "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"expr": "sum by (topic) (rate(kafka_server_brokertopicmetrics_messagesin_total[5m])) > 0", "legendFormat": "{{topic}}", "refId": "A"}],
-      "title": "메시지 인입율 (order-core: Pub, auth-guard: Pub)", "type": "timeseries"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "${datasource}"},
-      "description": "현재 총 Consumer Lag",
-      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 100}, {"color": "red", "value": 500}]}, "unit": "short"}},
-      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 89}, "id": 503,
-      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
-      "targets": [{"expr": "sum(kafka_consumergroup_lag) or vector(0)", "refId": "A"}],
-      "title": "Total Consumer Lag", "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "${datasource}"},
-      "description": "Kafka 초당 메시지 처리량",
-      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "cps"}},
-      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 89}, "id": 504,
-      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
-      "targets": [{"expr": "sum(rate(kafka_server_brokertopicmetrics_messagesin_total[5m])) or vector(0)", "refId": "A"}],
-      "title": "메시지 처리율 (msg/s)", "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "${datasource}"},
-      "description": "Kafka broker Pod CPU 사용량",
-      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 0.5}, {"color": "red", "value": 0.8}]}, "unit": "short"}},
-      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 89}, "id": 505,
-      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
-      "targets": [{"expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"messaging\", container=\"kafka\"}[5m])) or vector(0)", "refId": "A"}],
-      "title": "Kafka Broker CPU (cores)", "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "${datasource}"},
-      "description": "Kafka broker Pod 메모리 사용량",
-      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 3000000000}, {"color": "red", "value": 4000000000}]}, "unit": "bytes"}},
-      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 89}, "id": 506,
-      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"]}},
-      "targets": [{"expr": "sum(container_memory_working_set_bytes{namespace=\"messaging\", container=\"kafka\"}) or vector(0)", "refId": "A"}],
-      "title": "Kafka Broker Memory", "type": "stat"
-    },
-    {
-      "datasource": {"type": "datasource", "uid": "-- Dashboard --"},
-      "gridPos": {"h": 7, "w": 24, "x": 0, "y": 93}, "id": 507,
+      "id": 501,
       "options": {
-        "code": {"language": "plaintext", "showLineNumbers": false},
+        "legend": {
+          "calcs": [
+            "max",
+            "last"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (consumergroup, topic) (kafka_consumergroup_lag) > 0",
+          "legendFormat": "{{consumergroup}} - {{topic}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Consumer Lag (seat: Con, order-core: Pub/Con, auth-guard: Pub)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "토픽별 초당 메시지 인입량",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "cps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*payment-completed.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*order-cancelled.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*bank-transfer.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*user-blocked.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 81
+      },
+      "id": 502,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (topic) (rate(kafka_server_brokertopicmetrics_messagesin_total[5m])) > 0",
+          "legendFormat": "{{topic}}",
+          "refId": "A"
+        }
+      ],
+      "title": "메시지 인입율 (order-core: Pub, auth-guard: Pub)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "현재 총 Consumer Lag",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 89
+      },
+      "id": 503,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum(kafka_consumergroup_lag) or vector(0)",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Consumer Lag",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Kafka 초당 메시지 처리량",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "cps"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 89
+      },
+      "id": 504,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(kafka_server_brokertopicmetrics_messagesin_total[5m])) or vector(0)",
+          "refId": "A"
+        }
+      ],
+      "title": "메시지 처리율 (msg/s)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Kafka broker Pod CPU 사용량",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 0.8
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 89
+      },
+      "id": 505,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"messaging\", container=\"kafka\"}[5m])) or vector(0)",
+          "refId": "A"
+        }
+      ],
+      "title": "Kafka Broker CPU (cores)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Kafka broker Pod 메모리 사용량",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 3000000000
+              },
+              {
+                "color": "red",
+                "value": 4000000000
+              }
+            ]
+          },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 89
+      },
+      "id": 506,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{namespace=\"messaging\", container=\"kafka\"}) or vector(0)",
+          "refId": "A"
+        }
+      ],
+      "title": "Kafka Broker Memory",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 93
+      },
+      "id": 507,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false
+        },
         "content": "**Kafka 토픽 흐름**\n\n| 토픽 | Producer | Consumer | 의미 |\n|------|----------|----------|------|\n| payment-completed | order-core | seat | 결제 완료 -> 좌석 SOLD |\n| order-cancelled | order-core | seat | 주문 취소 -> 좌석 해제 |\n| bank-transfer-expired | order-core | seat | 무통장 만료 -> 좌석 해제 |\n| user-blocked | auth-guard | order-core | 사용자 차단 -> 주문 검토 |",
         "mode": "markdown"
       },
-      "title": "Kafka 토픽 참조", "type": "text"
+      "title": "Kafka 토픽 참조",
+      "type": "text"
     }
   ],
   "refresh": "5s",

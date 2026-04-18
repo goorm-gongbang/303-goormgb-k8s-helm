@@ -1,0 +1,92 @@
+{{- if .Values.policies.protectCriticalNamespaces.enabled }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: protect-critical-namespaces
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    policies.kyverno.io/title: Protect Critical Namespaces
+    policies.kyverno.io/category: Security, Cluster Protection
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      핵심 시스템 네임스페이스의 리소스가 ArgoCD 이외의 사용자에 의해 수정되거나 삭제되는 것을 방지합니다.
+spec:
+  validationFailureAction: {{ .Values.validationAction | default "Audit" }}
+  background: false
+  rules:
+    - name: prevent-unauthorized-changes
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+                - Service
+                - Ingress
+                - ConfigMap
+                - Secret
+                - CustomResourceDefinition
+                - Namespace
+              namespaces:
+                {{- range .Values.criticalNamespaces }}
+                - {{ . }}
+                {{- end }}
+      exclude:
+        any:
+          - clusterRoles:
+              - cluster-admin
+          - subjects:
+              - kind: ServiceAccount
+                name: argocd-application-controller
+                namespace: argocd
+          # kube-controller-manager / kubelet / node-problem-detector 등 시스템 주체
+          - subjects:
+              - kind: User
+                name: system:kube-controller-manager
+              - kind: User
+                name: system:kube-scheduler
+              - kind: Group
+                name: system:nodes
+          # 각 critical namespace 에서 정상 동작 중인 ServiceAccount 들의
+          # 자체 리소스 갱신 (leader-election Lease/ConfigMap 등) 허용
+          {{- range .Values.criticalNamespaces }}
+          - subjects:
+              - kind: Group
+                name: system:serviceaccounts:{{ . }}
+          {{- end }}
+          # Lease 는 leader-election 용도이므로 보호 대상에서 아예 제외 (kind 차원에서 불가하므로 리소스명 wildcard)
+          - resources:
+              kinds:
+                - ConfigMap
+              names:
+                - "*-election"
+                - "*-leader"
+                - "kube-controller-manager"
+                - "kube-scheduler"
+          # DevOps(SSO) 운영 주체 허용
+          {{- range .Values.devopsSsoRolePatterns }}
+          - subjects:
+              - kind: User
+                name: {{ . | quote }}
+          {{- end }}
+      validate:
+        message: "핵심 네임스페이스({{ "{{ request.namespace }}" }})의 리소스는 ArgoCD를 통해서만 수정/삭제할 수 있습니다. 비상시에는 리소스에 annotation 'ops.playball.one/manual-override' 를 달아 우회 가능."
+        deny:
+          conditions:
+            all:
+              - key: '{{ "{{ request.operation }}" }}'
+                operator: In
+                value:
+                  - UPDATE
+                  - DELETE
+              # Break-glass: manual-override annotation 있으면 통과 (사유 필수)
+              # Dotted key 참조를 위해 큰따옴표로 감싸고 전체를 싱글 따옴표로 보호
+              - key: '{{ "{{ request.object.metadata.annotations.\"ops.playball.one/manual-override\" }}" }}'
+                operator: Equals
+                value: ""
+{{- end }}

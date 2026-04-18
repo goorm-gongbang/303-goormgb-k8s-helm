@@ -142,6 +142,28 @@ ociCharts:
       - $values/ca-staging/values/monitoring/metrics/values-prometheus-stack.yaml
       - $values/ca-staging/values/monitoring/alerting/values-rules-staging.yaml
       - $values/ca-staging/values/monitoring/alerting/values-alertmanager-staging.yaml
+
+  kafka-exporter:
+    enabled: true
+    description: "Kafka Exporter - consumer group lag 등 Prometheus 메트릭"
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus-kafka-exporter
+    version: "2.11.0"
+    namespace: messaging
+    syncWave: "1"
+    valueFiles:
+      - $values/ca-staging/values/messaging/values-kafka-exporter.yaml
+
+  redis-exporter:
+    enabled: true
+    description: "Redis Exporter - ElastiCache 서버 메트릭 (latency, ops, memory)"
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus-redis-exporter
+    version: "6.10.0"
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - $values/ca-staging/values/monitoring/values-redis-exporter.yaml
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
@@ -266,6 +288,17 @@ ociCharts:
     valueFiles:
       - $values/ca-staging/values/monitoring/visualization/values-grafana.yaml
 
+  alloy:
+    enabled: true
+    description: "Grafana Alloy - 프론트 Faro 수집기"
+    repoURL: https://grafana.github.io/helm-charts
+    chart: alloy
+    version: "1.7.0"
+    namespace: monitoring
+    syncWave: "0"
+    valueFiles:
+      - $values/ca-staging/values/monitoring/logs/values-alloy.yaml
+
   opentelemetry-collector:
     enabled: true
     description: "OpenTelemetry Collector - 메트릭/트레이스 수집 파이프라인"
@@ -301,7 +334,8 @@ ociCharts:
     version: "3.13.0"
     namespace: kube-system
     syncWave: "-9"
-    valueFiles: []
+    valueFiles:
+      - $values/ca-staging/values/infra/values-metrics-server.yaml
 
   # Kyverno - Policy Engine
   kyverno:
@@ -332,6 +366,21 @@ ociCharts:
           - /status
           - /metadata/annotations
           - /metadata/labels
+
+  # Policy Reporter - Kyverno UI & Notifications
+  policy-reporter:
+    enabled: true
+    description: "Policy Reporter - Kyverno 정책 위반 시각화 및 Discord 알림"
+    repoURL: https://kyverno.github.io/policy-reporter
+    chart: policy-reporter
+    version: "3.7.3"
+    namespace: kyverno
+    syncWave: "-6"
+    valueFiles:
+      - $values/ca-staging/values/security/values-policy-reporter.yaml
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
 
 # =============================================================================
 # Git Charts (Git 레포에서 참조) - 단일 source Application
@@ -391,6 +440,16 @@ gitCharts:
     syncWave: "-5"
     valueFiles:
       - ../../../ca-staging/values/apps/values-mail-config.yaml
+
+  # Mail Config - Load-test (loadtest-webs 네임스페이스 전용 복제)
+  loadtest-mail-config:
+    enabled: true
+    description: "[LoadTest] 메일 설정 - Gmail SMTP Secret"
+    path: common-charts/apps/mail-config
+    namespace: loadtest-webs
+    syncWave: "-5"
+    valueFiles:
+      - ../../../ca-staging/values/apps-loadtest/values-mail-config.yaml
 
   # KEDA ScaledObjects (앱별 오토스케일링 규칙)
   keda-scalers:
@@ -485,6 +544,22 @@ gitCharts:
     syncOptions:
       - Replace=true
 
+  alloy-config:
+    enabled: true
+    description: "Faro 라우팅 - /faro VirtualService 및 DestinationRule"
+    path: common-charts/infra/monitoring/alloy
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - ../../../../ca-staging/values/monitoring/logs/values-alloy.yaml
+
+  alertmanager-discord-relay:
+    enabled: true
+    description: "Alertmanager Discord relay - native webhook 포맷 전송"
+    path: ca-staging/charts/monitoring/alertmanager-discord-relay
+    namespace: monitoring
+    syncWave: "1"
+
   # === ArgoCD Config (OAuth, Applications) ===
   argocd-config:
     enabled: true
@@ -505,6 +580,14 @@ gitCharts:
       - ../../../ca-staging/values/security/values-kyverno-policies.yaml
     syncOptions:
       - SkipDryRunOnMissingResource=true
+
+  # Policy Reporter Route (Google OAuth Proxy)
+  policy-reporter-route:
+    enabled: true
+    description: "Policy Reporter UI - Google OAuth Proxy (Standalone)"
+    path: ca-staging/charts/security/policy-reporter-route
+    namespace: kyverno
+    syncWave: "0"
 
   # === Monitoring ===
   # tempo: OCI로 이동 (ociCharts.tempo)
@@ -530,11 +613,20 @@ gitCharts:
 
   # RDS Backup CronJob (pg_dump -> S3)
   rds-backup:
-    enabled: false
+    enabled: true
     description: "RDS 백업 - pg_dump CronJob (S3 저장)"
     path: ca-staging/charts/data/rds-backup
     namespace: data
     syncWave: "0"
+
+  logs-backup:
+    enabled: true
+    description: "운영 로그 백업 - namespace별 로그 S3 적재"
+    path: common-charts/infra/logs-backup
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - ../../../ca-staging/values/monitoring/logs/values-logs-backup.yaml
 
   # RedisInsight (Redis GUI with Google OAuth)
   redisinsight:
@@ -597,6 +689,7 @@ gitCharts:
     valueFiles:
       - ../../../../ca-staging/values/messaging/values-kafka-ui.yaml
 
+
 # =============================================================================
 # ApplicationSets
 # =============================================================================
@@ -639,16 +732,7 @@ applicationSets:
       - name: authz-adapter
         description: "Authz Adapter - Istio ext_authz gRPC 어댑터"
 
-  staging-ai-etl:
-    enabled: true
-    syncWave: "11"
-    namespace: staging-ai
-    appNamePrefix: "staging"
-    chartPath: common-charts/apps/ai-etl
-    valueFilesPattern: ../../../ca-staging/values/apps/values-{{name}}.yaml
-    services:
-      - name: ai-etl
-        description: "AI ETL - S3 Audit -> ClickHouse 적재 CronJob"
+  # staging-ai-etl: ai-defense 앱으로 흡수됨 (같은 이미지 공유, cronJobs.tm-ai-etl)
 
   # Load-test 전용 서비스 (k6 부하 테스트용)
   loadtest-webs-services:

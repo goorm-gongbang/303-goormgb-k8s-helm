@@ -6,6 +6,9 @@
 # Fail: 정책 위반 시 리소스 생성 차단 (enforce 모드와 유사)
 failurePolicy: Ignore
 
+# validationAction: 정책 위반 시 동작 (Audit: 로깅만, Deny: 차단)
+validationAction: Audit
+
 policies:
   requireLabels:
     enabled: true
@@ -27,6 +30,12 @@ policies:
 
   requireProbes:
     enabled: false  # dev에서는 비활성화
+
+  protectCriticalNamespaces:
+    enabled: true
+
+  requireArgocdManagement:
+    enabled: true
 
 excludeNamespaces:
   - kube-system

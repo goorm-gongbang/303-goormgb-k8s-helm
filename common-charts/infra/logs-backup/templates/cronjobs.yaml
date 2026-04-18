@@ -1,0 +1,109 @@
+{{- if .Values.jobs }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.serviceAccount.name }}
+  namespace: {{ .Release.Namespace }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Release.Namespace }}-{{ .Values.serviceAccount.name }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Release.Namespace }}-{{ .Values.serviceAccount.name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.serviceAccount.name }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ .Release.Namespace }}-{{ .Values.serviceAccount.name }}
+  apiGroup: rbac.authorization.k8s.io
+{{- range .Values.jobs }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: logs-backup-{{ .name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  schedule: {{ .schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ $.Values.serviceAccount.name }}
+          restartPolicy: OnFailure
+          {{- with $.Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: backup
+              image: alpine/k8s:1.32.0
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: AWS_DEFAULT_REGION
+                  value: ap-northeast-2
+                - name: JOB_NAME
+                  value: {{ .name | quote }}
+                - name: S3_BUCKET
+                  value: {{ .s3Bucket | quote }}
+                - name: S3_PREFIX
+                  value: {{ .s3Prefix | quote }}
+                - name: TARGET_NAMESPACES
+                  value: {{ join " " .targetNamespaces | quote }}
+                - name: POD_NAME_REGEX
+                  value: {{ default "" .podNameRegex | quote }}
+              command:
+                - /bin/sh
+                - -ec
+                - |
+                  apk add --no-cache aws-cli grep tar gzip >/dev/null
+
+                  TIMESTAMP="$(date -u +%Y%m%d-%H%M%S)"
+                  WORK_DIR="/tmp/${JOB_NAME}-${TIMESTAMP}"
+                  ARCHIVE_PATH="/tmp/${JOB_NAME}-${TIMESTAMP}.tar.gz"
+                  mkdir -p "${WORK_DIR}"
+
+                  for namespace in ${TARGET_NAMESPACES}; do
+                    kubectl get pods -n "${namespace}" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' 2>/dev/null | while IFS= read -r pod; do
+                      [ -z "${pod}" ] && continue
+
+                      if [ -n "${POD_NAME_REGEX}" ] && ! echo "${pod}" | grep -Eq "${POD_NAME_REGEX}"; then
+                        continue
+                      fi
+
+                      kubectl logs -n "${namespace}" "${pod}" --all-containers --timestamps > "${WORK_DIR}/${namespace}_${pod}.log" 2>/dev/null || true
+                    done
+                  done
+
+                  if [ -z "$(find "${WORK_DIR}" -type f -name '*.log' -print -quit)" ]; then
+                    echo "no logs collected" > "${WORK_DIR}/empty.log"
+                  fi
+
+                  tar -C /tmp -czf "${ARCHIVE_PATH}" "$(basename "${WORK_DIR}")"
+                  aws s3 cp "${ARCHIVE_PATH}" "s3://${S3_BUCKET}/${S3_PREFIX}/logs-${TIMESTAMP}.tar.gz"
+                  rm -rf "${WORK_DIR}" "${ARCHIVE_PATH}"
+              resources:
+                {{- toYaml $.Values.resources | nindent 16 }}
+{{- end }}
+{{- end }}

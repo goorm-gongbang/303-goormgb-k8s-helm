@@ -11,6 +11,28 @@ spec:
     labels:
       {{- toYaml .Values.selector.labels | nindent 6 }}
   configPatches:
+    {{- if and .Values.autoBlocklist .Values.autoBlocklist.enabled }}
+    # WAF 탐지 IP 자동 등록을 위한 authz-adapter HTTP 클러스터
+    - applyTo: CLUSTER
+      match:
+        context: GATEWAY
+      patch:
+        operation: ADD
+        value:
+          name: waf_blocklist_cluster
+          type: STRICT_DNS
+          connect_timeout: 0.25s
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: waf_blocklist_cluster
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: {{ .Values.autoBlocklist.cluster.host }}
+                          port_value: {{ .Values.autoBlocklist.cluster.port }}
+    {{- end }}
     - applyTo: HTTP_FILTER
       match:
         context: GATEWAY
@@ -33,10 +55,31 @@ spec:
 
                 local BLOCK_MODE = {{ eq .Values.mode "block" }}
                 local LOG_ENABLED = {{ .Values.logging.enabled }}
+                local AUTO_BLOCKLIST = {{ and .Values.autoBlocklist .Values.autoBlocklist.enabled | ternary "true" "false" }}
+                {{- if and .Values.autoBlocklist .Values.autoBlocklist.enabled }}
+                local BLOCKLIST_CLUSTER = "waf_blocklist_cluster"
+                local BLOCKLIST_AUTHORITY = "{{ .Values.autoBlocklist.cluster.host }}:{{ .Values.autoBlocklist.cluster.port }}"
+                local BLOCKLIST_PATH = "{{ .Values.autoBlocklist.path | default "/admin/blacklist" }}"
+                local BLOCKLIST_TIMEOUT_MS = {{ .Values.autoBlocklist.timeoutMs | default 200 }}
+                {{- end }}
 
                 -- 제외 경로
                 local EXCLUDE_PATHS = {
                   {{- range .Values.excludePaths }}
+                  "{{ . }}",
+                  {{- end }}
+                }
+
+                -- IP Whitelist (정확 매칭 — 여기에 해당하면 모든 WAF 검사 bypass)
+                local IP_WHITELIST = {
+                  {{- range .Values.ipWhitelist }}
+                  ["{{ . }}"] = true,
+                  {{- end }}
+                }
+
+                -- IP Whitelist 접두사 (예: "39.119.192." 로 /24 근사)
+                local IP_WHITELIST_PREFIXES = {
+                  {{- range .Values.ipWhitelistPrefixes }}
                   "{{ . }}",
                   {{- end }}
                 }
@@ -185,6 +228,22 @@ spec:
                   return false
                 end
 
+                -- IP whitelist 체크 (정확 IP 또는 접두사 매칭)
+                local function is_whitelisted_ip(client_ip)
+                  if client_ip == nil or client_ip == "" or client_ip == "unknown" then
+                    return false
+                  end
+                  if IP_WHITELIST[client_ip] then
+                    return true
+                  end
+                  for _, prefix in ipairs(IP_WHITELIST_PREFIXES) do
+                    if string.sub(client_ip, 1, #prefix) == prefix then
+                      return true
+                    end
+                  end
+                  return false
+                end
+
                 -- 패턴 매칭 함수
                 local function check_patterns(input, patterns, category)
                   if input == nil or input == "" then
@@ -254,6 +313,113 @@ spec:
                 }
 
 
+                {{- if and .Values.autoBlocklist .Values.autoBlocklist.enabled }}
+                -- 자동 blacklist 대상 카테고리 (FP 위험 낮은 것만 — 단일 탐지 시 즉시 등록)
+                local AUTO_BLOCK_CATEGORIES = {
+                  {{- range .Values.autoBlocklist.categories }}
+                  ["{{ . }}"] = true,
+                  {{- end }}
+                }
+
+                {{- $thr := .Values.autoBlocklist.threshold | default dict }}
+                {{- if and $thr.enabled $thr.categories }}
+                -- Threshold 기반 카테고리 (윈도우 내 N회 탐지 후 등록 — FP 위험 중간)
+                local THRESHOLD_CATEGORIES = {
+                  {{- range $thr.categories }}
+                  ["{{ . }}"] = true,
+                  {{- end }}
+                }
+                local THRESHOLD_WINDOW = {{ $thr.windowSeconds | default 300 }}
+                local THRESHOLD_COUNT = {{ $thr.count | default 3 }}
+
+                -- IP+category 별 탐지 카운터 (메모리 기반, pod 재시작 시 초기화)
+                local waf_counters = {}
+                local WAF_ENTRY_TTL = THRESHOLD_WINDOW * 2
+                local waf_last_gc = os.time()
+                local WAF_GC_INTERVAL = 30
+
+                local function waf_gc_expired()
+                  local now = os.time()
+                  if now - waf_last_gc < WAF_GC_INTERVAL then return end
+                  waf_last_gc = now
+                  local to_delete = {}
+                  for key, c in pairs(waf_counters) do
+                    if now - c.last_seen > WAF_ENTRY_TTL then
+                      table.insert(to_delete, key)
+                    end
+                  end
+                  for _, k in ipairs(to_delete) do waf_counters[k] = nil end
+                end
+
+                -- 탐지 카운트 증가 및 threshold 초과 여부 반환
+                local function bump_threshold(client_ip, category)
+                  waf_gc_expired()
+                  local now = os.time()
+                  local key = client_ip .. ":" .. category
+                  local c = waf_counters[key]
+                  if c == nil or (now - c.window_start) >= THRESHOLD_WINDOW then
+                    waf_counters[key] = { count = 1, window_start = now, last_seen = now }
+                    return false, 1
+                  end
+                  c.count = c.count + 1
+                  c.last_seen = now
+                  if c.count >= THRESHOLD_COUNT then
+                    waf_counters[key] = nil  -- 등록 후 리셋 (재등록 방지)
+                    return true, c.count
+                  end
+                  return false, c.count
+                end
+                {{- else }}
+                local THRESHOLD_CATEGORIES = {}
+                local function bump_threshold(_, _) return false, 0 end
+                {{- end }}
+
+                -- adapter에 IP blacklist 등록 요청 (async, fire-and-forget)
+                local function send_to_blocklist(request_handle, client_ip, match, path)
+                  if not AUTO_BLOCKLIST then return end
+                  if client_ip == nil or client_ip == "" or client_ip == "unknown" then return end
+
+                  local cat = match.category
+                  if AUTO_BLOCK_CATEGORIES[cat] then
+                    -- 고신뢰: 단일 탐지 즉시 등록
+                  elseif THRESHOLD_CATEGORIES[cat] then
+                    -- 중간신뢰: threshold 초과 시에만
+                    local exceeded, _ = bump_threshold(client_ip, cat)
+                    if not exceeded then return end
+                  else
+                    return
+                  end
+
+                  local reason = "waf:" .. (match.category or "unknown") .. ":" .. (match.rule or "unknown")
+                  local body = string.format(
+                    '{"ip":"%s","reason":"%s","source":"waf","category":"%s","rule":"%s","path":"%s","matched":"%s"}',
+                    json_escape(client_ip),
+                    json_escape(reason),
+                    json_escape(match.category or ""),
+                    json_escape(match.rule or ""),
+                    json_escape(path or ""),
+                    json_escape(utf8_safe_sub(match.matched or "", 100))
+                  )
+
+                  pcall(function()
+                    request_handle:httpCall(
+                      BLOCKLIST_CLUSTER,
+                      {
+                        [":method"] = "POST",
+                        [":path"] = BLOCKLIST_PATH,
+                        [":authority"] = BLOCKLIST_AUTHORITY,
+                        ["content-type"] = "application/json",
+                      },
+                      body,
+                      BLOCKLIST_TIMEOUT_MS,
+                      true  -- asynchronous: respond에 영향 X
+                    )
+                  end)
+                end
+                {{- else }}
+                local function send_to_blocklist(_, _, _, _) end
+                {{- end }}
+
                 -- 공통 패턴 검사 및 응답 함수
                 local function check_and_respond(request_handle, input, pattern_list, client_ip, path)
                   for _, p in ipairs(pattern_list) do
@@ -261,6 +427,7 @@ spec:
                     if match then
                       log_security_event(request_handle, p.event, match, client_ip, path, BLOCK_MODE)
                       if BLOCK_MODE then
+                        send_to_blocklist(request_handle, client_ip, match, path)
                         request_handle:respond(
                           {[":status"] = "{{ .Values.response.statusCode }}"},
                           "{{ .Values.response.body }}"
@@ -281,6 +448,15 @@ spec:
 
                   -- 첫 번째 IP만 추출 (X-Forwarded-For는 쉼표로 구분)
                   client_ip = string.match(client_ip, "([^,]+)")
+                  -- 앞뒤 공백 제거 (x-forwarded-for: "ip1, ip2" 포맷 대응)
+                  if client_ip then
+                    client_ip = string.match(client_ip, "^%s*(.-)%s*$")
+                  end
+
+                  -- IP Whitelist: 등록된 IP는 WAF 전부 bypass
+                  if is_whitelisted_ip(client_ip) then
+                    return
+                  end
 
                   -- 제외 경로 체크
                   if is_excluded_path(path) then

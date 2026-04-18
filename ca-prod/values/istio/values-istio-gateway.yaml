@@ -1,5 +1,5 @@
 # Istio IngressGateway - API
-# ALB Ingress에서 라우팅됨 (api.playball.one)
+# ALB Ingress에서 라우팅됨 (api.staging.playball.one)
 
 name: istio-ingressgateway
 
@@ -18,24 +18,24 @@ service:
       port: 443
       targetPort: 8443
 
-# App 노드에 배치 (Karpenter workloads)
+# Infra 노드에 배치
 nodeSelector:
-  role: app
+  role: infra
 tolerations:
-  - key: spot
-    value: "true"
+  - key: role
+    value: infra
     effect: NoSchedule
 
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
     cpu: 500m
-    memory: 512Mi
+    memory: 256Mi
+  limits:
+    cpu: "2"
+    memory: 1Gi
 
 autoscaling:
   enabled: true
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 4
-  targetCPUUtilizationPercentage: 80
+  targetCPUUtilizationPercentage: 70

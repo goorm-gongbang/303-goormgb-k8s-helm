@@ -12,6 +12,37 @@ selector:
 # Staging 환경에서는 block 모드 사용
 mode: block
 
+# WAF 탐지 IP 자동 blacklist (authz-adapter:9090/admin/blacklist 호출)
+# FP 위험 낮은 고신뢰 카테고리만 단일 탐지 시 즉시 IP blacklist 등록.
+# 나머지(XSS/PATH_TRAVERSAL/SSRF/HEADER_INJECTION/BOT_SCANNER)는 Lua WAF 의
+# mode:block 으로 해당 요청만 차단하고, IP 전체 차단은 하지 않음 (FP 방지).
+# SQLi 는 따옴표 FP 위험으로 탐지는 하되 auto-blocklist 제외.
+# 사유는 sprint7/security/waf-auto-blocklist.md 참조
+autoBlocklist:
+  enabled: true
+  cluster:
+    host: staging-authz-adapter.staging-ai.svc.cluster.local
+    port: 9090
+  path: /admin/blacklist
+  timeoutMs: 200
+  categories:
+    - LOG4SHELL
+    - COMMAND_INJECTION
+    - XXE_INJECTION
+    - LDAP_INJECTION
+  # Threshold 기반 등록: 일정 기간 내 N회 탐지되면 blacklist 등록
+  # (FP 위험 있는 카테고리용 — 정상 요청 하나에는 관대, 반복 공격자는 차단)
+  threshold:
+    enabled: true
+    windowSeconds: 300 # 5분
+    count: 3 # 3회 탐지 시 blacklist
+    categories:
+      - XSS
+      - PATH_TRAVERSAL
+      - SSRF
+      - HEADER_INJECTION
+      - BOT_SCANNER
+
 # 로깅 설정
 logging:
   enabled: true
@@ -86,8 +117,45 @@ excludePaths:
   - "/v3/api-docs"
   - "/openapi"
 
-  # Kiali
-  - "/kiali"
+  # OAuth callback (Google OAuth authorization code 내 '--' 문자열로 sql-comment 오탐)
+  # Grafana: /login/google, OAuth2 Proxy(CloudBeaver 등): /oauth2/callback, 기타: /auth/callback
+  - "/login/"
+  - "/oauth2/"
+  - "/auth/callback"
+
+# 팀원 IP (WAF ipWhitelist + adminTools.ipWhitelist 공용)
+# 한 군데에서만 관리 — YAML anchor 로 아래에서 재사용
+teamIPs: &teamIPs
+  - "59.12.199.140"
+  - "219.241.49.248"
+  - "121.160.234.212"
+  - "118.33.22.122"
+  - "220.117.16.114"
+  - "223.38.90.75"
+  - "182.222.162.2"
+  - "180.70.114.57"
+  - "211.244.208.42"
+  - "112.162.29.176"
+  - "59.7.27.64"
+  - "59.7.96.150"
+  - "221.149.74.70"
+  - "58.148.70.203"
+  - "59.20.70.146"
+  - "39.119.192.15"
+  - "119.204.100.200"
+  - "124.49.102.36"
+  - "122.34.166.131"
+  - "182.221.197.174"
+  - "118.221.42.243"
+  - "121.175.144.99"
+  - "203.251.185.110"
+  - "59.30.250.162"
+  - "211.217.131.15"
+
+# IP Whitelist (정확 매칭: WAF/차단 전부 bypass)
+ipWhitelist: *teamIPs
+# IP Whitelist 접두사 (예: "39.119.192.")
+ipWhitelistPrefixes: []
 
 # 응답 설정
 response:
@@ -175,7 +243,7 @@ extAuthz:
 rateLimiting:
   # Rate limit 제외 경로 (부하 테스트, health check 등)
   excludePaths:
-    - "/load-test/"  # k6 부하테스트
+    - "/load-test/" # k6 부하테스트
     - "/health"
     - "/healthz"
     - "/ready"
@@ -184,19 +252,19 @@ rateLimiting:
 
   # --- Local Rate Limit (Envoy 내장) ---
   local:
-    enabled: true  # Rate limiting 활성화
+    enabled: true # Rate limiting 활성화
 
     # 기본 설정 (전체 경로에 적용)
     default:
       enabled: true
-      tokensPerFill: 100        # 초당 100 요청
+      tokensPerFill: 100 # 초당 100 요청
       fillInterval: 1s
       maxTokens: 100
 
     # IP별 제한
     perClient:
       enabled: true
-      tokensPerFill: 50         # IP당 초당 50 요청
+      tokensPerFill: 50 # IP당 초당 50 요청
       fillInterval: 1s
       maxTokens: 100
 
@@ -297,7 +365,7 @@ rateLimiting:
 # ============================================================
 mtls:
   enabled: true
-  mode: STRICT  # STRICT: mTLS 필수, PERMISSIVE: 허용
+  mode: STRICT # STRICT: mTLS 필수, PERMISSIVE: 허용
   namespaces:
     - staging-webs
     - monitoring
@@ -371,11 +439,43 @@ mtls:
       metricsPort: 9090
       mode: DISABLE
 
+    # loadtest-webs (Prometheus 가 actuator 9090 포트를 scrape 해야 HikariCP/Tomcat 메트릭 수집 가능)
+    - name: loadtest-auth-guard-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-auth-guard
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-queue-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-queue
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-seat-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-seat
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-order-core-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-order-core
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-api-gateway-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-api-gateway
+      metricsPort: 9090
+      mode: DISABLE
+
 # ============================================================
 # JWT 인증 설정
 # ============================================================
 jwtAuth:
-  enabled: false  # 우선 비활성화
+  enabled: false # 우선 비활성화
 
   issuers:
     # Kakao OAuth
@@ -455,26 +555,8 @@ jwtAuth:
 adminTools:
   ipWhitelist:
     enabled: true
-    # 허용된 IP 목록 (팀원 IP)
-    allowedIPs:
-      - "59.12.199.140"
-      - "219.241.49.248"
-      - "121.160.234.212"
-      - "118.33.22.122"
-      - "182.222.162.2"
-      - "180.70.114.57"
-      - "211.244.208.42"
-      - "59.7.96.150"
-      - "221.149.74.70"
-      - "58.148.70.203"
-      - "59.20.70.146"
-      - "39.119.192.15"
-      - "119.204.100.200"
-      - "124.49.102.36"
-      - "122.34.166.131"
-      - "182.221.197.174"
-      - "118.221.42.243"
-      - "121.175.144.99"
+    # teamIPs 앵커 재사용 — 상단 teamIPs 만 수정하면 양쪽 반영됨
+    allowedIPs: *teamIPs
     # IP 제한 적용 대상 호스트
     protectedHosts:
       - "argocd.staging.playball.one"
@@ -483,3 +565,4 @@ adminTools:
       - "kafka-ui.staging.playball.one"
       - "prometheus.staging.playball.one"
       - "redisinsight.staging.playball.one"
+      - "policy-reporter.staging.playball.one"

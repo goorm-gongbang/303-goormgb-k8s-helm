@@ -1,11 +1,11 @@
-# seat - Prod 환경
+# seat - Staging 환경
 fullnameOverride: "seat"
 contextPath: "/seat"
 replicaCount: 1
 
 image:
-  name: "playball/web/seat"
-  tag: "8119799.1"
+  name: "staging/playball/web/seat"
+  tag: "432992f.50"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -39,26 +39,32 @@ affinity:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 384Mi
+    cpu: 300m
+    memory: 512Mi
   limits:
     cpu: "2"
     memory: 2Gi
 
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
 
 servicePort: &port 8082
 service:
   type: ClusterIP
   port: *port
 
+# Kafka consumer group ID
 env:
+  - name: KAFKA_CONSUMER_GROUP_ID
+    value: "seat-service"
   # HikariCP connection pool 크기 조정
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "20"
-  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
     value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
 
 envFrom:
   - configMapRef:
@@ -86,12 +92,14 @@ otel:
   enabled: true
 
 # Prometheus metrics (PodMonitor)
+# management 포트 분리로 context path 없이 /actuator/prometheus 사용
 metrics:
   enabled: true
+  port: 9090
   path: /actuator/prometheus
   interval: 30s
 
 # PodDisruptionBudget - 최소 1개 유지
 pdb:
   enabled: true
-  minAvailable: 1
+  maxUnavailable: 1

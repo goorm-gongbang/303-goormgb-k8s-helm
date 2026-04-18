@@ -1,4 +1,4 @@
-# EKS Prod - Loki Configuration
+# EKS Staging - Loki Configuration
 # SingleBinary 모드 (S3 백엔드, 환경별 버킷 분리)
 
 deploymentMode: SingleBinary
@@ -11,27 +11,29 @@ loki:
     delete_request_store: s3
 
   limits_config:
-    retention_period: 72h
+    retention_period: 72h  # 문서 기준 staging 인프라 로그 3일
+    allow_structured_metadata: true
+    # Per-stream retention (namespace별 보관 기간)
     retention_stream:
-      - selector: '{namespace=~"(prod-webs|prod-ai)"}'
+      - selector: '{namespace=~"(staging-webs|staging-ai)"}'
         priority: 1
-        period: 336h
+        period: 336h  # 문서 기준 staging 서비스 로그 14일
       - selector: '{namespace="k6-tests"}'
         priority: 2
-        period: 24h
+        period: 24h  # 부하테스트 로그 24시간 (Loki 3.x 최소값)
       - selector: '{namespace="loadtest"}'
         priority: 2
-        period: 24h
-    allow_structured_metadata: true
+        period: 24h  # 부하테스트 로그 24시간 (Loki 3.x 최소값)
 
   storage:
     type: s3
     bucketNames:
-      chunks: playball-prod-loki
-      ruler: playball-prod-loki
-      admin: playball-prod-loki
+      chunks: playball-staging-loki
+      ruler: playball-staging-loki
+      admin: playball-staging-loki
     s3:
       region: ap-northeast-2
+      # IRSA로 인증 (access_key/secret_key 불필요)
 
   commonConfig:
     replication_factor: 1
@@ -51,25 +53,29 @@ serviceAccount:
   create: true
   name: loki
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-prod-loki"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-loki"
 
 singleBinary:
   replicas: 1
   resources:
     requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 300m
+      cpu: 200m
       memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi
   nodeSelector:
     role: monitoring
   tolerations:
     - key: role
       value: monitoring
       effect: NoSchedule
+    - key: loadtest
+      value: "true"
+      effect: NoSchedule
   persistence:
     enabled: false
+  # WAL/index 캐시용 emptyDir
   extraVolumes:
     - name: data
       emptyDir: {}

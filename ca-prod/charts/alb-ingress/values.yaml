@@ -34,13 +34,6 @@ ingress:
         port: 80
         healthCheckPath: /api/health
 
-    # Kiali - Istio 안 거침 (직접 라우팅)
-      service:
-        name: kiali
-        namespace: istio-system
-        port: 20001
-        healthCheckPath: /healthz
-
     # API - Istio IngressGateway 거침
     - host: api.playball.one
       service:
@@ -51,6 +44,14 @@ ingress:
 
     # Prometheus Remote Write - Istio IngressGateway 거침
     - host: prometheus.playball.one
+      service:
+        name: istio-ingressgateway
+        namespace: istio-system
+        port: 80
+        healthCheckPath: /
+
+    # Policy Reporter - Istio IngressGateway 거침
+    - host: policy-reporter.playball.one
       service:
         name: istio-ingressgateway
         namespace: istio-system
