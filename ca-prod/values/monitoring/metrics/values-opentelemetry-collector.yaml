@@ -17,6 +17,17 @@ tolerations:
     value: monitoring
     effect: NoSchedule
 
+# HA: AZ별 분산 배치
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: opentelemetry-collector
+          topologyKey: topology.kubernetes.io/zone
+
 resources:
   requests:
     cpu: 300m

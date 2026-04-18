@@ -27,6 +27,9 @@ vpcId: ""  # 자동 감지
 # 로그 레벨
 logLevel: info
 
+# HA
+replicaCount: 2
+
 # 노드 배치
 nodeSelector:
   role: infra
@@ -34,6 +37,15 @@ tolerations:
   - key: role
     value: infra
     effect: NoSchedule
+
+# HA: AZ별 분산 배치
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: aws-load-balancer-controller
+        topologyKey: topology.kubernetes.io/zone
 
 # Webhook 인증서 자동 생성
 enableCertManager: false

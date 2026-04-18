@@ -123,6 +123,16 @@ prometheusOperator:
     limits:
       cpu: 500m
       memory: 512Mi
+  # HA: AZ별 분산 배치
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app: kube-prometheus-stack-operator
+            topologyKey: topology.kubernetes.io/zone
 
 # kube-state-metrics
 kube-state-metrics:
@@ -184,6 +194,17 @@ prometheus:
       - key: role
         value: monitoring
         effect: NoSchedule
+
+    # HA: AZ별 분산 배치
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: prometheus
+              topologyKey: topology.kubernetes.io/zone
 
     resources:
       requests:

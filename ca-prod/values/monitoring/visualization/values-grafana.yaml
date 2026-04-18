@@ -92,6 +92,17 @@ grafana.ini:
 persistence:
   enabled: false
 
+# HA: AZ별 분산 배치
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: grafana
+          topologyKey: topology.kubernetes.io/zone
+
 nodeSelector:
   role: monitoring
 
