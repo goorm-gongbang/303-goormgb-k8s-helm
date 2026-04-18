@@ -2,7 +2,7 @@
 # CPU 사용량 높음 - JWT 검증/발급 (5000 VU 기준)
 fullnameOverride: "auth-guard"
 contextPath: "/auth"
-replicaCount: 0
+replicaCount: 3
 
 image:
   name: "prod/playball/web/auth-guard"
@@ -34,10 +34,10 @@ affinity:
 
 resources:
   requests:
-    cpu: 500m
-    memory: 256Mi
+    cpu: 300m
+    memory: 512Mi
   limits:
-    cpu: "3"
+    cpu: "2"
     memory: 2Gi
 
 istio:
