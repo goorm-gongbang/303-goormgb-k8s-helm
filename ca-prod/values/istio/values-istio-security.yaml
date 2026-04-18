@@ -475,7 +475,7 @@ mtls:
 # JWT 인증 설정
 # ============================================================
 jwtAuth:
-  enabled: false # 우선 비활성화
+  enabled: false # Gateway에서 JWT 처리 (Gateway 제거 시 활성화)
 
   issuers:
     # Kakao OAuth

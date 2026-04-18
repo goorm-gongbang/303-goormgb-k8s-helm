@@ -18,24 +18,45 @@ service:
       port: 443
       targetPort: 8443
 
-# Infra 노드에 배치
+# Apps 노드에 배치 (Karpenter 자동 스케일링 활용)
+# infra 노드에서 분리하여 ArgoCD/Grafana 등 영향 방지
 nodeSelector:
-  role: infra
-tolerations:
-  - key: role
-    value: infra
-    effect: NoSchedule
+  role: app
+
+# Managed 노드 우선, Karpenter spot 차선
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/nodepool
+              operator: DoesNotExist
+      - weight: 50
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/capacity-type
+              operator: In
+              values: ["on-demand"]
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              istio: ingressgateway
+          topologyKey: kubernetes.io/hostname
 
 resources:
   requests:
-    cpu: 500m
-    memory: 256Mi
+    cpu: 100m
+    memory: 128Mi
   limits:
     cpu: "2"
     memory: 1Gi
 
 autoscaling:
   enabled: true
-  minReplicas: 1
-  maxReplicas: 4
+  minReplicas: 2
+  maxReplicas: 6
   targetCPUUtilizationPercentage: 70
