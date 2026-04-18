@@ -36,6 +36,17 @@ tolerations:
     value: infra
     effect: NoSchedule
 
+# HA: AZ별 분산 배치 (replicas 1이지만 재스케줄링 시 분산)
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: external-dns
+          topologyKey: topology.kubernetes.io/zone
+
 # 리소스 설정
 resources:
   requests:

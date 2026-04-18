@@ -13,6 +13,17 @@ tolerations:
     value: "true"
     effect: NoSchedule
 
+# HA: AZ별 분산 배치
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: tempo
+          topologyKey: topology.kubernetes.io/zone
+
 serviceAccount:
   create: true
   name: tempo

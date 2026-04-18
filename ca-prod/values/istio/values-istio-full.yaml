@@ -50,8 +50,17 @@ istiod:
         memory: 1Gi
 
     autoscaleEnabled: true
-    autoscaleMin: 1
+    autoscaleMin: 2
     autoscaleMax: 3
+
+    # HA: AZ별 분산 배치
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: istiod
+            topologyKey: topology.kubernetes.io/zone
 
 # ===== Shared Gateway =====
 # 공용 Gateway (인프라 서비스용)
