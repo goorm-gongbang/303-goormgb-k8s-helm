@@ -4,7 +4,7 @@
 scalers:
   # === Web Services ===
   api-gateway:
-    enabled: true
+    enabled: false
     namespace: staging-webs
     minReplicas: 1
     maxReplicas: 5
@@ -17,7 +17,7 @@ scalers:
         desiredReplicas: "3"
 
   auth-guard:
-    enabled: true
+    enabled: false
     namespace: staging-webs
     minReplicas: 1
     maxReplicas: 5
@@ -29,7 +29,7 @@ scalers:
         desiredReplicas: "3"
 
   queue:
-    enabled: true
+    enabled: false
     namespace: staging-webs
     minReplicas: 1
     maxReplicas: 8
@@ -45,7 +45,7 @@ scalers:
         desiredReplicas: "4"
 
   seat:
-    enabled: true
+    enabled: false
     namespace: staging-webs
     minReplicas: 1
     maxReplicas: 8
@@ -57,7 +57,7 @@ scalers:
         desiredReplicas: "4"
 
   order-core:
-    enabled: true
+    enabled: false
     namespace: staging-webs
     minReplicas: 1
     maxReplicas: 5
@@ -74,7 +74,7 @@ scalers:
 
   # === AI Services ===
   ai-defense:
-    enabled: true
+    enabled: false
     namespace: staging-ai
     deploymentName: staging-ai-defense
     minReplicas: 1
@@ -83,7 +83,7 @@ scalers:
       threshold: "80"
 
   authz-adapter:
-    enabled: true
+    enabled: false
     namespace: staging-ai
     deploymentName: staging-authz-adapter
     minReplicas: 1
