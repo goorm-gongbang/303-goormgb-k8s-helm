@@ -12,7 +12,7 @@
 # - endpoints 설정 (kubeadm 전용)
 #
 # [변경됨 - EKS 환경]
-# - 도메인: goormgb.space -> staging.playball.one
+# - 도메인: playball.one -> staging.playball.one
 # - 리소스: 스케일 업 (EKS 환경에 맞게)
 # - retention: 7일로 증가
 # ============================================================
@@ -61,8 +61,8 @@ dashboards:
     namespacePattern: "staging-webs"
     defaultNamespace: "staging-webs"
     namespaceRegex: "/(staging-webs)/"
-    redisClusterPattern: "goormgb-staging-.*"
-    dbInstancePattern: "goormgb-staging-postgresql"
+    redisClusterPattern: "playball-prod-.*"
+    dbInstancePattern: "playball-prod-postgresql"
     awsAccountId: "406223549139"
     exclude:
       # 로컬 exporter 대시보드 제외 (EKS는 CloudWatch 사용)
@@ -72,15 +72,15 @@ dashboards:
     folderName: "STAGING 서비스 관측(AI)"
     aiNamespace: "staging-ai"
     websNamespace: "staging-webs"
-    redisInfo: "ElastiCache: goormgb-staging-redis.ihyerz.ng.0001.apn2.cache.amazonaws.com:6379 (AI IP Blacklist / Session, DB2)"
+    redisInfo: "ElastiCache: playball-prod-redis.ihyerz.ng.0001.apn2.cache.amazonaws.com:6379 (AI IP Blacklist / Session, DB2)"
   alertOps:
     enabled: true
     folderName: "STAGING 알람 현황판"
     envName: "staging"
     appNamespace: "staging-webs"
     appJobPattern: "staging-webs/(api-gateway|auth-guard|order-core|queue|seat)"
-    dbInstanceName: "goormgb-staging-postgresql"
-    redisClusterName: "goormgb-staging-redis-001"
+    dbInstanceName: "playball-prod-postgresql"
+    redisClusterName: "playball-prod-redis-001"
   businessKpi:
     enabled: true
     folderName: "STAGING 알람 현황판"
@@ -158,7 +158,7 @@ prometheus:
     create: true
     name: prometheus-prom
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-thanos"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/playball-prod-thanos"
 
   # Thanos sidecar 활성화
   thanosService:

@@ -183,7 +183,7 @@ denyPaths:
 extAuthz:
   enabled: true
 
-  # gRPC authz adapter 연결 설정 (202-goormgb-authz-adapter)
+  # gRPC authz adapter 연결 설정 (202-playball-authz-adapter)
   service:
     host: staging-authz-adapter.staging-ai.svc.cluster.local
     port: 9001
@@ -309,7 +309,7 @@ rateLimiting:
       replicas: 1
       image: docker.io/envoyproxy/ratelimit:05c08d03
 
-    domain: "goormgb-staging-ratelimit"
+    domain: "playball-prod-ratelimit"
 
     descriptors:
       # IP별 전역 제한: 분당 300회
@@ -487,8 +487,8 @@ jwtAuth:
           prefix: "Bearer "
 
     # 자체 Auth 서비스 (staging 네임스페이스)
-    - name: goormgb-auth
-      issuer: "https://auth.goormgb.com"
+    - name: playball-auth
+      issuer: "https://auth.playball.one"
       jwksUri: "http://auth-guard.staging-webs.svc.cluster.local:8080/.well-known/jwks.json"
       fromHeaders:
         - name: Authorization

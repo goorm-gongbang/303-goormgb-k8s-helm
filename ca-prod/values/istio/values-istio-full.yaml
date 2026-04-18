@@ -57,7 +57,7 @@ istiod:
 # 공용 Gateway (인프라 서비스용)
 sharedGateway:
   enabled: true
-  name: goormgb-gateway
+  name: playball-gateway
   tls:
     # AWS ACM 인증서 사용 (CloudFront에서 TLS 종료)
     # Gateway에서는 HTTP로 수신

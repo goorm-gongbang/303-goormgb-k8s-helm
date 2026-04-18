@@ -2,7 +2,7 @@
 # 메트릭: redis_connected_clients, redis_commands_processed_total,
 #        redis_commands_duration_seconds_sum, redis_memory_used_bytes 등
 
-redisAddress: rediss://master.goormgb-staging-redis.abic5t.apn2.cache.amazonaws.com:6379
+redisAddress: rediss://master.playball-prod-redis.abic5t.apn2.cache.amazonaws.com:6379
 
 # TLS (ElastiCache transit encryption 사용 중)
 redisTlsConfig:

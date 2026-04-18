@@ -72,11 +72,11 @@ initialConfig:
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
-            "host": "goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com",
+            "host": "playball-prod-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com",
             "port": "5432",
-            "database": "goormgb",
+            "database": "playball",
             "user-name": "playball_user",
-            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/goormgb?sslmode=require",
+            "url": "jdbc:postgresql://playball-prod-postgresql.PENDING.ap-northeast-2.rds.amazonaws.com:5432/playball?sslmode=require",
             "type": "dev",
             "provider-properties": {
               "@dbeaver-show-non-default-db@": "false"
@@ -91,11 +91,11 @@ initialConfig:
           "show-system-objects": false,
           "read-only": false,
           "configuration": {
-            "host": "goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com",
+            "host": "playball-prod-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com",
             "port": "5432",
             "database": "ai_defense",
             "user-name": "ai_defense",
-            "url": "jdbc:postgresql://goormgb-staging-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/ai_defense?sslmode=require",
+            "url": "jdbc:postgresql://playball-prod-postgresql.crmg4aoocepo.ap-northeast-2.rds.amazonaws.com:5432/ai_defense?sslmode=require",
             "type": "dev",
             "provider-properties": {
               "@dbeaver-show-non-default-db@": "false"
@@ -128,6 +128,6 @@ virtualService:
   gateway: "istio-system/api-gateway"
 
 # 연결 정보
-# PlayBall PG: user=playball_user, db=goormgb (RDS)
+# PlayBall PG: user=playball_user, db=playball (RDS)
 # AI Defense PG: user=ai_defense, db=ai_defense (RDS)
 # ClickHouse: user=default, db=ai_defense, host=clickhouse.data.svc.cluster.local:8123
