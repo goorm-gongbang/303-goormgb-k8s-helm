@@ -15,7 +15,7 @@ scalers:
     enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 3
     cpu:
       threshold: "80"
 
@@ -35,7 +35,7 @@ scalers:
     enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 2
     cpu:
       threshold: "80"
 
@@ -43,7 +43,7 @@ scalers:
     enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 2
+    maxReplicas: 1
     cpu:
       threshold: "80"
     # kafka:
@@ -66,6 +66,6 @@ scalers:
     namespace: staging-ai
     deploymentName: staging-authz-adapter
     minReplicas: 1
-    maxReplicas: 3
+    maxReplicas: 2
     cpu:
       threshold: "80"
