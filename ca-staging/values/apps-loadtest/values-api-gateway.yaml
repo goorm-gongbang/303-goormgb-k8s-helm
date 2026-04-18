@@ -3,7 +3,7 @@
 # 라우팅만 담당, DB 사용 거의 없음 (5000 VU 기준)
 fullnameOverride: "api-gateway"
 contextPath: ""
-replicaCount: 4
+replicaCount: 0
 
 image:
   name: "staging/playball/web/api-gateway"
@@ -41,7 +41,7 @@ resources:
     memory: 256Mi
   limits:
     cpu: "2"
-    memory: 2Gi
+    memory: 3Gi
 
 # Istio - VirtualService는 별도 관리
 istio:
@@ -64,7 +64,7 @@ env:
   - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_TYPE
     value: "elastic"
   - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_MAX_CONNECTIONS
-    value: "2000"
+    value: "1000"
   - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_ACQUIRE_TIMEOUT
     value: "1500"
   - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_MAX_IDLE_TIME

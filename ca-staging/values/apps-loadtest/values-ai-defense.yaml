@@ -1,7 +1,7 @@
 # ai-defense - Load-test 환경
 # Python FastAPI 기반 AI Defense API
 
-replicaCount: 3
+replicaCount: 0
 
 command:
   - "python"
@@ -83,6 +83,9 @@ istio:
   sidecar: true
   gateway:
     enabled: false
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
 
 service:
   type: ClusterIP

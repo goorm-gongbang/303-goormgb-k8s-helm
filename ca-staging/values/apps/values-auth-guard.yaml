@@ -1,7 +1,7 @@
 # auth-guard - Staging 환경
 fullnameOverride: "auth-guard"
 contextPath: "/auth"
-replicaCount: 3
+replicaCount: 1
 
 image:
   name: "staging/playball/web/auth-guard"
@@ -39,14 +39,17 @@ affinity:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 256Mi
+    cpu: 250m
+    memory: 384Mi
   limits:
     cpu: "2"
     memory: 2Gi
 
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
 
 servicePort: &port 8080
 service:

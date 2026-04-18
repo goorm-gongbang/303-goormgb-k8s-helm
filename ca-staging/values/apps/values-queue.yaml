@@ -1,7 +1,7 @@
 # queue - Staging 환경
 fullnameOverride: "queue"
 contextPath: "/queue"
-replicaCount: 3
+replicaCount: 1
 
 image:
   name: "staging/playball/web/queue"
@@ -39,14 +39,17 @@ affinity:
 
 resources:
   requests:
-    cpu: 200m
+    cpu: 150m
     memory: 384Mi
   limits:
-    cpu: "2"
-    memory: 2Gi
+    cpu: "1"
+    memory: 1Gi
 
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
 
 servicePort: &port 8081
 service:
