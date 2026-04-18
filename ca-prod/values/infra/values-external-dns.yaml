@@ -1,12 +1,12 @@
 # ExternalDNS - Route53 DNS Record Management
-# Staging Environment (Main Account: 406223549139)
+# Staging Environment (Main Account: 990521646433)
 
 # ServiceAccount with IRSA
 serviceAccount:
   create: true
   name: external-dns
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/playball-prod-external-dns
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-external-dns
 
 # AWS Provider 설정
 provider: aws
@@ -19,7 +19,7 @@ extraArgs:
   - --txt-owner-id=playball-prod-eks
   # 관리할 도메인 필터
   - --domain-filter=playball.one
-  - --domain-filter=staging.playball.one
+  - --domain-filter=playball.one
 
 # 정책: upsert-only (레코드 생성/갱신만, 삭제 안 함)
 # sync는 EKS 축소/재기동 시 Route53 레코드가 삭제되는 위험이 있음

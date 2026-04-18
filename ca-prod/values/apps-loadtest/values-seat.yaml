@@ -4,7 +4,7 @@ contextPath: "/seat"
 replicaCount: 0
 
 image:
-  name: "staging/playball/web/seat"
+  name: "prod/playball/web/seat"
   tag: "432992f.50"
   pullPolicy: Always
 
@@ -66,7 +66,7 @@ env:
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
     value: "WARN"
-  # Kafka consumer group (staging과 분리)
+  # Kafka consumer group (prod과 분리)
   - name: KAFKA_CONSUMER_GROUP_ID
     value: "loadtest-seat-service"
 

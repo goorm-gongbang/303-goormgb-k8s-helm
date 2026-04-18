@@ -4,7 +4,7 @@
 # ArgoCD Server Service - ClusterIP (ALB Ingress에서 직접 라우팅)
 server:
   # 외부 URL (OAuth redirect용)
-  url: https://argocd.staging.playball.one
+  url: https://argocd.playball.one
   # ALB에서 SSL 종료하므로 ArgoCD는 HTTP로 실행
   insecure: true
   service:
@@ -13,7 +13,7 @@ server:
 # Istio Gateway 비활성화 (NLB 직접 노출)
 gateway:
   enabled: false
-  host: "argocd.staging.playball.one"
+  host: "argocd.playball.one"
 
 # Google OAuth 설정
 oidc:
@@ -35,10 +35,10 @@ rbac:
   defaultPolicy: role:none
 
 # Applications 정의
-# 앱 서비스는 ApplicationSet (staging-webs-services)으로 관리
+# 앱 서비스는 ApplicationSet (prod-webs-services)으로 관리
 # 중복 방지를 위해 여기서는 비활성화
 applications: []
-  # ApplicationSet 사용: staging/root/values.yaml → applicationSets.staging-webs-services
+  # ApplicationSet 사용: staging/root/values.yaml → applicationSets.prod-webs-services
 
 # Prometheus 메트릭 수집 (Prometheus 설치 후 enabled: true로 변경)
 metrics:

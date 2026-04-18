@@ -1,5 +1,5 @@
 # Istio IngressGateway - API
-# ALB Ingress에서 라우팅됨 (api.staging.playball.one)
+# ALB Ingress에서 라우팅됨 (api.playball.one)
 
 name: istio-ingressgateway
 

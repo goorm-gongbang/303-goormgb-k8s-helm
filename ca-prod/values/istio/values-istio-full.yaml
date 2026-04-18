@@ -1,5 +1,5 @@
 # EKS Staging - Istio 설정 (Helm values)
-# Domain: staging.playball.one
+# Domain: playball.one
 # Components: istio-base, istiod, istio-gateway, kiali
 
 # ===== Istio Base =====
@@ -73,8 +73,8 @@ sharedGateway:
     mode: SIMPLE
     credentialName: ""  # ACM 사용시 불필요
   hosts:
-    - "argocd.staging.playball.one"
-    - "grafana.staging.playball.one"
+    - "argocd.playball.one"
+    - "grafana.playball.one"
 
 # ===== Kiali =====
 kiali-server:
@@ -120,7 +120,7 @@ kiali-server:
     grafana:
       enabled: true
       in_cluster_url: "http://grafana.monitoring.svc.cluster.local:80"
-      url: "https://grafana.staging.playball.one"
+      url: "https://grafana.playball.one"
 
     tracing:
       enabled: true

@@ -8,5 +8,5 @@ secretManager:
   secretStoreRef:
     name: aws-secrets-manager
     kind: ClusterSecretStore
-  key: staging/services/mail
+  key: prod/services/mail
   refreshInterval: 1h

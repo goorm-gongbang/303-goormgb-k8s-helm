@@ -1,7 +1,7 @@
 serviceAccount:
   name: logs-backup
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/playball-prod-logs-backup
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-logs-backup
 
 nodeSelector:
   role: infra
@@ -40,5 +40,5 @@ jobs:
     s3Bucket: playball-web-backup
     s3Prefix: staging/logs/service
     targetNamespaces:
-      - staging-ai
-      - staging-webs
+      - prod-ai
+      - prod-webs

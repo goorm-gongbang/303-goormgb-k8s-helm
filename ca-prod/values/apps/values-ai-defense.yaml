@@ -8,7 +8,7 @@ serviceAccountName: ai-defense
 serviceAccount:
   create: true
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/playball-prod-ai-defense
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-ai-defense
 
 # Uvicorn 실행 명령어 (root-path 설정 for /ai prefix)
 command:
@@ -27,9 +27,9 @@ args:
   - "4"
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/prod/playball/ai/defense
   tag: "c3ff0e0.25"
-  name: "staging/playball/ai/defense"
+  name: "prod/playball/ai/defense"
   pullPolicy: Always
 
 # Python 모듈 경로 설정 + AI Defense 환경변수
@@ -81,10 +81,10 @@ env:
     value: "rediss://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/6"
   # CORS 허용 Origin (Frontend)
   - name: TM_CORS_ALLOW_ORIGINS
-    value: "https://staging.playball.one"
+    value: "https://playball.one"
   # S3 아카이빙 활성화 (IRSA로 접근 - credentials 불필요)
   - name: TM_S3_BUCKET
-    value: "playball-staging-ai-audit"
+    value: "playball-prod-ai-audit"
   - name: TM_S3_ARCHIVE_INTERVAL_SECONDS
     value: "60"
   # PostgreSQL (RDS - Secrets Manager에서 가져옴)
@@ -177,7 +177,7 @@ istio:
   sidecar: true
   gateway:
     enabled: true
-    host: "api.staging.playball.one"
+    host: "api.playball.one"
     extraHosts:
       - "api.playball.one"
     externalRef: "istio-system/api-gateway"
@@ -189,8 +189,8 @@ istio:
   cors:
     enabled: true
     allowOrigins:
-      - "https://staging.playball.one"
-      - "https://www.staging.playball.one"
+      - "https://playball.one"
+      - "https://www.playball.one"
     allowMethods:
       - GET
       - POST
@@ -299,7 +299,7 @@ cronJobs:
     command:
       - tm-ai-post-review
 
-  # S3 Audit → ClickHouse ETL (기존 staging-ai-etl 앱에서 흡수)
+  # S3 Audit → ClickHouse ETL (기존 prod-ai-etl 앱에서 흡수)
   - name: tm-ai-etl
     enabled: true
     schedule: "15 * * * *"

@@ -14,12 +14,12 @@ tolerations:
 # Google OAuth 설정
 config:
   cookieSecure: true
-  cookieDomain: ".staging.playball.one"
+  cookieDomain: ".playball.one"
 
 # Upstream services
 upstreams:
-  apiGateway: "http://api-gateway.staging-webs.svc.cluster.local:8085"
-  aiDefense: "http://ai-defense.staging-ai.svc.cluster.local:8000"
+  apiGateway: "http://api-gateway.prod-webs.svc.cluster.local:8085"
+  aiDefense: "http://ai-defense.prod-ai.svc.cluster.local:8000"
 
 # ESO - AWS Secrets Manager에서 OAuth credentials + 이메일 목록 가져옴
 eso:

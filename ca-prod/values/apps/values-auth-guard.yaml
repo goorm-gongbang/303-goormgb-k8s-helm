@@ -4,7 +4,7 @@ contextPath: "/auth"
 replicaCount: 1
 
 image:
-  name: "staging/playball/web/auth-guard"
+  name: "prod/playball/web/auth-guard"
   tag: "432992f.51"
   pullPolicy: Always
 

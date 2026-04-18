@@ -100,15 +100,15 @@ configs:
 
   cm:
     create: true
-    url: https://argocd.staging.playball.one
+    url: https://argocd.playball.one
     admin.enabled: "true"
-    server.allowedRedirectURLs: https://argocd.staging.playball.one
+    server.allowedRedirectURLs: https://argocd.playball.one
     oidc.config: |
       name: Google
       issuer: https://accounts.google.com
       clientID: $argocd-google-oauth:clientId
       clientSecret: $argocd-google-oauth:clientSecret
-      redirectURI: https://argocd.staging.playball.one/auth/callback
+      redirectURI: https://argocd.playball.one/auth/callback
       requestedScopes:
         - openid
         - profile

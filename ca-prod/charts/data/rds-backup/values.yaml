@@ -22,7 +22,7 @@ s3:
 serviceAccount:
   name: rds-backup
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/playball-prod-rds-backup
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-rds-backup
 
 # Node placement
 nodeSelector:
