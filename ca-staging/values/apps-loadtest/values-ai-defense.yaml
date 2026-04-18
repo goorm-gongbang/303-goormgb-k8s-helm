@@ -83,6 +83,9 @@ istio:
   sidecar: true
   gateway:
     enabled: false
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
 
 service:
   type: ClusterIP

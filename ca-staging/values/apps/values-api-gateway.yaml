@@ -40,8 +40,8 @@ affinity:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 384Mi
+    cpu: 300m
+    memory: 512Mi
   limits:
     cpu: "2"
     memory: 2Gi
@@ -49,6 +49,9 @@ resources:
 # Istio
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
   gateway:
     enabled: true
     externalRef: "istio-system/api-gateway"

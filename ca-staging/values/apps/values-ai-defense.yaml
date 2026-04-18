@@ -166,15 +166,18 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 300m
+    memory: 384Mi
   limits:
     cpu: "2"
-    memory: 2Gi
+    memory: 3Gi
 
 # Istio VirtualService for /ai/* routing
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
   gateway:
     enabled: true
     host: "api.staging.playball.one"
