@@ -63,7 +63,7 @@ env:
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
     value: "2"
   - name: REDIS_DATABASE
-    value: "3"
+    value: "1"
 
 envFrom:
   - configMapRef:
