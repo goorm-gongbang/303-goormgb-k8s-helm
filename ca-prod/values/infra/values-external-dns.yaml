@@ -6,7 +6,7 @@ serviceAccount:
   create: true
   name: external-dns
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-external-dns
+    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/playball-prod-external-dns
 
 # AWS Provider 설정
 provider: aws
@@ -16,7 +16,7 @@ extraArgs:
   - --source=service
   - --source=ingress
   - --aws-zone-type=public
-  - --txt-owner-id=goormgb-staging-eks
+  - --txt-owner-id=playball-prod-eks
   # 관리할 도메인 필터
   - --domain-filter=playball.one
   - --domain-filter=staging.playball.one

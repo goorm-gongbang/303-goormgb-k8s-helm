@@ -1,6 +1,6 @@
 # Karpenter Configuration - Prod (Main Account: 497012402578)
-clusterName: goormgb-prod-eks
-nodeRole: goormgb-prod-karpenter-node
+clusterName: playball-prod-eks
+nodeRole: playball-prod-karpenter-node
 
 # 공통 Zone 설정
 zones:

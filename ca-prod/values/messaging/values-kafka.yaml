@@ -4,7 +4,7 @@
 replicas: 1  # Staging은 비용 절감을 위해 1대
 
 kraft:
-  clusterId: "goormgb-staging-kafka-001"
+  clusterId: "playball-prod-kafka-001"
 
 config:
   processRoles: broker,controller
