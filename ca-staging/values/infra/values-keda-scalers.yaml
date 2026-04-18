@@ -26,10 +26,10 @@ scalers:
     maxReplicas: 8
     cpu:
       threshold: "80"
-    kafka:
-      consumerGroup: queue-consumer
-      topic: order-events
-      lagThreshold: "100"
+    # kafka:
+    #   consumerGroup: queue-consumer
+    #   topic: order-events
+    #   lagThreshold: "100"
 
   seat:
     enabled: false
@@ -46,10 +46,10 @@ scalers:
     maxReplicas: 5
     cpu:
       threshold: "80"
-    kafka:
-      consumerGroup: order-consumer
-      topic: order-events
-      lagThreshold: "100"
+    # kafka:
+    #   consumerGroup: order-consumer
+    #   topic: order-events
+    #   lagThreshold: "100"
 
   # === AI Services ===
   ai-defense:
