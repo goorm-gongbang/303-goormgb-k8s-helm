@@ -1,7 +1,7 @@
 # authz-adapter - Load-test 환경
 # Go 기반 gRPC ext_authz 서비스
 
-replicaCount: 0
+replicaCount: 2
 
 image:
   name: "prod/playball/ai/authz-adapter"
@@ -65,11 +65,11 @@ readinessProbe:
 
 resources:
   requests:
-    cpu: 200m
+    cpu: 100m
     memory: 128Mi
   limits:
-    cpu: "2"
-    memory: 2Gi
+    cpu: "1"
+    memory: 1Gi
 
 istio:
   sidecar: false
