@@ -1,7 +1,7 @@
 # ai-defense - Staging 환경
 # Python FastAPI 기반 AI Defense API
 
-replicaCount: 3
+replicaCount: 1
 
 # IRSA ServiceAccount (S3 접근용)
 serviceAccountName: ai-defense
@@ -166,18 +166,15 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 300m
-    memory: 384Mi
+    cpu: 500m
+    memory: 512Mi
   limits:
     cpu: "2"
-    memory: 3Gi
+    memory: 2Gi
 
 # Istio VirtualService for /ai/* routing
 istio:
   sidecar: true
-  destinationRule:
-    enabled: true
-    loadBalancer: LEAST_REQUEST
   gateway:
     enabled: true
     host: "api.staging.playball.one"
