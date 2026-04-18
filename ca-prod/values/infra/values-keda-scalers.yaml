@@ -9,7 +9,7 @@ scalers:
     minReplicas: 1
     maxReplicas: 5
     cpu:
-      threshold: "70"
+      threshold: "80"
     cron:
       # 경기 30분 전 pre-warming (예시: 19시 경기)
       - start: "30 18 * * *"
@@ -22,7 +22,7 @@ scalers:
     minReplicas: 1
     maxReplicas: 5
     cpu:
-      threshold: "70"
+      threshold: "80"
     cron:
       - start: "30 18 * * *"
         end: "00 22 * * *"
@@ -34,7 +34,7 @@ scalers:
     minReplicas: 1
     maxReplicas: 8
     cpu:
-      threshold: "60"
+      threshold: "80"
     kafka:
       consumerGroup: queue-consumer
       topic: order-events
@@ -50,7 +50,7 @@ scalers:
     minReplicas: 1
     maxReplicas: 8
     cpu:
-      threshold: "60"
+      threshold: "80"
     cron:
       - start: "30 18 * * *"
         end: "00 22 * * *"
@@ -62,7 +62,7 @@ scalers:
     minReplicas: 1
     maxReplicas: 5
     cpu:
-      threshold: "70"
+      threshold: "80"
     kafka:
       consumerGroup: order-consumer
       topic: order-events
@@ -80,7 +80,7 @@ scalers:
     minReplicas: 1
     maxReplicas: 3
     cpu:
-      threshold: "70"
+      threshold: "80"
 
   authz-adapter:
     enabled: true
@@ -89,4 +89,4 @@ scalers:
     minReplicas: 1
     maxReplicas: 3
     cpu:
-      threshold: "70"
+      threshold: "80"
