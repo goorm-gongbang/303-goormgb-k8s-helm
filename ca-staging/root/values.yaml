@@ -373,7 +373,7 @@ ociCharts:
     description: "Policy Reporter - Kyverno 정책 위반 시각화 및 Discord 알림"
     repoURL: https://kyverno.github.io/policy-reporter
     chart: policy-reporter
-    version: "2.21.0"
+    version: "3.7.3"
     namespace: kyverno
     syncWave: "-6"
     valueFiles:
@@ -581,10 +581,10 @@ gitCharts:
     syncOptions:
       - SkipDryRunOnMissingResource=true
 
-  # Policy Reporter Route
+  # Policy Reporter Route (Google OAuth Proxy)
   policy-reporter-route:
     enabled: true
-    description: "Policy Reporter UI - 외부 도메인 라우팅 (VirtualService)"
+    description: "Policy Reporter UI - Google OAuth Proxy (Standalone)"
     path: ca-staging/charts/security/policy-reporter-route
     namespace: kyverno
     syncWave: "0"

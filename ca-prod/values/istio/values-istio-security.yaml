@@ -1,4 +1,4 @@
-# EKS Prod - Istio Security
+# EKS Staging - Istio Security
 # WAF-like protection using EnvoyFilter + Lua
 
 enabled: true
@@ -9,8 +9,39 @@ selector:
     istio: ingressgateway
 
 # 차단 모드: block (차단) | detect (로그만)
-# Prod 환경에서는 block 모드 사용
+# Staging 환경에서는 block 모드 사용
 mode: block
+
+# WAF 탐지 IP 자동 blacklist (authz-adapter:9090/admin/blacklist 호출)
+# FP 위험 낮은 고신뢰 카테고리만 단일 탐지 시 즉시 IP blacklist 등록.
+# 나머지(XSS/PATH_TRAVERSAL/SSRF/HEADER_INJECTION/BOT_SCANNER)는 Lua WAF 의
+# mode:block 으로 해당 요청만 차단하고, IP 전체 차단은 하지 않음 (FP 방지).
+# SQLi 는 따옴표 FP 위험으로 탐지는 하되 auto-blocklist 제외.
+# 사유는 sprint7/security/waf-auto-blocklist.md 참조
+autoBlocklist:
+  enabled: true
+  cluster:
+    host: staging-authz-adapter.staging-ai.svc.cluster.local
+    port: 9090
+  path: /admin/blacklist
+  timeoutMs: 200
+  categories:
+    - LOG4SHELL
+    - COMMAND_INJECTION
+    - XXE_INJECTION
+    - LDAP_INJECTION
+  # Threshold 기반 등록: 일정 기간 내 N회 탐지되면 blacklist 등록
+  # (FP 위험 있는 카테고리용 — 정상 요청 하나에는 관대, 반복 공격자는 차단)
+  threshold:
+    enabled: true
+    windowSeconds: 300 # 5분
+    count: 3 # 3회 탐지 시 blacklist
+    categories:
+      - XSS
+      - PATH_TRAVERSAL
+      - SSRF
+      - HEADER_INJECTION
+      - BOT_SCANNER
 
 # 로깅 설정
 logging:
@@ -42,8 +73,26 @@ patterns:
 
 # 제외 경로 (health check, metrics, 내부 서비스 등)
 excludePaths:
+  # Load-test (k6 부하 테스트 - WAF 패턴 검사 제외)
+  - "/load-test/"
+
+  # Faro RUM (프론트엔드 텔레메트리)
+  - "/faro/"
+
   # Grafana 내부 API (Loki 쿼리 등 - SQL Injection 오탐 방지)
   - "/api/datasources/"
+
+  # Socket.IO (실시간 폴링 - sid 패턴이 SQL 주입으로 오탐됨)
+  - "/socket.io/"
+
+  # 정적 파일 (JS, CSS 등 - 파일명에 특수문자 포함 가능)
+  - "/assets/"
+
+  # Grafana Explore (PromQL/LogQL 쿼리 포함)
+  - "/explore"
+
+  # Grafana 데이터소스 쿼리 API
+  - "/api/ds/query"
 
   # Health checks
   - "/health"
@@ -68,8 +117,45 @@ excludePaths:
   - "/v3/api-docs"
   - "/openapi"
 
-  # Kiali
-  - "/kiali"
+  # OAuth callback (Google OAuth authorization code 내 '--' 문자열로 sql-comment 오탐)
+  # Grafana: /login/google, OAuth2 Proxy(CloudBeaver 등): /oauth2/callback, 기타: /auth/callback
+  - "/login/"
+  - "/oauth2/"
+  - "/auth/callback"
+
+# 팀원 IP (WAF ipWhitelist + adminTools.ipWhitelist 공용)
+# 한 군데에서만 관리 — YAML anchor 로 아래에서 재사용
+teamIPs: &teamIPs
+  - "59.12.199.140"
+  - "219.241.49.248"
+  - "121.160.234.212"
+  - "118.33.22.122"
+  - "220.117.16.114"
+  - "223.38.90.75"
+  - "182.222.162.2"
+  - "180.70.114.57"
+  - "211.244.208.42"
+  - "112.162.29.176"
+  - "59.7.27.64"
+  - "59.7.96.150"
+  - "221.149.74.70"
+  - "58.148.70.203"
+  - "59.20.70.146"
+  - "39.119.192.15"
+  - "119.204.100.200"
+  - "124.49.102.36"
+  - "122.34.166.131"
+  - "182.221.197.174"
+  - "118.221.42.243"
+  - "121.175.144.99"
+  - "203.251.185.110"
+  - "59.30.250.162"
+  - "211.217.131.15"
+
+# IP Whitelist (정확 매칭: WAF/차단 전부 bypass)
+ipWhitelist: *teamIPs
+# IP Whitelist 접두사 (예: "39.119.192.")
+ipWhitelistPrefixes: []
 
 # 응답 설정
 response:
@@ -99,7 +185,7 @@ extAuthz:
 
   # gRPC authz adapter 연결 설정 (202-goormgb-authz-adapter)
   service:
-    host: authz-adapter.prod-ai.svc.cluster.local
+    host: staging-authz-adapter.staging-ai.svc.cluster.local
     port: 9001
 
   # 타임아웃 설정
@@ -109,9 +195,10 @@ extAuthz:
   # AI 서버 장애 시 통과 허용 (fail-open)
   failOpen: true
 
-  # ext_authz 제외 경로 (AI direct routes, health checks)
+  # ext_authz 제외 경로 (AI direct routes, health checks, load-test)
   excludePaths:
     - "/ai/"
+    - "/load-test/"
     - "/health"
     - "/healthz"
     - "/ready"
@@ -154,21 +241,30 @@ extAuthz:
 # Rate Limiting 설정
 # ============================================================
 rateLimiting:
+  # Rate limit 제외 경로 (부하 테스트, health check 등)
+  excludePaths:
+    - "/load-test/" # k6 부하테스트
+    - "/health"
+    - "/healthz"
+    - "/ready"
+    - "/metrics"
+    - "/actuator/health"
+
   # --- Local Rate Limit (Envoy 내장) ---
   local:
-    enabled: true
+    enabled: true # Rate limiting 활성화
 
     # 기본 설정 (전체 경로에 적용)
     default:
       enabled: true
-      tokensPerFill: 100        # 초당 100 요청
+      tokensPerFill: 100 # 초당 100 요청
       fillInterval: 1s
       maxTokens: 100
 
     # IP별 제한
     perClient:
       enabled: true
-      tokensPerFill: 50         # IP당 초당 50 요청
+      tokensPerFill: 50 # IP당 초당 50 요청
       fillInterval: 1s
       maxTokens: 100
 
@@ -213,7 +309,7 @@ rateLimiting:
       replicas: 1
       image: docker.io/envoyproxy/ratelimit:05c08d03
 
-    domain: "goormgb-prod-ratelimit"
+    domain: "goormgb-staging-ratelimit"
 
     descriptors:
       # IP별 전역 제한: 분당 300회
@@ -264,24 +360,16 @@ rateLimiting:
         rateLimit:
           unlimited: true
 
-  # 제외 경로
-  excludePaths:
-    - "/health"
-    - "/healthz"
-    - "/ready"
-    - "/metrics"
-    - "/actuator/health"
-
 # ============================================================
 # mTLS 설정 (서비스 간 통신 암호화)
 # ============================================================
 mtls:
   enabled: true
-  mode: STRICT  # STRICT: mTLS 필수, PERMISSIVE: 허용
+  mode: STRICT # STRICT: mTLS 필수, PERMISSIVE: 허용
   namespaces:
-    - prod-webs
+    - staging-webs
     - monitoring
-    # - prod-ai  # AI 서비스 사용시 활성화
+    # - staging-ai  # AI 서비스 사용시 활성화
 
   # Non-mesh 네임스페이스 mTLS 비활성화
   # Istio sidecar가 없는 네임스페이스로의 트래픽은 PLAINTEXT로 보내야 함
@@ -300,61 +388,94 @@ mtls:
     selector:
       app.kubernetes.io/name: opentelemetry-collector
 
+  # AI 서비스 예외 설정
+  # Prometheus 메트릭 스크래핑을 위해 PERMISSIVE 모드 필요
+  aiServices:
+    enabled: true
+    namespace: staging-ai
+    # AI Defense 메트릭 포트 (8000)에 대해 PERMISSIVE 허용
+    services:
+      - name: ai-defense
+        selector:
+          app: staging-ai-defense
+        metricsPort: 8000
+      - name: authz-adapter
+        selector:
+          app: staging-authz-adapter
+        metricsPort: 9090
+
   # App 서비스 예외 설정
   # monitoring namespace의 Prometheus가 plain HTTP로 actuator를 scrape할 수 있도록
   # 앱 메트릭 포트에만 mTLS 비활성화 (management 포트 9090 분리)
   metricsScrapeExceptions:
     - name: auth-guard-metrics
-      namespace: prod-webs
+      namespace: staging-webs
       selector:
-        app: prod-auth-guard
+        app: staging-auth-guard
       metricsPort: 9090
       mode: DISABLE
     - name: queue-metrics
-      namespace: prod-webs
+      namespace: staging-webs
       selector:
-        app: prod-queue
+        app: staging-queue
       metricsPort: 9090
       mode: DISABLE
     - name: seat-metrics
-      namespace: prod-webs
+      namespace: staging-webs
       selector:
-        app: prod-seat
+        app: staging-seat
       metricsPort: 9090
       mode: DISABLE
     - name: order-core-metrics
-      namespace: prod-webs
+      namespace: staging-webs
       selector:
-        app: prod-order-core
+        app: staging-order-core
       metricsPort: 9090
       mode: DISABLE
     - name: api-gateway-metrics
-      namespace: prod-webs
+      namespace: staging-webs
       selector:
-        app: prod-api-gateway
+        app: staging-api-gateway
       metricsPort: 9090
       mode: DISABLE
 
-  # AI 서비스 예외 설정
-  # Prometheus 메트릭 스크래핑을 위해 PERMISSIVE 모드 필요
-  aiServices:
-    enabled: true
-    namespace: prod-ai
-    services:
-      - name: ai-defense
-        selector:
-          app: prod-ai-defense
-        metricsPort: 8000
-      - name: authz-adapter
-        selector:
-          app: prod-authz-adapter
-        metricsPort: 9090
+    # loadtest-webs (Prometheus 가 actuator 9090 포트를 scrape 해야 HikariCP/Tomcat 메트릭 수집 가능)
+    - name: loadtest-auth-guard-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-auth-guard
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-queue-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-queue
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-seat-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-seat
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-order-core-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-order-core
+      metricsPort: 9090
+      mode: DISABLE
+    - name: loadtest-api-gateway-metrics
+      namespace: loadtest-webs
+      selector:
+        app: loadtest-api-gateway
+      metricsPort: 9090
+      mode: DISABLE
 
 # ============================================================
 # JWT 인증 설정
 # ============================================================
 jwtAuth:
-  enabled: false  # 우선 비활성화
+  enabled: false # Gateway에서 JWT 처리 (Gateway 제거 시 활성화)
 
   issuers:
     # Kakao OAuth
@@ -365,10 +486,10 @@ jwtAuth:
         - name: Authorization
           prefix: "Bearer "
 
-    # 자체 Auth 서비스 (prod 네임스페이스)
+    # 자체 Auth 서비스 (staging 네임스페이스)
     - name: goormgb-auth
       issuer: "https://auth.goormgb.com"
-      jwksUri: "http://auth-guard.prod-webs.svc.cluster.local:8080/.well-known/jwks.json"
+      jwksUri: "http://auth-guard.staging-webs.svc.cluster.local:8080/.well-known/jwks.json"
       fromHeaders:
         - name: Authorization
           prefix: "Bearer "
@@ -428,20 +549,20 @@ jwtAuth:
     enabled: true
 
 # ============================================================
-# 관리 도구 IP 화이트리스트 (WAF 대신 Istio Policy 사용)
-# ============================+===============================
+# Admin Tools IP Whitelist
+# CloudBeaver, Kafka-UI, Prometheus 등 관리 도구 접근 제한
+# ============================================================
 adminTools:
   ipWhitelist:
     enabled: true
-    # 허용할 공인 IP 리스트 (사무실, VPN 등)
-    allowedIPs:
-      - "122.34.166.131/32"
-    # 보호할 도메인 리스트
+    # teamIPs 앵커 재사용 — 상단 teamIPs 만 수정하면 양쪽 반영됨
+    allowedIPs: *teamIPs
+    # IP 제한 적용 대상 호스트
     protectedHosts:
-      - "argocd.playball.one"
-      - "grafana.playball.one"
-      # prod에서는 미사용 (staging only)
-      # - "redis.playball.one"
-      # - "prometheus.playball.one"
-      # - "kafka-ui.playball.one"
-      # - "cloudbeaver.playball.one"
+      - "argocd.staging.playball.one"
+      - "cloudbeaver.staging.playball.one"
+      - "grafana.staging.playball.one"
+      - "kafka-ui.staging.playball.one"
+      - "prometheus.staging.playball.one"
+      - "redisinsight.staging.playball.one"
+      - "policy-reporter.staging.playball.one"

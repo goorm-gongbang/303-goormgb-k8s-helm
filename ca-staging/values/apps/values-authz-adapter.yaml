@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/ai/authz-adapter"
-  tag: "aa7ffc4.7"
+  tag: "871857a.14"
   pullPolicy: Always
 
 # EKS 노드 IAM Role이 ECR 접근 권한 보유 - imagePullSecrets 불필요
@@ -21,8 +21,8 @@ service:
   port: 9001
   portName: grpc
   grpc:
-    enabled: false  # 메인 포트가 이미 gRPC
-    port: 9001      # GRPC_PORT 환경변수용
+    enabled: false # 메인 포트가 이미 gRPC
+    port: 9001 # GRPC_PORT 환경변수용
 
 # Prometheus Metrics
 metrics:
@@ -58,11 +58,11 @@ env:
   - name: REDIS_PASSWORD
     value: ""
   - name: REDIS_DB
-    value: "2"
+    value: "5"
   - name: BLACKLIST_TTL_SECS
-    value: "604800"  # 7일
+    value: "604800" # 7일
   - name: WHITELIST_TTL_SECS
-    value: "2592000"  # 30일
+    value: "2592000" # 30일
   # CDN Blocklist (Lambda가 쓰는 Redis DB 3)
   - name: CDN_BLOCKLIST_ENABLED
     value: "true"

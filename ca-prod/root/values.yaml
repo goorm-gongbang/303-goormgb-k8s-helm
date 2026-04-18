@@ -53,7 +53,7 @@ ociCharts:
     enabled: true
     repoURL: https://kyverno.github.io/policy-reporter
     chart: policy-reporter
-    version: "2.21.0"
+    version: "3.7.3"
     namespace: kyverno
     syncWave: "-6"
     valueFiles:
@@ -352,6 +352,14 @@ gitCharts:
     syncWave: "-6"
     valueFiles:
       - ../../../ca-prod/values/security/values-kyverno-policies.yaml
+
+  # Policy Reporter Route (Google OAuth Proxy)
+  policy-reporter-route:
+    enabled: true
+    description: "Policy Reporter UI - Google OAuth Proxy (Standalone for Prod)"
+    path: ca-prod/charts/security/policy-reporter-route
+    namespace: kyverno
+    syncWave: "0"
 
   network-policies:
     enabled: true

@@ -7,11 +7,10 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Enforce ArgoCD Management
-    policies.kyverno.io/category: Best Practices, Security
+    policies.kyverno.io/category: GitOps, Governance, Security
     policies.kyverno.io/severity: medium
     policies.kyverno.io/description: >-
       ArgoCD가 관리하지 않는 리소스(app.kubernetes.io/instance 라벨이 없는 경우)의 생성을 차단합니다.
-      이를 통해 Shadow IT 및 비공식적인 리소스 주입을 방지합니다.
 spec:
   validationFailureAction: {{ .Values.validationAction | default "Audit" }}
   background: false
@@ -64,12 +63,13 @@ spec:
                 {{- range .Values.excludeNamespaces }}
                 - {{ . }}
                 {{- end }}
-          # Prometheus Operator가 helm pre-install 훅으로 설치하는 CRD들은 label 미부여
+          # Helm chart가 설치하는 CRD들은 app.kubernetes.io/instance 라벨 미부여 (chart 특성)
           - resources:
               kinds:
                 - CustomResourceDefinition
               names:
                 - "*.monitoring.coreos.com"
+                - "*.keda.sh"
       validate:
         message: "ArgoCD를 통해서만 리소스를 생성할 수 있습니다. (app.kubernetes.io/instance 라벨 누락)"
         pattern:

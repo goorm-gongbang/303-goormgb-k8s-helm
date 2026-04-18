@@ -1,6 +1,7 @@
-# Grafana Tempo - Prod 환경
+# Grafana Tempo - Staging 환경
 # 분산 추적 저장소 (S3 백엔드)
 
+# 노드 배치: monitoring 노드
 nodeSelector:
   role: monitoring
 
@@ -8,12 +9,15 @@ tolerations:
   - key: role
     value: monitoring
     effect: NoSchedule
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
 
 serviceAccount:
   create: true
   name: tempo
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-prod-tempo"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-tempo"
 
 tempo:
   resources:
@@ -38,9 +42,10 @@ tempo:
     trace:
       backend: s3
       s3:
-        bucket: playball-prod-tempo
+        bucket: playball-staging-tempo
         endpoint: s3.ap-northeast-2.amazonaws.com
         region: ap-northeast-2
+        # 환경별 버킷이므로 prefix 불필요
       wal:
         path: /var/tempo/wal
       block:
@@ -49,6 +54,7 @@ tempo:
   # 보존 기간 (7일)
   retention: 168h
 
+# PVC 비활성화, WAL은 emptyDir 사용
 persistence:
   enabled: false
 

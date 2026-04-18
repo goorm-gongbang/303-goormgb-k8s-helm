@@ -1,4 +1,4 @@
-# Grafana - Prod 환경 (독립 배포)
+# Grafana - Staging 환경 (독립 배포)
 # kube-prometheus-stack에서 분리하여 별도 Application으로 배포
 
 fullnameOverride: grafana
@@ -11,7 +11,7 @@ podLabels:
 # IRSA for CloudWatch Data Source
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-grafana-cloudwatch
+    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-grafana-cloudwatch
 
 # init-chown-data 비활성화 (PVC 권한 문제 방지)
 initChownData:
@@ -38,120 +38,10 @@ defaultDashboardsEnabled: false
 forceDeployDashboards: false
 defaultDashboardsTimezone: utc
 
-# 대시보드 프로바이더 설정
-dashboardProviders:
-  dashboardproviders.yaml:
-    apiVersion: 1
-    providers:
-      - name: "dev-team-observability-templates"
-        orgId: 1
-        folder: "Dev Team - Templates"
-        type: file
-        disableDeletion: false
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/dev-team-observability-templates
-
-      - name: "infra-team-observability-templates"
-        orgId: 1
-        folder: "Infra Team - Templates"
-        type: file
-        disableDeletion: false
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/infra-team-observability-templates
-
-      - name: "security-ops"
-        orgId: 1
-        folder: "Security Ops"
-        type: file
-        disableDeletion: false
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/security-ops
-
-# Grafana.com 대시보드
-dashboards:
-  dev-team-observability-templates:
-    service-pod-health:
-      gnetId: 17125
-      revision: 1
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-    service-traffic-istio:
-      gnetId: 7636
-      revision: 1
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-    service-workload-istio:
-      gnetId: 7630
-      revision: 1
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-  infra-team-observability-templates:
-    platform-node-capacity:
-      gnetId: 1860
-      revision: 37
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-    platform-cluster-overview:
-      gnetId: 7249
-      revision: 1
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-    platform-karpenter:
-      gnetId: 20398
-      revision: 1
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-    platform-k8s-views-global:
-      gnetId: 15757
-      revision: 37
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-    platform-k8s-views-namespaces:
-      gnetId: 15758
-      revision: 34
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-    platform-prometheus-overview:
-      gnetId: 19105
-      revision: 3
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-    platform-istio-mesh:
-      gnetId: 7639
-      revision: 1
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-    platform-istio-control-plane:
-      gnetId: 7645
-      revision: 1
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-
-  # Security Ops 대시보드는 prod/charts/monitoring/security-dashboards에서 ConfigMap으로 배포
+# 대시보드 프로바이더 — sidecar(ConfigMap)로 관리하므로 추가 provider 불필요
+# Grafana.com 기본 대시보드 비활성화 (커스텀 대시보드만 사용)
+dashboardProviders: {}
+dashboards: {}
 
 # ESO에서 생성한 secret 사용
 admin:
@@ -172,7 +62,7 @@ plugins:
 
 grafana.ini:
   server:
-    root_url: https://grafana.playball.one
+    root_url: https://grafana.staging.playball.one
   unified_alerting:
     enabled: false
   alerting:
@@ -212,7 +102,7 @@ tolerations:
 
 resources:
   requests:
-    cpu: 200m
+    cpu: 100m
     memory: 512Mi
   limits:
     cpu: 500m

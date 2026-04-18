@@ -7,10 +7,10 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Disallow Privileged Containers
-    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/category: Security, Pod Security
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >-
-      privileged 모드로 실행되는 컨테이너를 차단합니다.
+      privileged(특권 모드)로 실행되는 컨테이너를 차단합니다.
 spec:
   validationFailureAction: {{ .Values.validationAction | default "Audit" }}
   background: true

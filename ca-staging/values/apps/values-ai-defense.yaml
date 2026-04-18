@@ -23,10 +23,12 @@ args:
   - "8000"
   - "--root-path"
   - "/ai"
+  - "--workers"
+  - "4"
 
 image:
   repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
-  tag: "0720109.10"
+  tag: "c3ff0e0.25"
   name: "staging/playball/ai/defense"
   pullPolicy: Always
 
@@ -76,7 +78,7 @@ env:
         key: AI_REDIS_PORT
   # 런타임 캐시용 Redis URL (동적 파싱)
   - name: TM_REDIS_URL
-    value: "rediss://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+    value: "rediss://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/6"
   # CORS 허용 Origin (Frontend)
   - name: TM_CORS_ALLOW_ORIGINS
     value: "https://staging.playball.one"
@@ -140,6 +142,12 @@ env:
       secretKeyRef:
         name: ai-service-config
         key: INTERNAL_API_KEY
+  # Offline LLM API key (post-review / backoffice copilot fallback adapter)
+  - name: TM_OFFLINE_LLM_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: ai-service-config
+        key: TM_OFFLINE_LLM_API_KEY
   # OpenTelemetry: 새 Semantic Convention 사용 (Java와 통일)
   - name: OTEL_SEMCONV_STABILITY_OPT_IN
     value: "http"
@@ -158,11 +166,11 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 450m
+    memory: 512Mi
   limits:
-    cpu: "1"
-    memory: 1Gi
+    cpu: "2.5"
+    memory: 3Gi
 
 # Istio VirtualService for /ai/* routing
 istio:
@@ -170,6 +178,8 @@ istio:
   gateway:
     enabled: true
     host: "api.staging.playball.one"
+    extraHosts:
+      - "api.playball.one"
     externalRef: "istio-system/api-gateway"
     contextPath: "/ai/"
     redirect:
@@ -199,13 +209,15 @@ service:
   port: 8000
 
 # Health checks (FastAPI endpoints)
+# burst 부하에서 worker 점유 시 1초 안에 응답 못 해 SIGKILL 당하는 문제 완화
 livenessProbe:
   httpGet:
     path: /healthz
     port: 8000
   initialDelaySeconds: 30
   periodSeconds: 10
-  failureThreshold: 3
+  timeoutSeconds: 5
+  failureThreshold: 5
 
 readinessProbe:
   httpGet:
@@ -213,6 +225,7 @@ readinessProbe:
     port: 8000
   initialDelaySeconds: 10
   periodSeconds: 5
+  timeoutSeconds: 3
   failureThreshold: 3
 
 # Prometheus Metrics (FastAPI - 같은 포트에서 /metrics 노출)
@@ -231,6 +244,10 @@ otel:
 # PreSync Jobs — ArgoCD sync-wave 순서대로 실행, 하나라도 실패 시 Deployment/CronJob 진행 중단
 # wave 0 → 1 → 2 → (Deployment/CronJob)
 presyncJobs:
+  - name: tm-ai-clickhouse-migrate
+    syncWave: "-1"
+    command:
+      - tm-ai-clickhouse-migrate
   - name: tm-ai-storage-migrate
     syncWave: "0"
     command:

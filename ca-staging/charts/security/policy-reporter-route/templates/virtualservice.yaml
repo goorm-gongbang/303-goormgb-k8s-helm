@@ -14,11 +14,11 @@ spec:
             prefix: /oauth2/
       route:
         - destination:
-            host: policy-reporter-ui-proxy.kyverno.svc.cluster.local
+            host: policy-reporter-oauth-svc.kyverno.svc.cluster.local
             port:
               number: 80
     - route:
         - destination:
-            host: policy-reporter-ui-proxy.kyverno.svc.cluster.local
+            host: policy-reporter-oauth-svc.kyverno.svc.cluster.local
             port:
               number: 80

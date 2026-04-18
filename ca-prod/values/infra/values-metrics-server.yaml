@@ -1,0 +1,9 @@
+# Metrics Server - kubectl top, HPA 메트릭 제공
+# infra 노드에 배치 (control-plane 성격의 컴포넌트)
+
+nodeSelector:
+  role: infra
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
