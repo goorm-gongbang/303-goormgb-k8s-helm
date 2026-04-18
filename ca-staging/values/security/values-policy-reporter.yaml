@@ -15,10 +15,22 @@ ui:
   enabled: true
   plugins:
     kyverno: true
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
 
 # Kyverno Plugin 활성화 (상세 리포팅)
 kyvernoPlugin:
   enabled: true
+  nodeSelector:
+    role: monitoring
+  tolerations:
+    - key: role
+      value: monitoring
+      effect: NoSchedule
 
 # 리소스 할당량 설정
 resources:
