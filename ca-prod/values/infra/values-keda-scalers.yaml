@@ -12,7 +12,7 @@ scalers:
       threshold: "80"
     cron:
       # 경기 30분 전 pre-warming (예시: 19시 경기)
-      - start: "30 18 * * *"
+      - start: "40 10 * * *"
         end: "00 22 * * *"
         desiredReplicas: "3"
 
@@ -24,7 +24,7 @@ scalers:
     cpu:
       threshold: "80"
     cron:
-      - start: "30 18 * * *"
+      - start: "40 10 * * *"
         end: "00 22 * * *"
         desiredReplicas: "3"
 
@@ -40,7 +40,7 @@ scalers:
       topic: order-events
       lagThreshold: "100"
     cron:
-      - start: "30 18 * * *"
+      - start: "40 10 * * *"
         end: "00 22 * * *"
         desiredReplicas: "4"
 
@@ -52,7 +52,7 @@ scalers:
     cpu:
       threshold: "80"
     cron:
-      - start: "30 18 * * *"
+      - start: "40 10 * * *"
         end: "00 22 * * *"
         desiredReplicas: "4"
 
@@ -68,7 +68,7 @@ scalers:
       topic: order-events
       lagThreshold: "100"
     cron:
-      - start: "30 18 * * *"
+      - start: "40 10 * * *"
         end: "00 22 * * *"
         desiredReplicas: "3"
 

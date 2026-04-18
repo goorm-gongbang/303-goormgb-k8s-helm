@@ -10,11 +10,6 @@ scalers:
     maxReplicas: 5
     cpu:
       threshold: "80"
-    cron:
-      # 경기 30분 전 pre-warming (예시: 19시 경기)
-      - start: "30 18 * * *"
-        end: "00 22 * * *"
-        desiredReplicas: "3"
 
   auth-guard:
     enabled: false
@@ -23,10 +18,6 @@ scalers:
     maxReplicas: 5
     cpu:
       threshold: "80"
-    cron:
-      - start: "30 18 * * *"
-        end: "00 22 * * *"
-        desiredReplicas: "3"
 
   queue:
     enabled: false
@@ -39,10 +30,6 @@ scalers:
       consumerGroup: queue-consumer
       topic: order-events
       lagThreshold: "100"
-    cron:
-      - start: "30 18 * * *"
-        end: "00 22 * * *"
-        desiredReplicas: "4"
 
   seat:
     enabled: false
@@ -51,10 +38,6 @@ scalers:
     maxReplicas: 8
     cpu:
       threshold: "80"
-    cron:
-      - start: "30 18 * * *"
-        end: "00 22 * * *"
-        desiredReplicas: "4"
 
   order-core:
     enabled: false
@@ -67,10 +50,6 @@ scalers:
       consumerGroup: order-consumer
       topic: order-events
       lagThreshold: "100"
-    cron:
-      - start: "30 18 * * *"
-        end: "00 22 * * *"
-        desiredReplicas: "3"
 
   # === AI Services ===
   ai-defense:
