@@ -15,5 +15,9 @@ spec:
     connectionPool:
       {{- toYaml .Values.istio.destinationRule.connectionPool | nindent 6 }}
     {{- end }}
+    {{- if .Values.istio.destinationRule.outlierDetection }}
+    outlierDetection:
+      {{- toYaml .Values.istio.destinationRule.outlierDetection | nindent 6 }}
+    {{- end }}
 {{- end }}
 {{- end }}
