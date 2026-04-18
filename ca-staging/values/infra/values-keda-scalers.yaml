@@ -4,15 +4,15 @@
 scalers:
   # === Web Services ===
   api-gateway:
-    enabled: false
+    enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 3
     cpu:
       threshold: "80"
 
   auth-guard:
-    enabled: false
+    enabled: true
     namespace: staging-webs
     minReplicas: 1
     maxReplicas: 5
@@ -20,10 +20,10 @@ scalers:
       threshold: "80"
 
   queue:
-    enabled: false
+    enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 8
+    maxReplicas: 3
     cpu:
       threshold: "80"
     # kafka:
@@ -32,18 +32,18 @@ scalers:
     #   lagThreshold: "100"
 
   seat:
-    enabled: false
+    enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 8
+    maxReplicas: 5
     cpu:
       threshold: "80"
 
   order-core:
-    enabled: false
+    enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 2
     cpu:
       threshold: "80"
     # kafka:
@@ -53,7 +53,7 @@ scalers:
 
   # === AI Services ===
   ai-defense:
-    enabled: false
+    enabled: true
     namespace: staging-ai
     deploymentName: staging-ai-defense
     minReplicas: 1
@@ -62,7 +62,7 @@ scalers:
       threshold: "80"
 
   authz-adapter:
-    enabled: false
+    enabled: true
     namespace: staging-ai
     deploymentName: staging-authz-adapter
     minReplicas: 1
