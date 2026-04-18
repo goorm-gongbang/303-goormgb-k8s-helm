@@ -78,7 +78,7 @@ env:
         key: AI_REDIS_PORT
   # 런타임 캐시용 Redis URL (동적 파싱)
   - name: TM_REDIS_URL
-    value: "rediss://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
+    value: "rediss://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/6"
   # CORS 허용 Origin (Frontend)
   - name: TM_CORS_ALLOW_ORIGINS
     value: "https://staging.playball.one"
@@ -166,10 +166,10 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: 300m
-    memory: 384Mi
+    cpu: 450m
+    memory: 512Mi
   limits:
-    cpu: "2"
+    cpu: "2.5"
     memory: 3Gi
 
 # Istio VirtualService for /ai/* routing
