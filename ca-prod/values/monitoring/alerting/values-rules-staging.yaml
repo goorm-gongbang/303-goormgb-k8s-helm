@@ -1,0 +1,117 @@
+# Alert rule set (ca-staging)
+# 정리 기준: staging은 조기 탐지 목적이라 5xx와 보안 지표를 1건 이상 Warning으로 전파
+# 유지: PodCrashLoop, RedisDown, security
+
+additionalPrometheusRulesMap:
+  staging-ops-and-security:
+    groups:
+      - name: staging.ops.rules
+        rules:
+          - alert: StagingHttp5xxWarning
+            expr: |
+              sum by (app, http_route, http_response_status_code) (
+                increase(
+                  http_server_request_duration_seconds_count{
+                    namespace="staging-webs",
+                    app=~"staging-(api-gateway|auth-guard|order-core|queue|seat)",
+                    http_response_status_code=~"5.."
+                  }[5m]
+                )
+              ) > 0
+            for: 0m
+            labels:
+              severity: warning
+              environment: staging
+              team: dev
+              service_name: "{{ $labels.app }}"
+              namespace: staging-webs
+            annotations:
+              summary: "{{ $labels.app }} 5xx 발생 ({{ $labels.http_response_status_code }})"
+              description: "서비스: {{ $labels.app }}\n경로: {{ $labels.http_route }}\n상태코드: {{ $labels.http_response_status_code }}\n발생건수(5m): {{ $value | printf \"%.0f\" }}건\n\nGrafana 로그: https://grafana.staging.playball.one/explore?orgId=1&left=%7B%22queries%22:%5B%7B%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22loki%22%7D,%22expr%22:%22%7Bnamespace%3D%5C%22staging-webs%5C%22%7D%20%7C%20json%20%7C%20level%20%3D%20%5C%22ERROR%5C%22%22%7D%5D%7D"
+
+          - alert: StagingPodCrashLoopCritical
+            expr: |
+              sum by (namespace, pod) (
+                increase(kube_pod_container_status_restarts_total{namespace="staging-webs"}[30m])
+              ) > 2
+            for: 0m
+            labels:
+              severity: critical
+              environment: staging
+              team: dev
+            annotations:
+              summary: "staging 환경 Pod 재시작 급증"
+              description: "최근 30m 동안 staging 웹 서비스 Pod 재시작이 2회를 초과했습니다."
+
+          - alert: StagingRedisDownCritical
+            expr: |
+              min(redis_up{namespace="data"}) == 0
+            for: 1m
+            labels:
+              severity: critical
+              environment: staging
+              team: dev
+            annotations:
+              summary: "staging Redis 비가용 감지"
+              description: "Redis 인스턴스가 응답하지 않습니다."
+
+      - name: staging.security.rules
+        rules:
+          - alert: StagingMacroDetectedWarning
+            expr: |
+              increase(ticketing_security_macro_detected_total[5m]) > 0
+            for: 0m
+            labels:
+              severity: warning
+              environment: staging
+              team: security
+            annotations:
+              summary: "staging 매크로/봇 탐지 경고"
+              description: "최근 5m 동안 매크로/봇 탐지가 1건 이상 발생했습니다."
+
+          - alert: StagingBlockedIpWarning
+            expr: |
+              increase(ticketing_security_blocked_ip_total[5m]) > 0
+            for: 0m
+            labels:
+              severity: warning
+              environment: staging
+              team: security
+            annotations:
+              summary: "staging 차단 IP 수 경고"
+              description: "최근 5m 동안 차단 IP가 1건 이상 발생했습니다."
+
+          - alert: StagingAuthFailureRateWarning
+            expr: |
+              increase(ticketing_auth_attempts_total[5m]) > 0
+              and
+              increase(ticketing_auth_success_total[5m]) < increase(ticketing_auth_attempts_total[5m])
+            for: 0m
+            labels:
+              severity: warning
+              environment: staging
+              team: security
+            annotations:
+              summary: "staging 인증 실패율 경고"
+              description: "최근 5m 동안 인증 실패가 1건 이상 발생했습니다."
+
+          - alert: StagingWafBlockedRequestsWarning
+            expr: |
+              sum(
+                increase(
+                  istio_requests_total{
+                    reporter="destination",
+                    destination_workload_namespace="istio-system",
+                    destination_workload="istio-ingressgateway",
+                    response_code=~"403|429"
+                  }[15m]
+                )
+              ) > 0
+            for: 0m
+            labels:
+              severity: warning
+              environment: staging
+              team: security
+            annotations:
+              summary: "staging WAF 차단 요청 급증 경고"
+              description: "최근 15m 동안 Istio IngressGateway의 403/429 차단 요청이 1건 이상 발생했습니다."

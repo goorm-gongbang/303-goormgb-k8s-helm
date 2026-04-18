@@ -1,4 +1,4 @@
-# ClickHouse for AI Defense - Prod 환경
+# ClickHouse for AI Defense - Staging 환경
 
 image:
   repository: clickhouse/clickhouse-server
@@ -28,20 +28,20 @@ resources:
 initScripts:
   enabled: true
 
-# Prod 환경: Secrets Manager에서 인증 정보 로드
+# Staging 환경: Secrets Manager에서 인증 정보 로드
 externalSecret:
   enabled: true
   secretStore: aws-secrets-manager
-  remoteRef: prod/ai-service/clickhouse
+  remoteRef: staging/ai-service/clickhouse
 
-# Graviton (ARM64) 노드에 배치 - monitoring 노드
+# Infra on-demand 노드에 배치 (Spot 회수 방지)
 nodeSelector:
   kubernetes.io/arch: arm64
-  role: monitoring
+  role: infra
 
 tolerations:
   - key: role
-    value: monitoring
+    value: infra
     effect: NoSchedule
 
 # Prometheus 메트릭

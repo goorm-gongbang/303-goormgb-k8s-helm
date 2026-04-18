@@ -1,46 +1,40 @@
-# auth-guard - Staging 환경
-fullnameOverride: "auth-guard"
-contextPath: "/auth"
-replicaCount: 1
+# order-core - Load-test 환경
+fullnameOverride: "order-core"
+contextPath: "/order"
+replicaCount: 0
 
 image:
-  name: "staging/playball/web/auth-guard"
-  tag: "432992f.51"
+  name: "staging/playball/web/order-core"
+  tag: "432992f.44"
   pullPolicy: Always
 
-# IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
 imagePullSecrets: []
 
-# apps 노드는 taint 없음 - tolerations 불필요
+nodeSelector:
+  role: loadtest
 
-# HA: 노드 분산 + Managed 노드 우선
+tolerations:
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
+
 affinity:
-  nodeAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        preference:
-          matchExpressions:
-            - key: karpenter.sh/nodepool
-              operator: DoesNotExist
-      - weight: 50
-        preference:
-          matchExpressions:
-            - key: karpenter.sh/capacity-type
-              operator: In
-              values: ["on-demand"]
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
         podAffinityTerm:
           labelSelector:
             matchLabels:
-              app: auth-guard
+              app: order-core
           topologyKey: kubernetes.io/hostname
 
 resources:
   requests:
     cpu: 250m
-    memory: 384Mi
+    memory: 256Mi
   limits:
     cpu: "2"
     memory: 2Gi
@@ -51,23 +45,32 @@ istio:
     enabled: true
     loadBalancer: LEAST_REQUEST
 
-servicePort: &port 8080
+servicePort: &port 8083
 service:
   type: ClusterIP
   port: *port
 
-# HikariCP connection pool 크기 조정
+# HikariCP connection pool 크기 조정 (부하테스트용)
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
     value: "5"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "2"
+    value: "10"
+
+  # 로그 레벨 WARN (부하테스트 시 로그 감소)
+  - name: LOGGING_LEVEL_ROOT
+    value: "WARN"
+  # Kafka consumer group (staging과 분리)
+  - name: KAFKA_CONSUMER_GROUP_ID
+    value: "loadtest-order-core-notification"
 
 envFrom:
   - configMapRef:
       name: service-config
   - secretRef:
       name: service-config
+  - secretRef:
+      name: mail-config
 
 livenessProbe:
   httpGet:
@@ -88,15 +91,11 @@ readinessProbe:
 otel:
   enabled: true
 
-# Prometheus metrics (PodMonitor)
-# management 포트 분리로 context path 없이 /actuator/prometheus 사용
 metrics:
   enabled: true
-  port: 9090
   path: /actuator/prometheus
   interval: 30s
 
-# PodDisruptionBudget - 최소 1개 유지
 pdb:
   enabled: true
   maxUnavailable: 1

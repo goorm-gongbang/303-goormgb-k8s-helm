@@ -1,48 +1,42 @@
-# auth-guard - Staging 환경
-fullnameOverride: "auth-guard"
-contextPath: "/auth"
-replicaCount: 1
+# seat - Load-test 환경
+fullnameOverride: "seat"
+contextPath: "/seat"
+replicaCount: 0
 
 image:
-  name: "staging/playball/web/auth-guard"
-  tag: "432992f.51"
+  name: "staging/playball/web/seat"
+  tag: "432992f.50"
   pullPolicy: Always
 
-# IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
 imagePullSecrets: []
 
-# apps 노드는 taint 없음 - tolerations 불필요
+nodeSelector:
+  role: loadtest
 
-# HA: 노드 분산 + Managed 노드 우선
+tolerations:
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
+
 affinity:
-  nodeAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        preference:
-          matchExpressions:
-            - key: karpenter.sh/nodepool
-              operator: DoesNotExist
-      - weight: 50
-        preference:
-          matchExpressions:
-            - key: karpenter.sh/capacity-type
-              operator: In
-              values: ["on-demand"]
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
         podAffinityTerm:
           labelSelector:
             matchLabels:
-              app: auth-guard
+              app: seat
           topologyKey: kubernetes.io/hostname
 
 resources:
   requests:
-    cpu: 250m
-    memory: 384Mi
+    cpu: 500m
+    memory: 256Mi
   limits:
-    cpu: "2"
+    cpu: "3"
     memory: 2Gi
 
 istio:
@@ -51,17 +45,30 @@ istio:
     enabled: true
     loadBalancer: LEAST_REQUEST
 
-servicePort: &port 8080
+servicePort: &port 8082
 service:
   type: ClusterIP
   port: *port
 
-# HikariCP connection pool 크기 조정
+# HikariCP connection pool 크기 조정 (부하테스트용)
+# Seat - DB 쿼리 많음: 블럭/좌석/온보딩 조회, Hold 생성 (5000 VU 대상)
+# 10 replicas x 15 pool = 150 connections (RDS max_connections 270 기준)
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "5"
+    value: "20"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "2"
+    value: "10"
+  - name: SERVER_TOMCAT_THREADS_MAX
+    value: "400"
+  - name: SERVER_TOMCAT_THREADS_MIN_SPARE
+    value: "50"
+
+  # 로그 레벨 WARN (부하테스트 시 로그 감소)
+  - name: LOGGING_LEVEL_ROOT
+    value: "WARN"
+  # Kafka consumer group (staging과 분리)
+  - name: KAFKA_CONSUMER_GROUP_ID
+    value: "loadtest-seat-service"
 
 envFrom:
   - configMapRef:
@@ -88,15 +95,11 @@ readinessProbe:
 otel:
   enabled: true
 
-# Prometheus metrics (PodMonitor)
-# management 포트 분리로 context path 없이 /actuator/prometheus 사용
 metrics:
   enabled: true
-  port: 9090
   path: /actuator/prometheus
   interval: 30s
 
-# PodDisruptionBudget - 최소 1개 유지
 pdb:
   enabled: true
   maxUnavailable: 1

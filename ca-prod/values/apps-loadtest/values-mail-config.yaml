@@ -1,8 +1,8 @@
-# Mail Config - Staging 환경
+# Mail Config - Load-test 환경
 enabled: true
 
 secretName: mail-config
-namespace: staging-webs
+namespace: loadtest-webs
 
 secretManager:
   secretStoreRef:

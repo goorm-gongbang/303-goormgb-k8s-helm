@@ -1,0 +1,528 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "datasource", "uid": "grafana" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Trivy Operator 취약점 스캔 현황 대시보드입니다. 컨테이너 이미지 CVE, K8s 설정 오류, RBAC 평가 결과를 모니터링합니다.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "panels": [],
+      "title": "취약점 현황 요약",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "CRITICAL 등급 취약점 총 개수입니다. 즉시 패치가 필요합니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(trivy_image_vulnerabilities{severity=\"Critical\"}) or vector(0)",
+          "legendFormat": "Critical",
+          "refId": "A"
+        }
+      ],
+      "title": "CRITICAL 취약점",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "HIGH 등급 취약점 총 개수입니다. 우선 패치 대상입니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 },
+              { "color": "red", "value": 10 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(trivy_image_vulnerabilities{severity=\"High\"}) or vector(0)",
+          "legendFormat": "High",
+          "refId": "A"
+        }
+      ],
+      "title": "HIGH 취약점",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "MEDIUM 등급 취약점 총 개수입니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(trivy_image_vulnerabilities{severity=\"Medium\"}) or vector(0)",
+          "legendFormat": "Medium",
+          "refId": "A"
+        }
+      ],
+      "title": "MEDIUM 취약점",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "스캔된 총 이미지 개수입니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "count(count by (image_repository) (trivy_image_vulnerabilities)) or vector(0)",
+          "legendFormat": "Images",
+          "refId": "A"
+        }
+      ],
+      "title": "스캔된 이미지",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "id": 6,
+      "panels": [],
+      "title": "네임스페이스별 취약점",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "네임스페이스별 취약점 분포입니다. 어떤 네임스페이스에 취약한 이미지가 많은지 확인하세요.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "stacking": { "group": "A", "mode": "normal" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Critical" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "High" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Medium" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "id": 7,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.6,
+        "groupWidth": 0.7,
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "normal",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (namespace) (trivy_image_vulnerabilities{severity=\"Critical\"})",
+          "legendFormat": "Critical",
+          "refId": "A"
+        },
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (namespace) (trivy_image_vulnerabilities{severity=\"High\"})",
+          "legendFormat": "High",
+          "refId": "B"
+        },
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (namespace) (trivy_image_vulnerabilities{severity=\"Medium\"})",
+          "legendFormat": "Medium",
+          "refId": "C"
+        }
+      ],
+      "title": "네임스페이스별 취약점 분포",
+      "type": "barchart"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "시간대별 취약점 추이입니다. 새 이미지 배포 후 취약점 증감을 확인하세요.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 2,
+            "scaleDistribution": { "type": "linear" },
+            "stacking": { "group": "A", "mode": "none" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Critical" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "High" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "id": 8,
+      "options": {
+        "legend": { "calcs": ["last"], "displayMode": "table", "placement": "right", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(trivy_image_vulnerabilities{severity=\"Critical\"})",
+          "legendFormat": "Critical",
+          "refId": "A"
+        },
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(trivy_image_vulnerabilities{severity=\"High\"})",
+          "legendFormat": "High",
+          "refId": "B"
+        }
+      ],
+      "title": "취약점 추이 (Critical/High)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "id": 9,
+      "panels": [],
+      "title": "설정 감사 (ConfigAudit)",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "K8s 리소스 설정 오류 개수입니다. 보안 모범 사례 위반을 확인하세요.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "red", "value": 20 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 15 },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(trivy_resource_configaudits{severity=\"CRITICAL\"}) or vector(0)",
+          "legendFormat": "Critical",
+          "refId": "A"
+        }
+      ],
+      "title": "설정 오류 (Critical)",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "노출된 시크릿 개수입니다. 코드나 환경변수에 민감 정보가 노출되었는지 확인하세요.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 15 },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(trivy_image_exposedsecrets) or vector(0)",
+          "legendFormat": "Exposed Secrets",
+          "refId": "A"
+        }
+      ],
+      "title": "노출된 시크릿",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "RBAC 평가에서 발견된 위험 개수입니다.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 15 },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(trivy_role_rbacassessments{severity=\"CRITICAL\"}) or vector(0)",
+          "legendFormat": "RBAC Issues",
+          "refId": "A"
+        }
+      ],
+      "title": "RBAC 위험",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 19 },
+      "id": 13,
+      "panels": [],
+      "title": "취약 이미지 상세",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "취약점이 발견된 이미지 목록입니다. Critical/High 취약점이 있는 이미지를 우선 업데이트하세요.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Critical" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "color-background" } },
+              { "id": "color", "value": { "mode": "thresholds" } },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "transparent", "value": null }, { "color": "red", "value": 1 }] } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "High" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "color-background" } },
+              { "id": "color", "value": { "mode": "thresholds" } },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "transparent", "value": null }, { "color": "orange", "value": 1 }] } }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 20 },
+      "id": 14,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "Critical" }]
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (namespace, image_repository, image_tag) (trivy_image_vulnerabilities{severity=\"Critical\"})",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        },
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (namespace, image_repository, image_tag) (trivy_image_vulnerabilities{severity=\"High\"})",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "B"
+        }
+      ],
+      "title": "취약 이미지 목록",
+      "transformations": [
+        { "id": "merge", "options": {} },
+        { "id": "organize", "options": { "excludeByName": { "Time": true }, "renameByName": { "Value #A": "Critical", "Value #B": "High", "image_repository": "이미지", "image_tag": "태그", "namespace": "네임스페이스" } } }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["trivy", "security", "vulnerability", "staging"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "Asia/Seoul",
+  "title": "Trivy 취약점 현황",
+  "uid": "trivy-security-overview",
+  "version": 1,
+  "weekStart": ""
+}

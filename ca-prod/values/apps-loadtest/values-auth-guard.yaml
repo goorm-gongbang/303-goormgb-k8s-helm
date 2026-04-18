@@ -1,33 +1,28 @@
-# auth-guard - Staging 환경
+# auth-guard - Load-test 환경
+# CPU 사용량 높음 - JWT 검증/발급 (5000 VU 기준)
 fullnameOverride: "auth-guard"
 contextPath: "/auth"
-replicaCount: 1
+replicaCount: 0
 
 image:
   name: "staging/playball/web/auth-guard"
   tag: "432992f.51"
   pullPolicy: Always
 
-# IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
 imagePullSecrets: []
 
-# apps 노드는 taint 없음 - tolerations 불필요
+nodeSelector:
+  role: loadtest
 
-# HA: 노드 분산 + Managed 노드 우선
+tolerations:
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
+
 affinity:
-  nodeAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        preference:
-          matchExpressions:
-            - key: karpenter.sh/nodepool
-              operator: DoesNotExist
-      - weight: 50
-        preference:
-          matchExpressions:
-            - key: karpenter.sh/capacity-type
-              operator: In
-              values: ["on-demand"]
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
@@ -39,10 +34,10 @@ affinity:
 
 resources:
   requests:
-    cpu: 250m
-    memory: 384Mi
+    cpu: 500m
+    memory: 256Mi
   limits:
-    cpu: "2"
+    cpu: "3"
     memory: 2Gi
 
 istio:
@@ -56,12 +51,21 @@ service:
   type: ClusterIP
   port: *port
 
-# HikariCP connection pool 크기 조정
+# HikariCP connection pool - JWT 발급 시 user 조회 (5000 VU 기준)
+# Pool 30 (부하 상승으로 상향. DB max_connections 여유 확인 필수)
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "5"
+    value: "15"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "2"
+    value: "3"
+  - name: SERVER_TOMCAT_THREADS_MAX
+    value: "400"
+  - name: SERVER_TOMCAT_THREADS_MIN_SPARE
+    value: "50"
+
+  # 로그 레벨 WARN (부하테스트 시 로그 감소)
+  - name: LOGGING_LEVEL_ROOT
+    value: "WARN"
 
 envFrom:
   - configMapRef:
@@ -88,15 +92,11 @@ readinessProbe:
 otel:
   enabled: true
 
-# Prometheus metrics (PodMonitor)
-# management 포트 분리로 context path 없이 /actuator/prometheus 사용
 metrics:
   enabled: true
-  port: 9090
   path: /actuator/prometheus
   interval: 30s
 
-# PodDisruptionBudget - 최소 1개 유지
 pdb:
   enabled: true
   maxUnavailable: 1

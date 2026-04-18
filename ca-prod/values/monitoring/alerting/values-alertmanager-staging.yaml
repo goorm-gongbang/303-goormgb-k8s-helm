@@ -1,10 +1,10 @@
-# Alertmanager routing/receivers (prod)
+# Alertmanager routing/receivers (staging)
 
 alertmanager:
   discord:
     eso:
       enabled: true
-      secretManagerKey: "prod/monitoring"
+      secretManagerKey: "staging/monitoring"
       securityWebhooksEnabled: true
   alertmanagerSpec:
     secrets:
@@ -23,34 +23,34 @@ alertmanager:
       routes:
         - match:
             team: security
-            environment: prod
+            environment: staging
             severity: critical
           receiver: 'discord-security-critical'
           repeat_interval: 30m
         - match:
             team: security
-            environment: prod
+            environment: staging
             severity: warning
           receiver: 'discord-security-warning'
           repeat_interval: 30m
         - match:
             team: security
-            environment: prod
+            environment: staging
             severity: info
           receiver: 'discord-security-info'
           repeat_interval: 10m
         - match:
-            environment: prod
+            environment: staging
             severity: critical
           receiver: 'discord-critical'
           repeat_interval: 30m
         - match:
-            environment: prod
+            environment: staging
             severity: warning
           receiver: 'discord-warning'
           repeat_interval: 30m
         - match:
-            environment: prod
+            environment: staging
             severity: info
           receiver: 'discord-info'
           repeat_interval: 10m

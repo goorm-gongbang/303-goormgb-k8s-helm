@@ -55,9 +55,12 @@ faro:
   virtualService:
     enabled: true
     hosts:
+      - "api.staging.playball.one"
       - "api.playball.one"
     gateway: "istio-system/api-gateway"
     destinationHost: "alloy"
   cors:
     allowOrigins:
+      - "https://staging.playball.one"
       - "https://playball.one"
+      - "http://localhost:3000"
