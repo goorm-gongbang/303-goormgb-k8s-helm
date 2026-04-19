@@ -3,7 +3,7 @@
 # 라우팅만 담당, DB 사용 거의 없음 (5000 VU 기준)
 fullnameOverride: "api-gateway"
 contextPath: ""
-replicaCount: 3
+replicaCount: 0
 
 image:
   name: "staging/playball/web/api-gateway"
