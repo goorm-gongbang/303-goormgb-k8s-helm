@@ -1,7 +1,7 @@
 # seat - Load-test 환경
 fullnameOverride: "seat"
 contextPath: "/seat"
-replicaCount: 2
+replicaCount: 3
 
 image:
   name: "staging/playball/web/seat"
@@ -44,6 +44,9 @@ istio:
   destinationRule:
     enabled: true
     loadBalancer: LEAST_REQUEST
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 500
     outlierDetection:
       consecutive5xxErrors: 3
       interval: 10s

@@ -68,6 +68,11 @@ env:
   - name: SERVER_TOMCAT_THREADS_MIN_SPARE
     value: "50"
 
+  # 대기열 설정
+  - name: QUEUE_PROMOTION_BATCH_SIZE
+    value: "300"
+  - name: QUEUE_PROMOTION_INTERVAL_MS
+    value: "3000"
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
     value: "WARN"
