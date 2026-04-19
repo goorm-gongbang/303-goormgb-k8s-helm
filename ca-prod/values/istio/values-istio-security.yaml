@@ -1,7 +1,7 @@
 # EKS Staging - Istio Security
 # WAF-like protection using EnvoyFilter + Lua
 
-enabled: true
+enabled: false
 
 # 적용 대상 (Istio IngressGateway)
 selector:
