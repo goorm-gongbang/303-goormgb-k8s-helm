@@ -1,7 +1,7 @@
 # authz-adapter - Load-test 환경
 # Go 기반 gRPC ext_authz 서비스
 
-replicaCount: 2
+replicaCount: 0
 
 image:
   name: "staging/playball/ai/authz-adapter"
@@ -29,7 +29,7 @@ service:
   portName: grpc
   grpc:
     enabled: false
-    port: 9001      # GRPC_PORT 환경변수용
+    port: 9001 # GRPC_PORT 환경변수용
 
 metrics:
   enabled: true
