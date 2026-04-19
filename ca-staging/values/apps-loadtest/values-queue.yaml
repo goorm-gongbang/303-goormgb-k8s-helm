@@ -44,6 +44,9 @@ istio:
   destinationRule:
     enabled: true
     loadBalancer: LEAST_REQUEST
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 500
     outlierDetection:
       consecutive5xxErrors: 3
       interval: 10s
