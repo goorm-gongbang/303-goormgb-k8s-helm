@@ -1,0 +1,55 @@
+{{- if and .Values.enabled .Values.originVerify .Values.originVerify.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: origin-verify-filter
+  namespace: istio-system
+  labels:
+    app: istio-security
+spec:
+  workloadSelector:
+    labels:
+      {{- toYaml .Values.selector.labels | nindent 6 }}
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua.origin_verify
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inline_code: |
+              function envoy_on_request(request_handle)
+                local path = request_handle:headers():get(":path") or ""
+
+                -- 제외 경로 체크
+                {{- range .Values.originVerify.excludePaths }}
+                if string.find(path, "{{ . }}", 1, true) then
+                  return
+                end
+                {{- end }}
+
+                -- X-Origin-Verify 헤더 검증
+                local origin_header = request_handle:headers():get("{{ .Values.originVerify.headerName }}")
+                if origin_header ~= "{{ .Values.originVerify.headerValue }}" then
+                  request_handle:logWarn("[origin-verify] blocked: missing or invalid origin header from " ..
+                    (request_handle:headers():get("x-forwarded-for") or "unknown"))
+                  request_handle:respond(
+                    {[":status"] = "403"},
+                    "Forbidden"
+                  )
+                  return
+                end
+
+                -- 검증 통과 후 헤더 제거 (downstream에 노출 방지)
+                request_handle:headers():remove("{{ .Values.originVerify.headerName }}")
+              end
+{{- end }}
