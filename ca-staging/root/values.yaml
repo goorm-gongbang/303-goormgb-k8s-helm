@@ -84,22 +84,6 @@ ociCharts:
     valueFiles:
       - $values/ca-staging/values/istio/values-istio-gateway.yaml
 
-
-
-  # Karpenter - Node Auto-scaling
-  karpenter:
-    enabled: true
-    description: "Karpenter - EKS 노드 자동 스케일링 (NodePool, EC2NodeClass)"
-    repoURL: public.ecr.aws/karpenter
-    chart: karpenter
-    version: "1.11.1"
-    namespace: karpenter
-    syncWave: "-8"
-    valueFiles:
-      - $values/ca-staging/values/infra/values-karpenter.yaml
-    syncOptions:
-      - ServerSideApply=true
-
   loki:
     enabled: true
     description: "Loki - 로그 수집/저장 (Promtail에서 전송받음, Grafana에서 조회)"
@@ -325,6 +309,20 @@ ociCharts:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
 
+  # Karpenter - Node Auto-scaling
+  karpenter:
+    enabled: true
+    description: "Karpenter - EKS 노드 자동 스케일링 (NodePool, EC2NodeClass)"
+    repoURL: public.ecr.aws/karpenter
+    chart: karpenter
+    version: "1.11.1"
+    namespace: karpenter
+    syncWave: "-8"
+    valueFiles:
+      - $values/ca-staging/values/infra/values-karpenter.yaml
+    syncOptions:
+      - ServerSideApply=true
+
   # Metrics Server - kubectl top nodes/pods
   metrics-server:
     enabled: true
@@ -453,7 +451,7 @@ gitCharts:
 
   # KEDA ScaledObjects (앱별 오토스케일링 규칙)
   keda-scalers:
-    enabled: false  # 준비 완료, 필요 시 true로 변경
+    enabled: false # 준비 완료, 필요 시 true로 변경
     description: "KEDA ScaledObject - CPU, Kafka lag, Cron pre-warming"
     path: common-charts/infra/keda-scalers
     namespace: staging-webs
@@ -689,7 +687,6 @@ gitCharts:
     valueFiles:
       - ../../../../ca-staging/values/messaging/values-kafka-ui.yaml
 
-
 # =============================================================================
 # ApplicationSets
 # =============================================================================
@@ -773,7 +770,6 @@ applicationSets:
       - name: authz-adapter
         syncWave: "16"
         description: "[LoadTest] Authz Adapter - 부하테스트용 ext_authz"
-
 
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)
