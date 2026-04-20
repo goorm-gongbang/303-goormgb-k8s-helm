@@ -43,10 +43,11 @@ scalers:
     pollingInterval: 10
     cpu:
       threshold: "80"
-    kafka:
-      consumerGroup: queue-consumer
-      topic: order-events
-      lagThreshold: "50"
+    # kafka: loadtest 환경에 order-events 토픽 없음
+    # kafka:
+    #   consumerGroup: queue-consumer
+    #   topic: order-events
+    #   lagThreshold: "50"
     cron:
       - timezone: Asia/Seoul
         start: "40 10 * * *"
@@ -77,10 +78,11 @@ scalers:
     pollingInterval: 10
     cpu:
       threshold: "80"
-    kafka:
-      consumerGroup: order-consumer
-      topic: order-events
-      lagThreshold: "50"
+    # kafka: loadtest 환경에 order-events 토픽 없음
+    # kafka:
+    #   consumerGroup: order-consumer
+    #   topic: order-events
+    #   lagThreshold: "50"
     cron:
       - timezone: Asia/Seoul
         start: "40 10 * * *"
