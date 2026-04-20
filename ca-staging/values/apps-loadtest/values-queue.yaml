@@ -44,6 +44,14 @@ istio:
   destinationRule:
     enabled: true
     loadBalancer: LEAST_REQUEST
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 500
+    outlierDetection:
+      consecutive5xxErrors: 3
+      interval: 10s
+      baseEjectionTime: 10s
+      maxEjectionPercent: 50
 
 servicePort: &port 8081
 service:
@@ -63,6 +71,11 @@ env:
   - name: SERVER_TOMCAT_THREADS_MIN_SPARE
     value: "50"
 
+  # 대기열 설정
+  - name: QUEUE_PROMOTION_BATCH_SIZE
+    value: "200"
+  - name: QUEUE_PROMOTION_INTERVAL_MS
+    value: "1000"
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
     value: "WARN"
@@ -95,7 +108,7 @@ otel:
 metrics:
   enabled: true
   path: /actuator/prometheus
-  interval: 30s
+  interval: 10s
 
 pdb:
   enabled: true
