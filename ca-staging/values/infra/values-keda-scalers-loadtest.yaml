@@ -15,8 +15,8 @@ scalers:
       threshold: "80"
     cron:
       - timezone: Asia/Seoul
-        start: "20 10 * * *"
-        end: "30 10 * * *"
+        start: "30 10 * * *"
+        end: "35 10 * * *"
         desiredReplicas: "3"
 
   auth-guard:
@@ -30,8 +30,8 @@ scalers:
       threshold: "80"
     cron:
       - timezone: Asia/Seoul
-        start: "20 10 * * *"
-        end: "30 10 * * *"
+        start: "30 10 * * *"
+        end: "35 10 * * *"
         desiredReplicas: "2"
 
   queue:
@@ -49,8 +49,8 @@ scalers:
       lagThreshold: "50"
     cron:
       - timezone: Asia/Seoul
-        start: "20 10 * * *"
-        end: "30 10 * * *"
+        start: "30 10 * * *"
+        end: "35 10 * * *"
         desiredReplicas: "3"
 
   seat:
@@ -64,8 +64,8 @@ scalers:
       threshold: "80"
     cron:
       - timezone: Asia/Seoul
-        start: "20 10 * * *"
-        end: "30 10 * * *"
+        start: "30 10 * * *"
+        end: "35 10 * * *"
         desiredReplicas: "3"
 
   order-core:
@@ -83,6 +83,6 @@ scalers:
       lagThreshold: "50"
     cron:
       - timezone: Asia/Seoul
-        start: "20 10 * * *"
-        end: "30 10 * * *"
+        start: "30 10 * * *"
+        end: "35 10 * * *"
         desiredReplicas: "2"
