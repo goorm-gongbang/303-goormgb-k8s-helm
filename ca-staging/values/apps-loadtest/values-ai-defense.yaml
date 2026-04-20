@@ -1,7 +1,7 @@
 # ai-defense - Load-test 환경
 # Python FastAPI 기반 AI Defense API
 
-replicaCount: 3
+replicaCount: 1
 
 command:
   - "python"

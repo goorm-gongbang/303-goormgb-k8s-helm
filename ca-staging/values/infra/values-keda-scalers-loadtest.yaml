@@ -1,5 +1,6 @@
 # KEDA ScaledObject - Load Test
 # 부하테스트 전용 오토스케일링 (CPU 기반, 빠른 반응)
+# cron pre-warming: 현재 min + 2개 (10:40~22:00 KST)
 
 scalers:
   # === Load-test Web Services ===
@@ -12,6 +13,11 @@ scalers:
     pollingInterval: 10
     cpu:
       threshold: "50"
+    cron:
+      - timezone: Asia/Seoul
+        start: "20 10 * * *"
+        end: "30 10 * * *"
+        desiredReplicas: "3"
 
   auth-guard:
     enabled: true
@@ -22,6 +28,11 @@ scalers:
     pollingInterval: 10
     cpu:
       threshold: "50"
+    cron:
+      - timezone: Asia/Seoul
+        start: "20 10 * * *"
+        end: "30 10 * * *"
+        desiredReplicas: "3"
 
   queue:
     enabled: true
@@ -36,6 +47,11 @@ scalers:
       consumerGroup: queue-consumer
       topic: order-events
       lagThreshold: "50"
+    cron:
+      - timezone: Asia/Seoul
+        start: "20 10 * * *"
+        end: "30 10 * * *"
+        desiredReplicas: "3"
 
   seat:
     enabled: true
@@ -46,6 +62,11 @@ scalers:
     pollingInterval: 10
     cpu:
       threshold: "50"
+    cron:
+      - timezone: Asia/Seoul
+        start: "20 10 * * *"
+        end: "30 10 * * *"
+        desiredReplicas: "3"
 
   order-core:
     enabled: true
@@ -60,3 +81,8 @@ scalers:
       consumerGroup: order-consumer
       topic: order-events
       lagThreshold: "50"
+    cron:
+      - timezone: Asia/Seoul
+        start: "20 10 * * *"
+        end: "30 10 * * *"
+        desiredReplicas: "3"
