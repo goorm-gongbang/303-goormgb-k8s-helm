@@ -12,7 +12,7 @@ scalers:
     cooldownPeriod: 30
     pollingInterval: 10
     cpu:
-      threshold: "50"
+      threshold: "80"
     cron:
       - timezone: Asia/Seoul
         start: "20 10 * * *"
@@ -27,12 +27,12 @@ scalers:
     cooldownPeriod: 30
     pollingInterval: 10
     cpu:
-      threshold: "50"
+      threshold: "80"
     cron:
       - timezone: Asia/Seoul
         start: "20 10 * * *"
         end: "30 10 * * *"
-        desiredReplicas: "3"
+        desiredReplicas: "2"
 
   queue:
     enabled: true
@@ -42,7 +42,7 @@ scalers:
     cooldownPeriod: 30
     pollingInterval: 10
     cpu:
-      threshold: "50"
+      threshold: "80"
     kafka:
       consumerGroup: queue-consumer
       topic: order-events
@@ -61,7 +61,7 @@ scalers:
     cooldownPeriod: 30
     pollingInterval: 10
     cpu:
-      threshold: "50"
+      threshold: "80"
     cron:
       - timezone: Asia/Seoul
         start: "20 10 * * *"
@@ -76,7 +76,7 @@ scalers:
     cooldownPeriod: 30
     pollingInterval: 10
     cpu:
-      threshold: "50"
+      threshold: "80"
     kafka:
       consumerGroup: order-consumer
       topic: order-events
@@ -85,4 +85,4 @@ scalers:
       - timezone: Asia/Seoul
         start: "20 10 * * *"
         end: "30 10 * * *"
-        desiredReplicas: "3"
+        desiredReplicas: "2"
