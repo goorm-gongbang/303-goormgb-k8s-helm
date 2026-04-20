@@ -11,8 +11,9 @@ scalers:
     maxReplicas: 4
     cooldownPeriod: 300
     pollingInterval: 10
-    cpu:
-      threshold: "80"
+    # cpu: JVM startup spike로 플래핑 발생, loadtest는 cron만 사용
+    # cpu:
+    #   threshold: "80"
     cron:
       - timezone: Asia/Seoul
         start: "40 10 * * *"
@@ -26,8 +27,9 @@ scalers:
     maxReplicas: 4
     cooldownPeriod: 300
     pollingInterval: 10
-    cpu:
-      threshold: "80"
+    # cpu: JVM startup spike로 플래핑 발생, loadtest는 cron만 사용
+    # cpu:
+    #   threshold: "80"
     cron:
       - timezone: Asia/Seoul
         start: "40 10 * * *"
@@ -41,8 +43,9 @@ scalers:
     maxReplicas: 6
     cooldownPeriod: 300
     pollingInterval: 10
-    cpu:
-      threshold: "80"
+    # cpu: JVM startup spike로 플래핑 발생, loadtest는 cron만 사용
+    # cpu:
+    #   threshold: "80"
     # kafka: loadtest 환경에 order-events 토픽 없음
     # kafka:
     #   consumerGroup: queue-consumer
@@ -61,8 +64,9 @@ scalers:
     maxReplicas: 6
     cooldownPeriod: 300
     pollingInterval: 10
-    cpu:
-      threshold: "80"
+    # cpu: JVM startup spike로 플래핑 발생, loadtest는 cron만 사용
+    # cpu:
+    #   threshold: "80"
     cron:
       - timezone: Asia/Seoul
         start: "40 10 * * *"
@@ -76,8 +80,9 @@ scalers:
     maxReplicas: 4
     cooldownPeriod: 300
     pollingInterval: 10
-    cpu:
-      threshold: "80"
+    # cpu: JVM startup spike로 플래핑 발생, loadtest는 cron만 사용
+    # cpu:
+    #   threshold: "80"
     # kafka: loadtest 환경에 order-events 토픽 없음
     # kafka:
     #   consumerGroup: order-consumer
