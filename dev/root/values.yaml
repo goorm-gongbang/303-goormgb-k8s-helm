@@ -662,7 +662,7 @@ applicationSets:
         description: "Authz Adapter - Istio ext_authz 어댑터"
 
   dev-ai-etl:
-    enabled: true
+    enabled: false  # S3 버킷 삭제로 비활성화
     syncWave: "11"
     namespace: dev-ai
     chartPath: common-charts/apps/ai-etl
