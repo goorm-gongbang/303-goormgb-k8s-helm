@@ -102,6 +102,8 @@ env:
     value: "1000"
 
 envFrom:
+  - configMapRef:
+      name: service-config
   - secretRef:
       name: service-config
 
