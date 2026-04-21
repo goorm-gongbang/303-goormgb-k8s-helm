@@ -27,8 +27,10 @@ spec:
         {{- range .Values.sharedGateway.hosts }}
         - {{ . | quote }}
         {{- end }}
+      {{- if ne (toString (hasKey .Values.sharedGateway "httpsRedirect" | ternary .Values.sharedGateway.httpsRedirect true)) "false" }}
       tls:
-        httpsRedirect: {{ .Values.sharedGateway.httpsRedirect | default true }}
+        httpsRedirect: true
+      {{- end }}
 {{- end }}
 ---
 {{- if and .Values.apiGatewayConfig .Values.apiGatewayConfig.enabled }}
