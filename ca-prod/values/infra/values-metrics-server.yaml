@@ -1,0 +1,20 @@
+# Metrics Server - kubectl top, HPA 메트릭 제공
+# infra 노드에 배치 (control-plane 성격의 컴포넌트)
+
+replicas: 2
+
+nodeSelector:
+  role: infra
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+# HA: AZ별 분산 배치
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: metrics-server
+        topologyKey: topology.kubernetes.io/zone

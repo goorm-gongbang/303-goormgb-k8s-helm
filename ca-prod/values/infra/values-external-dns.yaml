@@ -1,12 +1,12 @@
 # ExternalDNS - Route53 DNS Record Management
-# Prod Environment (Main Account: 497012402578)
+# Staging Environment (Main Account: 990521646433)
 
 # ServiceAccount with IRSA
 serviceAccount:
   create: true
   name: external-dns
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-external-dns
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-external-dns
 
 # AWS Provider 설정
 provider: aws
@@ -16,7 +16,7 @@ extraArgs:
   - --source=service
   - --source=ingress
   - --aws-zone-type=public
-  - --txt-owner-id=goormgb-prod-eks
+  - --txt-owner-id=playball-prod-eks
   # 관리할 도메인 필터
   - --domain-filter=playball.one
   - --domain-filter=playball.one
@@ -35,6 +35,17 @@ tolerations:
   - key: role
     value: infra
     effect: NoSchedule
+
+# HA: AZ별 분산 배치 (replicas 1이지만 재스케줄링 시 분산)
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: external-dns
+          topologyKey: topology.kubernetes.io/zone
 
 # 리소스 설정
 resources:

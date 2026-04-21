@@ -18,24 +18,52 @@ service:
       port: 443
       targetPort: 8443
 
-# App 노드에 배치 (Karpenter workloads)
+# Loadtest 노드에 배치 (apps 노드 없이 부하테스트 시)
 nodeSelector:
-  role: app
+  role: loadtest
+
 tolerations:
-  - key: spot
+  - key: loadtest
     value: "true"
     effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
+
+# Managed 노드 우선, Karpenter spot 차선
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/nodepool
+              operator: DoesNotExist
+      - weight: 50
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/capacity-type
+              operator: In
+              values: ["on-demand"]
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              istio: ingressgateway
+          topologyKey: kubernetes.io/hostname
 
 resources:
   requests:
     cpu: 100m
     memory: 128Mi
   limits:
-    cpu: 500m
-    memory: 512Mi
+    cpu: "2"
+    memory: 1Gi
 
 autoscaling:
   enabled: true
   minReplicas: 2
-  maxReplicas: 4
-  targetCPUUtilizationPercentage: 80
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70

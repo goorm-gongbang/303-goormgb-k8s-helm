@@ -1,11 +1,11 @@
-# queue - Prod 환경
+# queue - Staging 환경
 fullnameOverride: "queue"
 contextPath: "/queue"
 replicaCount: 1
 
 image:
-  name: "playball/web/queue"
-  tag: "8119799.1"
+  name: "prod/playball/web/queue"
+  tag: "432992f.43"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -39,19 +39,55 @@ affinity:
 
 resources:
   requests:
-    cpu: 200m
+    cpu: 150m
     memory: 384Mi
   limits:
-    cpu: "2"
-    memory: 2Gi
+    cpu: "1"
+    memory: 1Gi
 
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
 
 servicePort: &port 8081
 service:
   type: ClusterIP
   port: *port
+
+# HikariCP connection pool 크기 조정
+env:
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
+  - name: REDIS_DATABASE
+    value: "2"
+  - name: KAFKA_CONSUMER_GROUP_ID
+    value: "queue-service"
+  - name: QUEUE_READY_TTL_SECONDS
+    value: "60"
+  - name: QUEUE_ADMISSION_TTL_SECONDS
+    value: "900"
+  - name: QUEUE_EXPIRED_MARKER_TTL_SECONDS
+    value: "300"
+  - name: QUEUE_PROMOTION_BATCH_SIZE
+    value: "1000"
+  - name: QUEUE_PROMOTION_INTERVAL_MS
+    value: "1000"
+  - name: QUEUE_ACTIVE_MATCH_KEY
+    value: "queue:match"
+  - name: QUEUE_WAIT_KEY_PREFIX
+    value: "queue:wait"
+  - name: QUEUE_READY_KEY_PREFIX
+    value: "queue:ready"
+  - name: QUEUE_EXPIRED_KEY_PREFIX
+    value: "queue:expired"
+  - name: QUEUE_READY_INDEX_KEY_PREFIX
+    value: "queue:ready:index"
+  - name: QUEUE_POLLING_READY_MS
+    value: "1000"
 
 envFrom:
   - configMapRef:
@@ -79,8 +115,10 @@ otel:
   enabled: true
 
 # Prometheus metrics (PodMonitor)
+# management 포트 분리로 context path 없이 /actuator/prometheus 사용
 metrics:
   enabled: true
+  port: 9090
   path: /actuator/prometheus
   interval: 30s
 

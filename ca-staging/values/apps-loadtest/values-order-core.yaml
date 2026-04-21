@@ -5,7 +5,7 @@ replicaCount: 0
 
 image:
   name: "staging/playball/web/order-core"
-  tag: "2a8f63b.34"
+  tag: "432992f.44"
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -41,6 +41,14 @@ resources:
 
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
+    outlierDetection:
+      consecutive5xxErrors: 3
+      interval: 10s
+      baseEjectionTime: 10s
+      maxEjectionPercent: 50
 
 servicePort: &port 8083
 service:
@@ -52,7 +60,7 @@ env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
     value: "5"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "2"
+    value: "10"
 
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
@@ -91,7 +99,7 @@ otel:
 metrics:
   enabled: true
   path: /actuator/prometheus
-  interval: 30s
+  interval: 10s
 
 pdb:
   enabled: true

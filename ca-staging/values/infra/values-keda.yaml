@@ -10,9 +10,14 @@ podLabels:
   webhooks:
     version: "2.19.0"
 
-# App 노드에 배치
+# Infra 노드에 배치 (on-demand, spot 회수 영향 방지)
 nodeSelector:
-  role: app
+  role: infra
+
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
 
 # Prometheus 메트릭
 prometheus:

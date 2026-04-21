@@ -19,4 +19,5 @@ resources:
 env:
   username: Alertmanager
   logsUrl: https://grafana.staging.playball.one/d/cfevec81ezw8wc?var-namespace=staging-webs
+  securityInfoUrl: https://policy-reporter.staging.playball.one/#/
   criticalMention: "@개발팀 @admins"

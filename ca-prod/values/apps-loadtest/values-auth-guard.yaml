@@ -1,0 +1,102 @@
+# auth-guard - Load-test 환경
+# CPU 사용량 높음 - JWT 검증/발급 (5000 VU 기준)
+fullnameOverride: "auth-guard"
+contextPath: "/auth"
+replicaCount: 3
+
+image:
+  name: "prod/playball/web/auth-guard"
+  tag: "432992f.51"
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+nodeSelector:
+  role: loadtest
+
+tolerations:
+  - key: loadtest
+    value: "true"
+    effect: NoSchedule
+  - key: karpenter.sh/disrupted
+    effect: NoSchedule
+    operator: Exists
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: auth-guard
+          topologyKey: kubernetes.io/hostname
+
+resources:
+  requests:
+    cpu: 300m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+istio:
+  sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
+
+servicePort: &port 8080
+service:
+  type: ClusterIP
+  port: *port
+
+# HikariCP connection pool - JWT 발급 시 user 조회 (5000 VU 기준)
+# Pool 30 (부하 상승으로 상향. DB max_connections 여유 확인 필수)
+env:
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "15"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "3"
+  - name: SERVER_TOMCAT_THREADS_MAX
+    value: "400"
+  - name: SERVER_TOMCAT_THREADS_MIN_SPARE
+    value: "50"
+
+  # 로그 레벨 WARN (부하테스트 시 로그 감소)
+  - name: LOGGING_LEVEL_ROOT
+    value: "WARN"
+
+envFrom:
+  - configMapRef:
+      name: service-config
+  - secretRef:
+      name: service-config
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: *port
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  failureThreshold: 6
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: *port
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  failureThreshold: 6
+
+otel:
+  enabled: true
+
+metrics:
+  enabled: true
+  path: /actuator/prometheus
+  interval: 30s
+
+pdb:
+  enabled: true
+  maxUnavailable: 1

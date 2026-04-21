@@ -1,13 +1,13 @@
-# OpenTelemetry Collector - Prod 환경
+# OpenTelemetry Collector - Staging 환경
 # Tail-based Sampling으로 스토리지 최적화
 
 fullnameOverride: otel-collector
 mode: deployment
 replicaCount: 1
 
+# 0.147.1 버전부터 필수
 image:
   repository: otel/opentelemetry-collector-contrib
-  tag: 0.110.0
 
 # Monitoring 노드에 배치
 nodeSelector:
@@ -17,13 +17,24 @@ tolerations:
     value: monitoring
     effect: NoSchedule
 
+# HA: AZ별 분산 배치
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: opentelemetry-collector
+          topologyKey: topology.kubernetes.io/zone
+
 resources:
   requests:
-    cpu: 100m
-    memory: 256Mi
-  limits:
-    cpu: 500m
+    cpu: 300m
     memory: 512Mi
+  limits:
+    cpu: 2000m
+    memory: 1Gi
 
 config:
   receivers:
@@ -39,12 +50,16 @@ config:
       timeout: 5s
       send_batch_size: 1024
 
-    # service.name → service_name 라벨 변환 (OTel 대시보드 호환)
+    # OTel → Prometheus 라벨 변환 (대시보드 호환)
     transform:
       metric_statements:
         - context: datapoint
           statements:
+            # Resource attributes → metric labels
             - set(attributes["service_name"], resource.attributes["service.name"])
+            - set(attributes["namespace"], resource.attributes["service.namespace"])
+            # app 라벨 설정 (Promtail/Loki와 통일, 대시보드 호환)
+            - set(attributes["app"], resource.attributes["service.name"])
 
     # Tail-based Sampling
     tail_sampling:
@@ -87,7 +102,7 @@ config:
       tls:
         insecure: true
 
-    logging:
+    debug:
       verbosity: basic
 
   extensions:
@@ -99,13 +114,13 @@ config:
     pipelines:
       traces:
         receivers: [otlp]
-        processors: [batch, tail_sampling]
-        exporters: [otlp/tempo, logging]
+        processors: [tail_sampling, batch]  # tail_sampling이 먼저 (완전한 trace 수집 후 샘플링)
+        exporters: [otlp/tempo, debug]
       metrics:
         receivers: [otlp]
         processors: [transform, batch]
-        exporters: [prometheusremotewrite, logging]
+        exporters: [prometheusremotewrite, debug]
       logs:
         receivers: [otlp]
         processors: [batch]
-        exporters: [otlphttp/loki, logging]
+        exporters: [otlphttp/loki, debug]

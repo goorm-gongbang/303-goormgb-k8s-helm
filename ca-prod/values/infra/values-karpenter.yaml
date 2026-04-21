@@ -1,15 +1,15 @@
 # Karpenter Configuration - Prod
-# EKS Cluster: goormgb-prod-eks
+# EKS Cluster: playball-prod-eks
 
 # Service Account with IRSA
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-karpenter-controller
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-karpenter-controller
 
 # Controller Settings
 settings:
-  clusterName: goormgb-prod-eks
-  interruptionQueue: goormgb-prod-karpenter-interruption
+  clusterName: playball-prod-eks
+  interruptionQueue: playball-prod-karpenter-interruption
 
 # Controller Resources
 controller:
@@ -21,8 +21,8 @@ controller:
       cpu: 500m
       memory: 512Mi
 
-# Replicas
-replicas: 1
+# Replicas (HA: leader election으로 자동 master 선출)
+replicas: 2
 
 # Logging
 logLevel: info
@@ -41,5 +41,12 @@ tolerations:
     value: infra
     effect: NoSchedule
 
-affinity: {}
+# HA: AZ별 분산 배치
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: karpenter
+        topologyKey: topology.kubernetes.io/zone
 topologySpreadConstraints: []

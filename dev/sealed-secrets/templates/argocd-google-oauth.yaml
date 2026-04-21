@@ -1,0 +1,23 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: argocd-google-oauth
+  namespace: argocd
+spec:
+  encryptedData:
+    clientId: AgBr2pEB3VcT5qbb1K3M0B1BGyCrAVCXDM/57muiGb09kAN6uVrtkQlDjeNkT5vQw/niwQy1MusT62Ml5sIj44enV4MZ4FTddmSCQ24W1iyqF7pqDfCCkMwX3rqDhoyboAngE8WsU5UZOJVjP54wLd/m6tJERwvuvLHVWbdFAaF7bOR17QBdWILscBleQQEphOdDykQQTW0IMrg8iGXW3mInbQ9L55nJ9TD6Yx7YZJkP4TbQdHhrczK2mAI47cXxgDwFVOUzzuYr/z5h0qah7fdA+hy4QiEoiCjj9/CPMa8HydJDn4AANDBUA9dFw8VczrrBkXWZ5aL1Z0vQZ0vPWbWHwPdExgMmkvyYTQeAfwCBLKuZ0gsQAZ2EeFoN6rGTfdCLHuWWibmiHHaWOOZahdGjC2m0/G9irKmYxWGi7/YFpTRn1h1OsSuFQY60uWIdX4q2b1jkGUFm565+oMAhsK9AI38PIM5cYBnGOj4aoJVuaSiFnrcTmgxFOcjj7fT+YqbYaN2CBwTRJEAee2Bz0E3+bVDgrlIzaipbH4vGMevG22WQsu4jIOBwg2Dh6QnsDU7LQBmz1zt0dXkwTfiXpKyZqUbKsX9PsCFsNAcYL4aCRMjn3gxVmtA8XDws+g1y9PAdLG/Ps90i2Q+S5ueYV3+JiINucOF5ql9uPKDUzC2mwJ5rUi5tMGyWyLhaAeKu1IKhDKSFxdGi2/SgCM3J0AxmvQ66re+cTP7qUZj8q32IG6YS3/PBLCGKBNOns4bcCUsPLG5yIJw/WbyppAX45WZA8SW0Elw+2MuG
+    clientSecret: AgAuMCN9dK6rPFsFhQDS7dn+unZHNdvut2va4O3AkWjindXb0EgDCOqy9F9vICeUwZhJi8mUscj3QTNO6wdpJlyWktiGf4UyzadvDo5AFyQVq8imddHbG1GbD5nEBCsL2ReZTfNj2ZYOHVVCsLHcNQvgVMOUuoqefHqCzMyNPNhz2dPUqc0Y1QM4hqKRiHlN4Y9t72UbNyEBfakFU5g6djGOawEvC7fB4Y2x/aUMlir9ySwF5iUBRLKXoRd/w5K+abl5RTW3Hv9TXl8dRgWBbxACYbCEwZSQZ+mVd9MpCpKoc8Zy0bQ7yLLo1R5mekAg/MNipay2E6GSJV2WaARWgp2MhiOock+CGyy3VgLyHZL9cKtdx72JZ8bQXaUxeCV+r8KoAP06HCpLfv1aJhwnQGTW/4vKqdLcSUOeTyb0sg7GuFExbL0WCx8rlEBiUPlIAkUX7iLeswNpPF8rGpEQTw7D8L7fjdTIIxu0AisC3ew+XN+5/7mAqYl0kGSxzh7/PBERiY40tnYnXNmWno64VDsZflhI3ItKmJ5QZseAvwwA77EHbB2MuKw9TxaCE0rvIFvHGd7OkRTdLXu9y5+OTXzPL6/P2gSuJCDYba6sw94FjLV77e33jVB4mPvoI+95sw2mEkmMk6OhW4iC9+Lr52a/QiR2c5phnBcCaGJTKWx/EzNO6xvrmzWym+Wr2QCn2awsolLCSnDFuT1dNzbYmLQ9/W8QknY8Tl72EGupPUWT4BVcnA==
+  template:
+    metadata:
+      annotations:
+        reconcile.external-secrets.io/data-hash: 910329c5244ec37905057b932fe5dc3a3fe8b2cdf48d39e6a9176529
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/part-of: argocd
+        reconcile.external-secrets.io/created-by: 668a1119a68c45c7c7264b0954a0a72eb951a334141377670ba891bf
+        reconcile.external-secrets.io/managed: "true"
+      name: argocd-google-oauth
+      namespace: argocd
+    type: Opaque

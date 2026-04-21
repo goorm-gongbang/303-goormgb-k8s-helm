@@ -5,7 +5,7 @@ replicaCount: 0
 
 image:
   name: "staging/playball/web/queue"
-  tag: "fe8ca2b.33"
+  tag: "432992f.43"
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -41,6 +41,17 @@ resources:
 
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 500
+    outlierDetection:
+      consecutive5xxErrors: 3
+      interval: 10s
+      baseEjectionTime: 10s
+      maxEjectionPercent: 50
 
 servicePort: &port 8081
 service:
@@ -52,14 +63,19 @@ service:
 # 4 replicas x 10 pool = 40 connections
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "30"
+    value: "25"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "10"
+    value: "8"
   - name: SERVER_TOMCAT_THREADS_MAX
     value: "400"
   - name: SERVER_TOMCAT_THREADS_MIN_SPARE
     value: "50"
 
+  # 대기열 설정
+  - name: QUEUE_PROMOTION_BATCH_SIZE
+    value: "200"
+  - name: QUEUE_PROMOTION_INTERVAL_MS
+    value: "1000"
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
     value: "WARN"
@@ -92,7 +108,7 @@ otel:
 metrics:
   enabled: true
   path: /actuator/prometheus
-  interval: 30s
+  interval: 10s
 
 pdb:
   enabled: true

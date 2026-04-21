@@ -5,7 +5,7 @@ replicaCount: 0
 
 image:
   name: "staging/playball/ai/authz-adapter"
-  tag: "aa7ffc4.7"
+  tag: "871857a.14"
   pullPolicy: Always
 
 # EKS 노드 IAM Role이 ECR 접근 권한 보유 - imagePullSecrets 불필요
@@ -29,7 +29,7 @@ service:
   portName: grpc
   grpc:
     enabled: false
-    port: 9001      # GRPC_PORT 환경변수용
+    port: 9001 # GRPC_PORT 환경변수용
 
 metrics:
   enabled: true

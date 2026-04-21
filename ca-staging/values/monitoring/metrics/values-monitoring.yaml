@@ -241,10 +241,10 @@ kube-prometheus-stack:
         role_attribute_path: >-
           contains(['212clab@gmail.com', 'rhuba23@gmail.com', 'chamchi0129@gmail.com'], email) && 'Admin' ||
           contains(['jusanha17@gmail.com', 'yuuijin863@gmail.com', 'rhkdgur120@gmail.com', 'siyeon0713@gmail.com', 'wkdwlgus317@hanyang.ac.kr', 'cdh4112618@gmail.com'], email) && 'Editor' ||
-          'Viewer'
+          'Editor'
       users:
         auto_assign_org: true
-        auto_assign_org_role: Viewer
+        auto_assign_org_role: Editor
       auth:
         disable_login_form: false
 

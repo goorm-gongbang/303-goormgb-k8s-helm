@@ -74,6 +74,36 @@ env:
       secretKeyRef:
         name: service-config
         key: REDIS_QUEUE_PORT
+  # Kafka consumer group override
+  - name: KAFKA_CONSUMER_GROUP_ID
+    value: "queue-service"
+  # Queue properties
+  - name: QUEUE_READY_TTL_SECONDS
+    value: "60"
+  - name: QUEUE_ADMISSION_TTL_SECONDS
+    value: "900"
+  - name: QUEUE_EXPIRED_MARKER_TTL_SECONDS
+    value: "300"
+  - name: QUEUE_PROMOTION_BATCH_SIZE
+    value: "1000"
+  - name: QUEUE_PROMOTION_INTERVAL_MS
+    value: "1000"
+  - name: QUEUE_ACTIVE_MATCH_KEY
+    value: "queue:match"
+  - name: QUEUE_WAIT_KEY_PREFIX
+    value: "queue:wait"
+  - name: QUEUE_READY_KEY_PREFIX
+    value: "queue:ready"
+  - name: QUEUE_EXPIRED_KEY_PREFIX
+    value: "queue:expired"
+  - name: QUEUE_READY_INDEX_KEY_PREFIX
+    value: "queue:ready:index"
+  - name: QUEUE_POLLING_READY_MS
+    value: "1000"
+
+envFrom:
+  - secretRef:
+      name: service-config
 
 # Prometheus Metrics (Spring Boot Actuator)
 # management 포트 분리 (서비스 포트와 별도로 actuator 노출)

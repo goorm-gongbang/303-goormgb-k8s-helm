@@ -7,7 +7,7 @@ replicaCount: 0
 
 image:
   name: "staging/playball/web/api-gateway"
-  tag: "fe8ca2b.32"
+  tag: "432992f.40"
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -41,13 +41,24 @@ resources:
     memory: 256Mi
   limits:
     cpu: "2"
-    memory: 2Gi
+    memory: 3Gi
 
 # Istio - VirtualService는 별도 관리
 istio:
   sidecar: true
   gateway:
-    enabled: false  # /load-test/ 라우팅은 별도 VirtualService
+    enabled: false # /load-test/ 라우팅은 별도 VirtualService
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 500
+    outlierDetection:
+      consecutive5xxErrors: 3
+      interval: 10s
+      baseEjectionTime: 10s
+      maxEjectionPercent: 50
 
 # Service
 servicePort: &port 8085
@@ -57,6 +68,17 @@ service:
 
 # Environment variables - loadtest-webs 서비스 참조
 env:
+  # Spring Cloud Gateway HTTP client pool (P99 tail 대응)
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_TYPE
+    value: "elastic"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_MAX_CONNECTIONS
+    value: "1000"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_ACQUIRE_TIMEOUT
+    value: "1500"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_POOL_MAX_IDLE_TIME
+    value: "30s"
+  - name: SPRING_CLOUD_GATEWAY_HTTPCLIENT_RESPONSE_TIMEOUT
+    value: "5s"
   - name: ALLOWED_ORIGINS
   - name: AUTH_GUARD_URL
     value: "http://auth-guard.loadtest-webs.svc.cluster.local:8080"
@@ -78,7 +100,7 @@ env:
         key: SPRING_DATA_REDIS_PORT
   # HikariCP connection pool - 라우팅만 담당, DB 거의 안 씀
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "3"
+    value: "10"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
     value: "2"
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
@@ -113,7 +135,7 @@ otel:
 metrics:
   enabled: true
   path: /actuator/prometheus
-  interval: 30s
+  interval: 10s
 
 pdb:
   enabled: true

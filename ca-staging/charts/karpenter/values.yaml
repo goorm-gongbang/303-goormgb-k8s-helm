@@ -20,7 +20,7 @@ nodePools:
   # api-gateway, auth-guard, order-core, queue, seat
   # -----------------------------------------------------------------------------
   workloads:
-    enabled: true  # apps 노드 부족 시 자동 스케일아웃
+    enabled: true # apps 노드 부족 시 자동 스케일아웃
     role: karpenter-workloads
 
     # Spot only (staging 비용 절감)
@@ -33,11 +33,11 @@ nodePools:
       - m
       - c
       - r
-    minGeneration: "4"  # 5세대 이상 (t4g 제외, m5/c5+)
+    minGeneration: "4" # 5세대 이상 (t4g 제외, m5/c5+)
     instanceSizes:
-      - large      # 2 vCPU, 8/16GB - Spot 풀 다양화
-      - xlarge     # 4 vCPU, 16/32GB - 기본
-      - 2xlarge    # 8 vCPU, 32/64GB - 버스트용
+      - large # 2 vCPU, 8/16GB - Spot 풀 다양화
+      - xlarge # 4 vCPU, 16/32GB - 기본
+      - 2xlarge # 8 vCPU, 32/64GB - 버스트용
 
     # 리소스 제한 (앱용)
     limits:
@@ -67,18 +67,22 @@ nodePools:
     capacityTypes:
       - spot
 
-    # 인스턴스 설정 - t4g.xlarge Spot (Graviton 최저가 ~$0.03/hr)
+    # 인스턴스 설정 - arm64 Spot 풀 다양화 (회수 빈도 감소)
     arch: arm64
-    minGeneration: "3"  # 4세대 포함 (t4g)
+    minGeneration: "4" # 5세대 이상
     instanceCategories:
-      - t
+      - m
+      - c
+      - r
     instanceSizes:
-      - xlarge    # 4 vCPU, 16GB
+      - large # 2 vCPU, 8/16GB
+      - xlarge # 4 vCPU, 16/32GB
+      - 2xlarge # 8 vCPU, 32/64GB
 
     # 리소스 제한 - webs 5개 서비스만 (requests ~4 cores)
     limits:
-      cpu: 16
-      memory: 32Gi
+      cpu: 64
+      memory: 128Gi
 
     # Taint 설정 (부하 테스트 전용 격리)
     taints:
@@ -91,7 +95,7 @@ nodePools:
     # Disruption 설정 - 빠른 통합으로 빈 노드 즉시 제거
     consolidationPolicy: WhenEmptyOrUnderutilized
     consolidateAfter: 30s
-    expireAfter: 168h  # 7일 (테스트 끝나면 자동 교체)
+    expireAfter: 168h # 7일 (테스트 끝나면 자동 교체)
 
 # =============================================================================
 # EC2NodeClass - 공통 설정

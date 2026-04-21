@@ -1,13 +1,15 @@
-# Kafka Prod Environment
+# Kafka Staging Environment
 # AWS EKS Cluster - Pod 기반 배포
 
-replicas: 3  # Prod 환경은 고가용성을 위해 3대
+replicas: 1  # Staging은 비용 절감을 위해 1대
 
 kraft:
-  clusterId: "goormgb-prod-kafka-001"
+  clusterId: "playball-prod-kafka-001"
 
 config:
   processRoles: broker,controller
+  controllerQuorumVoters: "0@kafka-0.kafka-headless.messaging.svc.cluster.local:9093"
+  advertisedListeners: "PLAINTEXT://kafka-0.kafka-headless.messaging.svc.cluster.local:9092"
 
   # 토픽 기본값
   numPartitions: 3
@@ -21,7 +23,7 @@ config:
 persistence:
   enabled: true
   storageClass: gp3
-  size: 50Gi
+  size: 10Gi
 
 resources:
   requests:
@@ -47,16 +49,7 @@ tolerations:
     effect: NoSchedule
 
 # Anti-affinity 설정 (Prod에서 replicas > 1일 때 사용)
-affinity:
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-                - kafka
-        topologyKey: "kubernetes.io/hostname"
+affinity: {}
 
 # 초기 토픽 생성
 topics:

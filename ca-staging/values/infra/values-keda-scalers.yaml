@@ -7,70 +7,49 @@ scalers:
     enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 10
     cpu:
-      threshold: "70"
-    cron:
-      # 경기 30분 전 pre-warming (예시: 19시 경기)
-      - start: "30 18 * * *"
-        end: "00 22 * * *"
-        desiredReplicas: "3"
+      threshold: "80"
 
   auth-guard:
     enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 10
     cpu:
-      threshold: "70"
-    cron:
-      - start: "30 18 * * *"
-        end: "00 22 * * *"
-        desiredReplicas: "3"
+      threshold: "80"
 
   queue:
     enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 8
+    maxReplicas: 10
     cpu:
-      threshold: "60"
-    kafka:
-      consumerGroup: queue-consumer
-      topic: order-events
-      lagThreshold: "100"
-    cron:
-      - start: "30 18 * * *"
-        end: "00 22 * * *"
-        desiredReplicas: "4"
+      threshold: "80"
+    # kafka:
+    #   consumerGroup: queue-consumer
+    #   topic: order-events
+    #   lagThreshold: "100"
 
   seat:
     enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 8
+    maxReplicas: 10
     cpu:
-      threshold: "60"
-    cron:
-      - start: "30 18 * * *"
-        end: "00 22 * * *"
-        desiredReplicas: "4"
+      threshold: "80"
 
   order-core:
     enabled: true
     namespace: staging-webs
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 10
     cpu:
-      threshold: "70"
-    kafka:
-      consumerGroup: order-consumer
-      topic: order-events
-      lagThreshold: "100"
-    cron:
-      - start: "30 18 * * *"
-        end: "00 22 * * *"
-        desiredReplicas: "3"
+      threshold: "80"
+    # kafka:
+    #   consumerGroup: order-consumer
+    #   topic: order-events
+    #   lagThreshold: "100"
 
   # === AI Services ===
   ai-defense:
@@ -78,15 +57,15 @@ scalers:
     namespace: staging-ai
     deploymentName: staging-ai-defense
     minReplicas: 1
-    maxReplicas: 3
+    maxReplicas: 10
     cpu:
-      threshold: "70"
+      threshold: "80"
 
   authz-adapter:
     enabled: true
     namespace: staging-ai
     deploymentName: staging-authz-adapter
     minReplicas: 1
-    maxReplicas: 3
+    maxReplicas: 10
     cpu:
-      threshold: "70"
+      threshold: "80"

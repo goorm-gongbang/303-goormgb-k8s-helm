@@ -1,4 +1,4 @@
-# EKS Prod 클러스터 Istio 설정
+# EKS Staging 클러스터 Istio 설정
 # ALB Ingress 사용 - Istio IngressGateway는 API 트래픽만 처리
 
 # istiod (Helm chart values)
@@ -30,6 +30,27 @@ global:
 
 meshConfig:
   accessLogFile: /dev/stdout
+  enableTracing: true
+
+  # Istio 1.22+ extensionProviders 방식 (Telemetry API 연동)
+  # otel-collector 경유 (mTLS 비활성화됨, tempo 직접 연결시 mTLS 문제 발생)
+  extensionProviders:
+    - name: zipkin
+      zipkin:
+        service: otel-collector.monitoring.svc.cluster.local
+        port: 9411
+
+  # 기본 tracing provider 설정
+  defaultProviders:
+    tracing:
+      - zipkin
+
+  defaultConfig:
+    # ALB 뒤에서 실제 클라이언트 IP 인식 (IP Whitelist용)
+    gatewayTopology:
+      numTrustedProxies: 1
+    tracing:
+      sampling: 100  # staging은 100% 샘플링
 
 # Legacy gateways 비활성화 (ALB Ingress 사용)
 sharedGateway:
@@ -47,24 +68,35 @@ apiGatewayConfig:
   selector: ingressgateway
   hosts:
     - "api.playball.one"
-    - "prometheus.playball.one"
+    - "api.playball.one"
+    - "cloudbeaver.playball.one"
+    - "grafana.playball.one"
+    - "kafka-ui.playball.one"
+    - "redisinsight.playball.one"
+    - "policy-reporter.playball.one"
 
 # =============================================================================
 # Kiali - Service Mesh Observability
 # =============================================================================
+# Istio 라벨 설정 - app 라벨 사용 (app.kubernetes.io/name 대신)
+# OTEL service.name이 app 라벨과 일치하도록 설정
+istio_labels:
+  app_label_name: app
+  version_label_name: version
+
+# 멀티클러스터 비활성화 (single cluster 환경)
+# 이게 없으면 Kiali가 trace 쿼리에 istio.cluster_id 필터 추가함
+clustering:
+  enabled: false
+
 auth:
   strategy: openid
   openid:
-    client_id_from_secret: kiali-oidc-secret
-    client_id_secret_key: client_id
+    client_id: "1089953130952-jok8g6t718k2g4vl7leufoc4tjmiqgt1.apps.googleusercontent.com"
     issuer_uri: "https://accounts.google.com"
+    scopes: ["openid", "email", "profile"]
     username_claim: "email"
-    scopes: ["openid", "profile", "email"]
     disable_rbac: true
-
-server:
-  web_port: 443
-  web_schema: https
 
 deployment:
   node_selector:
@@ -87,9 +119,12 @@ external_services:
   grafana:
     enabled: true
     in_cluster_url: "http://grafana.monitoring.svc.cluster.local:80"
-    url: "https://grafana.playball.one"
   tracing:
     enabled: true
     provider: "tempo"
     in_cluster_url: "http://tempo.monitoring.svc.cluster.local:3200"
     use_grpc: false
+    tempo_config:
+      org_id: "1"
+      cache_enabled: true
+      cache_capacity: 200

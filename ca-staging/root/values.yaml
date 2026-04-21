@@ -84,22 +84,6 @@ ociCharts:
     valueFiles:
       - $values/ca-staging/values/istio/values-istio-gateway.yaml
 
-
-
-  # Karpenter - Node Auto-scaling
-  karpenter:
-    enabled: true
-    description: "Karpenter - EKS 노드 자동 스케일링 (NodePool, EC2NodeClass)"
-    repoURL: public.ecr.aws/karpenter
-    chart: karpenter
-    version: "1.11.1"
-    namespace: karpenter
-    syncWave: "-8"
-    valueFiles:
-      - $values/ca-staging/values/infra/values-karpenter.yaml
-    syncOptions:
-      - ServerSideApply=true
-
   loki:
     enabled: true
     description: "Loki - 로그 수집/저장 (Promtail에서 전송받음, Grafana에서 조회)"
@@ -288,6 +272,17 @@ ociCharts:
     valueFiles:
       - $values/ca-staging/values/monitoring/visualization/values-grafana.yaml
 
+  alloy:
+    enabled: true
+    description: "Grafana Alloy - 프론트 Faro 수집기"
+    repoURL: https://grafana.github.io/helm-charts
+    chart: alloy
+    version: "1.7.0"
+    namespace: monitoring
+    syncWave: "0"
+    valueFiles:
+      - $values/ca-staging/values/monitoring/logs/values-alloy.yaml
+
   opentelemetry-collector:
     enabled: true
     description: "OpenTelemetry Collector - 메트릭/트레이스 수집 파이프라인"
@@ -301,7 +296,7 @@ ociCharts:
 
   # KEDA - Event-Driven Autoscaling
   keda:
-    enabled: true
+    enabled: false
     description: "KEDA - Kafka lag, Redis queue, Cron 기반 오토스케일링"
     repoURL: https://kedacore.github.io/charts
     chart: keda
@@ -313,6 +308,20 @@ ociCharts:
     syncOptions:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
+
+  # Karpenter - Node Auto-scaling
+  karpenter:
+    enabled: true
+    description: "Karpenter - EKS 노드 자동 스케일링 (NodePool, EC2NodeClass)"
+    repoURL: public.ecr.aws/karpenter
+    chart: karpenter
+    version: "1.11.1"
+    namespace: karpenter
+    syncWave: "-8"
+    valueFiles:
+      - $values/ca-staging/values/infra/values-karpenter.yaml
+    syncOptions:
+      - ServerSideApply=true
 
   # Metrics Server - kubectl top nodes/pods
   metrics-server:
@@ -442,7 +451,7 @@ gitCharts:
 
   # KEDA ScaledObjects (앱별 오토스케일링 규칙)
   keda-scalers:
-    enabled: false  # 준비 완료, 필요 시 true로 변경
+    enabled: false # 준비 완료, 필요 시 true로 변경
     description: "KEDA ScaledObject - CPU, Kafka lag, Cron pre-warming"
     path: common-charts/infra/keda-scalers
     namespace: staging-webs
@@ -452,7 +461,7 @@ gitCharts:
 
   # KEDA ScaledObjects - Load Test (부하테스트 전용)
   keda-scalers-loadtest:
-    enabled: false
+    enabled: true
     description: "KEDA ScaledObject - Load Test 전용 CPU 기반 오토스케일링"
     path: common-charts/infra/keda-scalers
     namespace: loadtest-webs
@@ -532,6 +541,15 @@ gitCharts:
       - ../../../../ca-staging/values/monitoring/alerting/values-alertmanager-staging.yaml
     syncOptions:
       - Replace=true
+
+  alloy-config:
+    enabled: true
+    description: "Faro 라우팅 - /faro VirtualService 및 DestinationRule"
+    path: common-charts/infra/monitoring/alloy
+    namespace: monitoring
+    syncWave: "1"
+    valueFiles:
+      - ../../../../ca-staging/values/monitoring/logs/values-alloy.yaml
 
   alertmanager-discord-relay:
     enabled: true
@@ -669,7 +687,6 @@ gitCharts:
     valueFiles:
       - ../../../../ca-staging/values/messaging/values-kafka-ui.yaml
 
-
 # =============================================================================
 # ApplicationSets
 # =============================================================================
@@ -753,7 +770,6 @@ applicationSets:
       - name: authz-adapter
         syncWave: "16"
         description: "[LoadTest] Authz Adapter - 부하테스트용 ext_authz"
-
 
 # =============================================================================
 # Raw Manifests (Gateway, VirtualService, EnvoyFilter)

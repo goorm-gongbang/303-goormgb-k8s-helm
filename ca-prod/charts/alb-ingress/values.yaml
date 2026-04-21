@@ -15,7 +15,7 @@ ingress:
 
   # TLS 설정 (ACM 인증서) - *.playball.one
   # [수정됨] 기존의 안정적인 인증서 ARN으로 원복 완료
-  certificateArn: arn:aws:acm:ap-northeast-2:406223549139:certificate/cf7522dc-1228-425c-9945-09ca9043a39c
+  certificateArn: arn:aws:acm:ap-northeast-2:990521646433:certificate/cf7522dc-1228-425c-9945-09ca9043a39c
 
   rules:
     # ArgoCD - Istio 안 거침 (직접 라우팅)

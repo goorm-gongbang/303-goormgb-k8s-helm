@@ -68,6 +68,7 @@ apiGatewayConfig:
   selector: ingressgateway
   hosts:
     - "api.staging.playball.one"
+    - "api.playball.one"
     - "cloudbeaver.staging.playball.one"
     - "grafana.staging.playball.one"
     - "kafka-ui.staging.playball.one"

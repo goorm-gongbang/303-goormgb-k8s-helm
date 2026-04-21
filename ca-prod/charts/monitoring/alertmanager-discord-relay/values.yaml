@@ -19,4 +19,5 @@ resources:
 env:
   username: Alertmanager
   logsUrl: https://grafana.playball.one/d/cfevec81ezw8wc?var-namespace=prod-webs
+  securityInfoUrl: https://policy-reporter.playball.one/#/
   criticalMention: "@개발팀 @admins"

@@ -1,0 +1,23 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: postgresql-backup-s3
+  namespace: data
+spec:
+  encryptedData:
+    AWS_ACCESS_KEY_ID: AgCZeO1+mMemovVOO9kdN+bygxEBw87nhqGJEPfkrGmrQXYxLwSXFlew9VB3+mLWO7ZD7dDyee1FgLfP32c/s4fvUNzD/heeltcmKIbMBLw/Z80gC148KUDeSHHIASoAB60Tlbd2QW9xfja7fl9W5QmAaeOL+qxX8F2UfS8sbAGBDyxe+F/lsWhWxYwxPyqPgq6ooDLTy4Yq9sptW0BF34T7CTLfG8NzoOcK+a6uy2yTO5RpVpcJrwhI6T31gSaB3qUAip9cUBHbMMcaazbcsRu8BpSbvavVl0HHRK5xIrPGSLUJEaKNKGGhcGRx8Luh9hdzTPNU7cMm+5e8QanEBT3+/DGPi4R4DB9+Jm73VP5A2QwC8zyT+h7+tDttV4M8RfA6JpqnAo3TeRXYTgtBBZusFNg8NqOc80tFHVUpEFAcANy7Tn0xg3NUnkWf/pbOvTULN24uPy5MohgI53j8IV0D8jjyLlo27Nl5BsHzwLBPjGIwVKoDtxYBcHxJrcnnQjB7iHNzl0OO8CCXd3y0nK6tiW2rhG+q2tPHDxXlYoqPlUPn+S4QT+11TyQVN9AER0b3TIahEZpRbNRYLDEL6Pm7v049QWlADN8BNkV6w6RTj0Vg8Q89OlRQJvLip6qhuhB0XKEEAfz9wy3favhJIac6NWEpAmprITagdr0RQwucCCOgAQ+fovNB3xIEiM3CZTTsKGn4fRyNZAKFO1x/tgTsO1YkkA==
+    AWS_SECRET_ACCESS_KEY: AgBm4fyNRrYLJLn5Y0AxtDQ3a29e/yEEmHNKQwAkmox4m45ramyhFERUr5hRjoTN3FcLTTAw+L+FhFa71eVBhqwq2195Wd6dt9ERegwFjufFQJaRekwL1wrx9GMhwv4UdAg1lg8H39LBl1gU+5gfOD+P8eCp/SsFEt/LdYDOm8b+kwYPo2P2cAmM05IICcnIOA2pCP7pr2rNrJDjkvvhD+JLt4h2joSq+E3X3At+JESLXUCUMHBfYWNiWML1G3MsDjtVVG7w6AwEOmkjd6N4ik9RVpp0pLX9lhcOO2bYcbxVumbs1b7zSQpYEFz8aBNt1T2GXJllXxmK7HTmNKVE73XmW6tncYAc3g18iq+xsqzeJBEWabxacmIidRfmEq9QGN426+ttfjwajMFd768KIFEu2FiNZ3tCGzRqb519ddJ5iM2itW28Z7NcaR+STpPtu6PSGKcjp1ENh9GOviYlYkj4nms+Zf0e894U1ao8EUiEbW76Nwws2L6xThObGPH3Rl4P9pa74xuqOmEMHl1ni6P13m/ltC1FLUGJImXbpU5EL8Z75K0n8t+Y3aVuDs5uQd0+bT7CnJdPm6+/bTE+EpOqFks7/j/eAU6NT0zc8Bl4n1Y1BqwQhl/2qA0TkHBhV4y7FRFMra8PX5GcDNnZNN45g/l4fDYOdac3XkOYDfTIx6l63T1KXvS7k0w0F6tYQfxIqaKlUxKsBQ0Utu2lYrd72wANUzJ6mbA1lVdS+aFlhpKdAub0E1pL
+  template:
+    metadata:
+      annotations:
+        argocd.argoproj.io/tracking-id: postgresql:external-secrets.io/ExternalSecret:data/postgresql-backup-s3
+        reconcile.external-secrets.io/data-hash: a58ea04f5da3da5da5660f957b193c34d6645bf30047021872837647
+      creationTimestamp: null
+      labels:
+        reconcile.external-secrets.io/created-by: 0427b73a8350b636f8d678f92a286bd50bef67abaa3930ebdb54a1bc
+        reconcile.external-secrets.io/managed: "true"
+      name: postgresql-backup-s3
+      namespace: data
+    type: Opaque

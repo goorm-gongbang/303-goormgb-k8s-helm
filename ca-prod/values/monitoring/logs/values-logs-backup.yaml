@@ -1,7 +1,7 @@
 serviceAccount:
   name: logs-backup
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-logs-backup
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-logs-backup
 
 nodeSelector:
   role: infra
@@ -21,9 +21,9 @@ resources:
 
 jobs:
   - name: infra
-    schedule: "10 18 * * *"
+    schedule: "40 17 * * *"
     s3Bucket: playball-web-backup
-    s3Prefix: prod/logs/infra
+    s3Prefix: staging/logs/infra
     targetNamespaces:
       - argocd
       - data
@@ -36,16 +36,9 @@ jobs:
       - messaging
       - monitoring
   - name: service
-    schedule: "20 18 * * *"
+    schedule: "50 17 * * *"
     s3Bucket: playball-web-backup
-    s3Prefix: prod/logs/service
+    s3Prefix: staging/logs/service
     targetNamespaces:
       - prod-ai
       - prod-webs
-  - name: payment
-    schedule: "30 18 * * *"
-    s3Bucket: playball-web-backup
-    s3Prefix: prod/logs/payment
-    targetNamespaces:
-      - prod-webs
-    podNameRegex: "^prod-(api-gateway|auth-guard|order-core|queue|seat)-"

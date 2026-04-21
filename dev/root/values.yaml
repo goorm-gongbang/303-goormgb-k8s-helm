@@ -469,13 +469,22 @@ gitCharts:
       - ../../../../dev/values/monitoring/values-prometheus-stack.yaml
       - ../../../../dev/values/monitoring/alerting/values-alertmanager-dev.yaml
   # === Kyverno Policies ===
+  # [DEPRECATED] Worker node NotReady → 제거
   kyverno-policies:
-    enabled: true
+    enabled: false
     path: common-charts/infra/kyverno-policies
     namespace: kyverno
     syncWave: "0"
     valueFiles:
       - ../../../dev/values/infra/values-kyverno-policies.yaml
+
+  # === Sealed Secrets (ESO 대체) ===
+  sealed-secrets:
+    enabled: true
+    description: "Sealed Secrets - 암호화된 시크릿 (ESO/AWS SM 대체, 무료)"
+    path: dev/sealed-secrets
+    namespace: kube-system
+    syncWave: "-8"
 
   # === Tetragon TracingPolicy (L3/L4 threat detection) ===
   tetragon-config:

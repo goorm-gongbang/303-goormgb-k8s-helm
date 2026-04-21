@@ -53,6 +53,54 @@ namespaces:
           matchLabels:
             kubernetes.io/metadata.name: prod-ai
 
+  loadtest-webs:
+    allowIngressFrom:
+      # Istio IngressGateway
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: istio-system
+      # Same namespace
+      - podSelector: {}
+    allowEgressTo:
+      # Data namespace (Kafka, Redis)
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: data
+      # AI services
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: loadtest-ai
+      # Same namespace
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: loadtest-webs
+
+  loadtest-ai:
+    allowIngressFrom:
+      # Istio IngressGateway
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: istio-system
+      # Web services
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: loadtest-webs
+      # Same namespace
+      - podSelector: {}
+    allowEgressTo:
+      # Data namespace (Redis)
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: data
+      # Web services (callback)
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: loadtest-webs
+      # Same namespace
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: loadtest-ai
+
   data:
     allowIngressFrom:
       # Web services
@@ -63,6 +111,14 @@ namespaces:
       - namespaceSelector:
           matchLabels:
             kubernetes.io/metadata.name: prod-ai
+      # Loadtest web services
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: loadtest-webs
+      # Loadtest AI services
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: loadtest-ai
       # Monitoring (metrics scraping)
       - namespaceSelector:
           matchLabels:

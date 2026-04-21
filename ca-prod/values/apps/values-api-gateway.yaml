@@ -1,11 +1,11 @@
-# api-gateway - Prod 환경
+# api-gateway - Staging 환경
 fullnameOverride: "api-gateway"
-contextPath: ""  # api-gateway는 context path 없음
+contextPath: "" # api-gateway는 context path 없음
 replicaCount: 1
 
 image:
-  name: "playball/web/api-gateway"
-  tag: "8119799.1"
+  name: "prod/playball/web/api-gateway"
+  tag: "432992f.40"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -41,8 +41,8 @@ affinity:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 384Mi
+    cpu: 300m
+    memory: 512Mi
   limits:
     cpu: "2"
     memory: 2Gi
@@ -50,15 +50,23 @@ resources:
 # Istio
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
   gateway:
     enabled: true
     externalRef: "istio-system/api-gateway"
     host: "api.playball.one"
+    extraHosts:
+      - "api.playball.one"
   cors:
     enabled: true
     allowOrigins:
       - "https://playball.one"
       - "http://localhost:3000"
+      # TEMP: prod 클러스터 배포 전까지 playball.one 트래픽을 staging 으로 라우팅 (revert 예정)
+      - "https://playball.one"
+      - "https://www.playball.one"
     allowMethods:
       - GET
       - POST
@@ -84,7 +92,6 @@ service:
 # Environment variables
 env:
   - name: ALLOWED_ORIGINS
-    value: "https://playball.one,http://localhost:3000"
   - name: AUTH_GUARD_URL
     value: "http://auth-guard.prod-webs.svc.cluster.local:8080"
   - name: QUEUE_URL
@@ -103,6 +110,8 @@ env:
       secretKeyRef:
         name: service-config
         key: SPRING_DATA_REDIS_PORT
+  - name: REDIS_DATABASE
+    value: "0"
 
 envFrom:
   - configMapRef:
@@ -130,6 +139,7 @@ otel:
   enabled: true
 
 # Prometheus metrics (PodMonitor)
+# management 포트 분리 (mTLS 예외 적용)
 metrics:
   enabled: true
   port: 9090

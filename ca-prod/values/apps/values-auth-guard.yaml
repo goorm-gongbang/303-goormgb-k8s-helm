@@ -1,11 +1,11 @@
-# auth-guard - Prod 환경
+# auth-guard - Staging 환경
 fullnameOverride: "auth-guard"
 contextPath: "/auth"
 replicaCount: 1
 
 image:
-  name: "playball/web/auth-guard"
-  tag: "8119799.4"
+  name: "prod/playball/web/auth-guard"
+  tag: "432992f.51"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -39,19 +39,31 @@ affinity:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 256Mi
+    cpu: 250m
+    memory: 384Mi
   limits:
     cpu: "2"
     memory: 2Gi
 
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
 
 servicePort: &port 8080
 service:
   type: ClusterIP
   port: *port
+
+# HikariCP connection pool 크기 조정
+env:
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
+  - name: REDIS_DATABASE
+    value: "1"
 
 envFrom:
   - configMapRef:
@@ -79,8 +91,10 @@ otel:
   enabled: true
 
 # Prometheus metrics (PodMonitor)
+# management 포트 분리로 context path 없이 /actuator/prometheus 사용
 metrics:
   enabled: true
+  port: 9090
   path: /actuator/prometheus
   interval: 30s
 

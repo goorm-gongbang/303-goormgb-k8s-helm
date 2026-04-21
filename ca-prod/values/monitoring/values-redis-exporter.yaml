@@ -1,0 +1,47 @@
+# prometheus-redis-exporter — ElastiCache Redis 서버 메트릭
+# 메트릭: redis_connected_clients, redis_commands_processed_total,
+#        redis_commands_duration_seconds_sum, redis_memory_used_bytes 등
+
+redisAddress: rediss://master.playball-prod-redis.abic5t.apn2.cache.amazonaws.com:6379
+
+# TLS (ElastiCache transit encryption 사용 중)
+redisTlsConfig:
+  enabled: true
+  skipVerify: true  # ElastiCache 기본 인증서 검증 스킵
+
+# AUTH 가 활성화돼 있으면 비밀번호 시크릿에서 참조
+# (현재는 미설정 — 필요 시 ExternalSecrets 로 연결)
+auth:
+  enabled: false
+
+serviceMonitor:
+  enabled: true
+  namespace: monitoring
+  interval: 30s
+  labels:
+    release: prom  # kube-prometheus-stack 자동 discovery
+
+# istio sidecar 제외 — Redis 프로토콜 직접 통신
+podAnnotations:
+  sidecar.istio.io/inject: "false"
+
+service:
+  port: 9121
+
+resources:
+  requests:
+    cpu: 30m
+    memory: 32Mi
+  limits:
+    cpu: 100m
+    memory: 64Mi
+
+# Monitoring 노드 배치
+nodeSelector:
+  kubernetes.io/arch: arm64
+  role: monitoring
+tolerations:
+  - key: role
+    operator: Equal
+    value: monitoring
+    effect: NoSchedule

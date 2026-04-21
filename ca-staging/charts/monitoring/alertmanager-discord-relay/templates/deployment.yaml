@@ -15,6 +15,12 @@ spec:
       labels:
         app.kubernetes.io/name: alertmanager-discord-relay
     spec:
+      nodeSelector:
+        role: monitoring
+      tolerations:
+        - key: role
+          value: monitoring
+          effect: NoSchedule
       containers:
         - name: relay
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -27,6 +33,8 @@ spec:
               value: {{ .Values.env.username | quote }}
             - name: STAGING_LOGS_URL
               value: {{ .Values.env.logsUrl | quote }}
+            - name: SECURITY_INFO_URL
+              value: {{ .Values.env.securityInfoUrl | quote }}
             - name: CRITICAL_MENTION
               value: {{ .Values.env.criticalMention | quote }}
             - name: CRITICAL_WEBHOOK_URL

@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: "staging/playball/web/auth-guard"
-  tag: "fe8ca2b.40"
+  tag: "432992f.51"
   pullPolicy: Always
 
 # IRSA로 cross-account ECR 인증 (imagePullSecrets 비활성화)
@@ -39,14 +39,17 @@ affinity:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 256Mi
+    cpu: 300m
+    memory: 512Mi
   limits:
     cpu: "2"
     memory: 2Gi
 
 istio:
   sidecar: true
+  destinationRule:
+    enabled: true
+    loadBalancer: LEAST_REQUEST
 
 servicePort: &port 8080
 service:
@@ -56,9 +59,11 @@ service:
 # HikariCP connection pool 크기 조정
 env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "20"
+    value: "5"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
-    value: "10"
+    value: "2"
+  - name: REDIS_DATABASE
+    value: "1"
 
 envFrom:
   - configMapRef:

@@ -1,5 +1,5 @@
 # ArgoCD Installation Values (argo/argo-cd chart)
-# EKS Prod - ClusterIP (ALB Ingress로 노출)
+# EKS Staging - ClusterIP (ALB Ingress로 노출)
 
 # Global 노드 배치 설정 (Infra 노드에 배치)
 global:
@@ -20,7 +20,7 @@ server:
   service:
     type: ClusterIP
 
-  # 리소스 제한 (prod 환경)
+  # 리소스 제한 (staging 환경)
   resources:
     requests:
       cpu: 50m
@@ -29,25 +29,25 @@ server:
       cpu: 200m
       memory: 256Mi
 
-# Controller 설정 (25+ apps reconcile로 메모리 증가 필요)
+# Controller 설정 (50+ apps reconcile로 메모리 증가 필요)
 controller:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 3Gi
+
+# Repo Server 설정 (helm template 렌더링 시 메모리 급증)
+repoServer:
   resources:
     requests:
       cpu: 50m
       memory: 512Mi
     limits:
       cpu: 500m
-      memory: 1Gi
-
-# Repo Server 설정
-repoServer:
-  resources:
-    requests:
-      cpu: 50m
-      memory: 256Mi
-    limits:
-      cpu: 200m
-      memory: 1Gi
+      memory: 2Gi
 
 # Redis 설정 (내장 Redis 사용)
 redis:
@@ -87,11 +87,16 @@ configs:
     policy.default: "role:none"
     scopes: "[email]"
     policy.csv: |
-      p, role:developer-prod, applications, get, */*, allow
-      p, role:developer-prod, logs, get, */*, allow
+      p, role:developer-staging, applications, get, */*, allow
+      p, role:developer-staging, applications, sync, */*, allow
+      p, role:developer-staging, logs, get, */*, allow
+      p, role:developer-staging, exec, create, */*, allow
       g, 212clab@gmail.com, role:admin
       g, rhuba23@gmail.com, role:admin
       g, chamchi0129@gmail.com, role:admin
+      g, yuuijin863@gmail.com, role:developer-staging
+      g, siyeon0713@gmail.com, role:developer-staging
+      g, rhkdgur120@gmail.com, role:developer-staging
 
   cm:
     create: true

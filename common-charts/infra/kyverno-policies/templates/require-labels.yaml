@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     policies.kyverno.io/title: Require Labels
-    policies.kyverno.io/category: Best Practices
-    policies.kyverno.io/severity: medium
+    policies.kyverno.io/category: Governance, Observability
+    policies.kyverno.io/severity: low
     policies.kyverno.io/description: >-
       Pod에 필수 라벨이 있는지 확인합니다.
 spec:

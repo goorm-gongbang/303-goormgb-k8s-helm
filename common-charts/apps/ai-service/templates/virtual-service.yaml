@@ -22,12 +22,18 @@ spec:
         credentialName: {{ .Values.istio.gateway.tls.credentialName }}
       hosts:
         - {{ .Values.istio.gateway.host | quote }}
+        {{- range .Values.istio.gateway.extraHosts | default (list) }}
+        - {{ . | quote }}
+        {{- end }}
     - port:
         number: 80
         name: http
         protocol: HTTP
       hosts:
         - {{ .Values.istio.gateway.host | quote }}
+        {{- range .Values.istio.gateway.extraHosts | default (list) }}
+        - {{ . | quote }}
+        {{- end }}
       tls:
         httpsRedirect: true
 ---
@@ -41,6 +47,9 @@ metadata:
 spec:
   hosts:
     - {{ .Values.istio.gateway.host | quote }}
+    {{- range .Values.istio.gateway.extraHosts | default (list) }}
+    - {{ . | quote }}
+    {{- end }}
   gateways:
     - {{ $gatewayRef }}
   http:
