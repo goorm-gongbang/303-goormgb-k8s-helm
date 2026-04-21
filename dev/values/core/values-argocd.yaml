@@ -38,9 +38,7 @@ oidc:
 # RBAC 설정 - ESO에서 허용된 사용자 목록 가져옴
 rbac:
   eso:
-    enabled: true
-    secretManagerKey: dev/infra
-    propertyPrefix: "oauth_rbac_argocd_"
+    enabled: false  # ESO → Sealed Secrets 전환 완료
   # 등록되지 않은 사용자는 접근 불가
   defaultPolicy: role:none
 
