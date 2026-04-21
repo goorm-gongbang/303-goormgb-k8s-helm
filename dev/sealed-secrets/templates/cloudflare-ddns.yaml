@@ -1,0 +1,24 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: cloudflare-ddns-credentials
+  namespace: istio-system
+spec:
+  encryptedData:
+    api-token: AgBW6SVzoGMhzAKB8V/VR9n77RIYr7JCzQOU0F29BgWNOLj2v5GdJaiQFs3nDyw5hu82ZBxWtp1joR68qPXR/wPRERH0B4mNVha3M78dLNQ/J0fAMBfwewiyt+J1tqOkmc88lTyX+sz+POqibNKu55wL51S8kD5ehgYBFZ9b0/uo//qUJ4lHlwgBUSkBrbMYz7tKBSmSQbljUr/WxW4mzrA3ZuOqTlkJCPQlb/b9UHBOTdbXXRgIL2Lu48MoiWs/bm7sO/LhYpqSyXUHC/hOGcL8liiCyWrGXPi9GFbOAlMOFBoaLSfXe5mzw8yb3GNCiRjzGogZvRF/CrYJ+t9+TAgbomlfFcBPAhhLehLLvvQN9bshPVK+3IpRyMNPtbh+nLAu/0ok1/UyHw3DNGnfc1HMratxxRmly4eScHLMhLi2RROLZtp6YXSMGuD4fassiDmz45EZzOxuJIO5xUhL7/BlxjLfiwwAsRDvF/V3o4n3Gm/txSaeYVHYTUg03nEgijOlwmRhuTFUfe46MKU3tZX4Jt6tPkxY1g0UCCVAjd+Tnpe7ADs2BJYY9qn4BBQZGMnROp/X5pCLyPAApgR0eYBAar/6IVGA4TSBQLknndRD5y+CpX1P0mxyZ4xtKXGjRBXxxEsHFFTY6gCgCTLHmRbxmWJfv+0XLovPPSWFv6/acc3llKmuzXvaW37uX7AmJlf7GVZ+CDcvibZ4mqQCMC9S1jSx80XWDEAlBdYN4IrQ999WfvitJvYH
+  template:
+    metadata:
+      annotations:
+        argocd.argoproj.io/tracking-id: ddns-cloudflare:external-secrets.io/ExternalSecret:istio-system/cloudflare-ddns-credentials
+        reconcile.external-secrets.io/data-hash: bbe171eef6363e7dbc3dafd3d8a807d196c2efce7add0353533b70e4
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/component: infra
+        app.kubernetes.io/name: ddns-cloudflare
+        reconcile.external-secrets.io/created-by: e6c6a58d87181966564cebcb6c32cd199352b766d9c7885393989e6c
+        reconcile.external-secrets.io/managed: "true"
+      name: cloudflare-ddns-credentials
+      namespace: istio-system
+    type: Opaque

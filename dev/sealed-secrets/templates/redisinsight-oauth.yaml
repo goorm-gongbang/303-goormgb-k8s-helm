@@ -1,0 +1,30 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: redisinsight-oauth
+  namespace: data
+spec:
+  encryptedData:
+    OAUTH2_PROXY_CLIENT_ID: AgBxxCnw/wnI8kt+/g2D7nMw1UACpM53oTWEScvQDHE6EN2fziLZG801FGoes+hO7h9kqhFlzXIUoEMKuuGX5+tVcZqTPXpKDU8UamLsxDfBBxGIkMcT6L7HsxUlcvW9JTs4wMDOZZHeI1RLbjMyTA14WfKKnN1atjCl2bSEK55IT5czWuOni/JJoFD1vNrrF9ygOrof6lTK1je+exXoakVW+SScDe3yBja6djKgd7s82IiFB9RqjmmIOSZtlCabPnc1KZYdTD6AgiSj6DtG91/yVr26izPuPtut4TV7PeyOYG8Ir0h0IlRPOIVkxlQnJTGsGkZbUKnk4tb0yeFqxp1ckTN6zcEonqFPu7m4SW8Pveehfvkx5W3Qv4l9/GwLrlzgiMSQYEXUdv04dGhbSszgJSejkkcvIgDOGBHiswzm7Xa7SeHtwEUAsmfOyCFcGgkSsZA7cLPUVNSxAasKq8dScLtr0RXOJqmnf5nCANts0uDyTpc+8yZMdEtoWzhk0d0hyBYtmsKMj8OoJAMVj+ZDrsOYxM7nGU2g5pCBSsNllRBLLqq3MPXyZLxMsOmMUUYqChPdrq4vnvSR17d10zfREZfqtnFZOGUy9bgjJdOBhHuVT2LiUbGatvn/lADm0QmEmDKKTQeNYunWQE/wOyr9CiuCnOODdwHHIebcDJ0LfyxooOCvq6xDu+1Wv35JmMu4cq3+RnIMJO0V/0Trz7qDPPG3cu737JIK8RsFEn0kDoe4yWlf9bAGF5nZaTtigLpkP6felGQW9bILzCD4HzxYMFn20KUE35/D
+    OAUTH2_PROXY_CLIENT_SECRET: AgBU/lT7gGsUPciaeDZAf1GtFMuc6fjMzzPIcDibvT4+gO5ILHhuw8GzmB0dyHAqcqwKwB9HPH3qWKMT0pbWauvs/nK1CWh1IZm3mXAIOT+UKEKsfe0zZ3GJQE9QDiDn6tZ+sdP6LY9TnlkPUYSy7XkLOwZUYI/TFJ/j7RXcPXds1xmACtjYBXPgncgNG5WUFe+LL3I9PN+faAJiQCyGyp27OLyofqiOHDnnallAXRYhElUWzw3fk0q8mcr8wbOKj2TSmzgXDqOsXsnPLnPVPkpa8JQNNjponoOdejVUbsSHWbYZ+wNdL9RLRR4xdHuNQxzy83Wqhbg2QV7Ue501uRrdGb7uDV1gd7n5JHqbKdnTIpUtPWV8OET3c2gpDPGH4pC3sU8nQmtyNyl4HmLTF65kBJy8QARJVOekC7eHImRCtFjLAJrG+HwUCfbTkO2mwFCF+yHOYWTIuWO1xqgWhH4uuuXWcoeSqvomyEekj2DDCkATWfH5kbE5pbqQHnY9Z7aFDaWF2G5ygMW1ye463g0RZlqR/Q/HCkSQOAuKIZsYOtAqScmvp9S1BO2iso0GCgniBrQlZEIYtNweNql8Y8qfEONBFUeeHgYW3bczDeck2fuesQ0j7wQKsj4IC1TO2ZGxZBifFNZ+/Qa2waiyo/KAJU54czIbFNB1OkIxtxhXYBHYeUNaPmoxMYTvr7gh9tunEbJ0MRto5tyajMCKh2wPeXo9UUmfpHHpZ4YFSdvUIbsUXg==
+    OAUTH2_PROXY_COOKIE_SECRET: AgAWOIsyYH5XjwSwrNCmXjwmBb9ysy509EwPM5Xj4h8QPy3d5sgMA6AvGvY/Vl+gCxfte5PMRJEjeMtulaELBvrKFGmS3NJvrP/0EnzeAKizYBPSsqpSta1urIg4eYGHLcUd2SIWfy1dskO1WG2ypcLErhSaAVLWfCKIqh2tO7BnkgO4F2WQZziSjpjNQ+ZSBPgHDTBzubzbgcfNQHMzH+9FiHnufpBXfHE+Qv0ONsbtlMA5C3S8JRRfY0sK7Z37lOMtXoSuiaTDLkuN1RpMMojfXnUBMlpQ6Kg50EfgMUqlSpw5PAztl6KJo4PAMTFRpeIr7vpDB34pvKSeYfV2CYdPoecILQpRWSFu/pvY0k+u6sbpi0iiO3xXDumdgk2mB5LcMuhC14VaRPdBiWtaOdzFULApjQG93a/l9eBS+77zBCrT4AQ2Jz6DfRKUhFYTNA1tFTZLGmBqU7U5ERuwWWb/0rcVcJF0LiSEcq11LU5UvK9fbIXZSUuYO7YGyrfQggEF43BtDIhLbyO8p/VQ4ZJM5G95z1l9JhGCyj6tpY4WAsM+qS08wOrz7+PjNqW1bLbcPFtPV79k/uSEmDHPGwUIsViwY2m8JgbKCrlHItDriyHfPthvyaHWVD9FPSz4yJ5Y15Putlr8IMb8qWy6vI0D+o9MrjEOV2CZq67obQSNnIe3XAiAo3ro4fPekOXWO+mkr5bLLNl4/dKWMgONn4koKFs3C0HgZ+FVq0s4fJOdig==
+  template:
+    metadata:
+      annotations:
+        argocd.argoproj.io/tracking-id: redisinsight:external-secrets.io/ExternalSecret:data/redisinsight-oauth
+        force-sync: "1775431095"
+        reconcile.external-secrets.io/data-hash: 6877f1f7a37b1aca789e9fa00c965d40f3e432a03e531a388d9ae705
+      creationTimestamp: null
+      labels:
+        app: redisinsight
+        app.kubernetes.io/instance: redisinsight
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: redisinsight
+        helm.sh/chart: redisinsight-1.0.0
+        reconcile.external-secrets.io/created-by: 8274153cede3cfd73edec7128ec8795711f3cd7b5502d382238b3fa7
+        reconcile.external-secrets.io/managed: "true"
+      name: redisinsight-oauth
+      namespace: data
+    type: Opaque

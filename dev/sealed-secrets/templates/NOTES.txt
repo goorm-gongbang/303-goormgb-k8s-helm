@@ -1,0 +1,6 @@
+Sealed Secrets deployed.
+
+시크릿 추가/수정 방법:
+  1. kubeseal --fetch-cert --controller-name=sealed-secrets --controller-namespace=kube-system > pub-cert.pem
+  2. kubectl create secret generic my-secret --from-literal=key=value --dry-run=client -o yaml | kubeseal --cert pub-cert.pem -o yaml > templates/my-secret.yaml
+  3. git commit & push → ArgoCD sync

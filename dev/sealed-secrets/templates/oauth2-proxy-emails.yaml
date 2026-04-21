@@ -1,0 +1,21 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: oauth2-proxy-emails
+  namespace: istio-system
+spec:
+  encryptedData:
+    authenticated-emails.txt: AgBVZqyft0qbfRzV+zXZBplgfkgEeP1VPYrpYR4/YBGsVL01mF2A5wtB4JxRtsjdrie6v1guxMbwpDSI325azYkKdxkU+oYrMI26NA04VVd7GuD5IMIJy+P0JM9cTQmEHH9i855sH44RIKdSlcS4iK45xB1EYWSkCZRhjIHZCxBuOgzZKt+LE5WJ1WWUviVwStX7yfA8XvlbWOQq5U4jwRAbfuZ2WwNFEs6aRyly443ZI86NkZt4ERaQ6IWRS0XzcEslsqmG/KSiJ6cd0xfG3I56dYVC7GwyOhsDqBNUQ6Sa+SniUsOps2g0VLbvWaHm+yR/HY7iR8RNe0vXMwtjNpOfYw6gB4QWqE3RNitnT9f6JjjYCOecb3PRWLIwXg2EhLtFlt78Yp9ezXHDPlB5JQOpD2CAV4+cC821J0LlD/ixSDeJHWPI6RY3UWs9govkOsF3dqcBna6dHI90QbSuAu61OH5/MbfvZvFNl4mmrhbs3LeAdX6UaSRZtrhGT3+zymL3OvH9cAO7Ec8Urmh7ETC6lXjbmOodxrvHRQzet65fPesfB8gdp55dl1sUZXecxv/N7Hw+MM8u5XQHfq0IuimAps8Va11eIY14Ipx/k6seWMqD0f2yVMt+M3SzoVAFAn1McDPr91rvCAhe7TKf2sUZkfBa8uOSZ8bui9JyHwJ/9otRK39jhamiBsYl4mXc0vYUpSx/wfT6OulGdTzvHNFco2eXrPK4DMx5OHCTFjXd5Mg1gr36SmLgok28oAiu6h+gdRtMTwnMurH3c19FFWUG/hI63/sT9SnB3c3+RAtOz04k+E579mkHu7GMHfIGF1PpN3n2dwa+ua7tJuHwfaV0AvlpNj9GLPsZ9v1xGsem+dyGW29koyfhOY0dK6czhMb6fIakM2Wz9yobQnDNw9+uf+IwDziunNqag37a7MX+7GlSQr5GHCQm4Q+Ocs5KjHHu9STbWnjZeKoD4dThlNPSj2KMcMBsMPM15zE/T9EgpdBYL35Tg8AwPUV3qICtK2AoBI7kWTxxBAWn5UV27JXlwt5uF3hy/5Zc2TutTcOuQtLv3cwGOuh57eGCS9piFnboaLGa7vivv/T5XwA6nv5II4SpnXrnOn5tMUYKMKz6twqtFYztx70dOcaqBcLqMXjaHMQckfkwfM4Ocqx6
+  template:
+    metadata:
+      annotations:
+        reconcile.external-secrets.io/data-hash: aa82d2a2f1fb84f135d0865e0cfd0eae63777e81030a742f5f79cfba
+      creationTimestamp: null
+      labels:
+        reconcile.external-secrets.io/created-by: 968eecb619340b90cf61c8b5f592e522f369c1433246de9e6537a456
+        reconcile.external-secrets.io/managed: "true"
+      name: oauth2-proxy-emails
+      namespace: istio-system
+    type: Opaque

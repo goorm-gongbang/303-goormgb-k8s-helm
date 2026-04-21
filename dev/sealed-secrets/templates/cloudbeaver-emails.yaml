@@ -1,0 +1,21 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: cloudbeaver-emails
+  namespace: data
+spec:
+  encryptedData:
+    authenticated-emails.txt: AgAcTTXWsj03QwKQkATdNmZHZluLX4oJjBto4ywbMS2pu1P+7yoQbWPxwn44IIUZIe6HeEPIwUwnDyMQrCNFXn2GqZPgMe5XTeYjmIHMZNPdktfuRPMPX5GWWQg+ZiSA3XyiFPndaDVc2uJxZQB3Y9joJ/YNhd1GeZ4766DZ+0kQvCVZLem/JJDXhyh5tuJl1CVoDwq3ahNwuCqDi4cbEQbyM/zdItfmqxPiRqhf/GkcBD05avGRBjZz0bMiyN4JQo4TgNQh1YXuH5QziQXeyLZrzhavq5bdLj3gmFVPOHp1H86p4jdXCLXrVov8vIHHa4ipmrGcC4kfiK0YGW3j9gfI0JFzYFQIQfSspS1kApTctasy8desULqQYuKKvUPoDlhKVlBKn8N8YTjoPx63ZeDAFX4GhOZYcSRwPw1VdoJni8r0eOtxKRgtYTiIqAAFXqdXgiOlpjPr0b42jeaDS3fi30C/oDhRHc8rD2WlvmvlrpeZLj1hH2RSaXJm4HCwjtYX+baGt9b0OGELN6FNZKvcDe91KtB3yRB8bF+s1UuLaboslMtZzEw95LCvQHvmkfC9Ix/4vGCkNIYEMNTARk3qPy+Bg1BOTz7nCAkuMR1HFHF6EiIgewg87bbZ37uw2L+VIiGDljyOX2reMS1ItLihf9ccGDJ1eMnY4CIio+QLXTIma2uDBlLxoqSh/I0FDQUwL9HnD3Z/WCvZsmway+N0zX5PxwKC2Uz5EUqKSNjNPQp1N87c0SCVP29geApJeg4EoZwdCbq4OXH1s9zhnpbVGQW/ZOq5f1yVwm7D8LQzjtY5wRiJAiGcstNmoXGdePR9oIfCTr2o5Lu53Jh2iKbjDX9VCsn6gYuRsnvZjx759xWjL8GlaBByCUvueTX3Pn/kNinpfitatNYDWRGoz+KZRuGBvTfLPpXBCsFJz0pHKY4T48eh3y3ghlbfNBq1+PpgRXIhtfthpEgRWpS6Vn9/RSqtusadgFa/5EuJPsgvTyY4XZ/EDWpDbAYLyBVTLbP1Rw/tPFigfRwx+Iwo73taNazDP9o0vqlWZjCHu4lGRCoambzUfNVVe4ksQMTXL4alicSsQMUyiU9LFxxcWQ4Cks0JrzVe5StXYT1yjMlfK4tiWMxjTW8=
+  template:
+    metadata:
+      annotations:
+        reconcile.external-secrets.io/data-hash: 96c61576060887d435a2437128a8fa879926b6682d81864afd1c0425
+      creationTimestamp: null
+      labels:
+        reconcile.external-secrets.io/created-by: 3a7d639b363edf76f18d10367f95262fc75a8eada265fa41eeb2840a
+        reconcile.external-secrets.io/managed: "true"
+      name: cloudbeaver-emails
+      namespace: data
+    type: Opaque

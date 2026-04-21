@@ -1,0 +1,7 @@
+apiVersion: v2
+name: dev-sealed-secrets
+description: |
+  Dev 환경 SealedSecret 모음
+  ESO(External Secrets Operator) + AWS Secrets Manager 대체
+  kubeseal로 암호화된 시크릿을 Git에 안전하게 커밋
+version: 0.1.0
