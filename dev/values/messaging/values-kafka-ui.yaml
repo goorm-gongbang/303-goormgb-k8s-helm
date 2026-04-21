@@ -17,6 +17,10 @@ resources:
     cpu: 200m
     memory: 256Mi
 
+# OAuth2 Proxy (Google OAuth 보호)
+oauth2Proxy:
+  enabled: false  # TODO: OAuth2 Proxy 추가 시 true로
+
 virtualService:
   enabled: true
   host: kafka-dev.playball.one
