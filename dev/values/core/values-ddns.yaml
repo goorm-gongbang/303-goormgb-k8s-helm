@@ -1,19 +1,18 @@
 # kubeadm-dev - DDNS Cloudflare 설정
-# Domain: goormgb.space
+# Domain: playball.one (dev)
 
-domain: "goormgb.space"
-zoneID: "f9fdc81712963738bc9d5ee628849e53"
+domain: "playball.one"
+zoneID: "018470675d45c227fe1651925a47da13"
 
 records:
-  - "" # goormgb.space (root)
-  - "api" # api.goormgb.space (백엔드 API)
-  - "swagger" # swagger.goormgb.space (Swagger UI)
-  - "console" # console.goormgb.space (Infra Console)
-  - "argocd" # argocd.goormgb.space
-  - "grafana" # grafana.goormgb.space
-  - "kiali" # kiali.goormgb.space
-  - "cloudbeaver" # cloudbeaver.goormgb.space
-  # dev.goormgb.space는 Vercel CNAME이라 제외
+  - "api-dev" # api-dev.playball.one (백엔드 API)
+  - "swagger-dev" # swagger-dev.playball.one (Swagger UI)
+  - "console-dev" # console-dev.playball.one (Infra Console)
+  - "argocd-dev" # argocd-dev.playball.one
+  - "grafana-dev" # grafana-dev.playball.one
+  - "kiali-dev" # kiali-dev.playball.one
+  - "cloudbeaver-dev" # cloudbeaver-dev.playball.one
+  # dev.playball.one은 Vercel CNAME이라 제외
 
 # CP 노드에 배치 (인프라 작업)
 nodeSelector:

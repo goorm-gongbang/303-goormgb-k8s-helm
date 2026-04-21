@@ -27,7 +27,7 @@ external_services:
   grafana:
     enabled: true
     in_cluster_url: http://grafana.monitoring.svc.cluster.local:80
-    url: https://grafana.goormgb.space
+    url: https://grafana-dev.playball.one
   tracing:
     enabled: true
     provider: tempo
@@ -46,5 +46,5 @@ external_services:
 # kiali-config (Git chart) values
 kialiVirtualService:
   enabled: true
-  host: kiali.goormgb.space
+  host: kiali-dev.playball.one
   gatewayRef: "istio-system/goormgb-gateway"

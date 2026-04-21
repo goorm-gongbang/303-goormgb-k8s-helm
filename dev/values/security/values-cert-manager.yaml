@@ -1,5 +1,5 @@
 # kubeadm-dev - cert-manager ClusterIssuer 설정
-# Domain: goormgb.space
+# Domain: playball.one (dev)
 
 # CP 노드에 배치 (설정 관련)
 nodeSelector:
@@ -15,7 +15,6 @@ cloudflare:
 certificates:
   - name: goormgb-tls
     dnsNames:
-      - "*.goormgb.space"
-      - "*.dev.goormgb.space"
-      - "goormgb.space"
+      - "*.playball.one"
+      - "playball.one"
     issuerRef: letsencrypt-prod # 새 도메인이라 prod 사용 가능

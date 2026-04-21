@@ -1,5 +1,5 @@
 # kubeadm-dev - Istio 설정 (Helm values)
-# Domain: goormgb.space
+# Domain: playball.one (dev)
 # Components: istio-base, istiod, istio-gateway, kiali
 
 # ===== Istio Base =====
@@ -71,16 +71,16 @@ sharedGateway:
   tls:
     credentialName: goormgb-tls
   hosts:
-    - "argocd.goormgb.space"
-    - "cloudbeaver.goormgb.space"
-    - "console.goormgb.space"
-    - "grafana.goormgb.space"
-    - "hubble.goormgb.space"
-    - "kafka-ui.goormgb.space"
-    - "kiali.goormgb.space"
-    - "redisinsight.goormgb.space"
+    - "argocd-dev.playball.one"
+    - "cloudbeaver-dev.playball.one"
+    - "console-dev.playball.one"
+    - "grafana-dev.playball.one"
+    - "hubble-dev.playball.one"
+    - "kafka-dev.playball.one"
+    - "kiali-dev.playball.one"
+    - "redisinsight-dev.playball.one"
 
-# API Gateway (api.goormgb.space 전용)
+# API Gateway (api-dev.playball.one 전용)
 apiGatewayConfig:
   enabled: true
   name: api-gateway
@@ -89,12 +89,12 @@ apiGatewayConfig:
     credentialName: goormgb-tls
   httpsRedirect: true
   hosts:
-    - "api.goormgb.space"
+    - "api-dev.playball.one"
 
 # ===== Kiali =====
 kiali-server:
   server:
-    web_fqdn: kiali.goormgb.space
+    web_fqdn: kiali-dev.playball.one
     web_port: 443
     web_schema: https
 
@@ -121,7 +121,7 @@ kiali-server:
     grafana:
       enabled: true
       in_cluster_url: "http://grafana.monitoring.svc.cluster.local:80"
-      url: "https://grafana.goormgb.space"
+      url: "https://grafana-dev.playball.one"
 
     tracing:
       enabled: true
@@ -133,13 +133,13 @@ kiali-server:
 # NOTE: 실제 VirtualService는 kiali-config에서 values-kiali.yaml 사용
 kialiVirtualService:
   enabled: true
-  host: "kiali.goormgb.space"
+  host: "kiali-dev.playball.one"
 
 # Hubble UI VirtualService (Cilium 관측성 UI)
 # Cilium은 bootstrap으로 설치, VirtualService만 ArgoCD 관리
 hubbleVirtualService:
   enabled: true
-  host: "hubble.goormgb.space"
+  host: "hubble-dev.playball.one"
 
 # Kiali OIDC (Google OAuth) - 비활성화
 oidc:

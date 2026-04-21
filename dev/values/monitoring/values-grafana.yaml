@@ -42,7 +42,7 @@ plugins:
 
 grafana.ini:
   server:
-    root_url: https://grafana.goormgb.space
+    root_url: https://grafana-dev.playball.one
   # Alerting 완전 비활성화 (Viewer RBAC 에러 방지)
   unified_alerting:
     enabled: false
