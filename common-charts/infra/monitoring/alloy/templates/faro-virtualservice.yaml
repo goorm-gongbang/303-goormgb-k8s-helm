@@ -1,5 +1,5 @@
 {{- if .Values.faro.virtualService.enabled }}
-# Faro VirtualService - api.{env}.goormgb.space/faro/* 라우팅
+# Faro VirtualService - api-{env}.playball.one/faro/* 라우팅
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:

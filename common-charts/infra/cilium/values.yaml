@@ -119,4 +119,4 @@ cilium:
 # Hubble UI VirtualService 설정
 hubbleUI:
   enabled: true
-  host: "hubble.dev.goormgb.space"
+  host: "hubble-dev.playball.one"
