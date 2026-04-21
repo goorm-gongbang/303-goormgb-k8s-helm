@@ -3,6 +3,7 @@ enabled: true
 
 host: "swagger-dev.playball.one"
 
+httpsRedirect: false  # Cloudflare Flexible SSL
 tls:
   enabled: true
   credentialName: goormgb-tls
