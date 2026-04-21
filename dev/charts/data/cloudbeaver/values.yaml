@@ -17,7 +17,7 @@ oauth2Proxy:
   config:
     provider: google
     cookieSecure: true
-    cookieDomain: ".goormgb.space"
+    cookieDomain: ".playball.one"
     cookieRefresh: "1h"
     cookieExpire: "4h"
   resources:
@@ -64,7 +64,7 @@ tolerations:
 # Istio VirtualService
 virtualService:
   enabled: true
-  host: "cloudbeaver.goormgb.space"
+  host: "cloudbeaver-dev.playball.one"
   gateway: "istio-system/goormgb-gateway"
 
 # PostgreSQL connection (data namespace)

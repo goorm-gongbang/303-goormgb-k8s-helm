@@ -53,7 +53,7 @@ env:
     value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   # CORS 허용 Origin (Frontend)
   - name: TM_CORS_ALLOW_ORIGINS
-    value: "https://dev.goormgb.space,http://localhost:3000,http://127.0.0.1:3000"
+    value: "https://dev.playball.one,http://localhost:3000,http://127.0.0.1:3000"
   # S3 아카이빙 활성화 (AWS S3 사용)
   - name: TM_S3_BUCKET
     valueFrom:
@@ -134,7 +134,7 @@ istio:
   sidecar: true
   gateway:
     enabled: true
-    host: "api.goormgb.space"
+    host: "api-dev.playball.one"
     externalRef: "istio-system/api-gateway"
     contextPath: "/ai/"
     redirect:
@@ -144,7 +144,7 @@ istio:
   cors:
     enabled: true
     allowOrigins:
-      - "https://dev.goormgb.space"
+      - "https://dev.playball.one"
       - "http://localhost:3000"
       - "http://127.0.0.1:3000"
     allowMethods:

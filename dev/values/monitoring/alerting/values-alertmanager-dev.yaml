@@ -52,7 +52,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
+            title_link: 'https://grafana-dev.playball.one/d/cfevec81ezw8wc?var-namespace=dev-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -88,7 +88,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/warning-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
+            title_link: 'https://grafana-dev.playball.one/d/cfevec81ezw8wc?var-namespace=dev-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -123,7 +123,7 @@ alertmanager:
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/info-webhook-url'
             send_resolved: true
-            title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
+            title_link: 'https://grafana-dev.playball.one/d/cfevec81ezw8wc?var-namespace=dev-webs'
             title: |-
               {{- $incidentId := "" -}}
               {{- range .Alerts -}}
@@ -212,7 +212,7 @@ kube-prometheus-stack:
           slack_configs:
             - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/critical-webhook-url'
               send_resolved: true
-              title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
+              title_link: 'https://grafana-dev.playball.one/d/cfevec81ezw8wc?var-namespace=dev-webs'
               title: |-
                 {{- $incidentId := "" -}}
                 {{- range .Alerts -}}
@@ -249,7 +249,7 @@ kube-prometheus-stack:
           slack_configs:
             - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/warning-webhook-url'
               send_resolved: true
-              title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
+              title_link: 'https://grafana-dev.playball.one/d/cfevec81ezw8wc?var-namespace=dev-webs'
               title: |-
                 {{- $incidentId := "" -}}
                 {{- range .Alerts -}}
@@ -285,7 +285,7 @@ kube-prometheus-stack:
           slack_configs:
             - api_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhooks/info-webhook-url'
               send_resolved: true
-              title_link: 'https://grafana.goormgb.space/d/cfevec81ezw8wc?var-namespace=dev-webs'
+              title_link: 'https://grafana-dev.playball.one/d/cfevec81ezw8wc?var-namespace=dev-webs'
               title: |-
                 {{- $incidentId := "" -}}
                 {{- range .Alerts -}}

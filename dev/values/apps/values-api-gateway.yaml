@@ -31,17 +31,17 @@ istio:
   gateway:
     enabled: true
     externalRef: "istio-system/api-gateway"  # 외부 Gateway 참조 (Gateway CRD 생성 안 함)
-    host: "api.goormgb.space"
-  # Swagger 외부 노출 차단 - OAuth 보호된 swagger.goormgb.space로 리다이렉트
+    host: "api-dev.playball.one"
+  # Swagger 외부 노출 차단 - OAuth 보호된 swagger-dev.playball.one으로 리다이렉트
   swaggerRedirect:
     enabled: true
-    host: "swagger.goormgb.space"
+    host: "swagger-dev.playball.one"
   # CORS 설정 - Istio VirtualService 레벨
   cors:
     enabled: true
     allowOrigins:
-      - "https://dev.goormgb.space"
-      - "https://swagger.goormgb.space"
+      - "https://dev.playball.one"
+      - "https://swagger-dev.playball.one"
       - "http://localhost:3000"
       - "http://localhost:6060"  # k6-controller 로컬 개발용
     allowMethods:
@@ -65,7 +65,7 @@ service:
 # Environment variables - 백엔드 서비스 URL
 env:
   - name: ALLOWED_ORIGINS
-    value: "https://dev.goormgb.space,https://swagger.goormgb.space,http://localhost:3000"
+    value: "https://dev.playball.one,https://swagger-dev.playball.one,http://localhost:3000"
   - name: AUTH_GUARD_URL
     value: "http://dev-auth-guard.dev-webs.svc.cluster.local:8080"
   - name: QUEUE_URL

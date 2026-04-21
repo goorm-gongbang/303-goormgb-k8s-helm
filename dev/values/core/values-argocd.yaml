@@ -1,9 +1,9 @@
 # kubeadm-dev - ArgoCD 설정
-# Domain: goormgb.space
+# Domain: playball.one (dev)
 
 # ArgoCD Server - Istio Gateway에서 TLS 종료
 server:
-  url: https://argocd.goormgb.space
+  url: https://argocd-dev.playball.one
   insecure: true
 
 # ECR 설정 (applications에 주입)
@@ -17,7 +17,7 @@ nodeSelector:
 
 gateway:
   enabled: true
-  host: "argocd.goormgb.space"
+  host: "argocd-dev.playball.one"
   gatewayRef: "istio-system/goormgb-gateway"
   tls:
     enabled: true
