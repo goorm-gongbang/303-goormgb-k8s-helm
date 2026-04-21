@@ -68,6 +68,7 @@ pilot:
 sharedGateway:
   enabled: true
   name: goormgb-gateway
+  httpsRedirect: false  # Cloudflare Flexible SSL — origin은 HTTP만 받음
   tls:
     credentialName: goormgb-tls
   hosts:
@@ -87,7 +88,7 @@ apiGatewayConfig:
   tls:
     enabled: true
     credentialName: goormgb-tls
-  httpsRedirect: true
+  httpsRedirect: false  # Cloudflare Flexible SSL — origin은 HTTP만 받음
   hosts:
     - "api-dev.playball.one"
 

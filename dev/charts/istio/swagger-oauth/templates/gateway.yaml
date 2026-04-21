@@ -24,7 +24,7 @@ spec:
         protocol: HTTP
       hosts:
         - {{ .Values.host | quote }}
-      {{- if .Values.tls.enabled }}
+      {{- if and .Values.tls.enabled (ne (toString (default true .Values.httpsRedirect)) "false") }}
       tls:
         httpsRedirect: true
       {{- end }}
