@@ -1,5 +1,5 @@
 # kube-prometheus-stack - Dev 환경
-# Domain: goormgb.space
+# Domain: playball.one (dev)
 # Note: kube-prometheus-stack을 직접 배포하므로 prefix 없이 root level에 값 설정
 
 # ===== prometheus-extras용 설정 (ExternalSecrets, VirtualService) =====
@@ -7,13 +7,13 @@
 gateway:
   grafana:
     enabled: true
-    host: "grafana.goormgb.space"
+    host: "grafana-dev.playball.one"
     gatewayRef: "istio-system/goormgb-gateway"
     tls:
       credentialName: goormgb-tls
   prometheus:
     enabled: false
-    host: "prometheus.goormgb.space"
+    host: "prometheus-dev.playball.one"
 
 # Dashboard 설정 (kubeadm 환경: EKS/CloudWatch 전용 대시보드 제외)
 dashboards:

@@ -1,5 +1,5 @@
 # RedisInsight for Dev (kubeadm-dev)
-# URL: https://redisinsight.goormgb.space
+# URL: https://redisinsight-dev.playball.one
 # Google OAuth 인증 필요
 
 replicaCount: 1
@@ -19,7 +19,7 @@ oauth2Proxy:
   config:
     provider: google
     cookieSecure: true
-    cookieDomain: ".goormgb.space"
+    cookieDomain: ".playball.one"
     cookieRefresh: "1h"
     cookieExpire: "4h"
   resources:
@@ -69,7 +69,7 @@ virtualService:
   enabled: true
   gateway: "istio-system/goormgb-gateway"
   hosts:
-    - "redisinsight.goormgb.space"
+    - "redisinsight-dev.playball.one"
 
 # Redis connections (UI):
 # redis-cache: redis-cache.data.svc.cluster.local:6379

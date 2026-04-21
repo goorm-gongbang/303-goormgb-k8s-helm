@@ -1,7 +1,7 @@
 # Swagger OAuth defaults
 enabled: true
 
-host: "swagger.goormgb.space"
+host: "swagger-dev.playball.one"
 
 tls:
   enabled: true

@@ -1,5 +1,5 @@
 # OAuth2 Proxy - Swagger 인증용
-# swagger.goormgb.space → OAuth2 Proxy → 실제 서비스
+# swagger-dev.playball.one → OAuth2 Proxy → 실제 서비스
 
 replicaCount: 1
 
@@ -15,7 +15,7 @@ tolerations:
 # Google OAuth 설정
 config:
   cookieSecure: true
-  cookieDomain: ".goormgb.space"
+  cookieDomain: ".playball.one"
 
 # Upstream services
 upstreams:

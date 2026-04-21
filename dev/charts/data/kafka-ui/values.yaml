@@ -24,7 +24,7 @@ service:
 
 virtualService:
   enabled: true
-  host: kafka-ui.goormgb.space
+  host: kafka-dev.playball.one
   gateway: istio-system/main-gateway
 
 nodeSelector: {}
