@@ -44,6 +44,11 @@ istio:
   destinationRule:
     enabled: true
     loadBalancer: LEAST_REQUEST
+    outlierDetection:
+      consecutive5xxErrors: 3
+      interval: 10s
+      baseEjectionTime: 10s
+      maxEjectionPercent: 50
 
 servicePort: &port 8083
 service:
@@ -94,7 +99,7 @@ otel:
 metrics:
   enabled: true
   path: /actuator/prometheus
-  interval: 30s
+  interval: 10s
 
 pdb:
   enabled: true

@@ -56,7 +56,12 @@ virtualService:
   gateway: istio-system/api-gateway
 
 nodeSelector:
-  role: app
+  role: monitoring
+
+tolerations:
+  - key: role
+    value: monitoring
+    effect: NoSchedule
 
 probes:
   liveness:

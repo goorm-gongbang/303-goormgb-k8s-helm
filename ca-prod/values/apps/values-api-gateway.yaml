@@ -4,7 +4,7 @@ contextPath: "" # api-gateway는 context path 없음
 replicaCount: 1
 
 image:
-  name: "staging/playball/web/api-gateway"
+  name: "prod/playball/web/api-gateway"
   tag: "432992f.40"
   pullPolicy: Always
 
@@ -56,13 +56,13 @@ istio:
   gateway:
     enabled: true
     externalRef: "istio-system/api-gateway"
-    host: "api.staging.playball.one"
+    host: "api.playball.one"
     extraHosts:
       - "api.playball.one"
   cors:
     enabled: true
     allowOrigins:
-      - "https://staging.playball.one"
+      - "https://playball.one"
       - "http://localhost:3000"
       # TEMP: prod 클러스터 배포 전까지 playball.one 트래픽을 staging 으로 라우팅 (revert 예정)
       - "https://playball.one"
@@ -93,13 +93,13 @@ service:
 env:
   - name: ALLOWED_ORIGINS
   - name: AUTH_GUARD_URL
-    value: "http://auth-guard.staging-webs.svc.cluster.local:8080"
+    value: "http://auth-guard.prod-webs.svc.cluster.local:8080"
   - name: QUEUE_URL
-    value: "http://queue.staging-webs.svc.cluster.local:8081"
+    value: "http://queue.prod-webs.svc.cluster.local:8081"
   - name: SEAT_URL
-    value: "http://seat.staging-webs.svc.cluster.local:8082"
+    value: "http://seat.prod-webs.svc.cluster.local:8082"
   - name: ORDER_CORE_URL
-    value: "http://order-core.staging-webs.svc.cluster.local:8083"
+    value: "http://order-core.prod-webs.svc.cluster.local:8083"
   - name: REDIS_HOST
     valueFrom:
       secretKeyRef:
@@ -110,6 +110,8 @@ env:
       secretKeyRef:
         name: service-config
         key: SPRING_DATA_REDIS_PORT
+  - name: REDIS_DATABASE
+    value: "0"
 
 envFrom:
   - configMapRef:

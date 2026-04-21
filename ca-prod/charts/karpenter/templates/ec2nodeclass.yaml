@@ -48,9 +48,9 @@ spec:
 
   tags:
     {{- if eq (index $pool.capacityTypes 0) "on-demand" }}
-    Name: "goormgb-prod-ondemand"
+    Name: "playball-prod-ondemand"
     {{- else }}
-    Name: "goormgb-prod-spot"
+    Name: "playball-prod-spot"
     {{- end }}
     Environment: prod
     ManagedBy: karpenter

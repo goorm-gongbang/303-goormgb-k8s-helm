@@ -4,7 +4,7 @@ contextPath: "/auth"
 replicaCount: 1
 
 image:
-  name: "staging/playball/web/auth-guard"
+  name: "prod/playball/web/auth-guard"
   tag: "432992f.51"
   pullPolicy: Always
 
@@ -62,6 +62,8 @@ env:
     value: "5"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
     value: "2"
+  - name: REDIS_DATABASE
+    value: "1"
 
 envFrom:
   - configMapRef:

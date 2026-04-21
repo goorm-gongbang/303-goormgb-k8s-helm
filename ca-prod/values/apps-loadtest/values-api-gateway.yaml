@@ -3,10 +3,10 @@
 # 라우팅만 담당, DB 사용 거의 없음 (5000 VU 기준)
 fullnameOverride: "api-gateway"
 contextPath: ""
-replicaCount: 0
+replicaCount: 3
 
 image:
-  name: "staging/playball/web/api-gateway"
+  name: "prod/playball/web/api-gateway"
   tag: "432992f.40"
   pullPolicy: Always
 
@@ -38,10 +38,10 @@ affinity:
 resources:
   requests:
     cpu: 250m
-    memory: 256Mi
+    memory: 512Mi
   limits:
     cpu: "2"
-    memory: 3Gi
+    memory: 2Gi
 
 # Istio - VirtualService는 별도 관리
 istio:

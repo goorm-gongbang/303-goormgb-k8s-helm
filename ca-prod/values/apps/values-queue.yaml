@@ -4,7 +4,7 @@ contextPath: "/queue"
 replicaCount: 1
 
 image:
-  name: "staging/playball/web/queue"
+  name: "prod/playball/web/queue"
   tag: "432992f.43"
   pullPolicy: Always
 
@@ -61,6 +61,8 @@ env:
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
     value: "5"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "2"
+  - name: REDIS_DATABASE
     value: "2"
   - name: KAFKA_CONSUMER_GROUP_ID
     value: "queue-service"

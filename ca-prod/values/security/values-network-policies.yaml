@@ -5,7 +5,7 @@ defaultDeny:
   enabled: true
 
 namespaces:
-  staging-webs:
+  prod-webs:
     allowIngressFrom:
       # Istio IngressGateway
       - namespaceSelector:
@@ -21,13 +21,13 @@ namespaces:
       # AI services
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: staging-ai
+            kubernetes.io/metadata.name: prod-ai
       # Same namespace
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: staging-webs
+            kubernetes.io/metadata.name: prod-webs
 
-  staging-ai:
+  prod-ai:
     allowIngressFrom:
       # Istio IngressGateway
       - namespaceSelector:
@@ -36,7 +36,7 @@ namespaces:
       # Web services (internal API calls)
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: staging-webs
+            kubernetes.io/metadata.name: prod-webs
       # Same namespace
       - podSelector: {}
     allowEgressTo:
@@ -47,11 +47,11 @@ namespaces:
       # Web services (callback)
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: staging-webs
+            kubernetes.io/metadata.name: prod-webs
       # Same namespace
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: staging-ai
+            kubernetes.io/metadata.name: prod-ai
 
   loadtest-webs:
     allowIngressFrom:
@@ -106,11 +106,11 @@ namespaces:
       # Web services
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: staging-webs
+            kubernetes.io/metadata.name: prod-webs
       # AI services
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: staging-ai
+            kubernetes.io/metadata.name: prod-ai
       # Loadtest web services
       - namespaceSelector:
           matchLabels:

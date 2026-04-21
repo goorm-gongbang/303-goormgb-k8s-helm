@@ -7,7 +7,7 @@ serviceAccount:
   name: external-secrets
   annotations:
     # Main account IRSA role (terraform output external_secrets_irsa_role_arn)
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-external-secrets-irsa
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-external-secrets-irsa
 
 # Webhook ServiceAccount (같은 IRSA 사용)
 webhook:
@@ -15,7 +15,7 @@ webhook:
     create: true
     name: external-secrets-webhook
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-external-secrets-irsa
+      eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-external-secrets-irsa
 
 # CertController ServiceAccount
 certController:
@@ -23,7 +23,7 @@ certController:
     create: true
     name: external-secrets-cert-controller
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-external-secrets-irsa
+      eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-external-secrets-irsa
 
 # CRD 설치
 installCRDs: true

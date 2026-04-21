@@ -1,7 +1,7 @@
 # ai-defense - Load-test 환경
 # Python FastAPI 기반 AI Defense API
 
-replicaCount: 0
+replicaCount: 3
 
 command:
   - "python"
@@ -17,9 +17,9 @@ args:
   - "/ai"
 
 image:
-  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/staging/playball/ai/defense
+  repository: 497012402578.dkr.ecr.ap-northeast-2.amazonaws.com/prod/playball/ai/defense
   tag: "c3ff0e0.25"
-  name: "staging/playball/ai/defense"
+  name: "prod/playball/ai/defense"
   pullPolicy: Always
 
 env:
@@ -44,7 +44,7 @@ env:
   - name: TM_REDIS_URL
     value: "redis://$(AI_REDIS_HOST):$(AI_REDIS_PORT)/1"
   - name: TM_CORS_ALLOW_ORIGINS
-    value: "https://staging.playball.one"
+    value: "https://playball.one"
   - name: TM_S3_BUCKET
     value: ""
   - name: TM_CLICKHOUSE_URL
@@ -73,11 +73,11 @@ tolerations:
 
 resources:
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: 450m
+    memory: 512Mi
   limits:
-    cpu: "2"
-    memory: 2Gi
+    cpu: "2.5"
+    memory: 3Gi
 
 istio:
   sidecar: true

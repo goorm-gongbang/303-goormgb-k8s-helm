@@ -11,7 +11,7 @@ podLabels:
 # IRSA for CloudWatch Data Source
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-staging-grafana-cloudwatch
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-grafana-cloudwatch
 
 # init-chown-data 비활성화 (PVC 권한 문제 방지)
 initChownData:
@@ -62,7 +62,7 @@ plugins:
 
 grafana.ini:
   server:
-    root_url: https://grafana.staging.playball.one
+    root_url: https://grafana.playball.one
   unified_alerting:
     enabled: false
   alerting:
@@ -91,6 +91,17 @@ grafana.ini:
 # EBS CSI driver 미사용 - persistence 비활성화
 persistence:
   enabled: false
+
+# HA: AZ별 분산 배치
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: grafana
+          topologyKey: topology.kubernetes.io/zone
 
 nodeSelector:
   role: monitoring

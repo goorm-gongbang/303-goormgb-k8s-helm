@@ -1,82 +1,82 @@
-# KEDA ScaledObject - Staging
-# 앱별 오토스케일링 규칙
+# KEDA ScaledObject - Production
+# 앱별 오토스케일링 규칙 (cron pre-warming 위주)
 
 scalers:
   # === Web Services ===
   api-gateway:
     enabled: true
-    namespace: staging-webs
+    namespace: prod-webs
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 10
     cpu:
       threshold: "80"
     cron:
-      # 경기 30분 전 pre-warming (예시: 19시 경기)
-      - start: "30 18 * * *"
+      # 경기 20분 전 pre-warming (11시 경기 기준)
+      - start: "40 10 * * *"
         end: "00 22 * * *"
-        desiredReplicas: "3"
+        desiredReplicas: "8"
 
   auth-guard:
     enabled: true
-    namespace: staging-webs
+    namespace: prod-webs
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 10
     cpu:
       threshold: "80"
     cron:
-      - start: "30 18 * * *"
+      - start: "40 10 * * *"
         end: "00 22 * * *"
-        desiredReplicas: "3"
+        desiredReplicas: "8"
 
   queue:
     enabled: true
-    namespace: staging-webs
+    namespace: prod-webs
     minReplicas: 1
-    maxReplicas: 8
+    maxReplicas: 16
     cpu:
       threshold: "80"
-    kafka:
-      consumerGroup: queue-consumer
-      topic: order-events
-      lagThreshold: "100"
+    # kafka:
+    #   consumerGroup: queue-consumer
+    #   topic: order-events
+    #   lagThreshold: "100"
     cron:
-      - start: "30 18 * * *"
+      - start: "40 10 * * *"
         end: "00 22 * * *"
-        desiredReplicas: "4"
+        desiredReplicas: "12"
 
   seat:
     enabled: true
-    namespace: staging-webs
+    namespace: prod-webs
     minReplicas: 1
-    maxReplicas: 8
+    maxReplicas: 16
     cpu:
       threshold: "80"
     cron:
-      - start: "30 18 * * *"
+      - start: "40 10 * * *"
         end: "00 22 * * *"
-        desiredReplicas: "4"
+        desiredReplicas: "12"
 
   order-core:
     enabled: true
-    namespace: staging-webs
+    namespace: prod-webs
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 10
     cpu:
       threshold: "80"
-    kafka:
-      consumerGroup: order-consumer
-      topic: order-events
-      lagThreshold: "100"
+    # kafka:
+    #   consumerGroup: order-consumer
+    #   topic: order-events
+    #   lagThreshold: "100"
     cron:
-      - start: "30 18 * * *"
+      - start: "40 10 * * *"
         end: "00 22 * * *"
-        desiredReplicas: "3"
+        desiredReplicas: "8"
 
   # === AI Services ===
   ai-defense:
     enabled: true
-    namespace: staging-ai
-    deploymentName: staging-ai-defense
+    namespace: prod-ai
+    deploymentName: prod-ai-defense
     minReplicas: 1
     maxReplicas: 3
     cpu:
@@ -84,8 +84,8 @@ scalers:
 
   authz-adapter:
     enabled: true
-    namespace: staging-ai
-    deploymentName: staging-authz-adapter
+    namespace: prod-ai
+    deploymentName: prod-authz-adapter
     minReplicas: 1
     maxReplicas: 3
     cpu:

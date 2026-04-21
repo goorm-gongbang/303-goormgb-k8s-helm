@@ -1,10 +1,10 @@
 # queue - Load-test 환경
 fullnameOverride: "queue"
 contextPath: "/queue"
-replicaCount: 0
+replicaCount: 3
 
 image:
-  name: "staging/playball/web/queue"
+  name: "prod/playball/web/queue"
   tag: "432992f.43"
   pullPolicy: Always
 
@@ -33,8 +33,8 @@ affinity:
 
 resources:
   requests:
-    cpu: 500m
-    memory: 256Mi
+    cpu: 150m
+    memory: 512Mi
   limits:
     cpu: "2"
     memory: 2Gi

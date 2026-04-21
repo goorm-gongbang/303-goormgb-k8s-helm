@@ -1,10 +1,10 @@
 # order-core - Load-test 환경
 fullnameOverride: "order-core"
 contextPath: "/order"
-replicaCount: 0
+replicaCount: 1
 
 image:
-  name: "staging/playball/web/order-core"
+  name: "prod/playball/web/order-core"
   tag: "432992f.44"
   pullPolicy: Always
 
@@ -33,8 +33,8 @@ affinity:
 
 resources:
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: 150m
+    memory: 512Mi
   limits:
     cpu: "2"
     memory: 2Gi
@@ -60,7 +60,7 @@ env:
   # 로그 레벨 WARN (부하테스트 시 로그 감소)
   - name: LOGGING_LEVEL_ROOT
     value: "WARN"
-  # Kafka consumer group (staging과 분리)
+  # Kafka consumer group (prod과 분리)
   - name: KAFKA_CONSUMER_GROUP_ID
     value: "loadtest-order-core-notification"
 

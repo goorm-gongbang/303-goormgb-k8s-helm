@@ -11,7 +11,7 @@ rdsHost: ""  # ExternalSecret에서 주입
 
 # Database names to backup
 databases:
-  - goormgb
+  - playball
 
 # S3 configuration
 s3:
@@ -22,7 +22,7 @@ s3:
 serviceAccount:
   name: rds-backup
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::406223549139:role/goormgb-prod-rds-backup
+    eks.amazonaws.com/role-arn: arn:aws:iam::990521646433:role/playball-prod-rds-backup
 
 # Node placement
 nodeSelector:

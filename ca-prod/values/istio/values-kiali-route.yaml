@@ -1,5 +1,0 @@
-# Kiali VirtualService & DestinationRule for Staging
-
-kialiVirtualService:
-  enabled: true
-  gatewayRef: "istio-system/api-gateway"

@@ -1,5 +1,5 @@
 # EKS Staging - Istio 설정 (Helm values)
-# Domain: staging.playball.one
+# Domain: playball.one
 # Components: istio-base, istiod, istio-gateway, kiali
 
 # ===== Istio Base =====
@@ -50,22 +50,31 @@ istiod:
         memory: 1Gi
 
     autoscaleEnabled: true
-    autoscaleMin: 1
+    autoscaleMin: 2
     autoscaleMax: 3
+
+    # HA: AZ별 분산 배치
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: istiod
+            topologyKey: topology.kubernetes.io/zone
 
 # ===== Shared Gateway =====
 # 공용 Gateway (인프라 서비스용)
 sharedGateway:
   enabled: true
-  name: goormgb-gateway
+  name: playball-gateway
   tls:
     # AWS ACM 인증서 사용 (CloudFront에서 TLS 종료)
     # Gateway에서는 HTTP로 수신
     mode: SIMPLE
     credentialName: ""  # ACM 사용시 불필요
   hosts:
-    - "argocd.staging.playball.one"
-    - "grafana.staging.playball.one"
+    - "argocd.playball.one"
+    - "grafana.playball.one"
 
 # ===== Kiali =====
 kiali-server:
@@ -111,7 +120,7 @@ kiali-server:
     grafana:
       enabled: true
       in_cluster_url: "http://grafana.monitoring.svc.cluster.local:80"
-      url: "https://grafana.staging.playball.one"
+      url: "https://grafana.playball.one"
 
     tracing:
       enabled: true

@@ -1,0 +1,21 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: redisinsight-emails
+  namespace: data
+spec:
+  encryptedData:
+    authenticated-emails.txt: AgBJW0M+UiJtC8G0eEvzsb+2OAQB7elrdu+lod+r9W9y6K93cwDMHLs6klZKUrX+3IaTZDjxFGLA6XVT9uCCdKui36RMB0tDU8QQCt3ub6CPC1fkEdr3L8t4UmxtMOvByYt5UPF6jNUEsJn+G7gAAJ/NP4w1YCcEHWAeeks7SGtwoxtldatXcRg2RM+9t0BO9XL5AgxKiwbVcZa4k7SSVGqQoFYMB4mWmv2G44yKu708UFt0sS55OKmRY37bzt7YUX+RgfLHPwWKYbowlr9yHp8jWV5ml/Csh2jKAfFxxioUrnoXMI40BPJLRXP9mgMw55lubR/b0C1xUqzrrmHKF1ea8Y72g7F4HUjRcudpCurjATi3bk1ncsUGmmDYLr39IY3tkxi0I+4F7l0W4DGHqxJF59OlcWQx3JOBih5djpTvOcOCGxtenqDmXdLZyluqCZptGZk8NaggU3mv8vjpk4HkBGxGEvJQIiShbr9Kvuq5MrS1fiKqFTShUKEsc7YMKSp2WqLXH3ND+Ahd4dChe9ePUfWvjYC1hIdKwtV1S0SogR2SY+tQVLBGM1NN7aSjfsOkqHA41ivMyx+TdkrDkX+hCD1HyWKI/uZ7JT0U8Acv/rIMhl6+weaGTxCsjy1/H6EY8VY/uSq2h2ubhwQtsA3c4GHd+Nti7l2MS9DnpuXff8YHcXXQDvnmO40mOHBDMOokwfIsHbe7lJjY1BzmAmQPO9bfJl0S7PbFf0qEmECkzHqrlqWOfneZ9BZv7+zntEPjHHSdTX6fUgTR4hcAL5ivJEcJD82qtXvAncgSdcZ3lX4Qr1cF2FQwMRJxFKqpzzdWCj41StnJG3HkAMH9kXpSnHnl0v9pyZ9nq4soBG8Q0Z2EaBGhI8uo0Buhn8KKNN+jCpZdmaa/4GJEWyDEepKC2hRf9L83nYlP6g3lMLdZxPbqLjcGxExoq2n4lv26qlWbVD/YXUiqYno1mZQpqzuuw6sPq+f7CivPh2KAywNZFlU1NbLUFu3fFSr2aw3/FCXBOLnGm5ou1J8KNAVMuCEiD4KX1dEhCfhMyZgm7cbpu19CzD4bHtjjLFcA02IGl+LGc+obFFYcWenESPg2i81tSoonsBpzRZDsk8MfRAEW22RdgnNFHy0=
+  template:
+    metadata:
+      annotations:
+        reconcile.external-secrets.io/data-hash: 96c61576060887d435a2437128a8fa879926b6682d81864afd1c0425
+      creationTimestamp: null
+      labels:
+        reconcile.external-secrets.io/created-by: cbfd31f214204715f6e764ceecaa5f51dbe0f3414e8c5b50bf147b27
+        reconcile.external-secrets.io/managed: "true"
+      name: redisinsight-emails
+      namespace: data
+    type: Opaque

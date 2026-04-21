@@ -58,7 +58,7 @@ env:
   - name: REDIS_PASSWORD
     value: ""
   - name: REDIS_DB
-    value: "2"
+    value: "5"
   - name: BLACKLIST_TTL_SECS
     value: "604800" # 7일
   - name: WHITELIST_TTL_SECS

@@ -1,5 +1,5 @@
 # EKS Staging - Monitoring Stack Configuration
-# Domain: staging.playball.one
+# Domain: playball.one
 # Components: Prometheus, Grafana, Loki, Tempo
 #
 # ============================================================
@@ -12,7 +12,7 @@
 # - endpoints 설정 (kubeadm 전용)
 #
 # [변경됨 - EKS 환경]
-# - 도메인: goormgb.space -> staging.playball.one
+# - 도메인: playball.one -> playball.one
 # - 리소스: 스케일 업 (EKS 환경에 맞게)
 # - retention: 7일로 증가
 # ============================================================
@@ -220,7 +220,7 @@ kube-prometheus-stack:
 
     grafana.ini:
       server:
-        root_url: https://grafana.staging.playball.one
+        root_url: https://grafana.playball.one
       # Alerting 비활성화
       unified_alerting:
         enabled: false
@@ -297,7 +297,7 @@ kube-prometheus-stack:
 gateway:
   grafana:
     enabled: true
-    host: "grafana.staging.playball.one"
+    host: "grafana.playball.one"
     # EKS: TLS는 CloudFront + ACM에서 처리
 
 dashboards:
@@ -319,7 +319,7 @@ loki:
       retention_period: 72h  # 문서 기준 staging 인프라 로그 3일
       allow_structured_metadata: true
       retention_stream:
-        - selector: '{namespace=~"(staging-webs|staging-ai)"}'
+        - selector: '{namespace=~"(prod-webs|prod-ai)"}'
           priority: 1
           period: 336h  # 문서 기준 staging 서비스 로그 14일
 

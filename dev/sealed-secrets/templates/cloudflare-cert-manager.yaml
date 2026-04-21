@@ -1,0 +1,24 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: cloudflare-cert-manager-credentials
+  namespace: cert-manager
+spec:
+  encryptedData:
+    api-token: AgATn67BgvZ8fiAe2WMJcVLBmk8rOWX1R6vutcKu68x5WjHovdOGhgsNXIxEZJGA3UNS2PyGBuc4XuAfiPe7B6HCrYI2/azeVxkC4zcPM1A/bFE6OOWGFhoBwlYZELvrT1ukiToi8VrPqRUa5N/LPqQr/LUiWVmPXTkUtpw/GyVZv+viWl3ciwVafcNFIoTfuxc/qCRwrg4uJAbxqVCJ0rzE1T+JVYlvHwhM4Ndc6n2AsZxqu4+4to0We55qByPOjQ2SIEy1BaA1AuD/MuTg+sZWKPO592WlBvINtZwc+L2IEsqLdFHrjh6MPBFhtHUXgL3VZ9SrG+kubpjD8HNZ7Wzs3EhXlN3AFG7VjhFLqoEutuROMeQoRAKFtPRjc9cZnxrCgnGVVIv3nmgct/ovspgsyN2wyp5kSBLjvE5krT+yYIuhrbY5abOSLE+3MYW40sQQuJOuHuy9ZRwlraEHL/2gSG8ZWMoYZvZqyNzVPUc8DTmv4FYaUICN0dkddH0t3hDEpLcCCUwekkJhoCdyuqiuUm0c5GZ7nIvoQM1m62taARPgOH01Q2brvBPRgvAqS45axmDt+BSmdbTLQEFNiDyCKzMB5FX0Nur3dnNYVWZdVancI/0e62X0vRdZhSes133IHCuQIzI5anc/0AmILfYcEoTgWDR7p58BBm6fiTkRjk4SEArATIheuqfMJc+uKpxX5JkTqaZgT2Jv5zqP7nunAI4Bm0PN3g0YpniE4gfl3lUGxzWvbjeP
+  template:
+    metadata:
+      annotations:
+        argocd.argoproj.io/tracking-id: cert-manager-config:external-secrets.io/ExternalSecret:cert-manager/cloudflare-cert-manager-credentials
+        reconcile.external-secrets.io/data-hash: bbe171eef6363e7dbc3dafd3d8a807d196c2efce7add0353533b70e4
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/component: cloudflare-credentials
+        app.kubernetes.io/name: cert-manager
+        reconcile.external-secrets.io/created-by: 8bf876fa72d5333708f3174eb5dde2e5d6c9e0845d2163370ccca7b7
+        reconcile.external-secrets.io/managed: "true"
+      name: cloudflare-cert-manager-credentials
+      namespace: cert-manager
+    type: Opaque

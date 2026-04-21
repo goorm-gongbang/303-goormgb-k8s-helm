@@ -10,9 +10,27 @@ podLabels:
   webhooks:
     version: "2.19.0"
 
-# App 노드에 배치
+# HA: operator replicas 2 (leader election)
+operator:
+  replicaCount: 2
+
+# Infra 노드에 배치 (on-demand, spot 회수 영향 방지)
 nodeSelector:
-  role: app
+  role: infra
+
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
+# HA: AZ별 분산 배치
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: keda-operator
+        topologyKey: topology.kubernetes.io/zone
 
 # Prometheus 메트릭
 prometheus:

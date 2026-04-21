@@ -15,6 +15,12 @@ spec:
       labels:
         app.kubernetes.io/name: alertmanager-discord-relay
     spec:
+      nodeSelector:
+        role: monitoring
+      tolerations:
+        - key: role
+          value: monitoring
+          effect: NoSchedule
       containers:
         - name: relay
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

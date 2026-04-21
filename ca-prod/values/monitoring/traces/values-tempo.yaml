@@ -13,11 +13,22 @@ tolerations:
     value: "true"
     effect: NoSchedule
 
+# HA: AZ별 분산 배치
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: tempo
+          topologyKey: topology.kubernetes.io/zone
+
 serviceAccount:
   create: true
   name: tempo
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::406223549139:role/goormgb-staging-tempo"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::990521646433:role/playball-prod-tempo"
 
 tempo:
   resources:

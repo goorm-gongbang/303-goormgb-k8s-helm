@@ -1,10 +1,10 @@
 # authz-adapter - Load-test 환경
 # Go 기반 gRPC ext_authz 서비스
 
-replicaCount: 0
+replicaCount: 2
 
 image:
-  name: "staging/playball/ai/authz-adapter"
+  name: "prod/playball/ai/authz-adapter"
   tag: "871857a.14"
   pullPolicy: Always
 
@@ -41,7 +41,7 @@ metrics:
 # authz-adapter 전용 설정 - loadtest-ai namespace 참조
 authzAdapter:
   enabled: true
-  aiDefenseUrl: "http://staging-ai-defense.loadtest-ai.svc.cluster.local:8000/ai/evaluate"
+  aiDefenseUrl: "http://prod-ai-defense.loadtest-ai.svc.cluster.local:8000/ai/evaluate"
   aiDefenseTimeoutMs: 800
   logLevel: info
 
@@ -65,11 +65,11 @@ readinessProbe:
 
 resources:
   requests:
-    cpu: 200m
+    cpu: 100m
     memory: 128Mi
   limits:
-    cpu: "2"
-    memory: 2Gi
+    cpu: "1"
+    memory: 1Gi
 
 istio:
   sidecar: false

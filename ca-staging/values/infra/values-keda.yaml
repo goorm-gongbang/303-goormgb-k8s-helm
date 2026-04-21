@@ -14,6 +14,11 @@ podLabels:
 nodeSelector:
   role: infra
 
+tolerations:
+  - key: role
+    value: infra
+    effect: NoSchedule
+
 # Prometheus 메트릭
 prometheus:
   metricServer:

@@ -4,7 +4,7 @@ contextPath: "/order"
 replicaCount: 1
 
 image:
-  name: "staging/playball/web/order-core"
+  name: "prod/playball/web/order-core"
   tag: "432992f.44"
   pullPolicy: Always
 
@@ -65,6 +65,8 @@ env:
     value: "5"
   - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
     value: "2"
+  - name: REDIS_DATABASE
+    value: "4"
 
 envFrom:
   - configMapRef:
