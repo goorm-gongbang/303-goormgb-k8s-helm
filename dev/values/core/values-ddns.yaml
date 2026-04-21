@@ -2,10 +2,9 @@
 # Domain: playball.one (dev)
 
 domain: "playball.one"
-zoneID: "f9fdc81712963738bc9d5ee628849e53"
+zoneID: "018470675d45c227fe1651925a47da13"
 
 records:
-  - "dev" # dev.playball.one (root)
   - "api-dev" # api-dev.playball.one (백엔드 API)
   - "swagger-dev" # swagger-dev.playball.one (Swagger UI)
   - "console-dev" # console-dev.playball.one (Infra Console)
